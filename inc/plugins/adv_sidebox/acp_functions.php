@@ -3,7 +3,7 @@
  * This file contains the ACP functions for adv_sidebox.php
  *
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x v1.0
- * Copyright © 2012 Wildcard
+ * Copyright ï¿½ 2012 Wildcard
  * http://www.rantcentralforums.com
  *
  * BASED UPON THE CONCEPT AND CODE CREATED BY NAYAR IN THE ORIGINAL SIDEBOX PLUGIN
@@ -59,7 +59,7 @@ function adv_sidebox_info()
 		"authorsite"	=> "http://www.rantcentralforums.com",
 		"version"		=> "1.0",
 		"compatibility" => "16*",
-		"guid" 			=> "",
+		"guid" 			=> "cf9d9318c4cc33463c16326b740935bd",
 	);
 }
 
