@@ -59,7 +59,7 @@ function adv_sidebox_info()
 		"authorsite"	=> "http://www.rantcentralforums.com",
 		"version"		=> "1.0",
 		"compatibility" => "16*",
-		"guid" 			=> "",
+		"guid" 			=> "cf9d9318c4cc33463c16326b740935bd",
 	);
 }
 
