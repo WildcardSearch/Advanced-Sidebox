@@ -24,6 +24,8 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+define("ADV_SIDEBOX", true);
+
 // Load the install/admin routines only if in Admin CP.
 if(defined("IN_ADMINCP"))
 {
@@ -56,7 +58,7 @@ if($settings['adv_sidebox_portal_replace'])
 // Check both admin and user settings and if applicable display the sideboxes.
 function adv_sidebox_start()
 {
-	global $mybb, $db, $lang, $templates, $cache, $theme, $thread, $alttrow;
+	global $mybb, $db, $lang, $templates, $cache, $theme, $thread, $alttrow, $plugins;
 	global $sbwelcome, $sbpms, $sbsearch, $sbstats, $sbwhosonline_l, $sbwhosonline_r, $sblatestthreads, $gobutton, $lastvisit;
 	$portal_url='member.php';
 	
@@ -80,8 +82,7 @@ function adv_sidebox_start()
 	// If the current user is not a guest and has disabled the sidebox display in UCP then do not display the sideboxes
 	if($mybb->user['uid'] != 0)
 	{
-		$query = $db->simple_select("users", "show_sidebox", "uid = '".$mybb->user['uid']."' AND show_sidebox='1'", array("order_dir" => 'DESC'));
-		if ($db->num_rows($query) == 0)
+		if ($mybb->user['show_sidebox'] == 0)
 		{
 			return false;
 		}
@@ -101,9 +102,6 @@ function adv_sidebox_start()
 		$lang->load('adv_sidebox');
 	}
 
-	// Look for all sideboxes (if any)
-	$query = $db->simple_select('sideboxes', 'id, box_type, position, content', '', array("order_by" => 'display_order', "order_dir" => 'ASC'));
-	
 	// set up counters for both sides and box_types
 	$box_types = array(
 		'{$custom_box}' 		=> 0,
@@ -117,45 +115,56 @@ function adv_sidebox_start()
 		'{$sblatestthreads}' 	=> 0
 			);
 	
+	$all_boxes = array();
+	
+	// Look for all sideboxes (if any)
+	$query = $db->simple_select('sideboxes', 'id, box_type, position, content', '', array("order_by" => 'display_order', "order_dir" => 'ASC'));
+		
 	// if there are sideboxes . . .
 	if($db->num_rows($query) > 0)
 	{
 		// . . . loop through each one and sort them by position
 		while($this_box = $db->fetch_array($query))
 		{
-			// if this is a custom box . . .
-			if($this_box['box_type'] == '{$custom_box}')
-			{
-				// . . . then use the custom content as a replacement
-				$content = $this_box['content'];
-			}
-			// if this is a WOL box and the user has either set max rows or avatars per row to 0 (or blank). . .
-			elseif(($this_box['box_type'] == '{$sbwhosonline_l}' || $this_box['box_type'] == '{$sbwhosonline_r}') && ((int) $mybb->settings['adv_sidebox_avatar_max_rows'] == 0 || (int) $mybb->settings['adv_sidebox_avatar_per_row'] == 0))
-			{
-				// . . . display nothing
-				$content = '';
-			}
-			else
-			{
-				// . . . otherwise just use the content of box_type
-				$content = $this_box['box_type'];
-			}
-			
-			if((int) $this_box['position'] > 0)
-			{
-				$right_boxes .= $content;
-			}
-			else
-			{
-				$left_boxes .= $content;
-			}
-			
-			// we'll check this array later to reduce wasted code
-			// no need to parse templates if the box_type is unused
-			$box_types[$this_box['box_type']] = true;
+			$all_boxes[] = $this_box;
 		}
 	}
-	else
+	
+	foreach($all_boxes as $this_box)
+	{	
+		// if this is a custom box . . .
+		if($this_box['box_type'] == '{$custom_box}')
+		{
+			// . . . then use the custom content as a replacement
+			$content = $this_box['content'];
+		}
+		// if this is a WOL box and the user has either set max rows or avatars per row to 0 (or blank). . .
+		elseif(($this_box['box_type'] == '{$sbwhosonline_l}' || $this_box['box_type'] == '{$sbwhosonline_r}') && ((int) $mybb->settings['adv_sidebox_avatar_max_rows'] == 0 || (int) $mybb->settings['adv_sidebox_avatar_per_row'] == 0))
+		{
+			// . . . display nothing
+			$content = '';
+		}
+		else
+		{
+			// . . . otherwise just use the content of box_type
+			$content = $this_box['box_type'];
+		}
+		
+		if((int) $this_box['position'] > 0)
+		{
+			$right_boxes .= $content;
+		}
+		else
+		{
+			$left_boxes .= $content;
+		}
+		
+		// we'll check this array later to reduce wasted code
+		// no need to parse templates if the box_type is unused
+		$box_types[$this_box['box_type']] = true;
+	}
+	
+	if(!$left_boxes && !$right_boxes)
 	{
 		// if there are no sideboxes, gtfo
 		return false;
@@ -471,8 +480,8 @@ function adv_sidebox_start()
 					}
 					else
 					{
-						$avatar_style_l = 'margin: ' . $avatar_margin . 'px; border: none;';
-						$avatar_style_r = 'margin: ' . $avatar_margin . 'px; border: none;';
+						$avatar_style_l = 'margin: ' . $avatar_margin_l . 'px; border: none;';
+						$avatar_style_r = 'margin: ' . $avatar_margin_r . 'px; border: none;';
 					}
 
 					// If the user has an avatar then display it . . .
@@ -631,6 +640,8 @@ function adv_sidebox_start()
 			eval("\$sblatestthreads = \"" . $templates->get("adv_sidebox_latest_threads") . "\";");
 		}
 	}
+	
+	$plugins->run_hooks('adv_sidebox_output_end', $box_types);
 }
 
 // Hooks for the User CP routine.

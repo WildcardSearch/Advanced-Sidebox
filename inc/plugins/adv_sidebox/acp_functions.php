@@ -21,7 +21,7 @@
  */
 
  // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -340,7 +340,7 @@ function adv_sidebox_plugins_begin()
 
 function adv_sidebox_page()
 {
-    global $mybb, $db, $page, $lang;
+    global $mybb, $db, $page, $lang, $plugins;
 	
 	if (!$lang->adv_sidebox)
 	{
@@ -349,13 +349,15 @@ function adv_sidebox_page()
 	
 	$box_types = array(
 		'{$custom_box}' 		=> $lang->adv_sidebox_custom,
-		'{$sbwelcome}' 			=> $lang->adv_sidebox_welcome_box,
+		'{$sbwelcome}' 		=> $lang->adv_sidebox_welcome_box,
 		'{$sbpms}' 				=> $lang->adv_sidebox_pm_box,
 		'{$sbsearch}' 			=> $lang->adv_sidebox_search_box,
 		'{$sbstats}' 				=> $lang->adv_sidebox_stats_box,
-		'{$sbwhosonline}' 		=> $lang->adv_sidebox_wol_avatar_list,
+		'{$sbwhosonline}' 	=> $lang->adv_sidebox_wol_avatar_list,
 		'{$sblatestthreads}' 	=> $lang->adv_sidebox_latest_threads
 			);
+			
+	$plugins->run_hooks('adv_sidebox_box_types', $box_types);
 
 	adv_sidebox_output_header();
 	
@@ -374,6 +376,7 @@ function adv_sidebox_page()
 	
 	if($db->num_rows($query) > 0)
 	{
+		$left_box = false;
 		$right_box = false;
 		
 		$table->construct_cell('<strong>Left Boxes</strong>', array("colspan" => 7));
@@ -381,18 +384,35 @@ function adv_sidebox_page()
 		
 		while($box = $db->fetch_array($query))
 		{
+			// if this is the first right box . . .
 			if((int) $box['position'] && !$right_box)
 			{
+				// . . . and there weren't any left boxes . . .
+				if(!$left_box)
+				{
+					// let them know
+					$table->construct_cell('<span style="color: #888"><p>' . $lang->adv_sidebox_no_boxes_left . '</p></span>', array("colspan" => 7));
+					$table->construct_row();
+				}
+				
+				// and add the label
 				$right_box = true;
 				$table->construct_cell('<strong>Right Boxes</strong>', array("colspan" => 7));
 				$table->construct_row();
 			}
+			elseif((int) $box['position'] == 0 && !$left_box)
+			{
+				// otherwise its a left box
+				$left_box = true;
+			}
 			
+			// merge left and right WOL boxes
 			if($box['box_type'] == '{$sbwhosonline_l}' || $box['box_type'] == '{$sbwhosonline_r}')
 			{
 				$box['box_type'] = '{$sbwhosonline}';
 			}
 			
+			// construct the table row.
 			$table->construct_cell($box['id'], array("width" => '5%'));
 			$table->construct_cell($box['display_order'], array("width" => '5%'));
 			$table->construct_cell($box_types[$box['box_type']], array("width" => '10%'));
@@ -402,32 +422,50 @@ function adv_sidebox_page()
 			$table->construct_cell('<a href="' . ADV_SIDEBOX_URL . '&amp;mode=delete_box&amp;box=' . $box['id'] . '"><img src="' . $mybb->settings['bburl'] . '/images/usercp/delete.png" alt="' . $lang->adv_sidebox_edit . '" title="' . $lang->adv_sidebox_edit . '" />&nbsp;' . $lang->adv_sidebox_delete . '</a>', array("width" => '10%'));
 			$table->construct_row();
 		}
+		
+		// if there were no right boxes . . .
+		if(!$right_box)
+		{
+			// add the label anyway
+			$table->construct_cell('<strong>Right Boxes</strong>', array("colspan" => 7));
+			$table->construct_row();
+
+			// and tell them what they already know
+			$table->construct_cell('<span style="color: #888"><p>' . $lang->adv_sidebox_no_boxes_right . '</p></span>', array("colspan" => 7));
+			$table->construct_row();
+		}
 	}
 	else
 	{
+		// no boxes? state the obvious
 		$table->construct_cell('<span style="color: #888"><p>' . $lang->adv_sidebox_no_boxes . '</p></span>', array("colspan" => 7));
 		$table->construct_row();
 	}
+	
+	// output the box table
 	$table->output();
 	
+	// and add link at the bottom
 	echo('<hr><a href="' . ADV_SIDEBOX_URL . '&amp;mode=edit_box"><img src="' . $mybb->settings['bburl'] . '/images/add.png" />&nbsp;Add a new sidebox</a>');
-
-    $page->output_footer();
+	$page->output_footer();
 }
 
 function edit_box()
 {
-	global $mybb, $db, $page, $lang;
-	
+	global $mybb, $db, $page, $lang, $plugins;
+
 	if (!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}
 	
+	// POSTing?
 	if($mybb->request_method == "post")
 	{
+		// saving?
 		if($mybb->input['save_box_submit'] == 'Save')
 		{
+			// help them keep their display orders spaced
 			if(!isset($mybb->input['display_order']) || (int) $mybb->input['display_order'] == 0)
 			{
 				$query = $db->simple_select('sideboxes', 'display_order');
@@ -436,32 +474,41 @@ function edit_box()
 			}
 			else
 			{
+				// or back off if they entered a value
 				$disp_order = (int) $mybb->input['display_order'];
 			}
 			
+			// translate the position
 			if($mybb->input['box_position'] == 'right')
 			{
 				$pos = 1;
 			}
 			
+			// if this isn't a custom box . . .
 			if($mybb->input['box_type_select'] != '{$custom_box}')
 			{
+				// don't store the content at all
 				$content = '';
 			}
 			else
 			{
+				// otherwise store it
 				$content = $mybb->input['box_content'];
 			}
 			
+			// is this a WOL box?
 			if($mybb->input['box_type_select'] == '{$sbwhosonline}')
 			{
+				// if so edit the template variable to include positioning
 				$box_type = '{$sbwhosonline' . ($pos ? '_r' : '_l') . '}';
 			}
 			else
 			{
+				// otherwise just send the var as-is
 				$box_type = $mybb->input['box_type_select'];
 			}
 			
+			// db array
 			$this_box = array(
 				"display_order"	=> (int) $disp_order,
 				"box_type"	=>	$db->escape_string($box_type),
@@ -469,22 +516,28 @@ function edit_box()
 				"content"		=>	$db->escape_string($content)
 			);
 			
+			// does this box already exist?
 			if(isset($mybb->input['box']) && (int) $mybb->input['box'] > 0)
 			{
+				// if so update it
 				$status = $db->update_query('sideboxes', $this_box, "id='" . (int) $mybb->input['box'] . "'");
 			}
 			else
 			{
+				// if not, create it
 				$status = $db->insert_query('sideboxes', $this_box);
 			}
 			
+			// success?
 			if($status)
 			{
+				// yay
 				flash_message($lang->adv_sidebox_save_success, "success");
 				admin_redirect(ADV_SIDEBOX_URL);
 			}
 			else
 			{
+				// :(
 				flash_message($lang->adv_sidebox_save_fail, "error");
 				admin_redirect(ADV_SIDEBOX_URL . "&amp;mode=edit_box");
 			}
@@ -496,18 +549,35 @@ function edit_box()
 		$lang->load('adv_sidebox');
 	}
 	
+	$box_types = array(
+		'{$custom_box}' 		=> $lang->adv_sidebox_custom,
+		'{$sbwelcome}' 		=> $lang->adv_sidebox_welcome_box,
+		'{$sbpms}' 				=> $lang->adv_sidebox_pm_box,
+		'{$sbsearch}' 			=> $lang->adv_sidebox_search_box,
+		'{$sbstats}' 				=> $lang->adv_sidebox_stats_box,
+		'{$sbwhosonline}' 	=> $lang->adv_sidebox_wol_avatar_list,
+		'{$sblatestthreads}' 	=> $lang->adv_sidebox_latest_threads
+			);
+			
+	$plugins->run_hooks('adv_sidebox_box_types', $box_types);
+	
+	// add the script to hide the content box if it is unnecessary
 	$page->extra_header .= '<script type="text/javascript" src="./jscripts/peeker.js"></script>
     <script type="text/javascript">Event.observe(window, "load", function() {var peeker = new Peeker($("box_type_select"), $("box_content"), /{\$custom_box}/, false);});
     </script>'; 
-	adv_sidebox_output_header();
 	
+	// output ACP page stuff
+	adv_sidebox_output_header();
 	adv_sidebox_output_tabs();
 	
+	// editing?
 	if(isset($mybb->input['box']))
 	{
+		// load the box from the db
 		$box_id = (int) $mybb->input['box'];
 		$query = $db->simple_select('sideboxes', 'id, display_order, box_type, position, content', "id='{$box_id}'", array("order_by" => 'display_order', "order_dir" => 'ASC'));
 		
+		// if it exists, store it for display
 		if($db->num_rows($query) == 1)
 		{
 			$this_box = $db->fetch_array($query);
@@ -516,10 +586,21 @@ function edit_box()
 	}
 	else
 	{
+		// if creating a new box give them some kind of display order that makes sense
 		$query = $db->simple_select('sideboxes', 'display_order');
 		$disp_order = ((int) $db->num_rows($query) + 1) * 10;
 		
-		$this_box['content'] = '<table border="0" cellspacing="1" cellpadding="4" class="tborder"><tr><td class="thead"><strong>Box 1</strong></td></tr><tr><td class="trow1">First box</td></tr></table><br />';
+		// and some sample custom content
+		$this_box['content'] = '<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
+	<tr>
+		<td class="thead"><strong>Custom Box</strong></td>
+	</tr>
+	<tr>
+		<td class="trow1">Place your custom content here. HTML can be used in conjunction with certain template variables, language variables and environment variables.<br /><br />
+		For example:<br /><br />
+		<strong>User:</strong> {$mybb->user[\'username\']}<br />
+		<strong>UID:</strong> {$mybb->user[\'uid\']}<br />
+		<strong>Theme name:</strong> {$theme[\'name\']}</td></tr></table><br />';
 	}
 	
 	if($this_box['box_type'] == '{$sbwhosonline_l}' || $this_box['box_type'] == '{$sbwhosonline_r}')
@@ -530,7 +611,7 @@ function edit_box()
 	$form = new Form(ADV_SIDEBOX_URL . "&amp;mode=edit_box&amp;box=" . $this_box['id'], "post", "edit_box");
 	$form_container = new FormContainer($lang->adv_sidebox_edit_box);
 	
-	$form_container->output_row($lang->adv_sidebox_box_type, $lang->adv_sidebox_type_desc, $form->generate_select_box('box_type_select', array('{$custom_box}' => $lang->adv_sidebox_custom, '{$sbwelcome}' => $lang->adv_sidebox_welcome_box, '{$sbpms}' => $lang->adv_sidebox_pm_box, '{$sbsearch}' => $lang->adv_sidebox_search_box, '{$sbstats}' => $lang->adv_sidebox_stats_box, '{$sbwhosonline}' => $lang->adv_sidebox_wol_avatar_list, '{$sblatestthreads}' => $lang->adv_sidebox_latest_threads), $this_box['box_type'], array("id" => 'box_type_select')), array("id" => 'box_type_select_box'));
+	$form_container->output_row($lang->adv_sidebox_box_type, $lang->adv_sidebox_type_desc, $form->generate_select_box('box_type_select', $box_types, $this_box['box_type'], array("id" => 'box_type_select')), array("id" => 'box_type_select_box'));
 	$form_container->output_row($lang->adv_sidebox_content_title, $lang->adv_sidebox_content_desc, $form->generate_text_area('box_content', $this_box['content'], array("id" => 'box_content')), array("id" => 'box_content'));
 	$form_container->output_row($lang->adv_sidebox_position, $lang->adv_sidebox_position_desc, $form->generate_radio_button('box_position', 'left', $lang->adv_sidebox_position_left, array("checked" => ((int) $this_box['position'] == 0))) . '&nbsp;&nbsp;' . $form->generate_radio_button('box_position', 'right', $lang->adv_sidebox_position_right, array("checked" => ((int) $this_box['position'] != 0))));
 	$form_container->output_row($lang->adv_sidebox_display_order, '', $form->generate_text_box('display_order', $disp_order));

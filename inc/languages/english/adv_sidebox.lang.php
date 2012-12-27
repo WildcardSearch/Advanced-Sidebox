@@ -52,6 +52,8 @@ $l['adv_sidebox_controls'] = 'Controls';
 $l['adv_sidebox_edit'] = 'Edit';
 $l['adv_sidebox_delete'] = 'Delete';
 $l['adv_sidebox_no_boxes'] = 'no sideboxes added yet';
+$l['adv_sidebox_no_boxes_left'] = 'no left sideboxes';
+$l['adv_sidebox_no_boxes_right'] = 'no right sideboxes';
 $l['adv_sidebox_save_success'] = 'The box was saved successfully';
 $l['adv_sidebox_save_fail'] = 'The box could not be saved';
 
