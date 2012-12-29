@@ -3,7 +3,7 @@
  * This file contains the ACP functions for adv_sidebox.php
  *
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x v1.0
- * Copyright ï¿½ 2012 Wildcard
+ * Copyright © 2012 Wildcard
  * http://www.rantcentralforums.com
  *
  * BASED UPON THE CONCEPT AND CODE CREATED BY NAYAR IN THE ORIGINAL SIDEBOX PLUGIN
@@ -235,6 +235,49 @@ function adv_sidebox_install()
 
 	rebuild_settings();
 	
+	//modules
+	$modules_dir = MYBB_ROOT. "inc/plugins/adv_sidebox/modules";
+	$dir = opendir($modules_dir);
+	
+	while(($module = readdir($dir)) !== false)
+	{
+		if(is_dir($modules_dir."/".$module) && !in_array($module, array(".", "..")) && file_exists($modules_dir."/".$module."/sidebox_meta.php"))
+		{
+			if(file_exists($modules_dir."/".$module."/sidebox_install.php"))
+			{
+				require_once $modules_dir."/".$module."/sidebox_install.php";
+				
+				$is_installed_function = $module . '_is_installed';
+				
+				if(function_exists($module . '_is_installed'))
+				{
+					if(!$is_installed_function())
+					{
+						if(function_exists($module . '_install'))
+						{
+							$install_function = $module . '_install';
+							$install_function();
+						}
+					}
+					else
+					{
+						if(function_exists($module . '_uninstall'))
+						{
+							$uninstall_function = $module . '_uninstall';
+							$uninstall_function();
+							
+							if(function_exists($module . '_install'))
+							{
+								$install_function = $module . '_install';
+								$install_function();
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	// create and install all custom templates
 	adv_sidebox_install_templates();
 }
@@ -243,6 +286,35 @@ function adv_sidebox_install()
 function adv_sidebox_uninstall()
 {
 	global $db;
+	
+	//modules
+	$modules_dir = MYBB_ROOT. "inc/plugins/adv_sidebox/modules";
+	$dir = opendir($modules_dir);
+	
+	while(($module = readdir($dir)) !== false)
+	{
+		if(is_dir($modules_dir."/".$module) && !in_array($module, array(".", "..")) && file_exists($modules_dir."/".$module."/sidebox_meta.php"))
+		{
+			if(file_exists($modules_dir."/".$module."/sidebox_install.php"))
+			{
+				require_once $modules_dir."/".$module."/sidebox_install.php";
+				
+				$is_installed_function = $module . '_is_installed';
+				
+				if(function_exists($module . '_is_installed'))
+				{
+					if($is_installed_function())
+					{
+						if(function_exists($module . '_uninstall'))
+						{
+							$uninstall_function = $module . '_uninstall';
+							$uninstall_function();
+						}
+					}
+				}
+			}
+		}
+	}
 	
 	// remove the table
 	$db->drop_table('sideboxes');
@@ -302,8 +374,8 @@ $plugins->add_hook('admin_config_plugins_begin', 'adv_sidebox_plugins_begin');
 function adv_sidebox_plugins_begin()
 {
     global $mybb, $lang, $page, $db;
-
-    if($mybb->input['action'] == 'sidebox')
+	
+	if($mybb->input['action'] == 'sidebox')
     {
         $page->add_breadcrumb_item($lang->adv_sidebox_name, ADV_SIDEBOX_URL);
 
@@ -330,6 +402,60 @@ function adv_sidebox_plugins_begin()
 					admin_redirect(ADV_SIDEBOX_URL);
 				}
 				break;
+			
+			case 'install_box':
+				if(isset($mybb->input['addon']))
+				{
+					$this_module = $mybb->input['addon'];
+					$modules_dir = MYBB_ROOT. "inc/plugins/adv_sidebox/modules";
+					
+					if(file_exists($modules_dir . "/" . $this_module . "/sidebox_install.php"))
+					{
+						require_once $modules_dir . "/" . $this_module . "/sidebox_install.php";
+			
+						if(function_exists($this_module . '_install'))
+						{
+							$install_function = $this_module . '_install';
+							$install_function();
+							
+							flash_message("The new module was installed successfully", "success");
+							admin_redirect(ADV_SIDEBOX_URL);
+						}
+					}
+				}
+				else
+				{
+					flash_message("The new module was fucked", "error");
+					admin_redirect(ADV_SIDEBOX_URL);
+				}
+				break;
+
+            case 'uninstall_box':
+				if(isset($mybb->input['addon']))
+				{
+					$this_module = $mybb->input['addon'];
+					$modules_dir = MYBB_ROOT. "inc/plugins/adv_sidebox/modules";
+					
+					if(file_exists($modules_dir . "/" . $this_module . "/sidebox_install.php"))
+					{
+						require_once $modules_dir . "/" . $this_module . "/sidebox_install.php";
+			
+						if(function_exists($this_module . '_uninstall'))
+						{
+							$install_function = $this_module . '_uninstall';
+							$install_function();
+							
+							flash_message("The new module was uninstalled successfully", "success");
+							admin_redirect(ADV_SIDEBOX_URL);
+						}
+					}
+				}
+				else
+				{
+					flash_message("The new module was fucked", "error");
+					admin_redirect(ADV_SIDEBOX_URL);
+				}
+				break;
 
             default:
                 adv_sidebox_page();
@@ -349,18 +475,67 @@ function adv_sidebox_page()
 	
 	$box_types = array(
 		'{$custom_box}' 		=> $lang->adv_sidebox_custom,
-		'{$sbwelcome}' 		=> $lang->adv_sidebox_welcome_box,
-		'{$sbpms}' 				=> $lang->adv_sidebox_pm_box,
-		'{$sbsearch}' 			=> $lang->adv_sidebox_search_box,
-		'{$sbstats}' 				=> $lang->adv_sidebox_stats_box,
-		'{$sbwhosonline}' 	=> $lang->adv_sidebox_wol_avatar_list,
-		'{$sblatestthreads}' 	=> $lang->adv_sidebox_latest_threads
+		'{$sbwhosonline}' 	=> $lang->adv_sidebox_wol_avatar_list
 			);
 			
+	// plugin hooks	
 	$plugins->run_hooks('adv_sidebox_box_types', $box_types);
+	
+	//modules
+	$modules_dir = MYBB_ROOT. "inc/plugins/adv_sidebox/modules";
+	$dir = opendir($modules_dir);
+	$uninstalled_modules = array();
+	$installed_modules = array();
+	
+	while(($module = readdir($dir)) !== false)
+	{
+		if(is_dir($modules_dir."/".$module) && !in_array($module, array(".", "..")) && file_exists($modules_dir."/".$module."/sidebox_meta.php"))
+		{
+			if(file_exists($modules_dir."/".$module."/sidebox_install.php"))
+			{
+				require_once $modules_dir."/".$module."/sidebox_install.php";
+				
+				$is_installed_function = $module . '_is_installed';
+				
+				if(function_exists($module . '_is_installed'))
+				{
+					if(!$is_installed_function())
+					{
+						$uninstalled_modules[] = $module;
+					}
+					else
+					{
+						require_once $modules_dir."/".$module."/sidebox_meta.php";
+			
+						if(function_exists($module . '_add_type') && function_exists($module . '_build_template'))
+						{
+							$add_type_function = $module . '_add_type';
+							$add_type_function($box_types);
+						}
+				
+						$installed_modules[] = $module;
+					}
+				}
+				else
+				{
+					$uninstalled_modules[] = $module;
+				}
+			}
+			else
+			{
+				// there is no install, add the box_type now
+				require_once $modules_dir . "/" . $module . "/sidebox_meta.php";
+			
+				if(function_exists($module . '_add_type') && function_exists($module . '_build_template'))
+				{
+					$add_type_function = $module . '_add_type';
+					$add_type_function($box_types);
+				}
+			}
+		}
+	}
 
 	adv_sidebox_output_header();
-	
 	adv_sidebox_output_tabs();
 	
 	$table = new Table;
@@ -369,7 +544,6 @@ function adv_sidebox_page()
 	$table->construct_header($lang->adv_sidebox_display_order);
 	$table->construct_header($lang->adv_sidebox_box_type);
 	$table->construct_header($lang->adv_sidebox_position);
-	$table->construct_header($lang->adv_sidebox_content);
 	$table->construct_header($lang->adv_sidebox_controls, array("colspan" => 2));
 	
 	$query = $db->simple_select('sideboxes', 'id, display_order, box_type, position, content', '', array("order_by" => 'position, display_order', "order_dir" => 'ASC'));
@@ -417,7 +591,6 @@ function adv_sidebox_page()
 			$table->construct_cell($box['display_order'], array("width" => '5%'));
 			$table->construct_cell($box_types[$box['box_type']], array("width" => '10%'));
 			$table->construct_cell(((int) $box['position'] ? $lang->adv_sidebox_position_right : $lang->adv_sidebox_position_left), array("width" => '5%'));
-			$table->construct_cell('<div style="max-height: 100px; overflow: scroll;">' . htmlspecialchars($box['content']) . '</div>', array("width" => '55%'));
 			$table->construct_cell('<a href="' . ADV_SIDEBOX_URL . '&amp;mode=edit_box&amp;box=' . $box['id'] . '"><img src="' . $mybb->settings['bburl'] . '/images/icons/pencil.gif" alt="' . $lang->adv_sidebox_edit . '" title="' . $lang->adv_sidebox_edit . '" />&nbsp;' . $lang->adv_sidebox_edit . '</a>', array("width" => '10%'));
 			$table->construct_cell('<a href="' . ADV_SIDEBOX_URL . '&amp;mode=delete_box&amp;box=' . $box['id'] . '"><img src="' . $mybb->settings['bburl'] . '/images/usercp/delete.png" alt="' . $lang->adv_sidebox_edit . '" title="' . $lang->adv_sidebox_edit . '" />&nbsp;' . $lang->adv_sidebox_delete . '</a>', array("width" => '10%'));
 			$table->construct_row();
@@ -427,7 +600,7 @@ function adv_sidebox_page()
 		if(!$right_box)
 		{
 			// add the label anyway
-			$table->construct_cell('<strong>Right Boxes</strong>', array("colspan" => 7));
+			$table->construct_cell('<strong>Right Boxes</strong>', array("colspan" => 6));
 			$table->construct_row();
 
 			// and tell them what they already know
@@ -445,8 +618,38 @@ function adv_sidebox_page()
 	// output the box table
 	$table->output();
 	
+	if(!empty($uninstalled_modules))
+	{
+		$install_links = '<br /><br /><strong>Uninstalled modules:</strong><br />';
+		
+		foreach($uninstalled_modules as $this_module)
+		{
+			// we need to get these add-on's descriptions
+			require_once $modules_dir . "/" . $this_module . "/sidebox_meta.php";
+		
+			if(function_exists($this_module . '_add_type'))
+			{
+				$add_type_function = $this_module . '_add_type';
+				$add_type_function($box_types);
+			}
+			
+			$install_links .= '<a href="' . ADV_SIDEBOX_URL . '&amp;mode=install_box&amp;addon=' . $this_module . '"><img src="' . $mybb->settings['bburl'] . '/images/new.png" />&nbsp;Install ' . $box_types['{$' . $this_module . '}'] . '</a>&nbsp;&nbsp;&nbsp;&nbsp;';
+		}
+	}
+	
+	if(!empty($installed_modules))
+	{
+		$uninstall_links = '<br /><br /><strong>Installed modules:</strong><br />';
+		
+		foreach($installed_modules as $this_module)
+		{
+			$uninstall_links .= '<a href="' . ADV_SIDEBOX_URL . '&amp;mode=uninstall_box&amp;addon=' . $this_module . '"><img src="' . $mybb->settings['bburl'] . '/images/delete.png" />&nbsp;Uninstall ' . $box_types['{$' . $this_module . '}'] . '</a>&nbsp;&nbsp;&nbsp;&nbsp;';
+		}
+	}
+	
 	// and add link at the bottom
-	echo('<hr><a href="' . ADV_SIDEBOX_URL . '&amp;mode=edit_box"><img src="' . $mybb->settings['bburl'] . '/images/add.png" />&nbsp;Add a new sidebox</a>');
+	echo('<hr><a href="' . ADV_SIDEBOX_URL . '&amp;mode=edit_box"><img src="' . $mybb->settings['bburl'] . '/images/add.png" />&nbsp;Add a new sidebox</a>' . $uninstall_links . $install_links);
+	
 	$page->output_footer();
 }
 
@@ -551,15 +754,53 @@ function edit_box()
 	
 	$box_types = array(
 		'{$custom_box}' 		=> $lang->adv_sidebox_custom,
-		'{$sbwelcome}' 		=> $lang->adv_sidebox_welcome_box,
-		'{$sbpms}' 				=> $lang->adv_sidebox_pm_box,
-		'{$sbsearch}' 			=> $lang->adv_sidebox_search_box,
-		'{$sbstats}' 				=> $lang->adv_sidebox_stats_box,
-		'{$sbwhosonline}' 	=> $lang->adv_sidebox_wol_avatar_list,
-		'{$sblatestthreads}' 	=> $lang->adv_sidebox_latest_threads
+		'{$sbwhosonline}' 	=> $lang->adv_sidebox_wol_avatar_list
 			);
 			
+	// plugin hoof for add_type
 	$plugins->run_hooks('adv_sidebox_box_types', $box_types);
+	
+	//modules
+	$modules_dir = MYBB_ROOT. "inc/plugins/adv_sidebox/modules";
+	$dir = opendir($modules_dir);
+	
+	while(($module = readdir($dir)) !== false)
+	{
+		if(is_dir($modules_dir."/".$module) && !in_array($module, array(".", "..")) && file_exists($modules_dir."/".$module."/sidebox_meta.php"))
+		{
+			if(file_exists($modules_dir."/".$module."/sidebox_install.php"))
+			{
+				require_once $modules_dir."/".$module."/sidebox_install.php";
+				
+				$is_installed_function = $module . '_is_installed';
+				
+				if(function_exists($module . '_is_installed'))
+				{
+					if($is_installed_function())
+					{
+						require_once $modules_dir."/".$module."/sidebox_meta.php";
+			
+						if(function_exists($module . '_add_type'))
+						{
+							$add_type_function = $module . '_add_type';
+							$add_type_function($box_types);
+						}
+					}
+				}
+			}
+			else
+			{
+				// there is no install, add the box_type now
+				require_once $modules_dir."/".$module."/sidebox_meta.php";
+			
+				if(function_exists($module . '_add_type') && function_exists($module . '_build_template'))
+				{
+					$add_type_function = $module . '_add_type';
+					$add_type_function($box_types);
+				}
+			}
+		}
+	}
 	
 	// add the script to hide the content box if it is unnecessary
 	$page->extra_header .= '<script type="text/javascript" src="./jscripts/peeker.js"></script>
@@ -670,124 +911,7 @@ function adv_sidebox_install_templates()
 	// load portal language
 	$lang->load('portal');
 	
-	// the parent template for the welcome box
-	$template_1 = array(
-        "title" => "adv_sidebox_welcome",
-        "template" => "<table border=\"0\" cellspacing=\"{\$theme[\'borderwidth\']}\" cellpadding=\"{\$theme[\'tablespace\']}\" class=\"tborder\">
-	<tr>
-		<td class=\"thead\"><strong>{\$lang->welcome}</strong></td>
-	</tr>
-	<tr>
-		<td class=\"trow1\">
-			{\$welcometext}
-		</td>
-	</tr>
-</table><br />",
-        "sid" => -1
-    );
-	$db->insert_query("templates", $template_1);
 	
-	// a child template of the welcome box (member)
-	$template_2 = array(
-        "title" => "adv_sidebox_welcome_membertext",
-        "template" => "<span class=\"smalltext\"><em>{\$lang->member_welcome_lastvisit}</em> {\$lastvisit}<br />
-{\$lang->since_then}<br />
-<strong>&raquo;</strong> {\$lang->new_announcements}<br />
-<strong>&raquo;</strong> {\$lang->new_threads}<br />
-<strong>&raquo;</strong> {\$lang->new_posts}<br /><br />
-<a href=\"{\$mybb->settings[\'bburl\']}/search.php?action=getnew\">{\$lang->view_new}</a><br /><a href=\"{\$mybb->settings[\'bburl\']}/search.php?action=getdaily\">{\$lang->view_todays}</a>
-</span>",
-        "sid" => -1
-    );
-	$db->insert_query("templates", $template_2);
-	
-	// a child template of the welcome box (guest state)
-	$template_3 = array(
-        "title" => "adv_sidebox_welcome_guesttext",
-        "template" => "<span class=\"smalltext\">{\$lang->guest_welcome_registration}</span><br />
-<br />
-<form method=\"post\" action=\"{\$mybb->settings[\'bburl\']}/member.php\"><input type=\"hidden\" name=\"action\" value=\"do_login\" />
-	<input type=\"hidden\" name=\"url\" value=\"{\$portal_url}\" />
-	{\$username}<br />&nbsp;&nbsp;<input type=\"text\" class=\"textbox\" name=\"username\" value=\"\" /><br /><br />
-	{\$lang->password}<br />&nbsp;&nbsp;<input type=\"password\" class=\"textbox\" name=\"password\" value=\"\" /><br /><br />
-	<label title=\"{\$lang->remember_me_desc}\"><input type=\"checkbox\" class=\"checkbox\" name=\"remember\" value=\"yes\" /> {\$lang->remember_me}</label><br /><br />
-	<br /><input type=\"submit\" class=\"button\" name=\"loginsubmit\" value=\"{\$lang->login}\" />
-</form>",
-        "sid" => -1
-    );
-	$db->insert_query("templates", $template_3);
-	
-	// the pm template
-	$template_4 = array(
-        "title" => "adv_sidebox_pms",
-        "template" => "<table border=\"0\" cellspacing=\"{\$theme[\'borderwidth\']}\" cellpadding=\"{\$theme[\'tablespace\']}\" class=\"tborder\">
-	<tr>
-		<td class=\"thead\"><strong><a href=\"{\$mybb->settings[\'bburl\']}/private.php\">{\$lang->private_messages}</a></strong></td>
-	</tr>
-	<tr>
-		<td class=\"trow1\">
-			<span class=\"smalltext\">{\$lang->pms_received_new}<br /><br />
-			<strong>&raquo; </strong> <strong>{\$messages[\'pms_unread\']}</strong> {\$lang->pms_unread}<br />
-			<strong>&raquo; </strong> <strong>{\$messages[\'pms_total\']}</strong> {\$lang->pms_total}</span>
-		</td>
-	</tr>
-</table>
-<br />",
-        "sid" => -1
-    );
-	$db->insert_query("templates", $template_4);
-	
-	// the stats template
-	$template_5 = array(
-        "title" => "adv_sidebox_stats",
-        "template" => "<table border=\"0\" cellspacing=\"{\$theme[\'borderwidth\']}\" cellpadding=\"{\$theme[\'tablespace\']}\" class=\"tborder\">
-	<tr>
-		<td class=\"thead\"><strong>{\$lang->forum_stats}</strong></td>
-	</tr>
-	<tr>
-		<td class=\"trow1\">
-			<span class=\"smalltext\">
-			<strong>&raquo; </strong>{\$lang->num_members} {\$stats[\'numusers\']}<br />
-			<strong>&raquo; </strong>{\$lang->latest_member} {\$newestmember}<br />
-			<strong>&raquo; </strong>{\$lang->num_threads} {\$stats[\'numthreads\']}<br />
-			<strong>&raquo; </strong>{\$lang->num_posts} {\$stats[\'numposts\']}
-			<br /><br /><a href=\"{\$mybb->settings[\'bburl\']}/stats.php\">{\$lang->full_stats}</a>
-			</span>
-		</td>
-	</tr>
-</table>
-<br />",
-        "sid" => -1
-    );
-	$db->insert_query("templates", $template_5);
-	
-    // the search template
-	$template_6 = array(
-        "title" => "adv_sidebox_search",
-        "template" => "<table border=\"0\" cellspacing=\"{\$theme[\'borderwidth\']}\" cellpadding=\"{\$theme[\'tablespace\']}\" class=\"tborder\">
-	<tr>
-		<td class=\"thead\"><strong>{\$lang->search_forums}</strong></td>
-	</tr>
-	<tr>
-		<td class=\"trow1\" align=\"center\">
-			<form method=\"post\" action=\"{\$mybb->settings[\'bburl\']}/search.php\">
-				<input type=\"hidden\" name=\"action\" value=\"do_search\" />
-				<input type=\"hidden\" name=\"postthread\" value=\"1\" />
-				<input type=\"hidden\" name=\"forums\" value=\"all\" />
-				<input type=\"hidden\" name=\"showresults\" value=\"threads\" />
-				<input type=\"text\" class=\"textbox\" name=\"keywords\" value=\"\" />
-				{\$gobutton}
-			</form><br />
-		<span class=\"smalltext\">
-		(<a href=\"{\$mybb->settings[\'bburl\']}/search.php\">{\$lang->advanced_search}</a>)
-		</span>
-	</td>
-	</tr>
-</table>
-<br />",
-        "sid" => -1
-    );
-	$db->insert_query("templates", $template_6);
 	
 	// the whosonline avatar list parent template (left)
 	$template_7_l = array(
@@ -849,39 +973,7 @@ function adv_sidebox_install_templates()
     );
 	$db->insert_query("templates", $template_8_r);
 	
-	// latest threads parent template
-	$template_9 = array(
-        "title" => "adv_sidebox_latest_threads",
-        "template" => "<table border=\"0\" cellspacing=\"{\$theme[\'borderwidth\']}\" cellpadding=\"{\$theme[\'tablespace\']}\" class=\"tborder\">
-	<tr>
-		<td class=\"thead\"><strong>{\$lang->latest_threads}</strong></td>
-	</tr>
-	{\$threadlist}
-</table>
-<br />",
-        "sid" => -1
-    );
-	$db->insert_query("templates", $template_9);
-	
-	// latest threads child template
-	$template_10 = array(
-        "title" => "adv_sidebox_latest_threads_thread",
-        "template" => "<tr>
-<td class=\"{\$altbg}\">
-	<a href=\"{\$mybb->settings[\'bburl\']}/{\$thread[\'newpostlink\']}\" title=\"{\$lang->adv_sidebox_gotounread}\"><img src=\"{\$mybb->settings[\'bburl\']}/images/jump.gif\" alt=\"jump\"/></a>&nbsp;<strong><a href=\"{\$mybb->settings[\'bburl\']}/{\$thread[\'threadlink\']}\">{\$thread[\'subject\']}</a></strong>
-	<span class=\"smalltext\"><br />
-		<a href=\"{\$thread[\'lastpostlink\']}\">{\$lang->latest_threads_lastpost}</a> {\$lastposterlink}<br />
-		{\$lastpostdate} {\$lastposttime}<br />
-		<strong>&raquo; </strong>{\$lang->latest_threads_replies} {\$thread[\'replies\']}<br />
-		<strong>&raquo; </strong>{\$lang->latest_threads_views} {\$thread[\'views\']}
-	</span>
-</td>
-</tr>",
-        "sid" => -1
-    );
-	$db->insert_query("templates", $template_10);
-	
-	$stylesheet = '
+	/* $stylesheet = '
 .test_class
 {
 	color: #f00;
@@ -904,7 +996,7 @@ function adv_sidebox_install_templates()
 	{
 		require_once MYBB_ADMIN_DIR.'inc/functions_themes.php';
 		update_theme_stylesheet_list($theme['tid']);
-	}
+	} */
 }
 
 function adv_sidebox_remove_templates()
@@ -912,19 +1004,11 @@ function adv_sidebox_remove_templates()
 	global $db, $mybb;
 	
 	// remove all custom templates.
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_welcome'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_welcome_membertext'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_welcome_guesttext'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_pms'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_stats'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_search'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_whosonline_left'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_whosonline_right'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_whosonline_memberbit_left'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_whosonline_memberbit_right'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_latest_threads'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_latest_threads_thread'");
-
+	
 	// remove style sheet
 	$db->delete_query('themestylesheets', "name='adv_sidebox.css'");
 

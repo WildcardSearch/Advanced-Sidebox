@@ -59,7 +59,7 @@ if($settings['adv_sidebox_portal_replace'])
 function adv_sidebox_start()
 {
 	global $mybb, $db, $lang, $templates, $cache, $theme, $thread, $alttrow, $plugins;
-	global $sbwelcome, $sbpms, $sbsearch, $sbstats, $sbwhosonline_l, $sbwhosonline_r, $sblatestthreads, $gobutton, $lastvisit;
+	global $sbwhosonline_l, $sbwhosonline_r, $gobutton, $lastvisit;
 	$portal_url='member.php';
 	
 	// If the ACP settings indicate that the current script doesn't display the sideboxes then there is no need to go any further.
@@ -88,10 +88,6 @@ function adv_sidebox_start()
 		}
 	}
 
-	// Build a post parser
-	require_once MYBB_ROOT."inc/class_parser.php";
-	$parser = new postParser;
-
 	// Load global and custom language phrases
 	if (!$lang->portal)
 	{
@@ -102,17 +98,12 @@ function adv_sidebox_start()
 		$lang->load('adv_sidebox');
 	}
 
-	// set up counters for both sides and box_types
+	// set up default box_types
 	$box_types = array(
 		'{$custom_box}' 		=> 0,
-		'{$sbwelcome}' 		=> 0,
-		'{$sbpms}' 				=> 0,
-		'{$sbsearch}' 			=> 0,
-		'{$sbstats}' 				=> 0,
 		'{$sbwhosonline}' 	=> 0,
 		'{$sbwhosonline_l}' 	=> 0,
-		'{$sbwhosonline_r}' 	=> 0,
-		'{$sblatestthreads}' 	=> 0
+		'{$sbwhosonline_r}' 	=> 0
 			);
 	
 	$all_boxes = array();
@@ -123,13 +114,14 @@ function adv_sidebox_start()
 	// if there are sideboxes . . .
 	if($db->num_rows($query) > 0)
 	{
-		// . . . loop through each one and sort them by position
 		while($this_box = $db->fetch_array($query))
 		{
+			// add them all to this array
 			$all_boxes[] = $this_box;
 		}
 	}
 	
+	// loop through the boxes and sort them
 	foreach($all_boxes as $this_box)
 	{	
 		// if this is a custom box . . .
@@ -150,6 +142,7 @@ function adv_sidebox_start()
 			$content = $this_box['box_type'];
 		}
 		
+		// sort by left and right
 		if((int) $this_box['position'] > 0)
 		{
 			$right_boxes .= $content;
@@ -253,168 +246,6 @@ function adv_sidebox_start()
 
 	//*** Codes taken from portal.php ***
 	//*** Updated to MyBB 1.6.9
-
-	// get forums user cannot view
-	$unviewable = get_unviewable_forums(true);
-	if($unviewable)
-	{
-		$unviewwhere = " AND fid NOT IN ($unviewable)";
-	}
-
-	// If user is known, welcome them
-	if($mybb->settings['portal_showwelcome'] != 0 && $box_types['{$sbwelcome}'])
-	{
-		if($mybb->user['uid'] != 0)
-		{
-			// Get number of new posts, threads, announcements
-			$query = $db->simple_select("posts", "COUNT(pid) AS newposts", "visible=1 AND dateline>'" . $mybb->user['lastvisit'] . "' $unviewwhere");
-			$newposts = $db->fetch_field($query, "newposts");
-			if($newposts)
-			{
-				// If there aren't any new posts, there is no point in wasting two more queries
-				$query = $db->simple_select("threads", "COUNT(tid) AS newthreads", "visible=1 AND dateline>'" . $mybb->user['lastvisit'] . "' $unviewwhere");
-				$newthreads = $db->fetch_field($query, "newthreads");
-
-				$announcementsfids = explode(',', $mybb->settings['portal_announcementsfid']);
-				if(is_array($announcementsfids))
-				{
-					foreach($announcementsfids as $fid)
-					{
-						$fid_array[] = intval($fid);	
-					}
-					
-					$announcementsfids = implode(',', $fid_array);
-					$query = $db->simple_select("threads", "COUNT(tid) AS newann", "visible=1 AND dateline>'" . $mybb->user['lastvisit'] . "' AND fid IN (" . $announcementsfids . ") $unviewwhere");
-					$newann = $db->fetch_field($query, "newann");
-				}
-
-				if(!$newthreads)
-				{
-					$newthreads = 0;
-				}
-
-				if(!$newann)
-				{
-					$newann = 0;
-				}
-			}
-			else
-			{
-				$newposts = 0;
-				$newthreads = 0;
-				$newann = 0;
-			}
-
-			// Make the text
-			if($newann == 1)
-			{
-				$lang->new_announcements = $lang->new_announcement;
-			}
-			else
-			{
-				$lang->new_announcements = $lang->sprintf($lang->new_announcements, $newann);
-			}
-			if($newthreads == 1)
-			{
-				$lang->new_threads = $lang->new_thread;
-			}
-			else
-			{
-				$lang->new_threads = $lang->sprintf($lang->new_threads, $newthreads);
-			}
-			if($newposts == 1)
-			{
-				$lang->new_posts = $lang->new_post;
-			}
-			else
-			{
-				$lang->new_posts = $lang->sprintf($lang->new_posts, $newposts);
-			}
-			eval("\$welcometext = \"".$templates->get("adv_sidebox_welcome_membertext")."\";");
-
-		}
-		else
-		{
-			$lang->guest_welcome_registration = $lang->sprintf($lang->guest_welcome_registration, $mybb->settings['bburl'] . '/member.php?action=register');
-			$mybb->user['username'] = $lang->guest;
-			switch($mybb->settings['username_method'])
-			{
-				case 0:
-					$username = $lang->username;
-					break;
-				case 1:
-					$username = $lang->username1;
-					break;
-				case 2:
-					$username = $lang->username2;
-					break;
-				default:
-					$username = $lang->username;
-					break;
-			}
-			eval("\$welcometext = \"" . $templates->get("portal_welcome_guesttext") . "\";");
-		}
-		$lang->welcome = $lang->sprintf($lang->welcome, $mybb->user['username']);
-		eval("\$sbwelcome = \"" . $templates->get("adv_sidebox_welcome") . "\";");
-		if($mybb->user['uid'] == 0)
-		{
-			$mybb->user['username'] = "";
-		}
-	}
-
-	// Private messages box
-	if($mybb->settings['portal_showpms'] != 0 && $box_types['{$sbpms}'])
-	{
-		if($mybb->user['uid'] != 0 && $mybb->user['receivepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->settings['enablepms'] != 0)
-		{
-			switch($db->type)
-			{
-				case "sqlite":
-				case "pgsql":
-					$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total", "uid='" . $mybb->user['uid'] . "'");
-					$messages['pms_total'] = $db->fetch_field($query, "pms_total");
-					
-					$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_unread", "uid='" . $mybb->user['uid'] . "' AND CASE WHEN status = '0' AND folder = '0' THEN TRUE ELSE FALSE END");
-					$messages['pms_unread'] = $db->fetch_field($query, "pms_unread");
-					break;
-				default:
-					$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread", "uid='" . $mybb->user['uid'] . "'");
-					$messages = $db->fetch_array($query);
-			}
-
-			// the SUM() thing returns "" instead of 0
-			if($messages['pms_unread'] == "")
-			{
-				$messages['pms_unread'] = 0;
-			}
-			$lang->pms_received_new = $lang->sprintf($lang->pms_received_new, $mybb->user['username'], $messages['pms_unread']);
-			eval("\$sbpms = \"" . $templates->get("adv_sidebox_pms") . "\";");
-		}
-	}
-
-	// get forum statistics
-	if($mybb->settings['portal_showstats'] != 0 && $box_types['{$sbstats}'])
-	{
-		$stats = $cache->read("stats");
-		$stats['numthreads'] = my_number_format($stats['numthreads']);
-		$stats['numposts'] = my_number_format($stats['numposts']);
-		$stats['numusers'] = my_number_format($stats['numusers']);
-		if(!$stats['lastusername'])
-		{
-			$newestmember = "<strong>" . $lang->no_one . "</strong>";
-		}
-		else
-		{
-			$newestmember = build_profile_link($stats['lastusername'], $stats['lastuid']);
-		}
-		eval("\$sbstats = \"" . $templates->get("adv_sidebox_stats") . "\";");
-	}
-
-	// search box
-	if($mybb->settings['portal_showsearch'] != 0 && $box_types['{$sbsearch}'])
-	{
-		eval("\$sbsearch = \"" . $templates->get("adv_sidebox_search") . "\";");
-	}
 
 	// get the online user avatar list
 	if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0 && $box_types['{$sbwhosonline}'])
@@ -580,68 +411,40 @@ function adv_sidebox_start()
 		eval("\$sbwhosonline_l = \"" . $templates->get("adv_sidebox_whosonline_left") . "\";");
 		eval("\$sbwhosonline_r = \"" . $templates->get("adv_sidebox_whosonline_right") . "\";");
 	}
-
-	// Latest forum discussions
-	if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_showdiscussionsnum'] && $box_types['{$sblatestthreads}'])
+	
+	/*
+	 * This hook will allow a plugin to process its custom box type for display.
+	 *
+	 * After hooking into adv_sidebox_box_types and adding your template variable as a box type,
+	 * hook in here, declare your variable as global in your plugin's function
+	 * and assign a value to it.
+	 *
+	 * Creating and using an internal template is probably the most useful way, but direct HTML production is fine as well.
+	 *
+	 * If you don't need PHP in your custom box, don't waste a hook, just use the custom type. You can have an unlimited amount of custom boxes.
+	 */
+	$plugins->run_hooks('adv_sidebox_output_end', $box_types);
+	
+	/*
+	 *
+	 */
+	//modules
+	$modules_dir = MYBB_ROOT. "inc/plugins/adv_sidebox/modules";
+	$dir = opendir($modules_dir);
+	
+	while(($module = readdir($dir)) !== false)
 	{
-		$altbg = alt_trow();
-		$maxtitlelen = 48;
-		$threadlist = '';
-		$threadlength = 0;
-
-		// Query for the latest forum discussions
-		$query = $db->query("
-			SELECT t.*, u.username
-			FROM " . TABLE_PREFIX . "threads t
-			LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid=t.uid)
-			WHERE 1=1 $unviewwhere AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
-			ORDER BY t.lastpost DESC
-			LIMIT 0, " . $mybb->settings['portal_showdiscussionsnum']
-		);
-		while($thread = $db->fetch_array($query))
+		if(is_dir($modules_dir."/".$module) && !in_array($module, array(".", "..")) && file_exists($modules_dir."/".$module."/sidebox_meta.php"))
 		{
-			$forumpermissions[$thread['fid']] = forum_permissions($thread['fid']);
-
-			// Make sure we can view this thread
-			if($forumpermissions[$thread['fid']]['canview'] == 0 || $forumpermissions[$thread['fid']]['canviewthreads'] == 0 || $forumpermissions[$thread['fid']]['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
+			require_once $modules_dir."/".$module."/sidebox_meta.php";
+			
+			if(function_exists($module . '_add_type') && function_exists($module . '_build_template'))
 			{
-				continue;
+				$build_template_function = $module . '_build_template';
+				$build_template_function($box_types);
 			}
-
-			$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
-			$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
-
-			// Don't link to guest's profiles (they have no profile).
-			if($thread['lastposteruid'] == 0)
-			{
-				$lastposterlink = $thread['lastposter'];
-			}
-			else
-			{
-				$lastposterlink = build_profile_link($thread['lastposter'], $thread['lastposteruid']);
-			}
-
-			if(my_strlen($thread['subject']) > $maxtitlelen)
-			{
-				$thread['subject'] = my_substr($thread['subject'], 0, $maxtitlelen) . "...";
-			}
-
-			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
-			$thread['threadlink'] = get_thread_link($thread['tid']);
-			$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
-			$thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost");
-			eval("\$threadlist .= \"".$templates->get("adv_sidebox_latest_threads_thread")."\";");
-			$altbg = alt_trow();
-		}
-
-		if($threadlist)
-		{
-			// Show the table only if there are threads
-			eval("\$sblatestthreads = \"" . $templates->get("adv_sidebox_latest_threads") . "\";");
 		}
 	}
-	
-	$plugins->run_hooks('adv_sidebox_output_end', $box_types);
 }
 
 // Hooks for the User CP routine.
