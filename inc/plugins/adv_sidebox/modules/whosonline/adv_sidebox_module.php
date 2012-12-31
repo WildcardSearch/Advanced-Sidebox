@@ -19,7 +19,7 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-function whosonline_info()
+function whosonline_asb_info()
 {
 	return array
 	(
@@ -29,7 +29,7 @@ function whosonline_info()
 	);
 }
 
-function whosonline_is_installed()
+function whosonline_asb_is_installed()
 {
 	global $db;
 	
@@ -41,7 +41,7 @@ function whosonline_is_installed()
 /*
  * This function is required. Make your mods here.
  */
-function whosonline_install()
+function whosonline_asb_install()
 {
 	global $db, $lang;
 	
@@ -143,7 +143,7 @@ function whosonline_install()
 /*
  * This function is required. Clean up after yourself.
  */
-function whosonline_uninstall()
+function whosonline_asb_uninstall()
 {
 	global $db;
 	
@@ -162,7 +162,7 @@ function whosonline_uninstall()
 	rebuild_settings();
 }
 
-function whosonline_build_template()
+function whosonline_asb_build_template()
 {
 	global $whosonline_l, $whosonline_r;
 	global $db, $mybb, $templates, $lang, $cache;

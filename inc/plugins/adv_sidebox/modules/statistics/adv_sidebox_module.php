@@ -20,7 +20,7 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 /*
  * This function is required. It is used by acp_functions to add and describe your new sidebox.
  */
-function statistics_info()
+function statistics_asb_info()
 {
 	return array
 	(
@@ -30,7 +30,7 @@ function statistics_info()
 	);
 }
 
-function statistics_is_installed()
+function statistics_asb_is_installed()
 {
 	global $db;
 	
@@ -42,7 +42,7 @@ function statistics_is_installed()
 /*
  * This function is required. Make your mods here.
  */
-function statistics_install()
+function statistics_asb_install()
 {
 	global $db;
 	
@@ -74,7 +74,7 @@ function statistics_install()
 /*
  * This function is required. Clean up after yourself.
  */
-function statistics_uninstall()
+function statistics_asb_uninstall()
 {
 	global $db;
 	
@@ -86,7 +86,7 @@ function statistics_uninstall()
 /*
  * This function is required. It is used by adv_sidebox.php to display the custom content in your sidebox.
  */
-function statistics_build_template()
+function statistics_asb_build_template()
 {
 	// don't forget to declare your variable! will not work without this
 	global $statistics; // <-- important!

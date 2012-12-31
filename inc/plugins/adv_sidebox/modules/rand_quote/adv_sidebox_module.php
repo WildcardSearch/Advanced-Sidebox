@@ -18,7 +18,7 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 /*
  * This function is required. It is used by acp_functions to add and describe your new sidebox.
  */
-function rand_quote_info()
+function rand_quote_asb_info()
 {
 	return array
 	(
@@ -28,7 +28,7 @@ function rand_quote_info()
 	);
 }
 
-function rand_quote_is_installed()
+function rand_quote_asb_is_installed()
 {
 	global $db;
 	
@@ -37,7 +37,7 @@ function rand_quote_is_installed()
 	return $db->num_rows($query);
 }
 
-function rand_quote_install()
+function rand_quote_asb_install()
 {
 	global $db;
 	
@@ -85,7 +85,7 @@ function rand_quote_install()
 /*
  * clean up after yourself.
  */
-function rand_quote_uninstall()
+function rand_quote_asb_uninstall()
 {
 	global $db;
 	
@@ -98,7 +98,7 @@ function rand_quote_uninstall()
 /*
  * This function is required. It is used by adv_sidebox.php to display the custom content in your sidebox.
  */
-function rand_quote_build_template()
+function rand_quote_asb_build_template()
 {
 	// don't forget to declare your variable! will not work without this
 	global $rand_quote_l, $rand_quote_r; // <-- important!

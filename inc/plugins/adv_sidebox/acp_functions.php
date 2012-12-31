@@ -335,10 +335,10 @@ function adv_sidebox_admin()
 				require_once ADV_SIDEBOX_MODULES_DIR . "/" . $this_module . "/adv_sidebox_module.php";
 
 				// install function exist?
-				if(function_exists($this_module . '_install'))
+				if(function_exists($this_module . '_asb_install'))
 				{
 					// run it
-					$install_function = $this_module . '_install';
+					$install_function = $this_module . '_asb_install';
 					$install_function();
 
 					// tell them all is well
@@ -369,10 +369,10 @@ function adv_sidebox_admin()
 				require_once ADV_SIDEBOX_MODULES_DIR . "/" . $this_module . "/adv_sidebox_module.php";
 
 				// function present?
-				if(function_exists($this_module . '_uninstall'))
+				if(function_exists($this_module . '_asb_uninstall'))
 				{
 					// uninstall
-					$uninstall_function = $this_module . '_uninstall';
+					$uninstall_function = $this_module . '_asb_uninstall';
 					$uninstall_function();
 
 					// yay
@@ -403,10 +403,10 @@ function adv_sidebox_admin()
 				require_once ADV_SIDEBOX_MODULES_DIR . "/" . $this_module . "/adv_sidebox_module.php";
 
 				// function intact?
-				if(function_exists($this_module . '_uninstall'))
+				if(function_exists($this_module . '_asb_uninstall'))
 				{
 					// uninstall
-					$uninstall_function = $this_module . '_uninstall';
+					$uninstall_function = $this_module . '_asb_uninstall';
 					$uninstall_function();
 				}
 			}
@@ -680,21 +680,24 @@ function adv_sidebox_admin_manage_modules()
 	// get all module types
 	$box_info = get_all_modules_full($box_types);
 	
-	foreach($box_info as $this_module)
+	if(is_array($box_info))
 	{
-		$key = $this_module['mod_name'];
-		
-		switch((int) $this_module['mod_type'])
+		foreach($box_info as $this_module)
 		{
-			case 2:
-				$installed_modules[] = $key;
-				break;
-			case 1:
-				$uninstalled_modules[] = $key;
-				break;
-			case 0:
-				$simple_modules[] = $key;
-				break;
+			$key = $this_module['mod_name'];
+			
+			switch((int) $this_module['mod_type'])
+			{
+				case 2:
+					$installed_modules[] = $key;
+					break;
+				case 1:
+					$uninstalled_modules[] = $key;
+					break;
+				case 0:
+					$simple_modules[] = $key;
+					break;
+			}
 		}
 	}
 	
@@ -1072,9 +1075,9 @@ function get_all_module_info(&$installed, &$uninstalled, &$simple)
 		{
 			require_once ADV_SIDEBOX_MODULES_DIR . "/" . $module . "/adv_sidebox_module.php";
 
-			$is_installed_function = $module . '_is_installed';
+			$is_installed_function = $module . '_asb_is_installed';
 
-			if(function_exists($module . '_is_installed'))
+			if(function_exists($module . '_asb_is_installed'))
 			{
 				if(!$is_installed_function())
 				{
@@ -1082,9 +1085,9 @@ function get_all_module_info(&$installed, &$uninstalled, &$simple)
 				}
 				else
 				{
-					if(function_exists($module . '_info'))
+					if(function_exists($module . '_asb_info'))
 					{
-						$info_function = $module . '_info';
+						$info_function = $module . '_asb_info';
 						$this_info = $info_function();
 						
 						$all_types[$module] = $this_info['name'];
@@ -1096,9 +1099,9 @@ function get_all_module_info(&$installed, &$uninstalled, &$simple)
 			else
 			{
 				// there is no install, add the box_type now
-				if(function_exists($module . '_info'))
+				if(function_exists($module . '_asb_info'))
 				{
-					$info_function = $module . '_info';
+					$info_function = $module . '_asb_info';
 					$this_info = $info_function();
 					
 					$all_types[$module] = $this_info['name'];
@@ -1128,17 +1131,17 @@ function get_all_modules_full(&$box_types)
 		{
 			require_once ADV_SIDEBOX_MODULES_DIR . "/" . $module . "/adv_sidebox_module.php";
 
-			$is_installed_function = $module . '_is_installed';
+			$is_installed_function = $module . '_asb_is_installed';
 
 			// is_installed function present?
-			if(function_exists($module . '_is_installed'))
+			if(function_exists($module . '_asb_is_installed'))
 			{
 				if(!$is_installed_function())
 				{
 					// uninstalled
-					if(function_exists($module . '_info'))
+					if(function_exists($module . '_asb_info'))
 					{
-						$info_function = $module . '_info';
+						$info_function = $module . '_asb_info';
 						$this_info = $info_function();
 						
 						$box_types[$module] = $this_info['name'];
@@ -1153,9 +1156,9 @@ function get_all_modules_full(&$box_types)
 				}
 				else
 				{
-					if(function_exists($module . '_info'))
+					if(function_exists($module . '_asb_info'))
 					{
-						$info_function = $module . '_info';
+						$info_function = $module . '_asb_info';
 						$this_info = $info_function();
 						
 						$box_types[$module] = $this_info['name'];
@@ -1170,9 +1173,9 @@ function get_all_modules_full(&$box_types)
 			}
 			else
 			{
-				if(function_exists($module . '_info'))
+				if(function_exists($module . '_asb_info'))
 				{
-					$info_function = $module . '_info';
+					$info_function = $module . '_asb_info';
 					$this_info = $info_function();
 					
 					$box_types[$module] = $this_info['name'];

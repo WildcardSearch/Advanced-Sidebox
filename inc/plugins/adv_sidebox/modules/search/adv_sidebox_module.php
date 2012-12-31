@@ -20,7 +20,7 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 /*
  * This function is required. It is used by acp_functions to add and describe your new sidebox.
  */
-function search_info()
+function search_asb_info()
 {
 	return array
 	(
@@ -30,7 +30,7 @@ function search_info()
 	);
 }
 
-function search_is_installed()
+function search_asb_is_installed()
 {
 	global $db;
 	
@@ -42,7 +42,7 @@ function search_is_installed()
 /*
  * This function is required. Make your mods here.
  */
-function search_install()
+function search_asb_install()
 {
 	global $db;
 	
@@ -78,7 +78,7 @@ function search_install()
 /*
  * This function is required. Clean up after yourself.
  */
-function search_uninstall()
+function search_asb_uninstall()
 {
 	global $db;
 	
@@ -90,7 +90,7 @@ function search_uninstall()
 /*
  * This function is required. It is used by adv_sidebox.php to display the custom content in your sidebox.
  */
-function search_build_template()
+function search_asb_build_template()
 {
 	// don't forget to declare your variable! will not work without this
 	global $search; // <-- important!

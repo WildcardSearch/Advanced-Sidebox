@@ -34,7 +34,7 @@ function adv_sidebox_info()
 		"website"		=> "https://github.com/WildcardSearch/Advanced-Sidebox",
 		"author"		=> "Wildcard",
 		"authorsite"	=> "http://www.rantcentralforums.com",
-		"version"		=> "1.0",
+		"version"		=> "1.1",
 		"compatibility" => "16*",
 		"guid" 			=> "870e9163e2ae9b606a789d9f7d4d2462",
 	);
@@ -216,34 +216,34 @@ function adv_sidebox_install()
 	// look for modules
 	while(($module = readdir($dir)) !== false)
 	{
-		// a valid module is located in inc/plugins/adv_sidebox/modules/module_name and contains a file called adv_sidebox_module.php which contains (at a minimum) a function named module_name_info()
+		// a valid module is located in inc/plugins/adv_sidebox/modules/module_name and contains a file called adv_sidebox_module.php which contains (at a minimum) a function named module_name_asbnfo()
 		if(is_dir($modules_dir."/".$module) && !in_array($module, array(".", "..")) && file_exists($modules_dir."/".$module."/adv_sidebox_module.php"))
 		{
 			require_once $modules_dir."/".$module."/adv_sidebox_module.php";
 
-			$info_function = $module . '_info';
-			$is_installed_function = $module . '_is_installed';
+			$info_function = $module . '_asb_info';
+			$is_installed_function = $module . '_asb_is_installed';
 
-			if(function_exists($module . '_is_installed') && function_exists($module . '_info'))
+			if(function_exists($module . '_asb_is_installed') && function_exists($module . '_asb_info'))
 			{
 				if(!$is_installed_function())
 				{
-					if(function_exists($module . '_install'))
+					if(function_exists($module . '_asb_install'))
 					{
-						$install_function = $module . '_install';
+						$install_function = $module . '_asb_install';
 						$install_function();
 					}
 				}
 				else
 				{
-					if(function_exists($module . '_uninstall'))
+					if(function_exists($module . '_asb_uninstall'))
 					{
-						$uninstall_function = $module . '_uninstall';
+						$uninstall_function = $module . '_asb_uninstall';
 						$uninstall_function();
 
-						if(function_exists($module . '_install'))
+						if(function_exists($module . '_asb_install'))
 						{
-							$install_function = $module . '_install';
+							$install_function = $module . '_asb_install';
 							$install_function();
 						}
 						else
@@ -287,15 +287,15 @@ function adv_sidebox_uninstall()
 		{
 			require_once $modules_dir."/".$module."/adv_sidebox_module.php";
 
-			$is_installed_function = $module . '_is_installed';
+			$is_installed_function = $module . '_asb_is_installed';
 
-			if(function_exists($module . '_is_installed'))
+			if(function_exists($module . '_asb_is_installed'))
 			{
 				if($is_installed_function())
 				{
-					if(function_exists($module . '_uninstall'))
+					if(function_exists($module . '_asb_uninstall'))
 					{
-						$uninstall_function = $module . '_uninstall';
+						$uninstall_function = $module . '_asb_uninstall';
 						$uninstall_function();
 					}
 				}
@@ -345,7 +345,7 @@ function adv_sidebox_build_settings_link()
 	
 	if($gid)
 	{
-		return "<a href=\"" . $mybb->settings['bburl'] . "/admin/index.php?module=config-settings&amp;action=change&amp;gid=" . $gid . "\" target=\"_blank\">" . $lang->adv_sidebox_plugin_settings . "</a>";
+		return "<a href=\"index.php?module=config-settings&amp;action=change&amp;gid=" . $gid . "\" target=\"_blank\">" . $lang->adv_sidebox_plugin_settings . "</a>";
 	}
 	return false;
 }

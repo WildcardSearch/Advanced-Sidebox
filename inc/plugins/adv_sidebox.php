@@ -277,9 +277,9 @@ function adv_sidebox_start()
 					// . . . run the module's template building code.
 					require_once ADV_SIDEBOX_MODULES_DIR."/".$module."/adv_sidebox_module.php";
 					
-					if(function_exists($module . '_build_template'))
+					if(function_exists($module . '_asb_build_template'))
 					{
-						$build_template_function = $module . '_build_template';
+						$build_template_function = $module . '_asb_build_template';
 						$build_template_function();
 					}
 				}
@@ -344,15 +344,15 @@ function get_installed_box_types()
 		{
 			require_once ADV_SIDEBOX_MODULES_DIR."/".$module."/adv_sidebox_module.php";
 
-			$is_installed_function = $module . '_is_installed';
+			$is_installed_function = $module . '_asb_is_installed';
 
-			if(function_exists($module . '_is_installed'))
+			if(function_exists($module . '_asb_is_installed'))
 			{
 				if($is_installed_function())
 				{
-					if(function_exists($module . '_info'))
+					if(function_exists($module . '_asb_info'))
 					{
-						$info_function = $module . '_info';
+						$info_function = $module . '_asb_info';
 						$this_info = $info_function();
 						
 						$all_box_types['name'] = $this_info['name'];
@@ -365,9 +365,9 @@ function get_installed_box_types()
 			}
 			else
 			{
-				if(function_exists($module . '_info'))
+				if(function_exists($module . '_asb_info'))
 				{
-					$info_function = $module . '_info';
+					$info_function = $module . '_asb_info';
 					$this_info = $info_function();
 					
 					$all_box_types['name'] = $this_info['name'];

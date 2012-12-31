@@ -17,7 +17,7 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-function latest_threads_info()
+function latest_threads_asb_info()
 {
 	return array
 	(
@@ -30,7 +30,7 @@ function latest_threads_info()
 /*
  * This function is required. If it is missing the add-on will not install.
  */
-function latest_threads_is_installed()
+function latest_threads_asb_is_installed()
 {
 	global $db;
 	
@@ -42,7 +42,7 @@ function latest_threads_is_installed()
 /*
  * This function is required. Make your mods here.
  */
-function latest_threads_install()
+function latest_threads_asb_install()
 {
 	global $db;
 	
@@ -82,7 +82,7 @@ function latest_threads_install()
 /*
  * This function is required. Clean up after yourself.
  */
-function latest_threads_uninstall()
+function latest_threads_asb_uninstall()
 {
 	global $db;
 	
@@ -92,7 +92,7 @@ function latest_threads_uninstall()
 	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_latest_threads_thread'");
 }
 
-function latest_threads_build_template()
+function latest_threads_asb_build_template()
 {
 	global $latest_threads; // <-- important!
 	

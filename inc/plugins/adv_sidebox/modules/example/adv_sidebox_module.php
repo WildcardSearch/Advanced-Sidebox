@@ -13,7 +13,7 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-function example_info()
+function example_asb_info()
 {
 	return array
 	(
@@ -24,7 +24,7 @@ function example_info()
 }
 
 // this function is called when it is time to display your box
-function example_build_template()
+function example_asb_build_template()
 {
 	// don't forget to declare your variable! will not work without this
 	global $example;

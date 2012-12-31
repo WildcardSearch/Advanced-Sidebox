@@ -20,7 +20,7 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 /*
  * This function is required. It is used by acp_functions to add and describe your new sidebox.
  */
-function pms_info()
+function pms_asb_info()
 {
 	return array
 	(
@@ -30,7 +30,7 @@ function pms_info()
 	);
 }
 
-function pms_is_installed()
+function pms_asb_is_installed()
 {
 	global $db;
 	
@@ -39,7 +39,7 @@ function pms_is_installed()
 	return $db->num_rows($query);
 }
 
-function pms_install()
+function pms_asb_install()
 {
 	global $db;
 	
@@ -67,7 +67,7 @@ function pms_install()
 /*
  * Clean up after yourself.
  */
-function pms_uninstall()
+function pms_asb_uninstall()
 {
 	global $db;
 	
@@ -79,7 +79,7 @@ function pms_uninstall()
 /*
  * This function is required. It is used by adv_sidebox.php to display the custom content in your sidebox.
  */
-function pms_build_template()
+function pms_asb_build_template()
 {
 	// don't forget to declare your variable! will not work without this
 	global $pms; // <-- important!
