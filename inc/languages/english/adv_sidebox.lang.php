@@ -42,6 +42,12 @@ $l['adv_sidebox_show_sidebox'] = "Show sidebox.";
 $l['adv_sidebox_gotounread'] = "Go to first unread post";
 
 // ACP
+
+// manage sideboxes
+$l['adv_sidebox_manage_sideboxes'] = 'Manage Sideboxes';
+$l['adv_sidebox_manage_sideboxes_desc'] = 'edit, remove and add sideboxes';
+$l['adv_sidebox_page_desc'] = 'This page allows customization of Advanced Sidebox on your forum.';
+
 $l['adv_sidebox_id'] = "ID";
 $l['adv_sidebox_display_order'] = 'Display Order';
 $l['adv_sidebox_box_type'] = 'Type';
@@ -49,6 +55,8 @@ $l['adv_sidebox_position'] = 'Position';
 $l['adv_sidebox_content'] = 'Content';
 $l['adv_sidebox_controls'] = 'Controls';
 
+$l['adv_sidebox_position_left_boxes'] = 'Left Boxes';
+$l['adv_sidebox_position_right_boxes'] = 'Right Boxes';
 $l['adv_sidebox_edit'] = 'Edit';
 $l['adv_sidebox_delete'] = 'Delete';
 $l['adv_sidebox_no_boxes'] = 'no sideboxes added yet';
@@ -57,6 +65,14 @@ $l['adv_sidebox_no_boxes_right'] = 'no right sideboxes';
 $l['adv_sidebox_save_success'] = 'The box was saved successfully';
 $l['adv_sidebox_save_fail'] = 'The box could not be saved';
 
+$l['adv_sidebox_add_new_box'] = 'Add A New sidebox';
+$l['adv_sidebox_add_new_box_desc'] = 'or edit an existing box';
+$l['adv_sidebox_add_a_sidebox'] = 'Add A Sidebox';
+$l['adv_sidebox_delete_box_success'] = 'The box was deleted successfully';
+$l['adv_sidebox_delete_box_failure'] = 'There was an error while attempting to remove the seleced sidebox';
+
+
+// add/edit
 $l['adv_sidebox_edit_box'] = 'Edit Sidebox';
 
 $l['adv_sidebox_type_desc'] = 'select one of several presets or create a custom sidebox';
@@ -64,6 +80,55 @@ $l['adv_sidebox_content_title'] = 'Custom HTML';
 $l['adv_sidebox_content_desc'] = 'select a custom box type to use HTML entered here';
 $l['adv_sidebox_position_desc'] = 'choose left or right';
 
-$l['adv_sidebox_page_desc'] = 'This page allows customization of Advanced Sidebox on your forum.';
+// modules
+$l['adv_sidebox_manage_modules'] = 'Manage Modules';
+$l['adv_sidebox_manage_modules_desc'] = 'install, uninstall and delete add-ons';
+$l['adv_sidebox_simple_modules'] = 'Simple Modules';
+$l['adv_sidebox_installed_modules'] = 'Installed Modules';
+$l['adv_sidebox_uninstalled_modules'] = 'Uninstalled Modules';
+$l['adv_sidebox_uninstall'] = 'Uninstall';
+$l['adv_sidebox_install'] = 'Install';
+
+$l['adv_sidebox_install_addon_success'] = 'The new module was installed successfully';
+$l['adv_sidebox_install_addon_failure'] = 'The new module could not be installed';
+$l['adv_sidebox_uninstall_addon_success'] = 'The new module was uninstalled successfully';
+$l['adv_sidebox_uninstall_addon_failure'] = 'The new module could not be uninstalled';
+$l['adv_sidebox_delete_addon_success'] = 'The module was deleted successfully';
+$l['adv_sidebox_delete_addon_failure'] = 'The action couldn\'t be taken. Are you using the correct method to access this feature?';
+
+$l['adv_sidebox_modules_stereo'] = 'Stereo';
+$l['adv_sidebox_modules_mono'] = 'Mono';
+$l['adv_sidebox_modules_del_warning'] = 'Delete this add-on permanently?\n\nThis cannot be undone!';
+
+// module info
+$l['adv_sidebox_no_modules_detected'] = 'No modules detected.';
+$l['adv_sidebox_module_info_good_count'] = "There {1} {2} {3} detected";
+$l['adv_sidebox_are'] = 'are';
+$l['adv_sidebox_is'] = 'is';
+$l['adv_sidebox_module_plural'] = 'modules';
+$l['adv_sidebox_module_singular'] = 'module';
+
+$l['adv_sidebox_module_awaiting_install'] = ", {1} {2} awaiting installation.";
+$l['adv_sidebox_module_all_good'] = ' and properly installed.';
+
+// custom boxes
+$l['adv_sidebox_custom_boxes'] = 'Custom boxes';
+$l['adv_sidebox_custom_boxes_desc'] = 'create, import and export custom box templates';
+$l['adv_sidebox_custom_box_save_success'] = 'The new custom box type was saved successfully';
+$l['adv_sidebox_custom_box_save_failure'] = 'The new custom box type could not be saved successfully';
+$l['adv_sidebox_custom_box_name'] = 'Name';
+$l['adv_sidebox_custom_box_desc'] = 'Description';
+$l['adv_sidebox_no_custom_boxes'] = 'no custom box types saved';
+$l['adv_sidebox_custom_box_types'] = 'Custom Box Types';
+$l['adv_sidebox_add_custom_box_types'] = 'Add a new custom box type';
+$l['adv_sidebox_add_custom_box_name_desc'] = 'choose a descriptive name';
+$l['adv_sidebox_add_custom_box_description_desc'] = 'what does this box type display?';
+$l['adv_sidebox_add_custom_box_edit'] = 'Edit Custom Box';
+$l['adv_sidebox_add_custom_box_edit_desc'] = 'create new box templates and custom sideboxes';
+$l['adv_sidebox_add_custom_box_delete_success'] = 'The custom box type was deleted successfully';
+$l['adv_sidebox_add_custom_box_delete_failure'] = 'The new custom box type could not be deleted successfully';
+
+// permissions
+$l['adv_sidebox_admin_permissions_desc'] = 'User can manage sideboxes';
 
 ?>

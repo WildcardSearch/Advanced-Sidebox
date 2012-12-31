@@ -2,7 +2,7 @@
 /*
  * Advanced Sidebox Module
  *
- * Statistics (install)
+ * Statistics (meta)
  *
  * This module is part of the Advanced Sidebox  default module pack. It can be installed and uninstalled like any other module. Even though it is included in the original installation, it is not necessary and can be completely removed by deleting the containing folder (ie modules/thisfolder).
  *
@@ -18,8 +18,18 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 }
 
 /*
- * This function is required. If it is missing the add-on will not install.
+ * This function is required. It is used by acp_functions to add and describe your new sidebox.
  */
+function statistics_info()
+{
+	return array
+	(
+		"name"				=>	'Statistics',
+		"description"		=>	'forum statistics and figures',
+		"stereo"			=>	false
+	);
+}
+
 function statistics_is_installed()
 {
 	global $db;
@@ -71,6 +81,43 @@ function statistics_uninstall()
 	// delete all the boxes of this custom type and the template as well
 	$db->query("DELETE FROM " . TABLE_PREFIX . "sideboxes WHERE box_type='" . $db->escape_string('{$statistics}') . "'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_statistics'");
+}
+
+/*
+ * This function is required. It is used by adv_sidebox.php to display the custom content in your sidebox.
+ */
+function statistics_build_template()
+{
+	// don't forget to declare your variable! will not work without this
+	global $statistics; // <-- important!
+	
+	global $mybb, $cache, $templates, $lang;
+	
+	// Load global and custom language phrases
+	if (!$lang->portal)
+	{
+		$lang->load('portal');
+	}
+	if (!$lang->adv_sidebox)
+	{
+		$lang->load('adv_sidebox');
+	}
+	
+	// get forum statistics
+	$statistics = $cache->read("stats");
+	$statistics['numthreads'] = my_number_format($statistics['numthreads']);
+	$statistics['numposts'] = my_number_format($statistics['numposts']);
+	$statistics['numusers'] = my_number_format($statistics['numusers']);
+	
+	if(!$statistics['lastusername'])
+	{
+		$newestmember = "<strong>" . $lang->no_one . "</strong>";
+	}
+	else
+	{
+		$newestmember = build_profile_link($statistics['lastusername'], $statistics['lastuid']);
+	}
+	eval("\$statistics = \"" . $templates->get("adv_sidebox_statistics") . "\";");
 }
 
 ?>
