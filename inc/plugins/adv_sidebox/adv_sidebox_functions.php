@@ -311,6 +311,13 @@ function adv_sidebox_filter_by_script($box, $filter)
  */
 function adv_sidebox_build_filter_links($filter)
 {
+	global $lang;
+	
+	if (!$lang->adv_sidebox)
+	{
+		$lang->load('adv_sidebox');
+	}
+	
 	// normal status
 	$all_disabled = ' class="filter_link_inactive"';
 	$index_disabled = ' class="filter_link_inactive"';

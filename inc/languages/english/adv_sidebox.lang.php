@@ -24,6 +24,10 @@ $l['adv_sidebox_show_on_index'] = "Show On Index";
 $l['adv_sidebox_show_on_forumdisplay'] = "Show On Forum Display";
 $l['adv_sidebox_show_on_threaddisplay'] = "Show On Thread Display";
 $l['adv_sidebox_replace_portal_boxes'] = "Replace Portal Boxes";
+$l['adv_sidebox_index'] = 'Index';
+$l['adv_sidebox_forum'] = 'Forum';
+$l['adv_sidebox_thread'] = 'Thread';
+$l['adv_sidebox_portal'] = 'Portal';
 
 // positioning
 $l['adv_sidebox_position'] = "Position";
@@ -68,11 +72,9 @@ $l['adv_sidebox_manage_sideboxes'] = 'Manage Sideboxes';
 $l['adv_sidebox_manage_sideboxes_desc'] = 'edit, remove and add sideboxes';
 $l['adv_sidebox_page_desc'] = 'This page allows customization of Advanced Sidebox on your forum.';
 
-$l['adv_sidebox_id'] = "ID";
-$l['adv_sidebox_display_order'] = 'Display Order';
 $l['adv_sidebox_box_type'] = 'Type';
-$l['adv_sidebox_position'] = 'Position';
 $l['adv_sidebox_content'] = 'Content';
+$l['adv_sidebox_scripts'] = 'Scripts';
 $l['adv_sidebox_controls'] = 'Controls';
 
 $l['adv_sidebox_position_left_boxes'] = 'Left Boxes';
@@ -99,6 +101,7 @@ $l['adv_sidebox_type_desc'] = 'select one of several presets or create a custom 
 $l['adv_sidebox_content_title'] = 'Custom HTML';
 $l['adv_sidebox_content_desc'] = 'select a custom box type to use HTML entered here';
 $l['adv_sidebox_position_desc'] = 'choose left or right';
+$l['adv_sidebox_all'] = 'All';
 
 // modules
 $l['adv_sidebox_manage_modules'] = 'Manage Modules';
