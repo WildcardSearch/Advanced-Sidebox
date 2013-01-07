@@ -17,9 +17,6 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-/*
- * This function is required. It is used by acp_functions to add and describe your new sidebox.
- */
 function statistics_asb_info()
 {
 	return array
@@ -34,7 +31,6 @@ function statistics_asb_is_installed()
 {
 	global $db;
 	
-	// works just like a plugin
 	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_statistics'");
 	return $db->num_rows($query);
 }

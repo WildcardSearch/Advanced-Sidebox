@@ -7,8 +7,6 @@
  * This module is part of the Advanced Sidebox  default module pack. It can be installed and uninstalled like any other module. Even though it is included in the original installation, it is not necessary and can be completely removed by deleting the containing folder (ie modules/thisfolder).
  *
  * If you delete this folder from the installation pack this module will never be installed (and everything should work just fine without it). Don't worry, if you decide you want it back you can always download them again. The best move would be to install the entire package and try them out. Then be sure that the packages you don't want are uninstalled and then delete those folders from your server.
- *
- * This is a default portal box. Any changes from portal.php (MyBB 1.6.9) will be noted here.
  */
  
 // Include a check for Advanced Sidebox
@@ -17,9 +15,6 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-/*
- * This function is required. It is used by acp_functions to add and describe your new sidebox.
- */
 function pms_asb_info()
 {
 	return array
@@ -34,7 +29,6 @@ function pms_asb_is_installed()
 {
 	global $db;
 	
-	// works just like a plugin
 	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_pms'");
 	return $db->num_rows($query);
 }
@@ -64,9 +58,6 @@ function pms_asb_install()
 	$db->insert_query("templates", $template_4);
 }
 
-/*
- * Clean up after yourself.
- */
 function pms_asb_uninstall()
 {
 	global $db;
@@ -76,9 +67,6 @@ function pms_asb_uninstall()
 	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_pms'");
 }
 
-/*
- * This function is required. It is used by adv_sidebox.php to display the custom content in your sidebox.
- */
 function pms_asb_build_template()
 {
 	// don't forget to declare your variable! will not work without this

@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x v1.0
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x v1.1
  * Copyright © 2012 Wildcard
  * http://www.rantcentralforums.com
  *
@@ -30,7 +30,7 @@ define("ADV_SIDEBOX", true);
 // used by all module routines
 define("ADV_SIDEBOX_MODULES_DIR", MYBB_ROOT. "inc/plugins/adv_sidebox/modules");
 
-// Load the install/admin routines only if in Admin CP.
+// Load the install/admin routines only if in ACP.
 if(defined("IN_ADMINCP"))
 {
     require_once MYBB_ROOT . "inc/plugins/adv_sidebox/acp_functions.php";
@@ -38,7 +38,7 @@ if(defined("IN_ADMINCP"))
 
 global $settings;
 
-// Hooks for the main routine
+// Hook only if necessary
 if($settings['adv_sidebox_on_index'])
 {
 	$plugins->add_hook("index_start", "adv_sidebox_start");
@@ -59,127 +59,139 @@ if($settings['adv_sidebox_portal_replace'])
 	$plugins->add_hook("portal_start", "adv_sidebox_start");
 }
 
-// Check both admin and user settings and if applicable display the sideboxes.
+/*
+ * adv_sidebox_start()
+ *
+ * main routine. loads and displays any sideboxes on the script specified by the sidebox info
+ *
+ * Hooks: index_start, forumdisplay_start, showthread_start, portal_start (disabled from ACP settings)
+ *
+ * Check both admin and user settings and if applicable display the sideboxes.
+ */
 function adv_sidebox_start()
 {
-	global $mybb, $db, $lang, $templates, $theme, $plugins;
+	global $mybb, $templates, $plugins;
+	global $adv_sidebox_width_left, $adv_sidebox_width_right;
+	global $adv_sidebox_inner_left, $adv_sidebox_inner_right;
+	
+	// will need all classes and functions here
+	require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_classes.php';
+	require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_functions.php';
 
-	// If the ACP settings indicate that the current script doesn't display the sideboxes then there is no need to go any further.
-	if(THIS_SCRIPT == 'index.php' && !$mybb->settings['adv_sidebox_on_index']  || THIS_SCRIPT == 'forumdisplay.php' && !$mybb->settings['adv_sidebox_on_forumdisplay'] || THIS_SCRIPT == 'showthread.php' && !$mybb->settings['adv_sidebox_on_showthread'])
+	// don't waste execution if unnecessary
+	if(!adv_sidebox_do_checks())
 	{
 		return false;
 	}
 
-	// If the EXCLUDE list isn't empty . . .
-	if(is_array(unserialize($mybb->settings['adv_sidebox_exclude_theme'])))
-	{
-		// . . . and this theme is listed.
-		if(in_array($theme['tid'], unserialize($mybb->settings['adv_sidebox_exclude_theme'])))
-		{
-			// no sidebox
-			return false;
-		}
-	}
-	
-	// If the current user is not a guest and has disabled the sidebox display in UCP then do not display the sideboxes
-	if($mybb->user['uid'] != 0)
-	{
-		if ($mybb->user['show_sidebox'] == 0)
-		{
-			return false;
-		}
-	}
-
-	// Load global and custom language phrases
-	if (!$lang->portal)
-	{
-		$lang->load('portal');
-	}
-	if (!$lang->adv_sidebox)
-	{
-		$lang->load('adv_sidebox');
-	}
-
-	// temporary storage used to sort boxes
-	$all_boxes = array();
-	
-	// Look for all sideboxes (if any)
-	$query = $db->simple_select('sideboxes', 'id, box_type, position, content', '', array("order_by" => 'display_order', "order_dir" => 'ASC'));
-		
-	// if there are sideboxes . . .
-	if($db->num_rows($query) > 0)
-	{
-		while($this_box = $db->fetch_array($query))
-		{
-			// add them all to this array
-			$all_boxes[] = $this_box;
-		}
-	}
-	else
-	{
-		return false;
-	}
+	// store all the sideboxes here as objects
+	$sideboxes = array();
+	$sideboxes = adv_sidebox_get_all_sideboxes();
 	
 	// There is only one internal box type (custom),
-	// but nox types can come from saved custom boxes . . .
+	// but new types can come from saved custom boxes . . .
 	$custom_box_list = get_all_custom_box_types_content();
 	
-	// . . . or modules/plugins
-	$boxes_info = get_installed_box_types();
+	// . . . or modules
+	$modules = get_all_modules();
 
-	// loop through the boxes and sort them
-	foreach($all_boxes as $this_box)
+	// loop through the sideboxes and sort them
+	foreach($sideboxes as $this_box)
 	{	
 		// if this is a user-defined box . . .
-		if($custom_box_list[$this_box['box_type']])
+		if($custom_box_list[$this_box->box_type])
 		{
 			// . . . then use the custom content as a replacement
-			$content = $custom_box_list[$this_box['box_type']];
-		}
-		// if this is a custom box . . .
-		elseif($this_box['box_type'] == 'custom_box')
-		{
-			// . . . then use the custom content as a replacement
-			$content = $this_box['content'];
+			$content = $custom_box_list[$this_box->box_type];
 		}
 		else
 		{
-			// 'stereo'boxes are width-depepndent and so have to be seperated into 'channels'
-			if($boxes_info[$this_box['box_type']]['stereo'] == true)
+			// otherwise use the box's content
+			$content = $this_box->content;
+		}
+		
+		// Index
+		if($this_box->show_on_index)
+		{
+			// 0 = left, otherwise right
+			if($this_box->position)
 			{
-				if((int) $this_box['position'] > 0)
-				{
-					$content = '{$' . $this_box['box_type'] . '_r}';
-				}
-				else
-				{
-					$content = '{$' . $this_box['box_type'] . '_l}';
-				}
+				$index_right_boxes .= $content;
 			}
 			else
 			{
-				// mono boxes appear the same for both sides
-				$content = '{$' . $this_box['box_type'] . '}';
+				$index_left_boxes .= $content;
 			}
+			
+			$box_types['index.php'][$this_box->box_type] = true;
 		}
 		
-		// 0 = left, otherwise right
-		if((int) $this_box['position'] > 0)
+		// Forum
+		if($this_box->show_on_forumdisplay)
 		{
-			$right_boxes .= $content;
-		}
-		else
-		{
-			$left_boxes .= $content;
+			// 0 = left, otherwise right
+			if($this_box->position)
+			{
+				$forum_right_boxes .= $content;
+			}
+			else
+			{
+				$forum_left_boxes .= $content;
+			}
+			
+			$box_types['forumdisplay.php'][$this_box->box_type] = true;
 		}
 		
-		// we'll check this array later to reduce wasted code
-		// no need to parse templates if the box_type is unused
-		$box_types[$this_box['box_type']] = true;
+		// Thread
+		if($this_box->show_on_showthread)
+		{
+			// 0 = left, otherwise right
+			if($this_box->position)
+			{
+				$thread_right_boxes .= $content;
+			}
+			else
+			{
+				$thread_left_boxes .= $content;
+			}
+			
+			$box_types['showthread.php'][$this_box->box_type] = true;
+		}
+		
+		// Portal
+		if($this_box->show_on_portal)
+		{
+			// 0 = left, otherwise right
+			if($this_box->position)
+			{
+				$portal_right_boxes .= $content;
+			}
+			else
+			{
+				$portal_left_boxes .= $content;
+			}
+			
+			$box_types['portal.php'][$this_box->box_type] = true;
+		}
 	}
 	
 	// no boxes?
-	if(!$left_boxes && !$right_boxes)
+	if((!$index_left_boxes && !$index_right_boxes) && THIS_SCRIPT == 'index.php')
+	{
+		return false;
+	}
+	
+	if((!$forum_left_boxes && !$forum_right_boxes) && THIS_SCRIPT == 'forumdisplay.php')
+	{
+		return false;
+	}
+	
+	if((!$thread_left_boxes && !$thread_right_boxes) && THIS_SCRIPT == 'showthread.php')
+	{
+		return false;
+	}
+	
+	if((!$portal_left_boxes && !$portal_right_boxes) && THIS_SCRIPT == 'portal.php')
 	{
 		return false;
 	}
@@ -187,102 +199,131 @@ function adv_sidebox_start()
 	// width
 	$adv_sidebox_width_left = (int) $mybb->settings['adv_sidebox_width_left'];
 	$adv_sidebox_width_right = (int) $mybb->settings['adv_sidebox_width_right'];
+	$adv_sidebox_inner_left = (int) ($mybb->settings['adv_sidebox_width_left'] * .83);
+	$adv_sidebox_inner_right = (int) ($mybb->settings['adv_sidebox_width_right'] * .83);
+	
+	$index_left_boxes = adv_sidebox_pad_box($index_left_boxes, $adv_sidebox_width_left);
+	$index_right_boxes = adv_sidebox_pad_box($index_right_boxes, $adv_sidebox_width_right);
+	$forum_left_boxes = adv_sidebox_pad_box($forum_left_boxes, $adv_sidebox_width_left);
+	$forum_right_boxes = adv_sidebox_pad_box($forum_right_boxes, $adv_sidebox_width_right);
+	$thread_left_boxes = adv_sidebox_pad_box($thread_left_boxes, $adv_sidebox_width_left);
+	$thread_right_boxes = adv_sidebox_pad_box($thread_right_boxes, $adv_sidebox_width_right);
+	$portal_left_boxes = adv_sidebox_pad_box($portal_left_boxes, $adv_sidebox_width_left);
+	$portal_right_boxes = adv_sidebox_pad_box($portal_right_boxes, $adv_sidebox_width_right);
 
 	// Display boxes on index
 	if($mybb->settings['adv_sidebox_on_index'] && THIS_SCRIPT == 'index.php')
 	{
-		if($left_boxes && !$right_boxes)
+		if($index_left_boxes && !$index_right_boxes)
 		{
-			$templates->cache['index'] = str_replace('{$header}', '{$header}<table width="100%" border="0" cellspacing="5"><tr><td width="'.$adv_sidebox_width_left.'" valign="top">' . $left_boxes . '</td><td width="auto" valign="top">',$templates->cache['index']);
-			$templates->cache['index'] = str_replace('{$footer}','{$footer}</td></tr></table></div></div>',$templates->cache['index']);
+			$templates->cache['index'] = str_replace('{$header}', '{$header}<table width="100%" border="0" cellspacing="5"><tr><td width="' . $adv_sidebox_width_left . '" valign="top">' . $index_left_boxes . '</td><td width="auto" valign="top">', $templates->cache['index']);
+			$templates->cache['index'] = str_replace('{$footer}', '{$footer}</td></tr></table></div></div>', $templates->cache['index']);
 		}
-		elseif(!$left_boxes && $right_boxes)
+		elseif(!$index_left_boxes && $index_right_boxes)
 		{
-			$templates->cache['index'] = str_replace('{$header}', '{$header}<table width="100%" border="0" cellspacing="5"><tr><td width="auto" valign="top">',$templates->cache['index']);
-			$templates->cache['index'] = str_replace('{$footer}','{$footer}</td><td width="'.$adv_sidebox_width_right.'" valign="top">'.$right_boxes.'</td></tr></table>',$templates->cache['index']);
+			$templates->cache['index'] = str_replace('{$header}', '{$header}<table width="100%" border="0" cellspacing="5"><tr><td width="auto" valign="top">', $templates->cache['index']);
+			$templates->cache['index'] = str_replace('{$footer}', '{$footer}</td><td width="' . $adv_sidebox_width_right . '" valign="top">' . $index_right_boxes . '</td></tr></table>', $templates->cache['index']);
 		}
-		elseif($left_boxes && $right_boxes)
+		elseif($index_left_boxes && $index_right_boxes)
 		{
-			$templates->cache['index'] = str_replace('{$header}', '{$header}<table width="100%" border="0" cellspacing="5"><tr><td width="'.$adv_sidebox_width_left.'" valign="top">' . $left_boxes . '</td><td width="auto" valign="top">',$templates->cache['index']);
-			$templates->cache['index'] = str_replace('{$footer}','{$footer}</td></td><td width="'.$adv_sidebox_width_right.'" valign="top">'.$right_boxes.'</td></tr></table></div></div>',$templates->cache['index']);
+			$templates->cache['index'] = str_replace('{$header}', '{$header}<table width="100%" border="0" cellspacing="5"><tr><td width="' . $adv_sidebox_width_left . '" valign="top">' . $index_left_boxes . '</td><td width="auto" valign="top">', $templates->cache['index']);
+			$templates->cache['index'] = str_replace('{$footer}','{$footer}</td><td width="'.$adv_sidebox_width_right.'" valign="top">' . $index_right_boxes . '</td></tr></table></div></div>', $templates->cache['index']);
 		}
 	}
 
 	//Display boxes on forumdisplay
 	if($mybb->settings['adv_sidebox_on_forumdisplay'] && THIS_SCRIPT == 'forumdisplay.php')
 	{
-		if($left_boxes && !$right_boxes)
+		if($forum_left_boxes && !$forum_right_boxes)
 		{
-			$templates->cache['forumdisplay'] = str_replace('{$header}','{$header}<table width="100%"  border="0"><tr><td width="'.$adv_sidebox_width_left.'" valign="top">'.$left_boxes.'</td><td width="auto" valign="top">',$templates->cache['forumdisplay']);
-			$templates->cache['forumdisplay'] = str_replace('{$footer}','{$footer}</td></tr></table>',$templates->cache['forumdisplay']);
+			$templates->cache['forumdisplay'] = str_replace('{$header}', '{$header}<table width="100%"  border="0"><tr><td width="' . $adv_sidebox_width_left . '" valign="top">' . $forum_left_boxes . '</td><td width="auto" valign="top">', $templates->cache['forumdisplay']);
+			$templates->cache['forumdisplay'] = str_replace('{$footer}', '{$footer}</td></tr></table>', $templates->cache['forumdisplay']);
 		}
-		elseif(!$left_boxes && $right_boxes)
+		elseif(!$forum_left_boxes && $forum_right_boxes)
 		{
-			$templates->cache['forumdisplay'] = str_replace('{$header}','{$header}<table width="100%"  border="0"><tr><td width="auto" valign="top">',$templates->cache['forumdisplay']);
-			$templates->cache['forumdisplay'] = str_replace('{$footer}','{$footer}</td><td width="'.$adv_sidebox_width_right.'" valign="top">'.$right_boxes.'</td></tr></table>',$templates->cache['forumdisplay']);
+			$templates->cache['forumdisplay'] = str_replace('{$header}', '{$header}<table width="100%"  border="0"><tr><td width="auto" valign="top">', $templates->cache['forumdisplay']);
+			$templates->cache['forumdisplay'] = str_replace('{$footer}', '{$footer}</td><td width="' . $adv_sidebox_width_right . '" valign="top">' . $forum_right_boxes . '</td></tr></table>', $templates->cache['forumdisplay']);
 		}
-		elseif($left_boxes && $right_boxes)
+		elseif($forum_left_boxes && $forum_right_boxes)
 		{
-			$templates->cache['forumdisplay'] = str_replace('{$header}','{$header}<table width="100%"  border="0"><tr><td width="'.$adv_sidebox_width_left.'" valign="top">'.$left_boxes.'</td><td width="auto" valign="top">',$templates->cache['forumdisplay']);
-			$templates->cache['forumdisplay'] = str_replace('{$footer}','{$footer}</td><td width="'.$adv_sidebox_width_right.'" valign="top">'.$right_boxes.'</td></tr></table>',$templates->cache['forumdisplay']);
+			$templates->cache['forumdisplay'] = str_replace('{$header}', '{$header}<table width="100%"  border="0"><tr><td width="' . $adv_sidebox_width_left . '" valign="top">' . $forum_left_boxes . '</td><td width="auto" valign="top">', $templates->cache['forumdisplay']);
+			$templates->cache['forumdisplay'] = str_replace('{$footer}', '{$footer}</td><td width="' . $adv_sidebox_width_right . '" valign="top">' . $forum_right_boxes . '</td></tr></table>', $templates->cache['forumdisplay']);
 		}
 	}
 	
 	//Display boxes on showthread
 	if($mybb->settings['adv_sidebox_on_showthread'] && THIS_SCRIPT == 'showthread.php')
 	{
-		if($left_boxes && !$right_boxes)
+		if($thread_left_boxes && !$thread_right_boxes)
 		{
-			$templates->cache['showthread'] = str_replace('{$header}','	{$header}<table width="100%"  border="0"><tr><td width="'.$adv_sidebox_width_left.'" valign="top">'.$left_boxes.'</td></td><td width="auto" valign="top">',$templates->cache['showthread']);
-			$templates->cache['showthread'] = str_replace('{$footer}','{$footer}</td></tr></table>',$templates->cache['showthread']);
+			$templates->cache['showthread'] = str_replace('{$header}', '{$header}<table width="100%"  border="0"><tr><td width="' . $adv_sidebox_width_left . '" valign="top">' . $thread_left_boxes . '</td></td><td width="auto" valign="top">',$templates->cache['showthread']);
+			$templates->cache['showthread'] = str_replace('{$footer}', '{$footer}</td></tr></table>', $templates->cache['showthread']);
 		}
-		elseif(!$left_boxes && $right_boxes)
+		elseif(!$thread_left_boxes && $thread_right_boxes)
 		{
-			$templates->cache['showthread'] = str_replace('{$header}','	{$header}<table width="100%"  border="0"><tr><td width="auto" valign="top">',$templates->cache['showthread']);
-			$templates->cache['showthread'] = str_replace('{$footer}','{$footer}</td><td width="'.$adv_sidebox_width_right.'" valign="top">'.$right_boxes.'</td></tr></table>',$templates->cache['showthread']);
+			$templates->cache['showthread'] = str_replace('{$header}', '{$header}<table width="100%"  border="0"><tr><td width="auto" valign="top">', $templates->cache['showthread']);
+			$templates->cache['showthread'] = str_replace('{$footer}', '{$footer}</td><td width="' . $adv_sidebox_width_right . '" valign="top">' . $thread_right_boxes . '</td></tr></table>', $templates->cache['showthread']);
 		}
-		elseif($left_boxes && $right_boxes)
+		elseif($thread_left_boxes && $thread_right_boxes)
 		{
-			$templates->cache['showthread'] = str_replace('{$header}','	{$header}<table width="100%"  border="0"><tr><td width="'.$adv_sidebox_width_left.'" valign="top">'.$left_boxes.'</td></td><td width="auto" valign="top">',$templates->cache['showthread']);
-			$templates->cache['showthread'] = str_replace('{$footer}','{$footer}</td><td width="'.$adv_sidebox_width_right.'" valign="top">'.$right_boxes.'</td></tr></table>',$templates->cache['showthread']);
+			$templates->cache['showthread'] = str_replace('{$header}', '{$header}<table width="100%"  border="0"><tr><td width="' . $adv_sidebox_width_left . '" valign="top">' . $thread_left_boxes . '</td></td><td width="auto" valign="top">', $templates->cache['showthread']);
+			$templates->cache['showthread'] = str_replace('{$footer}', '{$footer}</td><td width="' . $adv_sidebox_width_right . '" valign="top">' . $thread_right_boxes . '</td></tr></table>', $templates->cache['showthread']);
 		}
 	}
 	
 	// Display additional boxes on portal (if 'Replace Portal Boxes With Custom' is set to yes)
-	if($mybb->settings['adv_sidebox_portal_replace'] && THIS_SCRIPT == 'portal.php')
+	if($mybb->settings['adv_sidebox_portal_replace'] && THIS_SCRIPT == 'portal.php' && ($portal_left_boxes || $portal_right_boxes))
 	{
-		$templates->cache['portal'] = str_replace('{$welcome}', '', $templates->cache['portal']);
-		$templates->cache['portal'] = str_replace('{$search}', '', $templates->cache['portal']);
-		$templates->cache['portal'] = str_replace('{$pms}', '', $templates->cache['portal']);
-		$templates->cache['portal'] = str_replace('{$stats}', '', $templates->cache['portal']);
-		$templates->cache['portal'] = str_replace('{$whosonline}', '', $templates->cache['portal']);
-		$templates->cache['portal'] = str_replace('{$latestthreads}', $left_boxes, $templates->cache['portal']);
-	}
+		$this_template = '<html>
+	<head>
+		<title>{$mybb->settings[\'bbname\']}</title>
+		{$headerinclude}
+	</head>
+	<body>
+		{$header}
+		<table width="100%" cellspacing="0" cellpadding="{$theme[\'tablespace\']}" border="0">
+			<tr>';
+		
+		if($portal_left_boxes)
+		{
+			$this_template .= '
+				<td valign="top" width="' . $adv_sidebox_width_left . '"><div style="max-width: ' . $adv_sidebox_width_left . 'px min-width: ' . $adv_sidebox_width_left . 'px">' . $portal_left_boxes . '</div></td>
+				<td>&nbsp;</td>';
+		}
+		
+		$this_template .= '
+				<td style="max-width:' . (1000 - ($adv_sidebox_width_right + $adv_sidebox_width_left)) . 'px;"><div style="max-width: ' . (1000 - ($adv_sidebox_width_right + $adv_sidebox_width_left)) . 'px min-width: ' . (1000 - ($adv_sidebox_width_right + $adv_sidebox_width_left)) . 'px">{$announcements}</div></td>
+				<td>&nbsp;</td>';
+		
+		if($portal_right_boxes)
+		{
+			$this_template .= '
+				<td valign="top" width="' . $adv_sidebox_width_right . '"><div style="max-width: ' . $adv_sidebox_width_right . 'px min-width: ' . $adv_sidebox_width_right . 'px">' . $portal_right_boxes . '</div></td>';
+		}
+		
+		$this_template .= '
+			</tr>
+		</table>
+		{$footer}
+	</body>
+</html>';
 
+		$templates->cache['portal'] = $this_template;
+	}
+	
 	// this hook will allow a plugin to process its custom box type for display (you will first need to hook into adv_sidebox_add_type to add the box
 	$plugins->run_hooks('adv_sidebox_output_end', $box_types);
 	
 	// if there are installed modules (simple or complex) . . .
-	if(!empty($boxes_info))
+	if(!empty($modules))
 	{
 		// . . . loop throught them
-		foreach($boxes_info as $module => $info)
+		foreach($modules as $module => $info)
 		{
-			// if admin is using this box type . . .
-			if($box_types[$module])
+			// if admin is using this box type and it is for this script . . .
+			if($box_types[THIS_SCRIPT][$module])
 			{
-				// . . . and the files are intact . . .
-				if(file_exists(ADV_SIDEBOX_MODULES_DIR."/".$module."/adv_sidebox_module.php"))
-				{
-					// . . . run the module's template building code.
-					require_once ADV_SIDEBOX_MODULES_DIR."/".$module."/adv_sidebox_module.php";
-					
-					if(function_exists($module . '_asb_build_template'))
-					{
-						$build_template_function = $module . '_asb_build_template';
-						$build_template_function();
-					}
-				}
+				$modules[$module]->build_template();
 			}
 		}
 	}
@@ -292,7 +333,13 @@ function adv_sidebox_start()
 $plugins->add_hook("usercp_options_end", "adv_sidebox_options");
 $plugins->add_hook("usercp_do_options_end", "adv_sidebox_options");
 
-// Add a checkbox to the User CP under Other Options to toggle the sideboxes
+/*
+ * adv_sidebox_options()
+ *
+ * Hooks: usercp_options_end, usercp_do_options_end
+ *
+ * Add a checkbox to the User CP under Other Options to toggle the sideboxes
+ */
 function adv_sidebox_options()
 {
 	global $db, $mybb, $templates, $user, $lang;
@@ -326,81 +373,6 @@ function adv_sidebox_options()
     // Update the template cache
 	$find = '<td valign="top" width="1"><input type="checkbox" class="checkbox" name="showredirect"';
     $templates->cache['usercp_options'] = str_replace($find, $usercp_option, $templates->cache['usercp_options']);
-}
-
-/*
- * loop through all installed modules and grab their info
- */
-function get_installed_box_types()
-{
-	//modules
-	$dir = opendir(ADV_SIDEBOX_MODULES_DIR);
-	
-	$all_box_types = array();
-
-	while(($module = readdir($dir)) !== false)
-	{
-		if(is_dir(ADV_SIDEBOX_MODULES_DIR . "/" . $module) && !in_array($module, array(".", "..")) && file_exists(ADV_SIDEBOX_MODULES_DIR . "/" . $module . "/adv_sidebox_module.php"))
-		{
-			require_once ADV_SIDEBOX_MODULES_DIR."/".$module."/adv_sidebox_module.php";
-
-			$is_installed_function = $module . '_asb_is_installed';
-
-			if(function_exists($module . '_asb_is_installed'))
-			{
-				if($is_installed_function())
-				{
-					if(function_exists($module . '_asb_info'))
-					{
-						$info_function = $module . '_asb_info';
-						$this_info = $info_function();
-						
-						$all_box_types['name'] = $this_info['name'];
-						$all_box_types['description'] = $this_info['description'];
-						$all_box_types['stereo'] = $this_info['stereo'];
-						$all_box_types['module_type'] = 'complex';
-						$all_box_types['status'] = true;
-					}
-				}
-			}
-			else
-			{
-				if(function_exists($module . '_asb_info'))
-				{
-					$info_function = $module . '_asb_info';
-					$this_info = $info_function();
-					
-					$all_box_types['name'] = $this_info['name'];
-					$all_box_types['description'] = $this_info['description'];
-					$all_box_types['stereo'] = $this_info['stereo'];
-					$all_box_types['module_type'] = 'simple';
-					$all_box_types['status'] = true;
-				}
-			}
-		}
-		$output[$module] = $all_box_types;
-	}
-	return $output;
-}
-
-// loop through all user-defined boxes and return them
-function get_all_custom_box_types_content()
-{
-	global $db;
-	
-	$all_custom_types = array();
-	
-	$query = $db->simple_select('custom_sideboxes');
-	
-	if($db->num_rows($query) > 0)
-	{
-		while($this_type = $db->fetch_array($query))
-		{
-			$all_custom[$this_type['id'] . '_asb_custom'] = $this_type['content'];
-		}
-	}
-	
-	return $all_custom;
 }
 
 ?>

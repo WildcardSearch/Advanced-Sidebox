@@ -1,18 +1,36 @@
 <?php
-
+/*
+ * language file for Advanced Sidebox
+ */
 $l['adv_sidebox_name'] = 'Advanced Sidebox';
 
-// settings
+// plugin info
 $l['adv_sidebox_description1'] = "Display sideboxes with custom dynamic content.";
 $l['adv_sidebox_description2'] = "Inspired by the original sidebox plugin, this is an attempt to create a more versatile plugin that is easier to set up and use.";
+
+// settings and setting descriptions
 $l['adv_sidebox_plugin_settings'] = "Plugin settings";
 $l['adv_sidebox_settingsgroup_description'] = "control where and how the sideboxes display";
+$l['adv_sidebox_width'] = "Width of sideboxes";
+$l['adv_sidebox_theme_exclude_list'] = "Theme EXCLUDE List";
+$l['adv_sidebox_theme_exclude_list_description'] = "Select themes to disable sidebox display for them.<br />(Use CTRL to select/deselect multiple themes)";
+$l['adv_sidebox_theme_exclude_select_update_link'] = 'Update Theme Exclude Selector';
+$l['adv_sidebox_theme_exclude_select_update_description'] = 'When themes are installed/removed the theme exclude select box will need to be updated to reflect the current theme list.';
+$l['adv_sidebox_theme_exclude_select_update_fail'] = 'The setting could not be updated';
+$l['adv_sidebox_theme_exclude_select_update_success'] = 'The setting was successfully updated';
+
+// script control
 $l['adv_sidebox_show_on_index'] = "Show On Index";
 $l['adv_sidebox_show_on_forumdisplay'] = "Show On Forum Display";
 $l['adv_sidebox_show_on_threaddisplay'] = "Show On Thread Display";
+$l['adv_sidebox_replace_portal_boxes'] = "Replace Portal Boxes";
+
+// positioning
 $l['adv_sidebox_position'] = "Position";
 $l['adv_sidebox_position_left'] = "Left";
 $l['adv_sidebox_position_right'] = "Right";
+
+// general use and box types
 $l['adv_sidebox_box'] = "Box";
 $l['adv_sidebox_custom'] = 'Custom';
 $l['adv_sidebox_welcome_box'] = "Welcome Box";
@@ -21,13 +39,15 @@ $l['adv_sidebox_search_box'] = "Search Box";
 $l['adv_sidebox_stats_box'] = "Board Statistics";
 $l['adv_sidebox_wol_avatar_list'] = "Who's Online Avatar List";
 $l['adv_sidebox_latest_threads'] = "Latest Threads";
-$l['adv_sidebox_additional_box'] = "Additional Box";
-$l['adv_sidebox_replace_portal_boxes'] = "Replace Portal Boxes";
-$l['adv_sidebox_width'] = "Width of sideboxes";
-$l['adv_sidebox_theme_exclude_list'] = "Theme EXCLUDE List";
-$l['adv_sidebox_theme_exclude_list_description'] = "Select themes to disable sidebox display for them.<br />(Use CTRL to select/deselect multiple themes)";
+
+// WOL
 $l['adv_sidebox_num_avatars_per_row'] = "Number of avatars per row";
 $l['adv_sidebox_avatar_max_rows'] = 'maximum number of avatar rows';
+
+// latest threads
+$l['adv_sidebox_latest_threads_lastpost'] = 'Last Post:';
+$l['adv_sidebox_latest_threads_replies'] = 'Replies:';
+$l['adv_sidebox_latest_threads_views'] = 'Views:';
 
 // avatar
 $l['adv_sidebox_avatar'] = "Avatar";

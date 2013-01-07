@@ -38,9 +38,6 @@ function whosonline_asb_is_installed()
 	return $db->num_rows($query);
 }
 
-/*
- * This function is required. Make your mods here.
- */
 function whosonline_asb_install()
 {
 	global $db, $lang;
@@ -59,7 +56,7 @@ function whosonline_asb_install()
 		"description"		=> $lang->adv_sidebox_num_avatars_per_row . ":",
 		"optionscode"	=> "text",
 		"value"				=> '4',
-		"disporder"		=> '8',
+		"disporder"		=> '80',
 		"gid"					=> intval($gid),
 	);
 
@@ -70,7 +67,7 @@ function whosonline_asb_install()
 		"description"		=> $lang->adv_sidebox_avatar_max_rows . ":",
 		"optionscode"	=> "text",
 		"value"				=> '3',
-		"disporder"		=> '9',
+		"disporder"		=> '90',
 		"gid"					=> intval($gid),
 	);
 

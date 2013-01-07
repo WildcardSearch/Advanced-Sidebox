@@ -1,8 +1,10 @@
 <?php
 /*
- * Advanced Sidebox Add-On Example #1
+ * Advanced Sidebox Add-On Example #2
  *
- * This is an example of the simplest version of an Advanced Sidebox add-on. When a module doesn't include the file sidebox_install.php, it indicates to ASB that this module is self-contained and need not alter the forum in any way to operate. Incidentally if this file is missing because of some other error or mishandling the sidebox may fail (but it could very well work correctly if its last state was installed.)
+ * This is an example of the simple version of an Advanced Sidebox add-on, but using a 'stereo' template variable.
+ *
+ * When a module doesn't include the file sidebox_install.php, it indicates to ASB that this module is self-contained and need not alter the forum in any way to operate. Incidentally if this file is missing because of some other error or mishandling the sidebox may fail (but it could very well work correctly if its last state was installed.)
  *
  * This box is worthless, but it is a starting point.
  */
