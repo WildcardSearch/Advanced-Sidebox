@@ -20,7 +20,7 @@
  * along with this program.  If not, see http://www.gnu.org/licenses
  */
 
-// Disallow direct access to this file for security reasons
+// disallow direct access to this file for security reasons
 if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
@@ -29,7 +29,7 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 define('ADV_SIDEBOX_URL', 'index.php?module=config-adv_sidebox');
 define('ADV_SIDEBOX_MAIN_URL', 'index.php?module=config-adv_sidebox&amp;action=manage_sideboxes');
 define('ADV_SIDEBOX_EDIT_URL', 'index.php?module=config-adv_sidebox&amp;action=edit_box');
-define('ADV_SIDEBOX_DEL_URL', 'index.php?module=config-adv_sidebox&amp;action=manage_sideboxes&amp;function=delete_box');
+define('ADV_SIDEBOX_DEL_URL', ADV_SIDEBOX_MAIN_URL . '&amp;function=delete_box');
 define('ADV_SIDEBOX_MODULES_URL', 'index.php?module=config-adv_sidebox&amp;action=manage_modules');
 define('ADV_SIDEBOX_CUSTOM_URL', 'index.php?module=config-adv_sidebox&amp;action=custom_boxes');
 
@@ -322,12 +322,12 @@ margin-bottom: -3px;
 	// Sideboxes table
 	$left_table = new Table;
 	$left_table->construct_header($lang->adv_sidebox_box_type);
-	$left_table->construct_header('Scripts');
+	$left_table->construct_header($lang->adv_sidebox_scripts);
 	$left_table->construct_header($lang->adv_sidebox_controls, array("colspan" => 2));
 
 	$right_table = new Table;
 	$right_table->construct_header($lang->adv_sidebox_box_type);
-	$right_table->construct_header('Scripts');
+	$right_table->construct_header($lang->adv_sidebox_scripts);
 	$right_table->construct_header($lang->adv_sidebox_controls, array("colspan" => 2));
 
 	$sideboxes = array();
@@ -593,9 +593,9 @@ function adv_sidebox_admin_editbox()
 
 	$form_container->output_row($lang->adv_sidebox_box_type, $lang->adv_sidebox_type_desc, $form->generate_select_box('box_type_select', $box_types, $this_sidebox->box_type, array("id" => 'box_type_select')), array("id" => 'box_type_select_box'));
 	$form_container->output_row($lang->adv_sidebox_content_title, $lang->adv_sidebox_content_desc, $form->generate_text_area('box_content', $this_sidebox->content, array("id" => 'box_content')), array("id" => 'box_content'));
-	$form_container->output_row($lang->adv_sidebox_position, $lang->adv_sidebox_position_desc, $form->generate_radio_button('box_position', 'left', $lang->adv_sidebox_position_left, array("checked" => ((int) $this_sidebox->position == 0))) . '&nbsp;&nbsp;' . $form->generate_radio_button('box_position', 'right', $lang->adv_sidebox_position_right, array("checked" => ((int) $this_sidebox->position != 0))));
+	$form_container->output_row($lang->adv_sidebox_position, '', $form->generate_radio_button('box_position', 'left', $lang->adv_sidebox_position_left, array("checked" => ((int) $this_sidebox->position == 0))) . '&nbsp;&nbsp;' . $form->generate_radio_button('box_position', 'right', $lang->adv_sidebox_position_right, array("checked" => ((int) $this_sidebox->position != 0))));
 	$form_container->output_row($lang->adv_sidebox_display_order, '', $form->generate_text_box('display_order', $this_sidebox->display_order));
-	$form_container->output_row('Which Scripts?', 'test', $form->generate_select_box('script_select_box[]', array("all_scripts" => 'All Scripts', "index.php" => 'Index', "forumdisplay.php" => 'Forums', "showthread.php" => 'Threads', "portal.php" => 'Portal'), $selected_scripts, array("id" => 'script_select_box', "multiple" => true)), array("id" => 'script_select_box'));
+	$form_container->output_row('Which Scripts?', '', $form->generate_select_box('script_select_box[]', array("all_scripts" => 'All Scripts', "index.php" => 'Index', "forumdisplay.php" => 'Forums', "showthread.php" => 'Threads', "portal.php" => 'Portal'), $selected_scripts, array("id" => 'script_select_box', "multiple" => true)), array("id" => 'script_select_box'));
 	$form_container->output_row('', '', $form->generate_hidden_field('this_mode', $mybb->input['mode']));
 	$form_container->end();
 

@@ -96,12 +96,12 @@ $l['adv_sidebox_delete_box_failure'] = 'There was an error while attempting to r
 
 // add/edit
 $l['adv_sidebox_edit_box'] = 'Edit Sidebox';
-
+$l['adv_sidebox_display_order'] = 'Display Order';
 $l['adv_sidebox_type_desc'] = 'select one of several presets or create a custom sidebox';
 $l['adv_sidebox_content_title'] = 'Custom HTML';
 $l['adv_sidebox_content_desc'] = 'select a custom box type to use HTML entered here';
 $l['adv_sidebox_position_desc'] = 'choose left or right';
-$l['adv_sidebox_all'] = 'All';
+$l['adv_sidebox_all'] = 'All Scripts';
 
 // modules
 $l['adv_sidebox_manage_modules'] = 'Manage Modules';

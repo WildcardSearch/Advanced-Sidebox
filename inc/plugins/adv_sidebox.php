@@ -1,7 +1,7 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x v1.1
- * Copyright © 2012 Wildcard
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x v1.2
+ * Copyright © 2013 WildcardSearch
  * http://www.rantcentralforums.com
  *
  * Check out this project on GitHub: https://github.com/WildcardSearch/Advanced-Sidebox
@@ -18,7 +18,7 @@
  * along with this program.  If not, see http://www.gnu.org/licenses
  */
 
- // Disallow direct access to this file for security reasons
+// disallow direct access to this file for security reasons
 if(!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
@@ -38,7 +38,7 @@ if(defined("IN_ADMINCP"))
 
 global $settings;
 
-// Hook only if necessary
+// hook only if necessary
 if($settings['adv_sidebox_on_index'])
 {
 	$plugins->add_hook("index_start", "adv_sidebox_start");
@@ -256,17 +256,17 @@ function adv_sidebox_start()
 	{
 		if($thread_left_boxes && !$thread_right_boxes)
 		{
-			$templates->cache['showthread'] = str_replace('{$header}', '{$header}<table width="100%"  border="0"><tr><td width="' . $adv_sidebox_width_left . '" valign="top">' . $thread_left_boxes . '</td></td><td width="auto" valign="top">',$templates->cache['showthread']);
+			$templates->cache['showthread'] = str_replace('{$header}', '	{$header}<table width="100%"  border="0"><tr><td width="' . $adv_sidebox_width_left . '" valign="top">' . $thread_left_boxes . '</td></td><td width="auto" valign="top">',$templates->cache['showthread']);
 			$templates->cache['showthread'] = str_replace('{$footer}', '{$footer}</td></tr></table>', $templates->cache['showthread']);
 		}
 		elseif(!$thread_left_boxes && $thread_right_boxes)
 		{
-			$templates->cache['showthread'] = str_replace('{$header}', '{$header}<table width="100%"  border="0"><tr><td width="auto" valign="top">', $templates->cache['showthread']);
+			$templates->cache['showthread'] = str_replace('{$header}', '	{$header}<table width="100%"  border="0"><tr><td width="auto" valign="top">', $templates->cache['showthread']);
 			$templates->cache['showthread'] = str_replace('{$footer}', '{$footer}</td><td width="' . $adv_sidebox_width_right . '" valign="top">' . $thread_right_boxes . '</td></tr></table>', $templates->cache['showthread']);
 		}
 		elseif($thread_left_boxes && $thread_right_boxes)
 		{
-			$templates->cache['showthread'] = str_replace('{$header}', '{$header}<table width="100%"  border="0"><tr><td width="' . $adv_sidebox_width_left . '" valign="top">' . $thread_left_boxes . '</td></td><td width="auto" valign="top">', $templates->cache['showthread']);
+			$templates->cache['showthread'] = str_replace('{$header}', '	{$header}<table width="100%"  border="0"><tr><td width="' . $adv_sidebox_width_left . '" valign="top">' . $thread_left_boxes . '</td></td><td width="auto" valign="top">', $templates->cache['showthread']);
 			$templates->cache['showthread'] = str_replace('{$footer}', '{$footer}</td><td width="' . $adv_sidebox_width_right . '" valign="top">' . $thread_right_boxes . '</td></tr></table>', $templates->cache['showthread']);
 		}
 	}

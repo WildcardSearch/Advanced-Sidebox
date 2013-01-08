@@ -373,7 +373,47 @@ function adv_sidebox_build_filter_links($filter)
 	position: relative;
 	top: 5px;
 }
-</style><span' . $all_disabled . '><a href="' . ADV_SIDEBOX_URL . '"/>All</a></span><span' . $index_disabled . '><a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=index"/>Index</a></span><span' . $forum_disabled . '><a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=forum"/>Forum</a></span><span' . $thread_disabled . '><a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=thread"/>Thread</a></span><span' . $portal_disabled . '><a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=portal"/>Portal</a></span>';
+</style><span' . $all_disabled . '><a href="' . ADV_SIDEBOX_URL . '"/>' . $lang->adv_sidebox_all . '</a></span><span' . $index_disabled . '><a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=index"/>' . $lang->adv_sidebox_index . '</a></span><span' . $forum_disabled . '><a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=forum"/>' . $lang->adv_sidebox_forum . '</a></span><span' . $thread_disabled . '><a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=thread"/>' . $lang->adv_sidebox_thread . '</a></span><span' . $portal_disabled . '><a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=portal"/>' . $lang->adv_sidebox_portal . '</a></span>';
+}
+
+function adv_sidebox_strip_quotes($message)
+{
+	global $lang, $templates, $theme, $mybb;
+
+	// Assign pattern and replace values.
+	$pattern = array(
+		"#\[quote=([\"']|&quot;|)(.*?)(?:\\1)(.*?)(?:[\"']|&quot;)?\](.*?)\[/quote\](\r\n?|\n?)#esi",
+		"#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si"
+	);
+
+	$replace = array(
+		"",
+		""
+	);
+
+	do
+	{
+		$previous_message = $message;
+		$message = preg_replace($pattern, $replace, $message, -1, $count);
+	} while($count);
+
+	if(!$message)
+	{
+		$message = $previous_message;
+	}
+
+	$find = array(
+		"#(\r\n*|\n*)<\/cite>(\r\n*|\n*)#",
+		"#(\r\n*|\n*)<\/blockquote>#"
+	);
+
+	$replace = array(
+		"",
+		""
+	);
+	$message = preg_replace($find, $replace, $message);
+	
+	return $message;
 }
 
 ?>

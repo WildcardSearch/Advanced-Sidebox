@@ -1,4 +1,24 @@
 <?php
+/*
+ * This file contains the install functions for adv_sidebox.php
+ *
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x v1.2
+ * Copyright © 2013 WildcardSearch
+ * http://www.rantcentralforums.com
+ *
+ * Check out this project on GitHub: https://github.com/WildcardSearch/Advanced-Sidebox
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see http://www.gnu.org/licenses
+ */
 
 // Disallow direct access to this file for security reasons
 if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
