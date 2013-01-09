@@ -88,6 +88,13 @@ function adv_sidebox_start()
 	$sideboxes = array();
 	$sideboxes = adv_sidebox_get_all_sideboxes();
 	
+	// no boxes
+	if(!is_array($sideboxes))
+	{
+		// get out
+		return false;
+	}
+	
 	// There is only one internal box type (custom),
 	// but new types can come from saved custom boxes . . .
 	$custom_box_list = get_all_custom_box_types_content();
