@@ -23,7 +23,7 @@ function whosonline_asb_info()
 {
 	return array
 	(
-		"name"				=>	'Who\'s Online Avatar List',
+		"name"				=>	'Who\'s Online',
 		"description"		=>	'lists the currently online members\' avatars',
 		"stereo"			=>	true,
 		"wrap_content"	=>	true
