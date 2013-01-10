@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x v1.2
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x v1.3
  * Copyright © 2013 WildcardSearch
  * http://www.rantcentralforums.com
  *
@@ -113,8 +113,16 @@ function adv_sidebox_start()
 		}
 		else
 		{
-			// otherwise use the box's content
-			$content = $this_box->content;
+			// normally we will wrap the sidebox with header and expander
+			if($this_box->wrap_content || $this_box->box_type == 'custom_box')
+			{
+				$content = $this_box->wrapped_content;
+			}
+			else
+			{
+				// otherwise use the box's content
+				$content = $this_box->content;
+			}
 		}
 		
 		// Index

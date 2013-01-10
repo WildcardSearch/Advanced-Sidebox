@@ -1,4 +1,4 @@
-Advanced-Sidebox 1.2
+Advanced-Sidebox 1.3
 =================
 
 A plugin for MyBB forums that displays portal boxes on various forum pages.
@@ -11,6 +11,8 @@ I will add more info as the project develops further.
 
 Change Log
 =========
+
+01-10-2013 - 1.3 released adding the ability to expand/collapse sideboxes and remember their states using cookies. Also a bug fix to prevent a warning when there are no sideboxes installed yet.
 
 01-06-2013 - 1.2 released adding independent script control and a renovated ACP page set. Admins can now create a different set of sideboxes for the four main scripts: index.php, forumdisplay.php, showthread.php and portal.php
 

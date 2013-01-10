@@ -23,7 +23,8 @@ function statistics_asb_info()
 	(
 		"name"				=>	'Statistics',
 		"description"		=>	'forum statistics and figures',
-		"stereo"			=>	false
+		"stereo"			=>	false,
+		"wrap_content"	=>	true
 	);
 }
 
@@ -45,11 +46,7 @@ function statistics_asb_install()
 	// the statistics template
 	$template_5 = array(
         "title" => "adv_sidebox_statistics",
-        "template" => "<table border=\"0\" cellspacing=\"{\$theme[\'borderwidth\']}\" cellpadding=\"{\$theme[\'tablespace\']}\" class=\"tborder\">
-	<tr>
-		<td class=\"thead\"><strong>{\$lang->forum_stats}</strong></td>
-	</tr>
-	<tr>
+        "template" => "<tr>
 		<td class=\"trow1\">
 			<span class=\"smalltext\">
 			<strong>&raquo; </strong>{\$lang->num_members} {\$statistics[\'numusers\']}<br />
@@ -59,9 +56,7 @@ function statistics_asb_install()
 			<br /><br /><a href=\"{\$mybb->settings[\'bburl\']}/stats.php\">{\$lang->full_stats}</a>
 			</span>
 		</td>
-	</tr>
-</table>
-<br />",
+	</tr>",
         "sid" => -1
     );
 	$db->insert_query("templates", $template_5);

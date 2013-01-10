@@ -25,7 +25,8 @@ function whosonline_asb_info()
 	(
 		"name"				=>	'Who\'s Online Avatar List',
 		"description"		=>	'lists the currently online members\' avatars',
-		"stereo"			=>	true
+		"stereo"			=>	true,
+		"wrap_content"	=>	true
 	);
 }
 
@@ -79,20 +80,14 @@ function whosonline_asb_install()
 	// the whosonline avatar list parent template (left)
 	$template_7_l = array(
         "title" => "adv_sidebox_whosonline_left",
-        "template" => "<table border=\"0\" cellspacing=\"{\$theme[\'borderwidth\']}\" cellpadding=\"{\$theme[\'tablespace\']}\" class=\"tborder\">
-	<tr>
-		<td class=\"thead\"><strong>{\$lang->online}</strong></td>
-	</tr>
-	<tr>
+        "template" => "<tr>
 		<td class=\"trow1\">
 			<span class=\"smalltext\">{\$lang->online_users}<br /><strong>&raquo;</strong> {\$lang->online_counts}</span>
 		</td>
 	</tr>
 	<tr>
 		<td class=\"trow2\">{\$onlinemembers_l}</td>
-	</tr>
-</table>
-<br />",
+	</tr>",
         "sid" => -1
     );
 	$db->insert_query("templates", $template_7_l);
@@ -100,11 +95,7 @@ function whosonline_asb_install()
 	// the whosonline avatar list parent template (right)
 	$template_7_r = array(
         "title" => "adv_sidebox_whosonline_right",
-        "template" => "<table border=\"0\" cellspacing=\"{\$theme[\'borderwidth\']}\" cellpadding=\"{\$theme[\'tablespace\']}\" class=\"tborder\">
-	<tr>
-		<td class=\"thead\"><strong>{\$lang->online}</strong></td>
-	</tr>
-	<tr>
+        "template" => "<tr>
 		<td class=\"trow1\">
 			<span class=\"smalltext\">
 			{\$lang->online_users}<br /><strong>&raquo;</strong> {\$lang->online_counts}
@@ -113,9 +104,7 @@ function whosonline_asb_install()
 	</tr>
 	<tr>
 		<td class=\"trow2\">{\$onlinemembers_r}</td>
-	</tr>
-</table>
-<br />",
+	</tr>",
         "sid" => -1
     );
 	$db->insert_query("templates", $template_7_r);

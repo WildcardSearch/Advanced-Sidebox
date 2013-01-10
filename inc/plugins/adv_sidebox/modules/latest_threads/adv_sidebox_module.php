@@ -22,7 +22,8 @@ function latest_threads_asb_info()
 	(
 		"name"				=>	'Latest Threads',
 		"description"		=>	'lists the latest forum threads',
-		"stereo"			=>	false
+		"stereo"			=>	false,
+		"wrap_content"	=>	true
 	);
 }
 
@@ -41,13 +42,7 @@ function latest_threads_asb_install()
 	// latest threads parent template
 	$template_9 = array(
         "title" => "adv_sidebox_latest_threads",
-        "template" => "<table border=\"0\" cellspacing=\"{\$theme[\'borderwidth\']}\" cellpadding=\"{\$theme[\'tablespace\']}\" class=\"tborder\">
-	<tr>
-		<td class=\"thead\"><strong>{\$lang->adv_sidebox_latest_threads}</strong></td>
-	</tr>
-	{\$threadlist}
-</table>
-<br />",
+        "template" => "{\$threadlist}",
         "sid" => -1
     );
 	$db->insert_query("templates", $template_9);

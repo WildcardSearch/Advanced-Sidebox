@@ -15,17 +15,18 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-function search_asb_info()
+function search_box_asb_info()
 {
 	return array
 	(
 		"name"				=>	'Search',
 		"description"		=>	'simple textbox and button',
-		"stereo"			=>	false
+		"stereo"			=>	false,
+		"wrap_content"	=>	true
 	);
 }
 
-function search_asb_is_installed()
+function search_box_asb_is_installed()
 {
 	global $db;
 	
@@ -34,18 +35,14 @@ function search_asb_is_installed()
 	return $db->num_rows($query);
 }
 
-function search_asb_install()
+function search_box_asb_install()
 {
 	global $db;
 	
 	// the search template
 	$template_6 = array(
         "title" => "adv_sidebox_search",
-        "template" => "<table border=\"0\" cellspacing=\"{\$theme[\'borderwidth\']}\" cellpadding=\"{\$theme[\'tablespace\']}\" class=\"tborder\">
-	<tr>
-		<td class=\"thead\"><strong>{\$lang->search_forums}</strong></td>
-	</tr>
-	<tr>
+        "template" => "<tr>
 		<td class=\"trow1\" align=\"center\">
 			<form method=\"post\" action=\"{\$mybb->settings[\'bburl\']}/search.php\">
 				<input type=\"hidden\" name=\"action\" value=\"do_search\" />
@@ -59,9 +56,7 @@ function search_asb_install()
 		(<a href=\"{\$mybb->settings[\'bburl\']}/search.php\">{\$lang->advanced_search}</a>)
 		</span>
 	</td>
-	</tr>
-</table>
-<br />",
+	</tr>",
         "sid" => -1
     );
 	$db->insert_query("templates", $template_6);
@@ -70,7 +65,7 @@ function search_asb_install()
 /*
  * This function is required. Clean up after yourself.
  */
-function search_asb_uninstall()
+function search_box_asb_uninstall()
 {
 	global $db;
 	
@@ -82,10 +77,10 @@ function search_asb_uninstall()
 /*
  * This function is required. It is used by adv_sidebox.php to display the custom content in your sidebox.
  */
-function search_asb_build_template()
+function search_box_asb_build_template()
 {
 	// don't forget to declare your variable! will not work without this
-	global $search; // <-- important!
+	global $search_box; // <-- important!
 	
 	global $db, $mybb, $templates, $lang, $gobutton;
 	
@@ -99,7 +94,7 @@ function search_asb_build_template()
 		$lang->load('adv_sidebox');
 	}
 	
-	eval("\$search = \"" . $templates->get("adv_sidebox_search") . "\";");
+	eval("\$search_box = \"" . $templates->get("adv_sidebox_search") . "\";");
 }
 
 ?>

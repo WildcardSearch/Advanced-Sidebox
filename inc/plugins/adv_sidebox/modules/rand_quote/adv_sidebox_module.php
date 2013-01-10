@@ -22,7 +22,8 @@ function rand_quote_asb_info()
 	(
 		"name"				=>	'Random Quotes',
 		"description"		=>	'displays random quotes with a link and avatar',
-		"stereo"			=>	true
+		"stereo"			=>	true,
+		"wrap_content"	=>	true
 	);
 }
 
@@ -42,19 +43,13 @@ function rand_quote_asb_install()
 	// a simple template
 	$template_1 = array(
         "title" => "rand_quote_sidebox_left",
-        "template" => "<table border=\"0\" cellspacing=\"{\$theme[\'borderwidth\']}\" cellpadding=\"{\$theme[\'tablespace\']}\" class=\"tborder\">
-	<tr>
-		<td class=\"thead\" colspan=\"3\"><strong>Random Quotes</strong></td>
-	</tr>
-	<tr>
+        "template" => "<tr>
 		<td class=\"trow1\" colspan\"1\">
 			<div style=\"position: relative; max_height: 100px; overflow: hidden;\">
 				{\$rand_quote_avatar_l}{\$rand_quote_text}<br /><br />
 				{\$read_more_l}{\$rand_quote_author}
 			</div></td>
-	</tr>
-</table>
-<br />",
+	</tr>",
         "sid" => -1
     );
 	$db->insert_query("templates", $template_1);
@@ -62,11 +57,7 @@ function rand_quote_asb_install()
 	// a simple template
 	$template_2 = array(
         "title" => "rand_quote_sidebox_right",
-        "template" => "<table border=\"0\" cellspacing=\"{\$theme[\'borderwidth\']}\" cellpadding=\"{\$theme[\'tablespace\']}\" class=\"tborder\">
-	<tr>
-		<td class=\"thead\" colspan=\"3\"><strong>Random Quotes</strong></td>
-	</tr>
-	<tr>
+        "template" => "<tr>
 		<td class=\"trow1\" colspan\"1\">
 			<table>
 				<tr>
@@ -82,9 +73,7 @@ function rand_quote_asb_install()
 				</tr>
 			</table>
 		</td>
-	</tr>
-</table>
-<br />",
+	</tr>",
         "sid" => -1
     );
 	$db->insert_query("templates", $template_2);

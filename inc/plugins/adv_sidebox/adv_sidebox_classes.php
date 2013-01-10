@@ -1,9 +1,29 @@
 <?php
 /*
- * This file contains classes for Advanced Sidebox
+ * This file contains class definitions for the entire project
+ *
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Copyright © 2013 WildcardSearch
+ * http://www.rantcentralforums.com
+ *
+ * Check out this project on GitHub: https://github.com/WildcardSearch/Advanced-Sidebox
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see http://www.gnu.org/licenses
  */
-
-class Sidebox
+ 
+/*
+ * wrapper for individual sideboxes
+ */
+ class Sidebox
 {
 	public $id;
 	public $display_name;
@@ -11,6 +31,8 @@ class Sidebox
 	public $position = 0;
 	public $display_order;
 	public $stereo = false;
+	public $wrap_content = false;
+	public $wrapped_content = '';
 	public $content;
 
 	public $valid = false;
@@ -42,16 +64,14 @@ class Sidebox
 	/*
 	 * load()
 	 *
-	 * can be called on an existing object with or without data
+	 * attempts to load the sidebox's data from the db, or if given no data create a blank object
 	 *
 	 * @param - $data can be an array fetched from the db or
-	 *						a valid ID #
-	 *
-	 * if this sidebox is undefined (or bad data was received), do nothing
+	 *						a valid ID # (__construct will feed 0 if no data is given)
 	 */
 	function load($data)
 	{
-		global $db;
+		global $db, $collapsed;
 
 		// if data isn't an array, try it as an ID
 		if(!is_array($data))
@@ -81,6 +101,7 @@ class Sidebox
 			$this->position = (int) $data['position'];
 			$this->display_order = (int) $data['display_order'];
 			$this->stereo = (int) $data['stereo'];
+			$this->wrap_content = (int) $data['wrap_content'];
 
 			$this->show_on_index = $data['show_on_index'];
 			$this->show_on_forumdisplay = $data['show_on_forumdisplay'];
@@ -112,9 +133,39 @@ class Sidebox
 				}
 				else
 				{
-					// otherwise just beuild a template variable for this sidebox
+					// otherwise just build a template variable for this sidebox
 					$this->content = '{$' . $this->box_type . '}';
 				}
+			}
+			
+			// In most cases we will be wrapping the boxes with a header and expander
+			if($this->wrap_content || $this->box_type == 'custom_box')
+			{
+				// Check if this sidebox is either expanded or collapsed and hide it as necessary.
+				$expdisplay = '';
+				$collapsed_name = 'asb_' . $this->box_type . '_' . $this->id . '_c';
+				if(isset($collapsed[$collapsed_name]) && $collapsed[$collapsed_name] == "display: show;")
+				{
+					$expcolimage = "collapse_collapsed.gif";
+					$expdisplay = "display: none;";
+					$expaltext = "[+]";
+				}
+				else
+				{
+					$expcolimage = "collapse.gif";
+					$expaltext = "[-]";
+				}
+				
+				$this->wrapped_content = '
+<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
+	<thead>
+		<tr>
+			<td class="thead"><div class="expcolimage"><img src="{$theme[\'imgdir\']}/' . $expcolimage . '" id="asb_' . $this->box_type . '_' . $this->id . '_img" class="expander" alt="' . $expaltext . '" title="' . $expaltext . '" /></div><strong>' . $this->display_name . '</strong></td>
+		</tr>
+	</thead>
+	<tbody style="' . $expdisplay . '" id="asb_' . $this->box_type . '_' . $this->id . '_e">' . $this->content . '
+	</tbody>
+</table><br />';
 			}
 		}
 	}
@@ -135,6 +186,7 @@ class Sidebox
 			"position"							=>	(int) $this->position,
 			"display_order"					=> 	(int) $this->display_order,
 			"stereo"							=>	(int) $this->stereo,
+			"wrap_content"					=>	(int) $this->wrap_content,
 			"content"							=>	$db->escape_string($this->content),
 			"show_on_index"				=>	(int) $this->show_on_index,
 			"show_on_forumdisplay"	=>	(int) $this->show_on_forumdisplay,
@@ -251,6 +303,7 @@ class Sidebox_addon
 	public $name = '';
 	public $description = '';
 	public $stereo = false;
+	public $wrap_content = false;
 	public $valid = false;
 	public $module_type;
 
@@ -298,6 +351,7 @@ class Sidebox_addon
 					$this->base_name = $module;
 					$this->name = $this_info['name'];
 					$this->description = $this_info['description'];
+					$this->wrap_content = $this_info['wrap_content'];
 
 					if($this_info['stereo'])
 					{

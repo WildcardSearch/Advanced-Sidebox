@@ -20,17 +20,18 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 /*
  * This function is required. It is used by acp_functions to add and describe your new sidebox.
  */
-function welcome_asb_info()
+function welcome_box_asb_info()
 {
 	return array
 	(
 		"name"				=>	'Welcome',
 		"description"		=>	'login for guest, info for member',
-		"stereo"			=>	false
+		"stereo"			=>	false,
+		"wrap_content"	=>	true
 	);
 }
 
-function welcome_asb_is_installed()
+function welcome_box_asb_is_installed()
 {
 	global $db;
 	
@@ -42,23 +43,18 @@ function welcome_asb_is_installed()
 /*
  * This function is required. Make your mods here.
  */
-function welcome_asb_install()
+function welcome_box_asb_install()
 {
 	global $db;
 	
 	// the parent template for the welcome box
 	$template_1 = array(
         "title" => "adv_sidebox_welcome",
-        "template" => "<table border=\"0\" cellspacing=\"{\$theme[\'borderwidth\']}\" cellpadding=\"{\$theme[\'tablespace\']}\" class=\"tborder\">
-	<tr>
-		<td class=\"thead\"><strong>{\$lang->welcome}</strong></td>
-	</tr>
-	<tr>
+        "template" => "<tr>
 		<td class=\"trow1\">
 			{\$welcometext}
 		</td>
-	</tr>
-</table><br />",
+	</tr>",
         "sid" => -1
     );
 	$db->insert_query("templates", $template_1);
@@ -97,12 +93,12 @@ function welcome_asb_install()
 /*
  * This function is required. Clean up after yourself.
  */
-function welcome_asb_uninstall()
+function welcome_box_asb_uninstall()
 {
 	global $db;
 	
 	// delete all the boxes of this custom type and the template as well
-	$db->query("DELETE FROM " . TABLE_PREFIX . "sideboxes WHERE box_type='" . $db->escape_string('welcome') . "'");
+	$db->query("DELETE FROM " . TABLE_PREFIX . "sideboxes WHERE box_type='" . $db->escape_string('welcome_box') . "'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_welcome'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_welcome_membertext'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_welcome_guesttext'");
@@ -111,10 +107,10 @@ function welcome_asb_uninstall()
 /*
  * This function is required. It is used by adv_sidebox.php to display the custom content in your sidebox.
  */
-function welcome_asb_build_template()
+function welcome_box_asb_build_template()
 {
 	// don't forget to declare your variable! will not work without this
-	global $welcome; // <-- important!
+	global $welcome_box; // <-- important!
 	
 	global $db, $mybb, $templates, $lang, $lastvisit;
 	
@@ -221,7 +217,7 @@ function welcome_asb_build_template()
 		eval("\$welcometext = \"" . $templates->get("portal_welcome_guesttext") . "\";");
 	}
 	$lang->welcome = $lang->sprintf($lang->welcome, $mybb->user['username']);
-	eval("\$welcome = \"" . $templates->get("adv_sidebox_welcome") . "\";");
+	eval("\$welcome_box = \"" . $templates->get("adv_sidebox_welcome") . "\";");
 	if($mybb->user['uid'] == 0)
 	{
 		$mybb->user['username'] = "";

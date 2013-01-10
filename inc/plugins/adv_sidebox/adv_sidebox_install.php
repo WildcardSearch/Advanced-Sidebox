@@ -2,7 +2,7 @@
 /*
  * This file contains the install functions for adv_sidebox.php
  *
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x v1.2
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright © 2013 WildcardSearch
  * http://www.rantcentralforums.com
  *
@@ -26,7 +26,10 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-// Information about the plugin used by MyBB for display as well as to connect with updates
+/* adv_sidebox_info()
+ *
+ * Information about the plugin used by MyBB for display as well as to connect with updates
+ */
 function adv_sidebox_info()
 {
 	global $db, $mybb, $lang;
@@ -54,19 +57,25 @@ function adv_sidebox_info()
 		"website"		=> "https://github.com/WildcardSearch/Advanced-Sidebox",
 		"author"		=> "Wildcard",
 		"authorsite"	=> "http://www.rantcentralforums.com",
-		"version"		=> "1.2",
+		"version"		=> "1.3",
 		"compatibility" => "16*",
 		"guid" 			=> "870e9163e2ae9b606a789d9f7d4d2462",
 	);
 }
 
-// Checks to see if the plugin's settingsgroup is installed. If so then assume the plugin is installed.
+/* adv_sidebox_is_installed()
+ *
+ * Checks to see if the plugin's settingsgroup is installed. If so then assume the plugin is installed.
+ */
 function adv_sidebox_is_installed()
 {
 	return adv_sidebox_get_settingsgroup();
 }
 
-// Add a table (sideboxes) to the DB, a column to the mybb_users table (show_sidebox), install the plugin settings, check for existing modules and install any detected.
+/* adv_sidebox_install()
+ *
+ * Add a table (sideboxes) to the DB, a column to the mybb_users table (show_sidebox), install the plugin settings, check for existing modules and install any detected.
+ */
 function adv_sidebox_install()
 {
 	global $db, $mybb, $lang;
@@ -89,6 +98,7 @@ function adv_sidebox_install()
 				show_on_showthread INT(2),
 				show_on_portal INT(2),
 				stereo INT(2),
+				wrap_content INT(2),
 				content TEXT
 			) ENGINE=MyISAM{$collation};"
 		);
@@ -105,6 +115,7 @@ function adv_sidebox_install()
 				id INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 				name VARCHAR(32) NOT NULL,
 				description VARCHAR(128) NOT NULL,
+				wrap_content INT(2),
 				content TEXT
 			) ENGINE=MyISAM{$collation};"
 		);
@@ -233,7 +244,10 @@ function adv_sidebox_install()
 	}
 }
 
-// DROP the table added to the DB and the column previously added to the mybb_users table (show_sidebox), delete the plugin settings, templates and stylesheets.
+/* adv_sidebox_uninstall()
+ *
+ * DROP the table added to the DB and the column previously added to the mybb_users table (show_sidebox), delete the plugin settings, templates and stylesheets.
+ */
 function adv_sidebox_uninstall()
 {
 	global $db;
@@ -275,6 +289,10 @@ function adv_sidebox_uninstall()
 	rebuild_settings();
 }
 
+/* adv_sidebox_get_settingsgroup()
+ *
+ * retrieves the plugin's settingsgroup gid if it exists
+ */
 function adv_sidebox_get_settingsgroup()
 {
 	global $db;
@@ -283,6 +301,10 @@ function adv_sidebox_get_settingsgroup()
 	return $db->fetch_field($query, 'gid');
 }
 
+/* adv_sidebox_build_settings_link()
+ *
+ * builds a link to modify plugin settings if it exists
+ */
 function adv_sidebox_build_settings_link()
 {
 	global $lang;
@@ -306,6 +328,12 @@ function adv_sidebox_build_settings_link()
 	return false;
 }
 
+/* adv_sidebox_build_settings_url()
+ *
+ * builds the url to modify plugin settings if given valid info
+ *
+ * @param - $gid is an integer representing a valid settingsgroup id
+ */
 function adv_sidebox_build_settings_url($gid)
 {
 	if($gid)

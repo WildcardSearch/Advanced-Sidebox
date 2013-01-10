@@ -19,7 +19,8 @@ function example_asb_info()
 	(
 		"name"				=>	'Example Box',
 		"description"		=>	'A simple box to illustrate extending Advanced Sideboxes',
-		"stereo"			=>	false
+		"stereo"			=>	false,
+		"wrap_content"	=>	true
 	);
 }
 
@@ -29,12 +30,13 @@ function example_asb_build_template()
 	// don't forget to declare your variable! will not work without this
 	global $example;
 	
-	$template = '<table border=\"0\" cellspacing=\"{$theme[\'borderwidth\']}\" cellpadding=\"{$theme[\'tablespace\']}\" class=\"tborder\"><tr><td class=\"thead\"><strong>Hello World Mono</strong></td></tr><tr><td class=\"trow1\">{$hello_world}</td></tr></table><br />';
-	
 	// set any variables in your template (or string as in this case) here just before the eval
-	$hello_world = "Same from either side.";
+	$hello_world = '
+		<tr>
+			<td class=\"trow1\">Same from either side.</td>
+		</tr>';
 	
-	eval("\$example = \"" . $template . "\";");
+	eval("\$example = \"" . $hello_world . "\";");
 }
 
 ?>

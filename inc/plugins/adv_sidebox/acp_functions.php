@@ -1,6 +1,6 @@
 <?php
 /*
- * This file contains the ACP functions for adv_sidebox.php
+ * This file contains the Admin Control Panel functions for this plugin
  *
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x v1.0
  * Copyright © 2012 Wildcard
@@ -242,7 +242,7 @@ function adv_sidebox_manage_sideboxes()
 			require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_classes.php';
 
 			$this_sidebox = new Sidebox();
-			$this_sidebox->id = $mybb->input['box'];
+			$this_sidebox->id = (int) $mybb->input['box'];
 
 			$status = $this_sidebox->remove();
 		}
@@ -505,7 +505,11 @@ function adv_sidebox_admin_editbox()
 
 			$this_sidebox->box_type = $mybb->input['box_type_select'];
 			$this_sidebox->id = (int) $mybb->input['box'];
-			$this_sidebox->stereo = adv_sidebox_module_is_stereo($this_sidebox->box_type);
+			
+			$this_module = new Sidebox_addon($this_sidebox->box_type);
+			
+			$this_sidebox->stereo = $this_module->stereo;
+			$this_sidebox->wrap_content = $this_module->wrap_content;
 			$this_sidebox->display_name = $box_types[$this_sidebox->box_type];
 
 			$status = $this_sidebox->save();
@@ -543,16 +547,22 @@ function adv_sidebox_admin_editbox()
 	if($this_sidebox->box_type != 'custom_box')
 	{
 		// some sample custom content
-		$this_sidebox->content = '<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
-	<tr>
-		<td class="thead"><strong>Custom Box</strong></td>
-	</tr>
-	<tr>
-		<td class="trow1">Place your custom content here. HTML can be used in conjunction with certain template variables, language variables and environment variables.<br /><br />
-		For example:<br /><br />
-		<strong>User:</strong> {$mybb->user[\'username\']}<br />
-		<strong>UID:</strong> {$mybb->user[\'uid\']}<br />
-		<strong>Theme name:</strong> {$theme[\'name\']}</td></tr></table><br />';
+		$this_sidebox->content = '
+		<tr>
+			<td class="trow1">Place your custom content here. HTML can be used in conjunction with certain template variables, language variables and environment variables.</td>
+		</tr>
+		<tr>
+			<td class="trow2">For example:</td>
+		</tr>
+		<tr>
+			<td class="trow1"><strong>User:</strong> {$mybb->user[\'username\']}</td>
+		</tr>
+		<tr>
+			<td class="trow2"><strong>UID:</strong> {$mybb->user[\'uid\']}</td>
+		</tr>
+		<tr>
+			<td class="trow1"><strong>Theme name:</strong> {$theme[\'name\']}</td>
+		</tr>';
 	}
 
 	if($this_sidebox->id == 0)
@@ -821,6 +831,11 @@ function adv_sidebox_admin_custom_boxes()
 				$this_box['name'] = $db->escape_string($mybb->input['box_name']);
 				$this_box['description'] = $db->escape_string($mybb->input['box_description']);
 				$this_box['content'] = $db->escape_string($mybb->input['box_content']);
+				
+				if($mybb->input['wrap_content'] == 'yes')
+				{
+					$this_box['wrap_content'] = true;
+				}
 
 				// updating or creating a new type?
 				if(isset($mybb->input['box']))
@@ -919,23 +934,31 @@ function adv_sidebox_admin_custom_boxes()
 		{
 			// new box
 			$specify_box = '';
-			$this_box['content'] = '<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
-	<tr>
-		<td class="thead"><strong>Custom Box</strong></td>
-	</tr>
-	<tr>
-		<td class="trow1">Place your custom content here. HTML can be used in conjunction with certain template variables, language variables and environment variables.<br /><br />
-		For example:<br /><br />
-		<strong>User:</strong> {$mybb->user[\'username\']}<br />
-		<strong>UID:</strong> {$mybb->user[\'uid\']}<br />
-		<strong>Theme name:</strong> {$theme[\'name\']}</td></tr></table><br />';
+			$this_box['content'] = '
+		<tr>
+			<td class="trow1">Place your custom content here. HTML can be used in conjunction with certain template variables, language variables and environment variables.</td>
+		</tr>
+		<tr>
+			<td class="trow2">For example:</td>
+		</tr>
+		<tr>
+			<td class="trow1"><strong>User:</strong> {$mybb->user[\'username\']}</td>
+		</tr>
+		<tr>
+			<td class="trow2"><strong>UID:</strong> {$mybb->user[\'uid\']}</td>
+		</tr>
+		<tr>
+			<td class="trow1"><strong>Theme name:</strong> {$theme[\'name\']}</td>
+		</tr>';
+			$this_box['wrap_content'] = true;
 		}
 
 		$form = new Form(ADV_SIDEBOX_CUSTOM_URL . $specify_box, "post", "edit_box");
 		$form_container = new FormContainer($lang->adv_sidebox_edit_box);
 		$form_container->output_row($lang->adv_sidebox_custom_box_name, $lang->adv_sidebox_add_custom_box_name_desc, $form->generate_text_box('box_name', $this_box['name'], array("id" => 'box_name')));
 		$form_container->output_row($lang->adv_sidebox_custom_box_desc, $lang->adv_sidebox_add_custom_box_description_desc, $form->generate_text_box('box_description', $this_box['description'], array("id" => 'box_description')));
-		$form_container->output_row($lang->adv_sidebox_add_custom_box_edit, $lang->adv_sidebox_add_custom_box_edit_desc, $form->generate_text_area('box_content', $this_box['content'], array("id" => 'box_content')), array("id" => 'box_content'));
+		$form_container->output_row($lang->adv_sidebox_custom_box_wrap_content, '', $form->generate_check_box('wrap_content', 'yes', $lang->adv_sidebox_custom_box_wrap_content_desc, array("checked" => $this_box['wrap_content'])));
+		$form_container->output_row($lang->adv_sidebox_add_custom_box_edit, $lang->adv_sidebox_add_custom_box_edit_desc, $form->generate_text_area('box_content', $this_box['content'], array("id" => 'box_content', "rows" => '15', "cols" => '200')), array("id" => 'box_content'));
 		$form_container->end();
 
 		$buttons[] = $form->generate_submit_button('Save', array('name' => 'save_box_submit'));

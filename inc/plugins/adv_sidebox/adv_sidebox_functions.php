@@ -1,4 +1,24 @@
 <?php
+/*
+ * This file contains variousl functions for adv_sidebox.php and acp_functions.php
+ *
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Copyright © 2013 WildcardSearch
+ * http://www.rantcentralforums.com
+ *
+ * Check out this project on GitHub: https://github.com/WildcardSearch/Advanced-Sidebox
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see http://www.gnu.org/licenses
+ */
 
 /*
  * adv_sidebox_get_all_sideboxes()
@@ -29,26 +49,6 @@ function adv_sidebox_get_all_sideboxes()
 	{
 		return false;
 	}
-}
-
-/*
- * adv_sidebox_module_is_stereo()
- *
- * retrieves info from the specified module
- *
- * @param - $module_name is a strong containing the base_name of the module
- */
-function adv_sidebox_module_is_stereo($module_name)
-{
-	require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_classes.php';
-	$this_module = new Sidebox_addon($module_name);
-
-	if($this_module->stereo)
-	{
-		return true;
-	}
-
-	return false;
 }
 
 /*
@@ -86,7 +86,7 @@ function get_all_modules(&$box_types = array())
  */
 function get_all_custom_box_types_content()
 {
-	global $db;
+	global $db, $collapsed;
 
 	$all_custom_types = array();
 
@@ -97,6 +97,36 @@ function get_all_custom_box_types_content()
 	{
 		while($this_type = $db->fetch_array($query))
 		{
+			if($this_type['wrap_content'])
+			{
+				// Check if this sidebox is either expanded or collapsed and hide it as necessary.
+				$expdisplay = '';
+				$collapsed_name = 'asb_custom_' . $this_type['id'] . '_c';
+				if(isset($collapsed[$collapsed_name]) && $collapsed[$collapsed_name] == "display: show;")
+				{
+					$expcolimage = "collapse_collapsed.gif";
+					$expdisplay = "display: none;";
+					$expaltext = "[+]";
+				}
+				else
+				{
+					$expcolimage = "collapse.gif";
+					$expaltext = "[-]";
+				}
+				
+				$this_type['content'] = '
+<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
+	<thead>
+		<tr>
+			<td class="thead"><div class="expcolimage"><img src="{$theme[\'imgdir\']}/' . $expcolimage . '" id="asb_custom_' . $this_type['id'] . '_img" class="expander" alt="' . $expaltext . '" title="' . $expaltext . '" /></div><strong>' . $this_type['name'] . '</strong></td>
+		</tr>
+	</thead>
+	<tbody style="' . $expdisplay . '" id="asb_custom_' . $this_type['id'] . '_e"><tr>
+		<td class="trow1">' . $this_type['content'] . '</td></tr>
+	</tbody>
+</table><br />';
+			}
+			
 			$all_custom[$this_type['id'] . '_asb_custom'] = $this_type['content'];
 		}
 	}
@@ -376,6 +406,13 @@ function adv_sidebox_build_filter_links($filter)
 </style><span' . $all_disabled . '><a href="' . ADV_SIDEBOX_URL . '"/>' . $lang->adv_sidebox_all . '</a></span><span' . $index_disabled . '><a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=index"/>' . $lang->adv_sidebox_index . '</a></span><span' . $forum_disabled . '><a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=forum"/>' . $lang->adv_sidebox_forum . '</a></span><span' . $thread_disabled . '><a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=thread"/>' . $lang->adv_sidebox_thread . '</a></span><span' . $portal_disabled . '><a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=portal"/>' . $lang->adv_sidebox_portal . '</a></span>';
 }
 
+/*
+ * adv_sidebox_strip_quotes()
+ *
+ * strips all quote tags (and their contents) from a post message
+ *
+ * @param - $message is a string containung the unparsed message
+ */
 function adv_sidebox_strip_quotes($message)
 {
 	global $lang, $templates, $theme, $mybb;
