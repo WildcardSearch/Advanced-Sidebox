@@ -232,17 +232,17 @@ function adv_sidebox_start()
 		if($index_left_boxes && !$index_right_boxes)
 		{
 			$templates->cache['index'] = str_replace('{$header}', '{$header}<table width="100%" border="0" cellspacing="5"><tr><td width="' . $adv_sidebox_width_left . '" valign="top">' . $index_left_boxes . '</td><td width="auto" valign="top">', $templates->cache['index']);
-			$templates->cache['index'] = str_replace('{$footer}', '{$footer}</td></tr></table></div></div>', $templates->cache['index']);
+			$templates->cache['index'] = str_replace('{$footer}', '</td></tr></table>{$footer}', $templates->cache['index']);
 		}
 		elseif(!$index_left_boxes && $index_right_boxes)
 		{
 			$templates->cache['index'] = str_replace('{$header}', '{$header}<table width="100%" border="0" cellspacing="5"><tr><td width="auto" valign="top">', $templates->cache['index']);
-			$templates->cache['index'] = str_replace('{$footer}', '{$footer}</td><td width="' . $adv_sidebox_width_right . '" valign="top">' . $index_right_boxes . '</td></tr></table>', $templates->cache['index']);
+			$templates->cache['index'] = str_replace('{$footer}', '</td><td width="' . $adv_sidebox_width_right . '" valign="top">' . $index_right_boxes . '</td></tr></table>{$footer}', $templates->cache['index']);
 		}
 		elseif($index_left_boxes && $index_right_boxes)
 		{
 			$templates->cache['index'] = str_replace('{$header}', '{$header}<table width="100%" border="0" cellspacing="5"><tr><td width="' . $adv_sidebox_width_left . '" valign="top">' . $index_left_boxes . '</td><td width="auto" valign="top">', $templates->cache['index']);
-			$templates->cache['index'] = str_replace('{$footer}','{$footer}</td><td width="'.$adv_sidebox_width_right.'" valign="top">' . $index_right_boxes . '</td></tr></table></div></div>', $templates->cache['index']);
+			$templates->cache['index'] = str_replace('{$footer}','</td><td width="'.$adv_sidebox_width_right.'" valign="top">' . $index_right_boxes . '</td></tr></table>{$footer}', $templates->cache['index']);
 		}
 	}
 
@@ -252,17 +252,17 @@ function adv_sidebox_start()
 		if($forum_left_boxes && !$forum_right_boxes)
 		{
 			$templates->cache['forumdisplay'] = str_replace('{$header}', '{$header}<table width="100%"  border="0"><tr><td width="' . $adv_sidebox_width_left . '" valign="top">' . $forum_left_boxes . '</td><td width="auto" valign="top">', $templates->cache['forumdisplay']);
-			$templates->cache['forumdisplay'] = str_replace('{$footer}', '{$footer}</td></tr></table>', $templates->cache['forumdisplay']);
+			$templates->cache['forumdisplay'] = str_replace('{$footer}', '</td></tr></table>{$footer}', $templates->cache['forumdisplay']);
 		}
 		elseif(!$forum_left_boxes && $forum_right_boxes)
 		{
 			$templates->cache['forumdisplay'] = str_replace('{$header}', '{$header}<table width="100%"  border="0"><tr><td width="auto" valign="top">', $templates->cache['forumdisplay']);
-			$templates->cache['forumdisplay'] = str_replace('{$footer}', '{$footer}</td><td width="' . $adv_sidebox_width_right . '" valign="top">' . $forum_right_boxes . '</td></tr></table>', $templates->cache['forumdisplay']);
+			$templates->cache['forumdisplay'] = str_replace('{$footer}', '</td><td width="' . $adv_sidebox_width_right . '" valign="top">' . $forum_right_boxes . '</td></tr></table>{$footer}', $templates->cache['forumdisplay']);
 		}
 		elseif($forum_left_boxes && $forum_right_boxes)
 		{
 			$templates->cache['forumdisplay'] = str_replace('{$header}', '{$header}<table width="100%"  border="0"><tr><td width="' . $adv_sidebox_width_left . '" valign="top">' . $forum_left_boxes . '</td><td width="auto" valign="top">', $templates->cache['forumdisplay']);
-			$templates->cache['forumdisplay'] = str_replace('{$footer}', '{$footer}</td><td width="' . $adv_sidebox_width_right . '" valign="top">' . $forum_right_boxes . '</td></tr></table>', $templates->cache['forumdisplay']);
+			$templates->cache['forumdisplay'] = str_replace('{$footer}', '</td><td width="' . $adv_sidebox_width_right . '" valign="top">' . $forum_right_boxes . '</td></tr></table>{$footer}', $templates->cache['forumdisplay']);
 		}
 	}
 	
@@ -271,18 +271,18 @@ function adv_sidebox_start()
 	{
 		if($thread_left_boxes && !$thread_right_boxes)
 		{
-			$templates->cache['showthread'] = str_replace('{$header}', '	{$header}<table width="100%"  border="0"><tr><td width="' . $adv_sidebox_width_left . '" valign="top">' . $thread_left_boxes . '</td></td><td width="auto" valign="top">',$templates->cache['showthread']);
-			$templates->cache['showthread'] = str_replace('{$footer}', '{$footer}</td></tr></table>', $templates->cache['showthread']);
+			$templates->cache['showthread'] = str_replace('{$header}', '{$header}<table width="100%"  border="0"><tr><td width="' . $adv_sidebox_width_left . '" valign="top">' . $thread_left_boxes . '</td></td><td width="auto" valign="top">',$templates->cache['showthread']);
+			$templates->cache['showthread'] = str_replace('{$footer}', '</td></tr></table>{$footer}', $templates->cache['showthread']);
 		}
 		elseif(!$thread_left_boxes && $thread_right_boxes)
 		{
-			$templates->cache['showthread'] = str_replace('{$header}', '	{$header}<table width="100%"  border="0"><tr><td width="auto" valign="top">', $templates->cache['showthread']);
-			$templates->cache['showthread'] = str_replace('{$footer}', '{$footer}</td><td width="' . $adv_sidebox_width_right . '" valign="top">' . $thread_right_boxes . '</td></tr></table>', $templates->cache['showthread']);
+			$templates->cache['showthread'] = str_replace('{$header}', '{$header}<table width="100%"  border="0"><tr><td width="auto" valign="top">', $templates->cache['showthread']);
+			$templates->cache['showthread'] = str_replace('{$footer}', '</td><td width="' . $adv_sidebox_width_right . '" valign="top">' . $thread_right_boxes . '</td></tr></table>{$footer}', $templates->cache['showthread']);
 		}
 		elseif($thread_left_boxes && $thread_right_boxes)
 		{
-			$templates->cache['showthread'] = str_replace('{$header}', '	{$header}<table width="100%"  border="0"><tr><td width="' . $adv_sidebox_width_left . '" valign="top">' . $thread_left_boxes . '</td></td><td width="auto" valign="top">', $templates->cache['showthread']);
-			$templates->cache['showthread'] = str_replace('{$footer}', '{$footer}</td><td width="' . $adv_sidebox_width_right . '" valign="top">' . $thread_right_boxes . '</td></tr></table>', $templates->cache['showthread']);
+			$templates->cache['showthread'] = str_replace('{$header}', '{$header}<table width="100%"  border="0"><tr><td width="' . $adv_sidebox_width_left . '" valign="top">' . $thread_left_boxes . '</td></td><td width="auto" valign="top">', $templates->cache['showthread']);
+			$templates->cache['showthread'] = str_replace('{$footer}', '</td><td width="' . $adv_sidebox_width_right . '" valign="top">' . $thread_right_boxes . '</td></tr></table>{$footer}', $templates->cache['showthread']);
 		}
 	}
 	
