@@ -57,7 +57,7 @@ function adv_sidebox_info()
 		"website"		=> "https://github.com/WildcardSearch/Advanced-Sidebox",
 		"author"		=> "Wildcard",
 		"authorsite"	=> "http://www.rantcentralforums.com",
-		"version"		=> "1.3",
+		"version"		=> "1.3.1",
 		"compatibility" => "16*",
 		"guid" 			=> "870e9163e2ae9b606a789d9f7d4d2462",
 	);
