@@ -47,11 +47,23 @@ $l['adv_sidebox_latest_threads'] = "Latest Threads";
 // WOL
 $l['adv_sidebox_num_avatars_per_row'] = "Number of avatars per row";
 $l['adv_sidebox_avatar_max_rows'] = 'maximum number of avatar rows';
+$l['adv_sidebox_noone_online'] = 'There are no members currently online.';
+
+// staff online
+$l['adv_sidebox_no_staff_online'] = 'There are no staff members currently online.';
 
 // latest threads
 $l['adv_sidebox_latest_threads_lastpost'] = 'Last Post:';
 $l['adv_sidebox_latest_threads_replies'] = 'Replies:';
 $l['adv_sidebox_latest_threads_views'] = 'Views:';
+
+$l['adv_sidebox_latest_threads_no_threads'] = 'no threads to show';
+
+// pm's
+$l['adv_sidebox_pms_no_messages'] = "You must <a href=\\\"" . $mybb->settings['bburl'] . "/register.php\\\" title=\\\"Register\\\">register</a> to use private messaging.";
+
+// random quote
+$l['adv_sidebox_no_posts'] = 'There are no posts to display.';
 
 // avatar
 $l['adv_sidebox_avatar'] = "Avatar";
@@ -152,6 +164,21 @@ $l['adv_sidebox_add_custom_box_edit'] = 'Edit Custom Box';
 $l['adv_sidebox_add_custom_box_edit_desc'] = 'create new box templates and custom sideboxes';
 $l['adv_sidebox_add_custom_box_delete_success'] = 'The custom box type was deleted successfully';
 $l['adv_sidebox_add_custom_box_delete_failure'] = 'The new custom box type could not be deleted successfully';
+
+$l['adv_sidebox_custom_import_no_file'] = 'You must select a valid XML file.';
+$l['adv_sidebox_custom_import_file_error'] = 'Error: {1}';
+$l['adv_sidebox_custom_import_file_upload_error'] = 'There was a problem with the file upload.';
+$l['adv_sidebox_custom_import_file_empty'] = 'This file contains no usable information. It may be corrupted.';
+$l['adv_sidebox_custom_import_file_corrupted'] = 'This file may be corrupted.';
+$l['adv_sidebox_custom_import_save_fail'] = 'Could not save the imported info in the database.';
+$l['adv_sidebox_custom_import_save_success'] = 'The box was successfully imported';
+
+$l['adv_sidebox_custom_import'] = 'Import';
+$l['adv_sidebox_custom_import_box'] = 'Import A Custom Sidebox';
+$l['adv_sidebox_custom_import_description'] = 'backup and restore your user-defined box types';
+$l['adv_sidebox_custom_import_select_file'] = 'Select a local file:';
+
+$l['adv_sidebox_custom_export_error'] = 'An error occurred when attempting to export this sidebox: Sidebox does not exist';
 
 // permissions
 $l['adv_sidebox_admin_permissions_desc'] = 'User can manage sideboxes';

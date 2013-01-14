@@ -58,7 +58,7 @@ function rand_quote_asb_install()
 	$template_2 = array(
         "title" => "rand_quote_sidebox_right",
         "template" => "<tr>
-		<td class=\"trow1\" colspan\"1\">
+		<td class=\"trow1\" colspan=\"1\">
 			<table>
 				<tr>
 					<td style=\"max-height: 130px;\">
@@ -100,8 +100,13 @@ function rand_quote_asb_build_template()
 	// don't forget to declare your variable! will not work without this
 	global $rand_quote_l, $rand_quote_r; // <-- important!
 	
-	global $db, $mybb, $templates, $theme;
+	global $db, $mybb, $templates, $theme, $lang;
 	
+	if(!$lang->adv_sidebox)
+	{
+		$lang->load('adv_sidebox');
+	}
+
 	// get forums user cannot view
 	$unviewable = get_unviewable_forums(true);
 	if($unviewable)
@@ -187,6 +192,14 @@ function rand_quote_asb_build_template()
 		
 		// eval the template and the sidebox will display
 		eval("\$rand_quote_r = \"" . $templates->get("rand_quote_sidebox_right") . "\";");
+	}
+	else
+	{
+		// eval the template and the sidebox will display
+		eval("\$rand_quote_l = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_no_posts . "</td></tr>\";");
+		
+		// eval the template and the sidebox will display
+		eval("\$rand_quote_r = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_no_posts . "</td></tr>\";");
 	}
 }
 

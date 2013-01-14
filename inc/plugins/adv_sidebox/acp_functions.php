@@ -32,6 +32,8 @@ define('ADV_SIDEBOX_EDIT_URL', 'index.php?module=config-adv_sidebox&amp;action=e
 define('ADV_SIDEBOX_DEL_URL', ADV_SIDEBOX_MAIN_URL . '&amp;function=delete_box');
 define('ADV_SIDEBOX_MODULES_URL', 'index.php?module=config-adv_sidebox&amp;action=manage_modules');
 define('ADV_SIDEBOX_CUSTOM_URL', 'index.php?module=config-adv_sidebox&amp;action=custom_boxes');
+define('ADV_SIDEBOX_IMPORT_URL', ADV_SIDEBOX_CUSTOM_URL . '&amp;mode=import');
+define('ADV_SIDEBOX_EXPORT_URL', ADV_SIDEBOX_CUSTOM_URL . '&amp;mode=export');
 
 require_once MYBB_ROOT . "inc/plugins/adv_sidebox/adv_sidebox_install.php";
 
@@ -51,7 +53,7 @@ function adv_sidebox_admin()
 		return false;
 	}
 
-	if (!$lang->adv_sidebox)
+	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}
@@ -382,7 +384,7 @@ margin-bottom: -3px;
 	$left_table->output('Left');
 	echo('</td><td valign="top" style="width: 50%;">');
 	$right_table->output('Right');
-	echo('</td></tr></table>');
+	echo('</td></tr></table><br />');
 
 	$filter_links = adv_sidebox_build_filter_links($mybb->input['mode']);
 
@@ -787,6 +789,160 @@ function adv_sidebox_admin_custom_boxes()
 	{
 		$lang->load('adv_sidebox');
 	}
+	
+	$info = adv_sidebox_info();
+	
+	if($mybb->input['mode'] == 'import')
+	{
+		if($mybb->request_method == "post")
+		{
+			if($mybb->input['import'])
+			{
+				if(!$_FILES['file'] || $_FILES['file']['error'] == 4)
+				{
+					$error = $lang->adv_sidebox_custom_import_no_file;
+				}
+				elseif($_FILES['file']['error'])
+				{
+					$error = $lang->sprintf($lang->adv_sidebox_custom_import_file_error, $_FILES['file']['error']);
+				}
+				else
+				{
+					if(!is_uploaded_file($_FILES['file']['tmp_name']))
+					{
+						$error = $lang->adv_sidebox_custom_import_file_upload_error;
+					}
+					else
+					{
+						$contents = @file_get_contents($_FILES['file']['tmp_name']);
+						@unlink($_FILES['file']['tmp_name']);
+						if(!trim($contents))
+						{
+							$error = $lang->adv_sidebox_custom_import_file_empty;
+						}
+					}
+				}
+				
+				if(!$error)
+				{
+					require_once MYBB_ROOT . 'inc/class_xml.php';
+					$parser = new XMLParser($contents);
+					$tree = $parser->get_tree();
+					
+					if(!is_array($tree) || !is_array($tree['adv_sidebox']) || !is_array($tree['adv_sidebox']['attributes']) || !is_array($tree['adv_sidebox']['custom_sidebox']))
+					{
+						$error = $lang->adv_sidebox_custom_import_file_empty;
+					}
+					
+					if(!$error)
+					{
+						foreach($tree['adv_sidebox']['custom_sidebox'] as $property => $value)
+						{
+							if($property == 'tag' || $property == 'value')
+							{
+								continue;
+							}
+							$input_array[$property] = $value['value'];
+						}
+					}
+				}
+				
+				if($input_array['content'] && $input_array['checksum'] && my_strtolower(md5(base64_decode($input_array['content']))) == my_strtolower($input_array['checksum']))
+				{
+					unset($input_array['checksum']);
+					
+					$input_array['name'] = $db->escape_string($input_array['name']);
+					$input_array['description'] = $db->escape_string($input_array['description']);
+					$input_array['wrap_content'] = (int) $input_array['wrap_content'];
+					$input_array['content'] = $db->escape_string(trim(base64_decode($input_array['content'])));
+					
+					$status = $db->insert_query('custom_sideboxes', $input_array);
+					
+					if(!$status)
+					{
+						$error = $lang->adv_sidebox_custom_import_save_fail;
+					}
+				}
+				else
+				{
+					if($input_array['content'])
+					{
+						$error = $lang->adv_sidebox_custom_import_file_corrupted;
+					}
+					else
+					{
+						$error = $lang->adv_sidebox_custom_import_file_empty;
+					}
+				}
+				
+				if($error)
+				{
+					flash_message($error, 'error');
+					admin_redirect(ADV_SIDEBOX_IMPORT_URL);
+				}
+				else
+				{
+					flash_message($lang->adv_sidebox_custom_import_save_success, 'success');
+					admin_redirect(ADV_SIDEBOX_CUSTOM_URL);
+				}
+			}
+		}
+		
+		$page->add_breadcrumb_item($lang->adv_sidebox_name, ADV_SIDEBOX_URL);
+		$page->add_breadcrumb_item($lang->adv_sidebox_custom_import);
+
+		adv_sidebox_output_header();
+		adv_sidebox_output_tabs('adv_sidebox_import');
+		
+		$form=new Form(ADV_SIDEBOX_IMPORT_URL, 'post', '', 1);
+		$form_container = new FormContainer($lang->adv_sidebox_custom_import);
+		$form_container->output_row($lang->adv_sidebox_custom_import_select_file, '', $form->generate_file_upload_box('file'));
+		$form_container->end();
+		
+		$buttons[] = $form->generate_submit_button($lang->adv_sidebox_custom_import, array('name' => 'import'));
+		$form->output_submit_wrapper($buttons);
+		$form->end();
+		
+		$page->output_footer();
+		exit();
+	}
+	
+	if($mybb->input['mode'] == 'export')
+	{
+		if(isset($mybb->input['box']))
+		{
+			$query = $db->simple_select('custom_sideboxes', '*', "id='" . (int) $mybb->input['box'] . "'");
+			
+			$this_custom = $db->fetch_array($query);
+			
+			if(!$this_custom['id'])
+			{
+				flash_message($lang->adv_sidebox_custom_export_error,'error');
+				admin_redirect(ADV_SIDEBOX_IMPORT_URL);
+			}
+			
+			$xml='<?xml version="1.0" encoding="' . $lang->settings['charset'] . '"?>
+<adv_sidebox version="' . $info['version'] . '" xmlns="' . $info['website'] . '">
+	<custom_sidebox>
+		<name><![CDATA[' . $this_custom['name'] . ']]></name>
+		<description><![CDATA[' . $this_custom['description'] . ']]></description>
+		<wrap_content><![CDATA[' . $this_custom['wrap_content'] . ']]></wrap_content>
+		<content><![CDATA[' . base64_encode($this_custom['content']) . ']]></content>
+		<checksum>' . md5($this_custom['content']) . '</checksum>
+	</custom_sidebox>
+</adv_sidebox>';
+			
+			$filename = implode('-', explode(' ', $this_custom['name']));
+
+			header('Content-Disposition: attachment; filename=' . $filename . '.xml');
+			header('Content-Type: application/xml');
+			header('Content-Length: ' . strlen($xml));
+			header('Pragma: no-cache');
+			header('Expires: 0');
+			echo $xml;
+			exit();
+		}
+	}
 
 	$page->add_breadcrumb_item($lang->adv_sidebox_name, ADV_SIDEBOX_URL);
 	$page->add_breadcrumb_item($lang->adv_sidebox_custom_boxes);
@@ -883,12 +1039,12 @@ function adv_sidebox_admin_custom_boxes()
 			}
 		}
 
-		$query = $db->simple_select('custom_sideboxes');
-
 		$table = new Table;
 		$table->construct_header($lang->adv_sidebox_custom_box_name);
 		$table->construct_header($lang->adv_sidebox_custom_box_desc);
 		$table->construct_header($lang->adv_sidebox_controls, array("colspan" => 2));
+
+		$query = $db->simple_select('custom_sideboxes');
 
 		// if there are saved types . . .
 		if($db->num_rows($query))
@@ -896,10 +1052,14 @@ function adv_sidebox_admin_custom_boxes()
 			// display them
 			while($this_custom = $db->fetch_array($query))
 			{
-				$table->construct_cell($this_custom['name']);
-				$table->construct_cell($this_custom['description']);
-				$table->construct_cell("<a href=\"" . ADV_SIDEBOX_CUSTOM_URL . "&amp;mode=edit_box&amp;box={$this_custom['id']}\"><img src=\"{$mybb->settings['bburl']}/images/icons/pencil.gif\" alt=\"{$lang->adv_sidebox_edit}\" title=\"{$lang->adv_sidebox_edit}\" />&nbsp;{$lang->adv_sidebox_edit}</a>");
-				$table->construct_cell("<a href=\"" . ADV_SIDEBOX_CUSTOM_URL . "&amp;mode=delete_box&amp;box={$this_custom['id']}\"><img src=\"{$mybb->settings['bburl']}/images/usercp/delete.png\" alt=\"{$lang->adv_sidebox_edit}\" title=\"{$lang->adv_sidebox_edit}\" />&nbsp;{$lang->adv_sidebox_delete}</a>");
+				$table->construct_cell('<a href="' . ADV_SIDEBOX_CUSTOM_URL . '&amp;mode=edit_box&amp;box=' . $this_custom['id'] . '" title="Edit">' . $this_custom['name'] . '</a>', array("width" => '30%'));
+				$table->construct_cell($this_custom['description'], array("width" => '60%'));
+				
+				$popup = new PopupMenu('box_' . $this_custom['id'], 'Options');
+				$popup->add_item($lang->adv_sidebox_edit, ADV_SIDEBOX_CUSTOM_URL . "&amp;mode=edit_box&amp;box={$this_custom['id']}");
+				$popup->add_item($lang->adv_sidebox_delete, ADV_SIDEBOX_CUSTOM_URL . "&amp;mode=delete_box&amp;box={$this_custom['id']}");
+				$popup->add_item('Export', ADV_SIDEBOX_EXPORT_URL . "&amp;box={$this_custom['id']}");
+				$table->construct_cell($popup->fetch(), array("width" => '10%'));
 				$table->construct_row();
 			}
 		}
@@ -912,7 +1072,7 @@ function adv_sidebox_admin_custom_boxes()
 		$table->output($lang->adv_sidebox_custom_box_types);
 
 		// add link bar
-		echo('<div class="asb_label"><a href="' . ADV_SIDEBOX_CUSTOM_URL . '&amp;mode=edit_box"><img src="' . $mybb->settings['bburl'] . '/inc/plugins/adv_sidebox/images/add.png" style="margin-bottom: -3px;"/></a>&nbsp;<a href="' . ADV_SIDEBOX_CUSTOM_URL . '&amp;mode=edit_box">' . $lang->adv_sidebox_add_custom_box_types . '</a></div>');
+		echo('<div class="asb_label"><a href="' . ADV_SIDEBOX_CUSTOM_URL . '&amp;mode=edit_box"><img src="' . $mybb->settings['bburl'] . '/inc/plugins/adv_sidebox/images/add.png" style="margin-bottom: -3px;"/></a>&nbsp<a href="' . ADV_SIDEBOX_CUSTOM_URL . '&amp;mode=edit_box">' . $lang->adv_sidebox_add_custom_box_types . '</a>&nbsp<a href="' . ADV_SIDEBOX_IMPORT_URL . '"><img src="' . $mybb->settings['bburl'] . '/inc/plugins/adv_sidebox/images/import.png" style="margin-bottom: -3px;"/></a>&nbsp<a href="' . ADV_SIDEBOX_IMPORT_URL . '" title="' . $lang->adv_sidebox_custom_import_box . '">' . $lang->adv_sidebox_custom_import_box . '</a></div>');
 	}
 
 	if($mybb->input['mode'] == 'edit_box')
@@ -1137,7 +1297,12 @@ function adv_sidebox_output_tabs($current)
 		'link'					=> ADV_SIDEBOX_CUSTOM_URL,
 		'description'		=> $lang->adv_sidebox_custom_boxes_desc
 	);
-
+	$sub_tabs['adv_sidebox_import'] = array
+	(
+		'title'					=> $lang->adv_sidebox_custom_import,
+		'link'					=> ADV_SIDEBOX_IMPORT_URL,
+		'description'		=> $lang->adv_sidebox_custom_import_description
+	);
 	$page->output_nav_tabs($sub_tabs, $current);
 }
 

@@ -19,27 +19,27 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-function whosonline_asb_info()
+function staff_online_box_asb_info()
 {
 	return array
 	(
-		"name"				=>	'Who\'s Online',
-		"description"		=>	'lists the currently online members\' avatars',
+		"name"				=>	'Online Staff',
+		"description"		=>	'lists the currently online staff\'s avatars',
 		"stereo"			=>	true,
 		"wrap_content"	=>	true
 	);
 }
 
-function whosonline_asb_is_installed()
+function staff_online_box_asb_is_installed()
 {
 	global $db;
 	
 	// works just like a plugin
-	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_whosonline_left'");
+	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_staff_online_left'");
 	return $db->num_rows($query);
 }
 
-function whosonline_asb_install()
+function staff_online_box_asb_install()
 {
 	global $db, $lang;
 	
@@ -48,44 +48,10 @@ function whosonline_asb_install()
 		$lang->load('adv_sidebox');
 	}
 	
-	$gid = adv_sidebox_get_settingsgroup();
-		
-	$adv_sidebox_setting_8 = array(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_avatar_per_row",
-		"title"					=> $db->escape_string($lang->adv_sidebox_wol_avatar_list),
-		"description"		=> $lang->adv_sidebox_num_avatars_per_row . ":",
-		"optionscode"	=> "text",
-		"value"				=> '4',
-		"disporder"		=> '80',
-		"gid"					=> intval($gid),
-	);
-
-	$adv_sidebox_setting_9 = array(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_avatar_max_rows",
-		"title"					=> '',
-		"description"		=> $lang->adv_sidebox_avatar_max_rows . ":",
-		"optionscode"	=> "text",
-		"value"				=> '3',
-		"disporder"		=> '90',
-		"gid"					=> intval($gid),
-	);
-
-	$db->insert_query("settings", $adv_sidebox_setting_8);
-	$db->insert_query("settings", $adv_sidebox_setting_9);
-
-	rebuild_settings();
-	
-	// the whosonline avatar list parent template (left)
+	// the staff online avatar list parent template (left)
 	$template_7_l = array(
-        "title" => "adv_sidebox_whosonline_left",
+        "title" => "adv_sidebox_staff_online_left",
         "template" => "<tr>
-		<td class=\"trow1\">
-			<span class=\"smalltext\">{\$lang->online_users}<br /><strong>&raquo;</strong> {\$lang->online_counts}</span>
-		</td>
-	</tr>
-	<tr>
 		<td class=\"trow2\">{\$onlinemembers_l}</td>
 	</tr>",
         "sid" => -1
@@ -94,63 +60,33 @@ function whosonline_asb_install()
 
 	// the whosonline avatar list parent template (right)
 	$template_7_r = array(
-        "title" => "adv_sidebox_whosonline_right",
+        "title" => "adv_sidebox_staff_online_right",
         "template" => "<tr>
-		<td class=\"trow1\">
-			<span class=\"smalltext\">
-			{\$lang->online_users}<br /><strong>&raquo;</strong> {\$lang->online_counts}
-			</span>
-		</td>
-	</tr>
-	<tr>
 		<td class=\"trow2\">{\$onlinemembers_r}</td>
 	</tr>",
         "sid" => -1
     );
 	$db->insert_query("templates", $template_7_r);
-
-	// the whosonline avatar list child template (left)
-	$template_8_l = array(
-        "title" => "adv_sidebox_whosonline_memberbit_left",
-        "template" => "<a href=\"{\$mybb->settings[\'bburl\']}/{\$user[\'profilelink\']}\">{\$user_avatar_l}</a>",
-        "sid" => -1
-    );
-	$db->insert_query("templates", $template_8_l);
-
-	// the whosonline avatar list child template (left)
-	$template_8_r = array(
-        "title" => "adv_sidebox_whosonline_memberbit_right",
-        "template" => "<a href=\"{\$mybb->settings[\'bburl\']}/{\$user[\'profilelink\']}\">{\$user_avatar_r}</a>",
-        "sid" => -1
-    );
-	$db->insert_query("templates", $template_8_r);
 }
 
 /*
  * This function is required. Clean up after yourself.
  */
-function whosonline_asb_uninstall()
+function staff_online_box_asb_uninstall()
 {
 	global $db;
 	
 	// delete all the boxes of this type and the template as well
-	$db->query("DELETE FROM " . TABLE_PREFIX . "sideboxes WHERE box_type='" . $db->escape_string('whosonline') . "'");
+	$db->query("DELETE FROM " . TABLE_PREFIX . "sideboxes WHERE box_type='" . $db->escape_string('staff_online_box') . "'");
 	
 	// remove all custom templates.
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_whosonline_left'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_whosonline_right'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_whosonline_memberbit_left'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_whosonline_memberbit_right'");
-
-	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='adv_sidebox_avatar_per_row'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='adv_sidebox_avatar_max_rows'");
-	
-	rebuild_settings();
+	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_staff_online_left'");
+	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_staff_online_right'");
 }
 
-function whosonline_asb_build_template()
+function staff_online_box_asb_build_template()
 {
-	global $whosonline_l, $whosonline_r;
+	global $staff_online_box_l, $staff_online_box_r;
 	global $db, $mybb, $templates, $lang, $cache;
 	
 	// Load global and custom language phrases
@@ -192,6 +128,7 @@ function whosonline_asb_build_template()
 		WHERE s.time > '$timesearch'
 		ORDER BY u.username ASC, s.time DESC
 	");
+	
 	while($user = $db->fetch_array($query))
 	{
 
@@ -255,7 +192,7 @@ function whosonline_asb_build_template()
 					$row = $row + 1;
 				}
 
-				if(($user['invisible'] == 1 && ($mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])) || $user['invisible'] != 1)
+				if(in_array($user['usergroup'], array("3", "4", "6")) && $user['displaygroup'] == 0)
 				{
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = get_profile_link($user['uid']);
@@ -325,15 +262,15 @@ function whosonline_asb_build_template()
 	}
 	$lang->online_counts = $lang->sprintf($lang->online_counts, $membercount, $guestcount);
 	
-	if($membercount)
+	if($avatar_count)
 	{
-		eval("\$whosonline_l = \"" . $templates->get("adv_sidebox_whosonline_left") . "\";");
-		eval("\$whosonline_r = \"" . $templates->get("adv_sidebox_whosonline_right") . "\";");
+		eval("\$staff_online_box_l = \"" . $templates->get("adv_sidebox_staff_online_left") . "\";");
+		eval("\$staff_online_box_r = \"" . $templates->get("adv_sidebox_staff_online_right") . "\";");
 	}
 	else
 	{
-		eval("\$whosonline_l = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_noone_online . "</td></tr>\";");
-		eval("\$whosonline_r = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_noone_online . "</td></tr>\";");
+		eval("\$staff_online_box_l = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_no_staff_online . "</td></tr>\";");
+		eval("\$staff_online_box_r = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_no_staff_online . "</td></tr>\";");
 	}
 }
 

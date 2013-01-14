@@ -278,7 +278,7 @@ function latest_threads_asb_build_template()
 	else
 	{
 		// Show the table only if there are threads
-		eval("\$latest_threads = \"<tr><td class=\\\"trow1\\\">no threads to show</td></tr>\";");
+		eval("\$latest_threads = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_latest_threads_no_threads . "</td></tr>\";");
 	}
 }
 

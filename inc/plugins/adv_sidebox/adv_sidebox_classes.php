@@ -227,10 +227,14 @@
 		if($this_table instanceof Table)
 		{
 			// construct the table row.
-			$this_table->construct_cell($this->display_name, array("width" => '10%'));
-			$this_table->construct_cell($this->build_script_list(), array("width" => '10%'));
-			$this_table->construct_cell('<a href="' . ADV_SIDEBOX_EDIT_URL . '&amp;mode=' . $mybb->input['mode'] . '&amp;box=' . $this->id . '"><img src="' . $mybb->settings['bburl'] . '/images/icons/pencil.gif" alt="' . $lang->adv_sidebox_edit . '" title="' . $lang->adv_sidebox_edit . '" />&nbsp;' . $lang->adv_sidebox_edit . '</a>', array("width" => '10%'));
-			$this_table->construct_cell('<a href="' . ADV_SIDEBOX_DEL_URL . '&amp;mode=' . $mybb->input['mode'] . '&amp;box=' . $this->id . '"><img src="' . $mybb->settings['bburl'] . '/images/usercp/delete.png" alt="' . $lang->adv_sidebox_edit . '" title="' . $lang->adv_sidebox_edit . '" />&nbsp;' . $lang->adv_sidebox_delete . '</a>', array("width" => '10%'));
+			$this_table->construct_cell('<a href="' . ADV_SIDEBOX_EDIT_URL . '&amp;mode=' . $mybb->input['mode'] . '&amp;box=' . $this->id . '">' . $this->display_name . '</a>', array("width" => '40%'));
+			$this_table->construct_cell($this->build_script_list(), array("width" => '40%'));
+			
+			$popup = new PopupMenu('box_' . $this->id, 'Options');
+			$popup->add_item($lang->adv_sidebox_edit, ADV_SIDEBOX_EDIT_URL . '&amp;mode=' . $mybb->input['mode'] . '&amp;box=' . $this->id);
+			$popup->add_item($lang->adv_sidebox_delete, ADV_SIDEBOX_DEL_URL . '&amp;mode=' . $mybb->input['mode'] . '&amp;box=' . $this->id);
+			$this_table->construct_cell($popup->fetch(), array("width" => '20%'));
+			
 			$this_table->construct_row();
 		}
 	}
@@ -426,6 +430,8 @@ class Sidebox_addon
 
 		$this_table->construct_cell($this->name);
 		$this_table->construct_cell($this->description);
+		
+		$popup = new PopupMenu('module_' . $this->base_name, 'Options');
 
 		// complex modules get install/uninstall links
 		if($this->module_type == 'complex')
@@ -434,22 +440,18 @@ class Sidebox_addon
 			if($this->is_installed)
 			{
 				// uninstall link
-				$this_table->construct_cell('<a href="' . ADV_SIDEBOX_URL . '&amp;action=uninstall_addon&amp;addon=' . $this->base_name . '"><img src="' . $mybb->settings['bburl'] . '/inc/plugins/adv_sidebox/images/delete.png" />&nbsp;' . $lang->adv_sidebox_uninstall . '</a>');
+				$popup->add_item($lang->adv_sidebox_uninstall, ADV_SIDEBOX_URL . '&amp;action=uninstall_addon&amp;addon=' . $this->base_name);
 			}
 			else
 			{
 				// install link
-				$this_table->construct_cell('<a href="' . ADV_SIDEBOX_URL . '&amp;action=install_addon&amp;addon=' . $this->base_name . '"><img src="' . $mybb->settings['bburl'] . '/inc/plugins/adv_sidebox/images/new.png" />&nbsp;' . $lang->adv_sidebox_install . '</a>');
+				$popup->add_item($lang->adv_sidebox_install, ADV_SIDEBOX_URL . '&amp;action=install_addon&amp;addon=' . $this->base_name);
 			}
 		}
-		else
-		{
-			// simple modules can't install/uninstall
-			$this_table->construct_cell('');
-		}
 
-		// delete link
-		$this_table->construct_cell('<a href="' . ADV_SIDEBOX_URL . '&amp;action=delete_addon&amp;addon=' . $this->base_name . '" onclick="return confirm(\'' . $lang->adv_sidebox_modules_del_warning . '\');"><img src="' . $mybb->settings['bburl'] . '/images/invalid.gif" />&nbsp;' . $lang->adv_sidebox_delete . '</a>');
+		$popup->add_item($lang->adv_sidebox_delete, ADV_SIDEBOX_URL . '&amp;action=delete_addon&amp;addon=' . $this->base_name);
+		$this_table->construct_cell($popup->fetch(), array("width" => '10%'));
+		
 		$this_table->construct_row();
 	}
 

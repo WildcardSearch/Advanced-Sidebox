@@ -104,6 +104,10 @@ function private_messages_asb_build_template()
 		$lang->pms_received_new = $lang->sprintf($lang->pms_received_new, $mybb->user['username'], $messages['pms_unread']);
 		eval("\$private_messages = \"" . $templates->get("adv_sidebox_pms") . "\";");
 	}
+	else
+	{
+		eval("\$private_messages = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_pms_no_messages . "</td></tr>\";");
+	}
 }
 
 ?>
