@@ -60,7 +60,12 @@ $l['adv_sidebox_latest_threads_views'] = 'Views:';
 $l['adv_sidebox_latest_threads_no_threads'] = 'no threads to show';
 
 // pm's
-$l['adv_sidebox_pms_no_messages'] = "You must <a href=\\\"" . $mybb->settings['bburl'] . "/register.php\\\" title=\\\"Register\\\">register</a> to use private messaging.";
+$l['adv_sidebox_pms_no_messages'] = 'Please {1} or {2} to use this functionality.';
+$l['adv_sidebox_pms_login'] = 'login';
+$l['adv_sidebox_pms_register'] = 'register';
+$l['adv_sidebox_pms_user_disabled_pms'] = 'You have disabled this functionality in {1}.';
+$l['adv_sidebox_pms_usercp'] = 'control panel';
+$l['adv_sidebox_pms_disabled_by_admin'] = 'You dont have privileges to access this functionality, or it has been disabled by administrator. You may contact administrator for assistance.';
 
 // random quote
 $l['adv_sidebox_no_posts'] = 'There are no posts to display.';

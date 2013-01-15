@@ -79,7 +79,22 @@ function private_messages_asb_build_template()
 		$lang->load('adv_sidebox');
 	}
 	
-	if($mybb->user['uid'] != 0 && $mybb->user['receivepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->settings['enablepms'] != 0)
+	if(!$mybb->user['uid'])
+	{
+		// user is guest - output "please login or register" block with login and register links.
+		$private_messages = $lang->sprintf("<tr><td class='trow1'>".$lang->adv_sidebox_pms_no_messages."</td></tr>","<a href='".$mybb->settings['bburl']."/member.php?action=login'>".$lang->adv_sidebox_pms_login."</a>","<a href='".$mybb->settings['bburl']."/member.php?action=register'>".$lang->adv_sidebox_pms_register."</a>");
+	}
+	elseif(!$mybb->user['receivepms'])
+	{
+		// user dont want pm's - output "you have disabled pms in control panel" block with link to usercp.
+		$private_messages = $lang->sprintf("<tr><td class='trow1'>".$lang->adv_sidebox_pms_user_disabled_pms."</td></tr>","<a href='".$mybb->settings['bburl']."/usercp.php?action=options'>".$lang->adv_sidebox_pms_usercp."</a>");
+	}
+	elseif(!$mybb->usergroup['canusepms'] || !$mybb->settings['enablepms'])
+	{
+		// admin has disabled pm's - output "no privileges or disabled by admin" block.
+		$private_messages = $lang->sprintf("<tr><td class='trow1'>".$lang->adv_sidebox_pms_disabled_by_admin."</td></tr>","<a href='".$mybb->settings['bburl']."/usercp.php?action=options'>".$lang->adv_sidebox_pms_usercp."</a>");
+	}
+	else
 	{
 		switch($db->type)
 		{
@@ -87,7 +102,7 @@ function private_messages_asb_build_template()
 			case "pgsql":
 				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total", "uid='" . $mybb->user['uid'] . "'");
 				$messages['pms_total'] = $db->fetch_field($query, "pms_total");
-				
+
 				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_unread", "uid='" . $mybb->user['uid'] . "' AND CASE WHEN status = '0' AND folder = '0' THEN TRUE ELSE FALSE END");
 				$messages['pms_unread'] = $db->fetch_field($query, "pms_unread");
 				break;
@@ -95,18 +110,11 @@ function private_messages_asb_build_template()
 				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread", "uid='" . $mybb->user['uid'] . "'");
 				$messages = $db->fetch_array($query);
 		}
+		// the SUM() thing returns "" instead of 0 (make it int anyway)
+		$messages['pms_unread'] *= 1;
 
-		// the SUM() thing returns "" instead of 0
-		if($messages['pms_unread'] == "")
-		{
-			$messages['pms_unread'] = 0;
-		}
 		$lang->pms_received_new = $lang->sprintf($lang->pms_received_new, $mybb->user['username'], $messages['pms_unread']);
 		eval("\$private_messages = \"" . $templates->get("adv_sidebox_pms") . "\";");
-	}
-	else
-	{
-		eval("\$private_messages = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_pms_no_messages . "</td></tr>\";");
 	}
 }
 
