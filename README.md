@@ -1,4 +1,4 @@
-Advanced-Sidebox 1.3.2b
+Advanced-Sidebox 1.3.2c
 ===================
 
 A plugin for MyBB forums that displays portal boxes on various forum pages.
