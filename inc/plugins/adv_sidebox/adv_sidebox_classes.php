@@ -3,7 +3,7 @@
  * This file contains class definitions for the entire project
  *
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x
- * Copyright © 2013 WildcardSearch
+ * Copyright Â© 2013 WildcardSearch
  * http://www.rantcentralforums.com
  *
  * Check out this project on GitHub: https://github.com/WildcardSearch/Advanced-Sidebox

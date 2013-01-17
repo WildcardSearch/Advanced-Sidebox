@@ -3,7 +3,7 @@
  * This file contains the Admin Control Panel functions for this plugin
  *
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x v1.0
- * Copyright © 2012 Wildcard
+ * Copyright Â© 2012 Wildcard
  * http://www.rantcentralforums.com
  *
  * BASED UPON THE CONCEPT AND CODE CREATED BY NAYAR IN THE ORIGINAL SIDEBOX PLUGIN
@@ -1362,3 +1362,4 @@ function build_theme_exclude_select()
 }
 
 ?>
+
