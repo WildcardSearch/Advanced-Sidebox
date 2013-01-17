@@ -85,7 +85,7 @@ function whosonline_asb_install()
 			<span class=\"smalltext\">{\$lang->online_users}<br /><strong>&raquo;</strong> {\$lang->online_counts}</span>
 		</td>
 	</tr>
-	<tr>
+	<tr style=\"{\$adv_sidebox_hide}\">
 		<td class=\"trow2\">{\$onlinemembers_l}</td>
 	</tr>",
         "sid" => -1
@@ -102,7 +102,7 @@ function whosonline_asb_install()
 			</span>
 		</td>
 	</tr>
-	<tr>
+	<tr style=\"{\$adv_sidebox_hide}\">
 		<td class=\"trow2\">{\$onlinemembers_r}</td>
 	</tr>",
         "sid" => -1
@@ -172,7 +172,17 @@ function whosonline_asb_build_template()
 	$row = 1;
 	$avatar_count = 0;
 	$enough_already = false;
-	
+
+	// user attempts to hide avatars from box by setting columns to 0 ?
+	$adv_sidebox_hide = "";
+	if ($rowlength < 1 || $rowlength > 100 || $max_rows < 1 || $max_rows > 100) {
+		// lets provide our script some valid number to avoid errors
+		// because we will must go through loop to count visitors anyway
+		$rowlength = 1;
+		$max_rows = 1;
+		// we will hide part of box with avatars if user dont want them
+		$adv_sidebox_hide = "display: none";
+	}
 	// Scale the avatars based on the width of the sideboxes in Admin CP
 	$avatar_width_l = (int) ($adv_sidebox_width_left * .83) / $rowlength;
 	$avatar_height_l = (int) ($adv_sidebox_width_left * .83) / $rowlength;
@@ -192,6 +202,7 @@ function whosonline_asb_build_template()
 		WHERE s.time > '$timesearch'
 		ORDER BY u.username ASC, s.time DESC
 	");
+	
 	while($user = $db->fetch_array($query))
 	{
 
@@ -269,10 +280,10 @@ function whosonline_asb_build_template()
 							// . . . if not, set a flag
 							$enough_already = true;
 							
-							// . . . and insert an image linking to the WOL full list
-							$onlinemembers_l .= '<a href="' . $mybb->settings['bburl'] . '/online.php"><img style="' . $avatar_style_l . '" src="images/see_all.gif" alt="' . $lang->adv_sidebox_see_all_alt . '" title="' . adv_sidebox_see_all_alt . '" width="' . $avatar_width_l . 'px" height="' . $avatar_height_l . 'px"/></a>';
-					
-							$onlinemembers_r .= '<a href="' . $mybb->settings['bburl'] . '/online.php"><img style="' . $avatar_style_r . '" src="images/see_all.gif" alt="' . $lang->adv_sidebox_see_all_alt . '" title="' . adv_sidebox_see_all_alt . '" width="' . $avatar_width_r . 'px" height="' . $avatar_height_r . 'px"/></a>';
+							// . . . and insert link to the WOL full list
+							$onlinemembers_l .= '<a href="' . $mybb->settings['bburl'] . '/online.php" title="' . $lang->adv_sidebox_see_all_title . '">'.$lang->adv_sidebox_see_all_alt.'</a>';
+												
+							$onlinemembers_r .= '<a href="' . $mybb->settings['bburl'] . '/online.php" title="' . $lang->adv_sidebox_see_all_title . '">'.$lang->adv_sidebox_see_all_alt.'</a>';
 						}
 					}
 					// . . . otherwise, add this avy to the list

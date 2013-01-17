@@ -52,6 +52,11 @@ function staff_online_box_asb_install()
 	$template_7_l = array(
         "title" => "adv_sidebox_staff_online_left",
         "template" => "<tr>
+		<td class=\"trow1\">
+			<span class=\"smalltext\">{\$lang->adv_sidebox_staff_online}</span>
+		</td>
+	</tr>
+	<tr style=\"{\$adv_sidebox_hide}\">
 		<td class=\"trow2\">{\$onlinemembers_l}</td>
 	</tr>",
         "sid" => -1
@@ -62,6 +67,11 @@ function staff_online_box_asb_install()
 	$template_7_r = array(
         "title" => "adv_sidebox_staff_online_right",
         "template" => "<tr>
+		<td class=\"trow1\">
+			<span class=\"smalltext\">{\$lang->adv_sidebox_staff_online}</span>
+		</td>
+	</tr>
+	<tr style=\"{\$adv_sidebox_hide}\">
 		<td class=\"trow2\">{\$onlinemembers_r}</td>
 	</tr>",
         "sid" => -1
@@ -109,6 +119,16 @@ function staff_online_box_asb_build_template()
 	$avatar_count = 0;
 	$enough_already = false;
 	
+	// user attempts to hide avatars from box by setting columns to 0 ?
+	$adv_sidebox_hide = "";
+	if ($rowlength < 1 || $rowlength > 100 || $max_rows < 1 || $max_rows > 100) {
+		// lets provide our script some valid number to avoid errors
+		// because we will must go through loop to count visitors anyway
+		$rowlength = 1;
+		$max_rows = 1;
+		// we will hide part of table with avatars if user dont want them
+		$adv_sidebox_hide = "display: none";
+	}
 	// Scale the avatars based on the width of the sideboxes in Admin CP
 	$avatar_width_l = (int) ($adv_sidebox_width_left * .83) / $rowlength;
 	$avatar_height_l = (int) ($adv_sidebox_width_left * .83) / $rowlength;
@@ -121,6 +141,11 @@ function staff_online_box_asb_build_template()
 	$guestcount = 0;
 	$membercount = 0;
 	$onlinemembers = '';
+	$staffcount_admin = 0;
+	$staffcount_supermod = 0;
+	$staffcount_mod = 0;
+	$staffcount_staff = 0;
+
 	$query = $db->query("
 		SELECT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup, u.avatar
 		FROM " . TABLE_PREFIX . "sessions s
@@ -191,11 +216,28 @@ function staff_online_box_asb_build_template()
 					$user_avatar_r .= "<br />";
 					$row = $row + 1;
 				}
-
 				if(in_array($user['usergroup'], array("3", "4", "6")) && $user['displaygroup'] == 0)
 				{
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = get_profile_link($user['uid']);
+					
+					$userpermissions = user_permissions($user['uid']);
+					if ($userpermissions['cancp'])
+					{
+						++$staffcount_admin;
+					}
+					elseif ($userpermissions['issupermod'])
+					{
+						++$staffcount_supermod;
+					}
+					elseif ($userpermissions['canmodcp'])
+					{
+						++$staffcount_mod;
+					}
+					else
+					{
+						++$staffcount_staff;
+					}
 					
 					// if this is the last allowable avatar (conforming to ACP settings)
 					if($avatar_count >= (($max_rows * $rowlength) - 1) && $avatar_count)
@@ -206,10 +248,10 @@ function staff_online_box_asb_build_template()
 							// . . . if not, set a flag
 							$enough_already = true;
 							
-							// . . . and insert an image linking to the WOL full list
-							$onlinemembers_l .= '<a href="' . $mybb->settings['bburl'] . '/online.php"><img style="' . $avatar_style_l . '" src="images/see_all.gif" alt="' . $lang->adv_sidebox_see_all_alt . '" title="' . adv_sidebox_see_all_alt . '" width="' . $avatar_width_l . 'px" height="' . $avatar_height_l . 'px"/></a>';
+							// . . . and insert link to the WOL full list
+							$onlinemembers_l .= '<a href="' . $mybb->settings['bburl'] . '/online.php" title="' . $lang->adv_sidebox_see_all_title . '">'.$lang->adv_sidebox_see_all_alt.'</a>';
 					
-							$onlinemembers_r .= '<a href="' . $mybb->settings['bburl'] . '/online.php"><img style="' . $avatar_style_r . '" src="images/see_all.gif" alt="' . $lang->adv_sidebox_see_all_alt . '" title="' . adv_sidebox_see_all_alt . '" width="' . $avatar_width_r . 'px" height="' . $avatar_height_r . 'px"/></a>';
+							$onlinemembers_r .= '<a href="' . $mybb->settings['bburl'] . '/online.php" title="' . $lang->adv_sidebox_see_all_title . '">'.$lang->adv_sidebox_see_all_alt.'</a>';
 						}
 					}
 					// . . . otherwise, add this avy to the list
@@ -262,8 +304,26 @@ function staff_online_box_asb_build_template()
 	}
 	$lang->online_counts = $lang->sprintf($lang->online_counts, $membercount, $guestcount);
 	
-	if($avatar_count)
+	if($staffcount_admin + $staffcount_supermod + $staffcount_mod + $staffcount_staff)
 	{
+		$staff_text = "";
+		if ($staffcount_admin)
+		{
+		$staff_text .= $lang->sprintf($lang->adv_sidebox_staff_admin,$staffcount_admin);
+		}
+		if ($staffcount_supermod)
+		{
+			$staff_text .= $lang->sprintf($lang->adv_sidebox_staff_supermod,$staffcount_supermod);
+		}
+		if ($staffcount_mod)
+		{
+			$staff_text .= $lang->sprintf($lang->adv_sidebox_staff_mod,$staffcount_mod);
+		}
+		if ($staffcount_staff)
+		{
+			$staff_text .= $lang->sprintf($lang->adv_sidebox_staff_staff,$staffcount_staff);
+		}
+		$lang->adv_sidebox_staff_online = $lang->sprintf($lang->adv_sidebox_staff_online,$staff_text);
 		eval("\$staff_online_box_l = \"" . $templates->get("adv_sidebox_staff_online_left") . "\";");
 		eval("\$staff_online_box_r = \"" . $templates->get("adv_sidebox_staff_online_right") . "\";");
 	}

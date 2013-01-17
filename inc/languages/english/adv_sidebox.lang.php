@@ -41,16 +41,21 @@ $l['adv_sidebox_welcome_box'] = "Welcome Box";
 $l['adv_sidebox_pm_box'] = "PM Box";
 $l['adv_sidebox_search_box'] = "Search Box";
 $l['adv_sidebox_stats_box'] = "Board Statistics";
-$l['adv_sidebox_wol_avatar_list'] = "Who's Online Avatar List";
+$l['adv_sidebox_wol_avatar_list'] = "Avatar settings for Who's Online and Staff Online modules";
 $l['adv_sidebox_latest_threads'] = "Latest Threads";
 
 // WOL
-$l['adv_sidebox_num_avatars_per_row'] = "Number of avatars per row";
-$l['adv_sidebox_avatar_max_rows'] = 'maximum number of avatar rows';
-$l['adv_sidebox_noone_online'] = 'There are no members currently online.';
+$l['adv_sidebox_num_avatars_per_row'] = "Number of avatars per row<br /><i>(enter number of columns in which avatars will be shown within module, or enter 0 to disable module avatars)</i>";
+$l['adv_sidebox_avatar_max_rows'] = "maximum number of avatar rows<br /><i>(enter how many rows avatars may occupy within module before show all link will be displayed, or enter 0 to disable module avatars)</i>";
+$l['adv_sidebox_noone_online'] = "There are no members currently online.";
 
 // staff online
 $l['adv_sidebox_no_staff_online'] = 'There are no staff members currently online.';
+$l['adv_sidebox_staff_online'] = 'There are {1}currently online.';
+$l['adv_sidebox_staff_admin'] = '{1} administrator(s), ';
+$l['adv_sidebox_staff_supermod'] = '{1} super moderators(s), ';
+$l['adv_sidebox_staff_mod'] = '{1} moderators(s), ';
+$l['adv_sidebox_staff_staff'] = '{1} other staff member(s), ';
 
 // latest threads
 $l['adv_sidebox_latest_threads_lastpost'] = 'Last Post:';
@@ -73,8 +78,8 @@ $l['adv_sidebox_no_posts'] = 'There are no posts to display.';
 // avatar
 $l['adv_sidebox_avatar'] = "Avatar";
 $l['adv_sidebox_avatar_lc'] = "avatar";
-$l['adv_sidebox_see_all_alt'] = 'see all . . .';
-$l['adv_sidebox_see_all_title'] = 'Click to see all online members . . .';
+$l['adv_sidebox_see_all_alt'] = 'see all...';
+$l['adv_sidebox_see_all_title'] = 'Click to see all online members.';
 
 // UCP
 $l['adv_sidebox_show_sidebox'] = "Show sidebox.";
