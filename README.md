@@ -11,6 +11,8 @@ I will add more info as the project develops further.
 
 Change Log
 =========
+01-16-2013 - 1.3.2c converted all files to UTF-8
+
 01-16-2013 - 1.3.2b fixed invalid html output, added auto inserting empty block within tbody if user not provide any content for custom box
 
 01-15-2013 - 1.3.2a fixed division by zero bug, added functionality to hide avatars when number of columns set to 0, added text output to staff online module.
