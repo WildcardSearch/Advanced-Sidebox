@@ -1,4 +1,4 @@
-Advanced-Sidebox 1.3.2
+Advanced-Sidebox 1.3.3
 ===================
 
 A plugin for MyBB forums that displays portal boxes on various forum pages.
@@ -11,7 +11,9 @@ I will add more info as the project develops further.
 
 Change Log
 =========
-01-14-2013 - 1.3.2 released with feature added by @avril-gh, added import/export functionality, addressed invalid HTML issues and other small bug fixes.
+01-16-2013 - 1.3.3 fixed invalid html in custom module, added missing index.html
+
+1-14-2013 - 1.3.2 released with feature added by @avril-gh, added import/export functionality, addressed invalid HTML issues and other small bug fixes.
 
 01-11-2013 - 1.3.1 released to address Issue #3 in which invalid HTML output caused left room for several possible errors.
 
