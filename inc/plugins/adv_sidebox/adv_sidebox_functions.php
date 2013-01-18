@@ -114,6 +114,13 @@ function get_all_custom_box_types_content()
 					$expaltext = "[-]";
 				}
 				
+				// prevents empty tbody section in custom box
+				// when user do not provide any content for it
+				if (!$this_type['content'])
+				{
+					// user want it empty ? let it be.
+					$this_type['content'] = '<tr><td class="trow1"></td></tr>';
+				}
 				$this_type['content'] = '
 <table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
 	<thead>
@@ -121,12 +128,12 @@ function get_all_custom_box_types_content()
 			<td class="thead"><div class="expcolimage"><img src="{$theme[\'imgdir\']}/' . $expcolimage . '" id="asb_custom_' . $this_type['id'] . '_img" class="expander" alt="' . $expaltext . '" title="' . $expaltext . '" /></div><strong>' . $this_type['name'] . '</strong></td>
 		</tr>
 	</thead>
-	<tbody style="' . $expdisplay . '" id="asb_custom_' . $this_type['id'] . '_e"><tr>
-		<td class="trow1">' . $this_type['content'] . '</td></tr>
+	<tbody style="' . $expdisplay . '" id="asb_custom_' . $this_type['id'] . '_e">
+		' . $this_type['content'] . '
 	</tbody>
 </table><br />';
-			}
-			
+
+			}			
 			$all_custom[$this_type['id'] . '_asb_custom'] = $this_type['content'];
 		}
 	}
