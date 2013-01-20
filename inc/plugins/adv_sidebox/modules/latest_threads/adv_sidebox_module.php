@@ -37,7 +37,40 @@ function latest_threads_asb_is_installed()
 
 function latest_threads_asb_install()
 {
-	global $db;
+	global $db, $lang;
+	
+	if (!$lang->adv_sidebox)
+	{
+		$lang->load('adv_sidebox');
+	}
+	
+	$gid = adv_sidebox_get_settingsgroup();
+		
+	$adv_sidebox_setting_10 = array(
+		"sid"					=> "NULL",
+		"name"				=> "adv_sidebox_latest_threads_max",
+		"title"					=> "Latest Threads",
+		"description"		=> "maximum number of threads to display",
+		"optionscode"	=> "text",
+		"value"				=> '20',
+		"disporder"		=> '100',
+		"gid"					=> intval($gid),
+	);
+	
+	$query = $db->simple_select('settings', 'title', "name='adv_sidebox_latest_threads_max'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		unset($adv_sidebox_setting_10['sid']);
+		unset($adv_sidebox_setting_10['value']);
+		$db->update_query("settings", $adv_sidebox_setting_10, "name='adv_sidebox_latest_threads_max'");
+	}
+	else
+	{
+		$db->insert_query("settings", $adv_sidebox_setting_10);
+	}
+
+	rebuild_settings();
 	
 	// latest threads parent template
 	$template_9 = array(
@@ -45,7 +78,17 @@ function latest_threads_asb_install()
         "template" => "{\$threadlist}",
         "sid" => -1
     );
-	$db->insert_query("templates", $template_9);
+	
+	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_latest_threads'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		$db->update_query("templates", $template_9, "title='adv_sidebox_latest_threads'");
+	}
+	else
+	{
+		$db->insert_query("templates", $template_9);
+	}
 	
 	// latest threads child template
 	$template_10 = array(
@@ -63,7 +106,17 @@ function latest_threads_asb_install()
 </tr>",
         "sid" => -1
     );
-	$db->insert_query("templates", $template_10);
+	
+	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_latest_threads_thread'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		$db->update_query("templates", $template_10, "title='adv_sidebox_latest_threads_thread'");
+	}
+	else
+	{
+		$db->insert_query("templates", $template_10);
+	}
 	
 	// gotounread jump icon
 	$template_11 = array(
@@ -71,12 +124,18 @@ function latest_threads_asb_install()
         "template" => "<a href=\"{\$thread[\'newpostlink\']}\"><img src=\"{\$theme[\'imgdir\']}/jump.gif\" alt=\"{\$lang->adv_sidebox_gotounread}\" title=\"{\$lang->adv_sidebox_gotounread}\" /></a>",
         "sid" => -1
     );
-	$db->insert_query("templates", $template_11);
+	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_latest_threads_gotounread'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		$db->update_query("templates", $template_11, "title='adv_sidebox_latest_threads_gotounread'");
+	}
+	else
+	{
+		$db->insert_query("templates", $template_11);
+	}
 }
 
-/*
- * This function is required. Clean up after yourself.
- */
 function latest_threads_asb_uninstall()
 {
 	global $db;
@@ -163,7 +222,7 @@ function latest_threads_asb_build_template()
 		LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid=t.uid)
 		WHERE 1=1 $unviewwhere AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 		ORDER BY t.lastpost DESC
-		LIMIT 0, " . $mybb->settings['portal_showdiscussionsnum']
+		LIMIT 0, " . $mybb->settings['adv_sidebox_latest_threads_max']
 	);
 	
 	if($db->num_rows($query) > 0)

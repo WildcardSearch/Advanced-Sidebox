@@ -59,7 +59,17 @@ function statistics_asb_install()
 	</tr>",
         "sid" => -1
     );
-	$db->insert_query("templates", $template_5);
+	
+	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_statistics'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		$db->update_query("templates", $template_5, "title='adv_sidebox_statistics'");
+	}
+	else
+	{
+		$db->insert_query("templates", $template_5);
+	}
 }
 
 /*

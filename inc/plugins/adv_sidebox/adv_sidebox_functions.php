@@ -142,6 +142,30 @@ function get_all_custom_box_types_content()
 }
 
 /*
+ * get_all_custom_box_types()
+ *
+ * query for and return all user-defined box types
+ */
+function get_all_custom_box_types()
+{
+	global $db;
+
+	$all_custom = array();
+
+	$query = $db->simple_select('custom_sideboxes');
+
+	if($db->num_rows($query) > 0)
+	{
+		while($this_type = $db->fetch_array($query))
+		{
+			$all_custom[$this_type['id'] . '_asb_custom'] = $this_type['name'];
+		}
+	}
+
+	return $all_custom;
+}
+
+/*
  * adv_sidebox_do_checks()
  *
  * avoid wasted execution by determining when and if code is necessary

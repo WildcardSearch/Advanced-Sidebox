@@ -3,7 +3,7 @@
  * This file contains class definitions for the entire project
  *
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x
- * Copyright Â© 2013 WildcardSearch
+ * Copyright © 2013 WildcardSearch
  * http://www.rantcentralforums.com
  *
  * Check out this project on GitHub: https://github.com/WildcardSearch/Advanced-Sidebox
@@ -125,21 +125,12 @@
 			}
 			else
 			{
-				// non-stereo still leaves the possibility of custom boxes
-				if($this->box_type == 'custom_box')
-				{
-					// use their content as the replacement instead of a variable
-					$this->content = $data['content'];
-				}
-				else
-				{
-					// otherwise just build a template variable for this sidebox
-					$this->content = '{$' . $this->box_type . '}';
-				}
+				// otherwise just build a template variable for this sidebox
+				$this->content = '{$' . $this->box_type . '}';
 			}
 			
 			// In most cases we will be wrapping the boxes with a header and expander
-			if($this->wrap_content || $this->box_type == 'custom_box')
+			if($this->wrap_content)
 			{
 				// Check if this sidebox is either expanded or collapsed and hide it as necessary.
 				$expdisplay = '';
@@ -460,15 +451,15 @@ class Sidebox_addon
 	 *
 	 * access the given modules install routine
 	 */
-	function install()
+	function install($no_cleanup = false)
 	{
 		// only complex modules can install/uninstall
 		if($this->module_type == 'complex')
 		{
-			// already installed?
-			if($this->is_installed)
+			// already installed? unless $no_cleanup is specifically asked for . . .
+			if($this->is_installed && !$no_cleanup)
 			{
-				// remove the leftovers before installing
+				// . . . remove the leftovers before installing
 				$status = $this->uninstall();
 			}
 

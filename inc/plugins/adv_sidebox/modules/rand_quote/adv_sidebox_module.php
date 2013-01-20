@@ -40,7 +40,6 @@ function rand_quote_asb_install()
 {
 	global $db;
 	
-	// a simple template
 	$template_1 = array(
         "title" => "rand_quote_sidebox_left",
         "template" => "<tr>
@@ -52,7 +51,17 @@ function rand_quote_asb_install()
 	</tr>",
         "sid" => -1
     );
-	$db->insert_query("templates", $template_1);
+	
+	$query = $db->simple_select('templates', 'title', "title='rand_quote_sidebox_left'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		$db->update_query("templates", $template_1, "title='rand_quote_sidebox_left'");
+	}
+	else
+	{
+		$db->insert_query("templates", $template_1);
+	}
 	
 	// a simple template
 	$template_2 = array(
@@ -76,7 +85,17 @@ function rand_quote_asb_install()
 	</tr>",
         "sid" => -1
     );
-	$db->insert_query("templates", $template_2);
+	
+	$query = $db->simple_select('templates', 'title', "title='rand_quote_sidebox_right'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		$db->update_query("templates", $template_2, "title='rand_quote_sidebox_right'");
+	}
+	else
+	{
+		$db->insert_query("templates", $template_2);
+	}
 }
 
 /*

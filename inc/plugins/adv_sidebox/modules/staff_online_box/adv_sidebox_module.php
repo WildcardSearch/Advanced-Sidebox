@@ -61,7 +61,17 @@ function staff_online_box_asb_install()
 	</tr>",
         "sid" => -1
     );
-	$db->insert_query("templates", $template_7_l);
+	
+	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_staff_online_left'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		$db->update_query("templates", $template_7_l, "title='adv_sidebox_staff_online_left'");
+	}
+	else
+	{
+		$db->insert_query("templates", $template_7_l);
+	}
 
 	// the whosonline avatar list parent template (right)
 	$template_7_r = array(
@@ -76,7 +86,17 @@ function staff_online_box_asb_install()
 	</tr>",
         "sid" => -1
     );
-	$db->insert_query("templates", $template_7_r);
+	
+	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_staff_online_right'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		$db->update_query("templates", $template_7_r, "title='adv_sidebox_staff_online_right'");
+	}
+	else
+	{
+		$db->insert_query("templates", $template_7_r);
+	}
 }
 
 /*

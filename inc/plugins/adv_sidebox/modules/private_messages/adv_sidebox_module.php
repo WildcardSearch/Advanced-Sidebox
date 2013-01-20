@@ -50,7 +50,16 @@ function private_messages_asb_install()
 	</tr>",
         "sid" => -1
     );
-	$db->insert_query("templates", $template_4);
+	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_pms'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		$db->update_query("templates", $template_4, "title='adv_sidebox_pms'");
+	}
+	else
+	{
+		$db->insert_query("templates", $template_4);
+	}
 }
 
 function private_messages_asb_uninstall()

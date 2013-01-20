@@ -59,7 +59,17 @@ function search_box_asb_install()
 	</tr>",
         "sid" => -1
     );
-	$db->insert_query("templates", $template_6);
+	
+	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_search'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		$db->update_query("templates", $template_6, "title='adv_sidebox_search'");
+	}
+	else
+	{
+		$db->insert_query("templates", $template_6);
+	}
 }
 
 /*

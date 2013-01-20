@@ -2,8 +2,8 @@
 /*
  * This file contains the Admin Control Panel functions for this plugin
  *
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x v1.0
- * Copyright Â© 2012 Wildcard
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Copyright © 2012 Wildcard
  * http://www.rantcentralforums.com
  *
  * BASED UPON THE CONCEPT AND CODE CREATED BY NAYAR IN THE ORIGINAL SIDEBOX PLUGIN
@@ -298,11 +298,8 @@ margin-bottom: -3px;
 	adv_sidebox_output_header();
 	adv_sidebox_output_tabs('adv_sidebox');
 
-	// add the only internal box type
-	$box_types = array(
-		'custom_box' 		=> $lang->adv_sidebox_custom
-			);
-
+	$box_types = array();
+	
 	// get all the user-defined types
 	$custom_box_types = get_all_custom_box_types();
 	if(!empty($custom_box_types))
@@ -416,9 +413,7 @@ function adv_sidebox_admin_editbox()
 	require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_functions.php';
 
 	// add the one internal type
-	$box_types = array(
-		'custom_box' 		=> $lang->adv_sidebox_custom
-			);
+	$box_types = array();
 
 	// get all the user-defined types
 	$custom_box_types = get_all_custom_box_types();
@@ -460,17 +455,7 @@ function adv_sidebox_admin_editbox()
 				$this_sidebox->position = 1;
 			}
 
-			// if this isn't a custom box . . .
-			if($mybb->input['box_type_select'] != 'custom_box')
-			{
-				// don't store the content at all
-				$this_sidebox->content = '';
-			}
-			else
-			{
-				// otherwise store it
-				$this_sidebox->content = $mybb->input['box_content'];
-			}
+			$this_sidebox->content = $mybb->input['box_content'];
 
 			foreach($mybb->input['script_select_box'] as $this_entry)
 			{
@@ -535,37 +520,11 @@ function adv_sidebox_admin_editbox()
 	$page->add_breadcrumb_item($lang->adv_sidebox_name, ADV_SIDEBOX_URL);
 	$page->add_breadcrumb_item($lang->adv_sidebox_add_a_sidebox);
 
-	// add the script to hide the content box if it is unnecessary
-	$page->extra_header .= '<script type="text/javascript" src="./jscripts/peeker.js"></script>
-	<script type="text/javascript">Event.observe(window, "load", function() {var peeker = new Peeker($("box_type_select"), $("box_content"), /custom_box/, false);});
-	</script>';
-
 	// output ACP page stuff
 	adv_sidebox_output_header();
 	adv_sidebox_output_tabs('adv_sidebox_add');
 
 	$this_sidebox = new Sidebox($mybb->input['box']);
-
-	if($this_sidebox->box_type != 'custom_box')
-	{
-		// some sample custom content
-		$this_sidebox->content = '
-		<tr>
-			<td class="trow1">Place your custom content here. HTML can be used in conjunction with certain template variables, language variables and environment variables.</td>
-		</tr>
-		<tr>
-			<td class="trow2">For example:</td>
-		</tr>
-		<tr>
-			<td class="trow1"><strong>User:</strong> {$mybb->user[\'username\']}</td>
-		</tr>
-		<tr>
-			<td class="trow2"><strong>UID:</strong> {$mybb->user[\'uid\']}</td>
-		</tr>
-		<tr>
-			<td class="trow1"><strong>Theme name:</strong> {$theme[\'name\']}</td>
-		</tr>';
-	}
 
 	if($this_sidebox->id == 0)
 	{
@@ -604,7 +563,6 @@ function adv_sidebox_admin_editbox()
 	$form_container = new FormContainer($lang->adv_sidebox_edit_box);
 
 	$form_container->output_row($lang->adv_sidebox_box_type, $lang->adv_sidebox_type_desc, $form->generate_select_box('box_type_select', $box_types, $this_sidebox->box_type, array("id" => 'box_type_select')), array("id" => 'box_type_select_box'));
-	$form_container->output_row($lang->adv_sidebox_content_title, $lang->adv_sidebox_content_desc, $form->generate_text_area('box_content', $this_sidebox->content, array("id" => 'box_content')), array("id" => 'box_content'));
 	$form_container->output_row($lang->adv_sidebox_position, '', $form->generate_radio_button('box_position', 'left', $lang->adv_sidebox_position_left, array("checked" => ((int) $this_sidebox->position == 0))) . '&nbsp;&nbsp;' . $form->generate_radio_button('box_position', 'right', $lang->adv_sidebox_position_right, array("checked" => ((int) $this_sidebox->position != 0))));
 	$form_container->output_row($lang->adv_sidebox_display_order, '', $form->generate_text_box('display_order', $this_sidebox->display_order));
 	$form_container->output_row('Which Scripts?', '', $form->generate_select_box('script_select_box[]', array("all_scripts" => 'All Scripts', "index.php" => 'Index', "forumdisplay.php" => 'Forums', "showthread.php" => 'Threads', "portal.php" => 'Portal'), $selected_scripts, array("id" => 'script_select_box', "multiple" => true)), array("id" => 'script_select_box'));
@@ -661,11 +619,6 @@ function adv_sidebox_admin_manage_modules()
 </style>';
 	adv_sidebox_output_header();
 	adv_sidebox_output_tabs('adv_sidebox_modules');
-
-	// add the one internal type
-	$box_types = array(
-		'custom_box' 		=> $lang->adv_sidebox_custom
-			);
 
 	// allow plugins to add types
 	$plugins->run_hooks('adv_sidebox_box_types', $box_types);
@@ -1307,30 +1260,6 @@ function adv_sidebox_output_tabs($current)
 }
 
 /*
- * get_all_custom_box_types()
- *
- * query for and return all user-defined box types
- */
-function get_all_custom_box_types()
-{
-	global $db;
-
-	$all_custom = array();
-
-	$query = $db->simple_select('custom_sideboxes');
-
-	if($db->num_rows($query) > 0)
-	{
-		while($this_type = $db->fetch_array($query))
-		{
-			$all_custom[$this_type['id'] . '_asb_custom'] = $this_type['name'];
-		}
-	}
-
-	return $all_custom;
-}
-
-/*
  * build_theme_exclude_select()
  *
  * rebuilds the theme exclude list ACP setting. used in cases where themes are added after the installation of Advanced Sidebox and the admin would like to exclude that theme.
@@ -1362,4 +1291,3 @@ function build_theme_exclude_select()
 }
 
 ?>
-

@@ -43,7 +43,7 @@ function whosonline_asb_install()
 {
 	global $db, $lang;
 	
-	if (!$lang->adv_sidebox)
+	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}
@@ -53,13 +53,26 @@ function whosonline_asb_install()
 	$adv_sidebox_setting_8 = array(
 		"sid"					=> "NULL",
 		"name"				=> "adv_sidebox_avatar_per_row",
-		"title"					=> $db->escape_string($lang->adv_sidebox_wol_avatar_list),
+		"title"				=> $db->escape_string($lang->adv_sidebox_wol_avatar_list),
 		"description"		=> $lang->adv_sidebox_num_avatars_per_row . ":",
 		"optionscode"	=> "text",
 		"value"				=> '4',
 		"disporder"		=> '80',
 		"gid"					=> intval($gid),
 	);
+	
+	$query = $db->simple_select('settings', 'title', "name='adv_sidebox_avatar_per_row'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		unset($adv_sidebox_setting_8['sid']);
+		unset($adv_sidebox_setting_8['value']);
+		$db->update_query("settings", $adv_sidebox_setting_8, "name='adv_sidebox_avatar_per_row'");
+	}
+	else
+	{
+		$db->insert_query("settings", $adv_sidebox_setting_8);
+	}
 
 	$adv_sidebox_setting_9 = array(
 		"sid"					=> "NULL",
@@ -72,8 +85,18 @@ function whosonline_asb_install()
 		"gid"					=> intval($gid),
 	);
 
-	$db->insert_query("settings", $adv_sidebox_setting_8);
-	$db->insert_query("settings", $adv_sidebox_setting_9);
+	$query = $db->simple_select('settings', 'title', "name='adv_sidebox_avatar_max_rows'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		unset($adv_sidebox_setting_9['sid']);
+		unset($adv_sidebox_setting_9['value']);
+		$db->update_query("settings", $adv_sidebox_setting_9, "name='adv_sidebox_avatar_max_rows'");
+	}
+	else
+	{
+		$db->insert_query("settings", $adv_sidebox_setting_9);
+	}
 
 	rebuild_settings();
 	
@@ -90,7 +113,17 @@ function whosonline_asb_install()
 	</tr>",
         "sid" => -1
     );
-	$db->insert_query("templates", $template_7_l);
+	
+	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_whosonline_left'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		$db->update_query("templates", $template_7_l, "title='adv_sidebox_whosonline_left'");
+	}
+	else
+	{
+		$db->insert_query("templates", $template_7_l);
+	}
 
 	// the whosonline avatar list parent template (right)
 	$template_7_r = array(
@@ -107,7 +140,17 @@ function whosonline_asb_install()
 	</tr>",
         "sid" => -1
     );
-	$db->insert_query("templates", $template_7_r);
+	
+	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_whosonline_right'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		$db->update_query("templates", $template_7_r, "title='adv_sidebox_whosonline_right'");
+	}
+	else
+	{
+		$db->insert_query("templates", $template_7_r);
+	}
 
 	// the whosonline avatar list child template (left)
 	$template_8_l = array(
@@ -115,7 +158,17 @@ function whosonline_asb_install()
         "template" => "<a href=\"{\$mybb->settings[\'bburl\']}/{\$user[\'profilelink\']}\">{\$user_avatar_l}</a>",
         "sid" => -1
     );
-	$db->insert_query("templates", $template_8_l);
+	
+	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_whosonline_memberbit_left'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		$db->update_query("templates", $template_8_l, "title='adv_sidebox_whosonline_memberbit_left'");
+	}
+	else
+	{
+		$db->insert_query("templates", $template_8_l);
+	}
 
 	// the whosonline avatar list child template (left)
 	$template_8_r = array(
@@ -123,7 +176,17 @@ function whosonline_asb_install()
         "template" => "<a href=\"{\$mybb->settings[\'bburl\']}/{\$user[\'profilelink\']}\">{\$user_avatar_r}</a>",
         "sid" => -1
     );
-	$db->insert_query("templates", $template_8_r);
+	
+	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_whosonline_memberbit_right'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		$db->update_query("templates", $template_8_r, "title='adv_sidebox_whosonline_memberbit_right'");
+	}
+	else
+	{
+		$db->insert_query("templates", $template_8_r);
+	}
 }
 
 /*

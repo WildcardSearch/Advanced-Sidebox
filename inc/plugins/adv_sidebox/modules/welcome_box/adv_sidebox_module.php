@@ -57,7 +57,17 @@ function welcome_box_asb_install()
 	</tr>",
         "sid" => -1
     );
-	$db->insert_query("templates", $template_1);
+	
+	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_welcome'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		$db->update_query("templates", $template_1, "title='adv_sidebox_welcome'");
+	}
+	else
+	{
+		$db->insert_query("templates", $template_1);
+	}
 	
 	// a child template of the welcome box (member)
 	$template_2 = array(
@@ -71,7 +81,17 @@ function welcome_box_asb_install()
 </span>",
         "sid" => -1
     );
-	$db->insert_query("templates", $template_2);
+	
+	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_welcome_membertext'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		$db->update_query("templates", $template_2, "title='adv_sidebox_welcome_membertext'");
+	}
+	else
+	{
+		$db->insert_query("templates", $template_2);
+	}
 	
 	// a child template of the welcome box (guest state)
 	$template_3 = array(
@@ -87,7 +107,17 @@ function welcome_box_asb_install()
 </form>",
         "sid" => -1
     );
-	$db->insert_query("templates", $template_3);
+	
+	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_welcome_guesttext'");
+	
+	if($db->num_rows($query) == 1)
+	{
+		$db->update_query("templates", $template_3, "title='adv_sidebox_welcome_guesttext'");
+	}
+	else
+	{
+		$db->insert_query("templates", $template_3);
+	}
 }
 
 /*

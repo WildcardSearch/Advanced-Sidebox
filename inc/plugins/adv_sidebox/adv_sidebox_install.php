@@ -3,7 +3,7 @@
  * This file contains the install functions for adv_sidebox.php
  *
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x
- * Copyright Â© 2013 WildcardSearch
+ * Copyright © 2013 WildcardSearch
  * http://www.rantcentralforums.com
  *
  * Check out this project on GitHub: https://github.com/WildcardSearch/Advanced-Sidebox
@@ -57,7 +57,7 @@ function adv_sidebox_info()
 		"website"		=> "https://github.com/WildcardSearch/Advanced-Sidebox",
 		"author"		=> "Wildcard",
 		"authorsite"	=> "http://www.rantcentralforums.com",
-		"version"		=> "1.3.2",
+		"version"		=> "1.3.4",
 		"compatibility" => "16*",
 		"guid" 			=> "870e9163e2ae9b606a789d9f7d4d2462",
 	);
@@ -81,7 +81,7 @@ function adv_sidebox_install()
 	global $db, $mybb, $lang;
 
 	// create the table if it doesn't already exist.
-	if (!$db->table_exists('sideboxes'))
+	if(!$db->table_exists('sideboxes'))
 	{
 		$collation = $db->build_create_table_collation();
 		$db->write_query
@@ -105,7 +105,7 @@ function adv_sidebox_install()
 	}
 
 	// create the table if it doesn't already exist.
-	if (!$db->table_exists('custom_sideboxes'))
+	if(!$db->table_exists('custom_sideboxes'))
 	{
 		$collation = $db->build_create_table_collation();
 		$db->write_query
@@ -132,100 +132,7 @@ function adv_sidebox_install()
 	$lang->load("adv_sidebox");
 
 	// settings group and settings
-	$adv_sidebox_group = array(
-		"gid" 				=> "NULL",
-		"name" 				=> "adv_sidebox_settings",
-		"title" 				=> "Advanced Sidebox",
-		"description" 		=> $lang->adv_sidebox_settingsgroup_description,
-		"disporder" 		=> "101",
-		"isdefault" 			=> "no",
-	);
-	$db->insert_query("settinggroups", $adv_sidebox_group);
-	$gid = $db->insert_id();
-	$adv_sidebox_setting_1 = array(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_on_index",
-		"title"					=> $lang->adv_sidebox_show_on_index,
-		"description"		=> "",
-		"optionscode"	=> "yesno",
-		"value"				=> '1',
-		"disporder"		=> '10',
-		"gid"					=> intval($gid),
-	);
-	$adv_sidebox_setting_2 = array(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_on_forumdisplay",
-		"title"					=> $lang->adv_sidebox_show_on_forumdisplay,
-		"description"		=> "",
-		"optionscode"	=> "yesno",
-		"value"				=> '1',
-		"disporder"		=> '20',
-		"gid"					=> intval($gid),
-	);
-	$adv_sidebox_setting_3 = array(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_on_showthread",
-		"title"					=> $lang->adv_sidebox_show_on_threaddisplay,
-		"description"		=> "",
-		"optionscode"	=> "yesno",
-		"value"				=> '1',
-		"disporder"		=> '30',
-		"gid"					=> intval($gid),
-	);
-
-	$adv_sidebox_setting_4 = array(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_portal_replace",
-		"title"					=> $lang->adv_sidebox_replace_portal_boxes,
-		"description"		=> "",
-		"optionscode"	=> "yesno",
-		"value"				=> '1',
-		"disporder"		=> '40',
-		"gid"					=> intval($gid),
-	);
-	$adv_sidebox_setting_5 = array(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_width_left",
-		"title"					=> $lang->adv_sidebox_width . ":",
-		"description"		=> "left",
-		"optionscode"	=> "text",
-		"value"				=> '240',
-		"disporder"		=> '50',
-		"gid"					=> intval($gid),
-	);
-	$adv_sidebox_setting_6 = array(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_width_right",
-		"title"					=> $lang->adv_sidebox_width . ":",
-		"description"		=> "right",
-		"optionscode"	=> "text",
-		"value"				=> '240',
-		"disporder"		=> '60',
-		"gid"					=> intval($gid),
-	);
-
-	$update_themes_link = "<ul><li><a href=\"" . ADV_SIDEBOX_URL . "&amp;action=update_theme_select\" title=\"\">{$lang->adv_sidebox_theme_exclude_select_update_link}</a><br />{$lang->adv_sidebox_theme_exclude_select_update_description}</li></ul>";
-
-	$adv_sidebox_setting_7 = array(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_exclude_theme",
-		"title"					=> $lang->adv_sidebox_theme_exclude_list . ":",
-		"description"		=> $db->escape_string($lang->adv_sidebox_theme_exclude_list_description . $update_themes_link),
-		"optionscode"	=> $db->escape_string(build_theme_exclude_select()),
-		"value"				=> '',
-		"disporder"		=> '70',
-		"gid"					=> intval($gid),
-	);
-
-	$db->insert_query("settings", $adv_sidebox_setting_1);
-	$db->insert_query("settings", $adv_sidebox_setting_2);
-	$db->insert_query("settings", $adv_sidebox_setting_3);
-	$db->insert_query("settings", $adv_sidebox_setting_4);
-	$db->insert_query("settings", $adv_sidebox_setting_5);
-	$db->insert_query("settings", $adv_sidebox_setting_6);
-	$db->insert_query("settings", $adv_sidebox_setting_7);
-
-	rebuild_settings();
+	adv_sidebox_create_base_settings();
 
 	//modules
 	require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_classes.php';
@@ -287,6 +194,21 @@ function adv_sidebox_uninstall()
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='adv_sidebox_avatar_max_rows'");
 
 	rebuild_settings();
+	
+	$throw_away = adv_sidebox_unset_cache_version();
+}
+
+function adv_sidebox_activate()
+{
+	$old_version = adv_sidebox_get_cache_version() ;
+
+	if(file_exists(MYBB_ROOT . '/inc/plugins/adv_sidebox/adv_sidebox_upgrade.php'))
+	{
+		require_once MYBB_ROOT . '/inc/plugins/adv_sidebox/adv_sidebox_upgrade.php';
+    }
+	$retval = adv_sidebox_set_cache_version();
+
+ 	rebuild_settings();
 }
 
 /* adv_sidebox_get_settingsgroup()
@@ -340,6 +262,154 @@ function adv_sidebox_build_settings_url($gid)
 	{
 		return "index.php?module=config-settings&amp;action=change&amp;gid=" . $gid;
 	}
+}
+
+// VERSIONING
+
+function adv_sidebox_get_cache_version() 
+{
+	global $cache, $mybb, $db;
+
+	//get currently installed version, if there is one
+	$wildcard_plugins = $cache->read('wildcard_plugins');
+	if(is_array($wildcard_plugins))
+	{
+        return $wildcard_plugins['versions']['adv_sidebox'];
+	}
+    return 0;
+}
+
+function adv_sidebox_set_cache_version() 
+{
+	global $cache;
+	
+	//get version from this plugin file
+	$adv_sidebox_info = adv_sidebox_info();
+    
+	//update version cache to latest
+	$wildcard_plugins = $cache->read('wildcard_plugins');
+	$wildcard_plugins['versions']['adv_sidebox'] = $adv_sidebox_info['version'];
+	$cache->update('wildcard_plugins', $wildcard_plugins);
+
+    return true;
+}
+
+function adv_sidebox_unset_cache_version() 
+{
+	global $cache;
+
+	$wildcard_plugins = $cache->read('wildcard_plugins');
+	unset($wildcard_plugins['versions']['adv_sidebox']);
+	$cache->update('wildcard_plugins', $wildcard_plugins);
+    
+    return true;
+}
+
+function adv_sidebox_create_base_settings()
+{
+	global $db, $lang;
+	
+	if (!$lang->adv_sidebox)
+	{
+		$lang->load('adv_sidebox');
+	}
+
+	$adv_sidebox_group = array(
+		"gid" 				=> "NULL",
+		"name" 				=> "adv_sidebox_settings",
+		"title" 				=> "Advanced Sidebox",
+		"description" 		=> $lang->adv_sidebox_settingsgroup_description,
+		"disporder" 		=> "101",
+		"isdefault" 			=> "no",
+	);
+	$db->insert_query("settinggroups", $adv_sidebox_group);
+	
+	// store the gid # for the settings
+	$gid = $db->insert_id();
+	
+	$adv_sidebox_setting_1 = array(
+		"sid"					=> "NULL",
+		"name"				=> "adv_sidebox_on_index",
+		"title"					=> $lang->adv_sidebox_show_on_index,
+		"description"		=> "",
+		"optionscode"	=> "yesno",
+		"value"				=> '1',
+		"disporder"		=> '10',
+		"gid"					=> intval($gid),
+	);
+	$adv_sidebox_setting_2 = array(
+		"sid"					=> "NULL",
+		"name"				=> "adv_sidebox_on_forumdisplay",
+		"title"					=> $lang->adv_sidebox_show_on_forumdisplay,
+		"description"		=> "",
+		"optionscode"	=> "yesno",
+		"value"				=> '1',
+		"disporder"		=> '20',
+		"gid"					=> intval($gid),
+	);
+	$adv_sidebox_setting_3 = array(
+		"sid"					=> "NULL",
+		"name"				=> "adv_sidebox_on_showthread",
+		"title"					=> $lang->adv_sidebox_show_on_threaddisplay,
+		"description"		=> "",
+		"optionscode"	=> "yesno",
+		"value"				=> '1',
+		"disporder"		=> '30',
+		"gid"					=> intval($gid),
+	);
+	$adv_sidebox_setting_4 = array(
+		"sid"					=> "NULL",
+		"name"				=> "adv_sidebox_portal_replace",
+		"title"					=> $lang->adv_sidebox_replace_portal_boxes,
+		"description"		=> "",
+		"optionscode"	=> "yesno",
+		"value"				=> '1',
+		"disporder"		=> '40',
+		"gid"					=> intval($gid),
+	);
+	$adv_sidebox_setting_5 = array(
+		"sid"					=> "NULL",
+		"name"				=> "adv_sidebox_width_left",
+		"title"					=> $lang->adv_sidebox_width . ":",
+		"description"		=> "left",
+		"optionscode"	=> "text",
+		"value"				=> '240',
+		"disporder"		=> '50',
+		"gid"					=> intval($gid),
+	);
+	$adv_sidebox_setting_6 = array(
+		"sid"					=> "NULL",
+		"name"				=> "adv_sidebox_width_right",
+		"title"					=> $lang->adv_sidebox_width . ":",
+		"description"		=> "right",
+		"optionscode"	=> "text",
+		"value"				=> '240',
+		"disporder"		=> '60',
+		"gid"					=> intval($gid),
+	);
+
+	$update_themes_link = "<ul><li><a href=\"" . ADV_SIDEBOX_URL . "&amp;action=update_theme_select\" title=\"\">{$lang->adv_sidebox_theme_exclude_select_update_link}</a><br />{$lang->adv_sidebox_theme_exclude_select_update_description}</li></ul>";
+
+	$adv_sidebox_setting_7 = array(
+		"sid"					=> "NULL",
+		"name"				=> "adv_sidebox_exclude_theme",
+		"title"					=> $lang->adv_sidebox_theme_exclude_list . ":",
+		"description"		=> $db->escape_string($lang->adv_sidebox_theme_exclude_list_description . $update_themes_link),
+		"optionscode"	=> $db->escape_string(build_theme_exclude_select()),
+		"value"				=> '',
+		"disporder"		=> '70',
+		"gid"					=> intval($gid),
+	);
+
+	$db->insert_query("settings", $adv_sidebox_setting_1);
+	$db->insert_query("settings", $adv_sidebox_setting_2);
+	$db->insert_query("settings", $adv_sidebox_setting_3);
+	$db->insert_query("settings", $adv_sidebox_setting_4);
+	$db->insert_query("settings", $adv_sidebox_setting_5);
+	$db->insert_query("settings", $adv_sidebox_setting_6);
+	$db->insert_query("settings", $adv_sidebox_setting_7);
+
+	rebuild_settings();
 }
 
 ?>

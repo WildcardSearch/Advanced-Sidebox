@@ -1,7 +1,7 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x v1.3
- * Copyright Â© 2013 WildcardSearch
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Copyright © 2013 WildcardSearch
  * http://www.rantcentralforums.com
  *
  * Check out this project on GitHub: https://github.com/WildcardSearch/Advanced-Sidebox
@@ -95,8 +95,7 @@ function adv_sidebox_start()
 		return false;
 	}
 	
-	// There is only one internal box type (custom),
-	// but new types can come from saved custom boxes . . .
+	// box types can come from saved custom boxes . . .
 	$custom_box_list = get_all_custom_box_types_content();
 	
 	// . . . or modules
@@ -114,7 +113,7 @@ function adv_sidebox_start()
 		else
 		{
 			// normally we will wrap the sidebox with header and expander
-			if($this_box->wrap_content || $this_box->box_type == 'custom_box')
+			if($this_box->wrap_content)
 			{
 				$content = $this_box->wrapped_content;
 			}
