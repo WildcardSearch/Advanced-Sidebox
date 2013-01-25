@@ -1,4 +1,4 @@
-Advanced-Sidebox 1.3.5
+Advanced-Sidebox 1.3.6
 ===================
 
 A plugin for MyBB forums that displays portal boxes on various forum pages.
@@ -11,6 +11,8 @@ I will add more info as the project develops further.
 
 Change Log
 =========
+01-25-2013 - 1.3.6 official release of Avril's 'Online Staff' v1.0 module, as default 'Online Staff' module within Advanced Sidebox package.
+
 01-25-2013 - 1.3.5 maintenance patch. Remove old module in preparation to clean implementation of new module which will take his place.
 
 01-18-2013 - 1.3.4 release to beta-release upgrade module for testing, remove the on-the-fly custom box option made pointless by the better user-defined boxes and added setting for latest threads sidebox (max threads)
