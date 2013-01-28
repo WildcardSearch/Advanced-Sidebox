@@ -95,9 +95,6 @@
  * ============================================================================
  */
 
-
-
-
 // this file may not be executed from outside of script
 if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX")) {
 	die("You need MyBB and Advanced Sidebox plugin installed and properly initialised to use this.");
@@ -107,305 +104,211 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX")) {
  * Advanced Sidebox module - staff online
  * module info
  */
-function staff_online_box_asb_info() {
-	return array
-	(
-		"name"				=>	'Online Staff',
-		"description"		=>	'Display online staff members list. ("Online Staff" module V1.0) <a href=" http://avril-gh.github.com/Online-Staff-module" title="check for updates and help docs">[check for updates and help docs]</a>',
-		"stereo"			=>	true,
-		"wrap_content"		=>	true
-	);
-}
-
-/*
- * Advanced Sidebox module - staff online
- * check if module is installed
-*/
-function staff_online_box_asb_is_installed() {
-	global $db;
-
-	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_staff_online_left'");
-	return $db->num_rows($query);
-}
-
-
-/*
- * Advanced Sidebox module - staff online
- * install module
- */
-function staff_online_box_asb_install() {
+function staff_online_box_asb_info()
+{
 	global $db, $lang;
 	
-	if (!$lang->adv_sidebox_staff_online_box) {
+	if (!$lang->adv_sidebox_staff_online_box)
+	{
 		$lang->load('adv_sidebox_staff_online_box');
 	}
+	
+	return array
+	(
+		"name"							=>	'Online Staff',
+		"description"					=>	'Display online staff members list',
+		"version"						=>	"2",
+		"author"						=>	'Avril',
+		"author_site"				=>	'http://avril-gh.github.com/Online-Staff-module',
+		"stereo"						=>	true,
+		"wrap_content"				=>	true,
+		"discarded_settings"	=>	array
+													(
+														"adv_sidebox_staff_online_bydetail",
+														"adv_sidebox_staff_online_avatarsize",
+														"adv_sidebox_staff_online_bytype",
+														"adv_sidebox_staff_online_hideinfo"
+													),
+		"settings"						=>	array
+													(
+														array
+														(
+															"sid"				=> "NULL",
+															"name"				=> "adv_sidebox_staff_online_bydetail",
+															"title"				=> $db->escape_string($lang->adv_sidebox_staff_online_option_bydetail_title),
+															"description"		=> $db->escape_string($lang->adv_sidebox_staff_online_option_bydetail_description),
+															"optionscode"		=> "text",
+															"value"				=> '5',
+															"disporder"			=> '492'
+														),
+														array
+														(
+															"sid"				=> "NULL",
+															"name"				=> "adv_sidebox_staff_online_avatarsize",
+															"title"				=> $db->escape_string($lang->adv_sidebox_staff_online_option_avatarsize_title),
+															"description"		=> $db->escape_string($lang->adv_sidebox_staff_online_option_avatarsize_description),
+															"optionscode"		=> "text",
+															"value"				=> '36',
+															"disporder"			=> '493'
+														),
+														array
+														(
+															"sid"				=> "NULL",
+															"name"				=> "adv_sidebox_staff_online_bytype",
+															"title"				=> $db->escape_string($lang->adv_sidebox_staff_online_option_bytype_title),
+															"description"		=> $db->escape_string($lang->adv_sidebox_staff_online_option_bytype_description),
+															"optionscode"		=> "yesno",
+															"value"				=> '1',
+															"disporder"			=> '494'
+														),
+														array(
+															"sid"				=> "NULL",
+															"name"				=> "adv_sidebox_staff_online_hideinfo",
+															"title"				=> $db->escape_string($lang->adv_sidebox_staff_online_option_hideinfo_title),
+															"description"		=> $db->escape_string($lang->adv_sidebox_staff_online_option_hideinfo_description),
+															"optionscode"		=> "yesno",
+															"value"				=> '1',
+															"disporder"			=> '495'
+														)
+													),
+		"templates"					=>	array
+													(
+														array
+														(
+																		"title" 	=> "adv_sidebox_staff_online_left",
+																		"template"	=> "
+	<tr style=\"{\$staff_online[\'hide_info\']}\">
+		<td class=\"trow1\">
+			<span class=\"smalltext\">{\$staff_online[\'lang_info\']}</span>
+		</td>
+	</tr>
 
-	// add module settings to Advanced Sidebox settings group in ACP
-	$gid = adv_sidebox_get_settingsgroup();
-	$staff_online_setting = array(
-			"sid"				=> "NULL",
-			"name"				=> "adv_sidebox_staff_online_bydetail",
-			"title"				=> $db->escape_string($lang->adv_sidebox_staff_online_option_bydetail_title),
-			"description"		=> $db->escape_string($lang->adv_sidebox_staff_online_option_bydetail_description),
-			"optionscode"		=> "text",
-			"value"				=> '5',
-			"disporder"			=> '492',
-			"gid"				=> intval($gid),
+	<tr class=\"trow2\" style=\"{\$staff_online[\'hide_admins\']}\">
+		<td>
+			<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_admins\']} {\$staff_online[\'lang_admin\']}(s).</span>
+		</td>
+	</tr>
+	<tr class=\"trow1\" style=\"{\$staff_online[\'hide_supermods\']}\">
+		<td>
+			<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_supermods\']} {\$staff_online[\'lang_supermod\']}(s).</span>
+		</td>
+	</tr>
+	<tr class=\"trow2\" style=\"{\$staff_online[\'hide_mods\']}\">
+		<td>
+			<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_mods\']} {\$staff_online[\'lang_mod\']}(s).</span>
+		</td>
+	</tr>
+	<tr class=\"trow1\" style=\"{\$staff_online[\'hide_others\']}\">
+		<td>
+			<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_others\']} {\$staff_online[\'lang_other\']}(s).</span>
+		</td>
+	</tr>
+
+	{\$bits_left}
+	<tr style=\"{\$staff_online[\'hide_seemore\']}\">
+		<td class=\"trow1\">
+			<a href=\"{\$mybb->settings[\'bburl\']}/showteam.php\" title=\"{\$lang->adv_sidebox_staff_online_findother}\">
+				<span class=\"smalltext\"> &raquo; {\$lang->adv_sidebox_staff_online_findother}</span>
+			</a>
+		</td>
+	</tr>
+																				",
+																				"sid"		=> -1
+														),
+														array
+														(
+															"title" 	=> "adv_sidebox_staff_online_right",
+															"template"	=> "
+	<tr style=\"{\$staff_online[\'hide_info\']}\">
+		<td class=\"trow1\">
+			<span class=\"smalltext\">{\$staff_online[\'lang_info\']}</span>
+		</td>
+	</tr>
+
+	<tr class=\"trow2\" style=\"{\$staff_online[\'hide_admins\']}\">
+		<td>
+			<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_admins\']} {\$staff_online[\'lang_admin\']}(s).</span>
+		</td>
+	</tr>
+	<tr class=\"trow1\" style=\"{\$staff_online[\'hide_supermods\']}\">
+		<td>
+			<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_supermods\']} {\$staff_online[\'lang_supermod\']}(s).</span>
+		</td>
+	</tr>
+	<tr class=\"trow2\" style=\"{\$staff_online[\'hide_mods\']}\">
+		<td>
+			<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_mods\']} {\$staff_online[\'lang_mod\']}(s).</span>
+		</td>
+	</tr>
+	<tr class=\"trow1\" style=\"{\$staff_online[\'hide_others\']}\">
+		<td>
+			<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_others\']} {\$staff_online[\'lang_other\']}(s).</span>
+		</td>
+	</tr>
+
+	{\$bits_right}
+	<tr style=\"{\$staff_online[\'hide_seemore\']}\">
+		<td class=\"trow1\">
+			<a href=\"{\$mybb->settings[\'bburl\']}/showteam.php\" title=\"{\$lang->adv_sidebox_staff_online_findother}\">
+				<span class=\"smalltext\"> &raquo; {\$lang->adv_sidebox_staff_online_findother}</span>
+			</a>
+		</td>
+	</tr>
+						",
+						"sid"		=> -1
+			),
+			array
+			(
+				"title" 	=> "adv_sidebox_staff_online_bit_left",
+				"template"	=> "
+	<tr>
+		<td class=\"trow{\$staff_online[\'bit_trow_x\']}\">
+
+			<a href=\"{\$staff_online[\'bit_userprofile\']}\" title=\"{\$staff_online[\'bit_usertype\']} : {\$staff_online[\'bit_username\']}\">
+				<img style=\"float: left; margin-left: 5px; margin-right: 10px;\" src=\"{\$staff_online[\'bit_useravatar\']}\" alt=\"{\$staff_online[\'bit_usertype\']} - {\$staff_online[\'bit_username\']}\" height=\"{\$staff_online[\'bit_useravatar_size\']}px\" width=\"{\$staff_online[\'bit_useravatar_size\']}px\" />
+				<span>{\$staff_online[\'bit_usertype_formatted\']} {\$staff_online[\'bit_username_formatted\']}</span><br/>
+			</a>
+
+			<a href=\"{\$mybb->settings[\'bburl\']}/private.php?action=send&amp;uid={\$staff_online[\'bit_userid\']}\" title=\"{\$staff_online[\'bit_usertype\']} : {\$staff_online[\'bit_username\']}\">
+				<span class=\"smalltext\">{\$lang->adv_sidebox_staff_online_askhelp}</span>
+			</a>
+
+		</td>
+	</tr>
+																	",
+																	"sid"		=> -1
+														),
+														array
+														(
+															"title" 	=> "adv_sidebox_staff_online_bit_right",
+															"template"	=> "
+	<tr>
+		<td class=\"trow{\$staff_online[\'bit_trow_x\']}\">
+
+			<a href=\"{\$staff_online[\'bit_userprofile\']}\" title=\"{\$staff_online[\'bit_usertype\']} : {\$staff_online[\'bit_username\']}\">
+				<img style=\"float: left; margin-left: 5px; margin-right: 10px;\" src=\"{\$staff_online[\'bit_useravatar\']}\" alt=\"{\$staff_online[\'bit_usertype\']} - {\$staff_online[\'bit_username\']}\" height=\"{\$staff_online[\'bit_useravatar_size\']}px\" width=\"{\$staff_online[\'bit_useravatar_size\']}px\" />
+				<span>{\$staff_online[\'bit_usertype_formatted\']} {\$staff_online[\'bit_username_formatted\']}</span><br/>
+			</a>
+
+			<a href=\"{\$mybb->settings[\'bburl\']}/private.php?action=send&amp;uid={\$staff_online[\'bit_userid\']}\" title=\"{\$staff_online[\'bit_usertype\']} : {\$staff_online[\'bit_username\']}\">
+				<span class=\"smalltext\">{\$lang->adv_sidebox_staff_online_askhelp}</span>
+			</a>
+
+		</td>
+	</tr>
+																	",
+																	"sid"		=> -1
+														)
+													)
 	);
-	$query = $db->simple_select('settings', 'title', "name='adv_sidebox_staff_online_bydetail'");
-	if($db->num_rows($query) == 1) {
-		unset($staff_online_setting['sid']);
-		unset($staff_online_setting['value']);
-		$db->update_query("settings", $staff_online_setting, "name='adv_sidebox_staff_online_bydetail'");
-	} else {
-		$db->insert_query("settings", $staff_online_setting);
-	}
-	
-	$staff_online_setting = array(
-			"sid"				=> "NULL",
-			"name"				=> "adv_sidebox_staff_online_avatarsize",
-			"title"				=> $db->escape_string($lang->adv_sidebox_staff_online_option_avatarsize_title),
-			"description"		=> $db->escape_string($lang->adv_sidebox_staff_online_option_avatarsize_description),
-			"optionscode"		=> "text",
-			"value"				=> '36',
-			"disporder"			=> '493',
-			"gid"				=> intval($gid),
-	);
-	$query = $db->simple_select('settings', 'title', "name='adv_sidebox_staff_online_avatarsize'");
-	if($db->num_rows($query) == 1) {
-		unset($staff_online_setting['sid']);
-		unset($staff_online_setting['value']);
-		$db->update_query("settings", $staff_online_setting, "name='adv_sidebox_staff_online_avatarsize'");
-	} else {
-		$db->insert_query("settings", $staff_online_setting);
-	}
-	
-	$staff_online_setting = array(
-			"sid"				=> "NULL",
-			"name"				=> "adv_sidebox_staff_online_bytype",
-			"title"				=> $db->escape_string($lang->adv_sidebox_staff_online_option_bytype_title),
-			"description"		=> $db->escape_string($lang->adv_sidebox_staff_online_option_bytype_description),
-			"optionscode"		=> "yesno",
-			"value"				=> '1',
-			"disporder"			=> '494',
-			"gid"				=> intval($gid),
-	);
-	$query = $db->simple_select('settings', 'title', "name='adv_sidebox_staff_online_bytype'");
-	if($db->num_rows($query) == 1) {
-		unset($staff_online_setting['sid']);
-		unset($staff_online_setting['value']);
-		$db->update_query("settings", $staff_online_setting, "name='adv_sidebox_staff_online_bytype'");
-	} else {
-		$db->insert_query("settings", $staff_online_setting);
-	}
-	
-	$staff_online_setting = array(
-			"sid"				=> "NULL",
-			"name"				=> "adv_sidebox_staff_online_hideinfo",
-			"title"				=> $db->escape_string($lang->adv_sidebox_staff_online_option_hideinfo_title),
-			"description"		=> $db->escape_string($lang->adv_sidebox_staff_online_option_hideinfo_description),
-			"optionscode"		=> "yesno",
-			"value"				=> '1',
-			"disporder"			=> '495',
-			"gid"				=> intval($gid),
-	);
-	$query = $db->simple_select('settings', 'title', "name='adv_sidebox_staff_online_hideinfo'");
-	if($db->num_rows($query) == 1) {
-		unset($staff_online_setting['sid']);
-		unset($staff_online_setting['value']);
-		$db->update_query("settings", $staff_online_setting, "name='adv_sidebox_staff_online_hideinfo'");
-	} else {
-		$db->insert_query("settings", $staff_online_setting);
-	}
-	
-	rebuild_settings();
-	
-	// create staff online module template left (main template)
-	$asb_staff_online_template = array(
-			"title" 	=> "adv_sidebox_staff_online_left",
-			"template"	=> "
-<tr style=\"{\$staff_online[\'hide_info\']}\">
-	<td class=\"trow1\">
-		<span class=\"smalltext\">{\$staff_online[\'lang_info\']}</span>
-	</td>
-</tr>
-
-<tr class=\"trow2\" style=\"{\$staff_online[\'hide_admins\']}\">
-	<td>
-		<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_admins\']} {\$staff_online[\'lang_admin\']}(s).</span>
-	</td>
-</tr>
-<tr class=\"trow1\" style=\"{\$staff_online[\'hide_supermods\']}\">
-	<td>
-		<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_supermods\']} {\$staff_online[\'lang_supermod\']}(s).</span>
-	</td>
-</tr>
-<tr class=\"trow2\" style=\"{\$staff_online[\'hide_mods\']}\">
-	<td>
-		<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_mods\']} {\$staff_online[\'lang_mod\']}(s).</span>
-	</td>
-</tr>
-<tr class=\"trow1\" style=\"{\$staff_online[\'hide_others\']}\">
-	<td>
-		<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_others\']} {\$staff_online[\'lang_other\']}(s).</span>
-	</td>
-</tr>
-
-{\$bits_left}
-<tr style=\"{\$staff_online[\'hide_seemore\']}\">
-	<td class=\"trow1\">
-		<a href=\"{\$mybb->settings[\'bburl\']}/showteam.php\" title=\"{\$lang->adv_sidebox_staff_online_findother}\">
-			<span class=\"smalltext\"> &raquo; {\$lang->adv_sidebox_staff_online_findother}</span>
-		</a>
-	</td>
-</tr>
-					",
-					"sid"		=> -1
-	);
-	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_staff_online_left'");
-	if($db->num_rows($query) == 1) {
-		$db->update_query("templates", $asb_staff_online_template, "title='adv_sidebox_staff_online_left'");
-	} else {
-		$db->insert_query("templates", $asb_staff_online_template);
-	}
-	
-	// create staff online module template right (main template)
-	$asb_staff_online_template = array(
-			"title" 	=> "adv_sidebox_staff_online_right",
-			"template"	=> "
-<tr style=\"{\$staff_online[\'hide_info\']}\">
-	<td class=\"trow1\">
-		<span class=\"smalltext\">{\$staff_online[\'lang_info\']}</span>
-	</td>
-</tr>
-
-<tr class=\"trow2\" style=\"{\$staff_online[\'hide_admins\']}\">
-	<td>
-		<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_admins\']} {\$staff_online[\'lang_admin\']}(s).</span>
-	</td>
-</tr>
-<tr class=\"trow1\" style=\"{\$staff_online[\'hide_supermods\']}\">
-	<td>
-		<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_supermods\']} {\$staff_online[\'lang_supermod\']}(s).</span>
-	</td>
-</tr>
-<tr class=\"trow2\" style=\"{\$staff_online[\'hide_mods\']}\">
-	<td>
-		<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_mods\']} {\$staff_online[\'lang_mod\']}(s).</span>
-	</td>
-</tr>
-<tr class=\"trow1\" style=\"{\$staff_online[\'hide_others\']}\">
-	<td>
-		<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_others\']} {\$staff_online[\'lang_other\']}(s).</span>
-	</td>
-</tr>
-
-{\$bits_right}
-<tr style=\"{\$staff_online[\'hide_seemore\']}\">
-	<td class=\"trow1\">
-		<a href=\"{\$mybb->settings[\'bburl\']}/showteam.php\" title=\"{\$lang->adv_sidebox_staff_online_findother}\">
-			<span class=\"smalltext\"> &raquo; {\$lang->adv_sidebox_staff_online_findother}</span>
-		</a>
-	</td>
-</tr>
-					",
-					"sid"		=> -1
-	);
-	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_staff_online_right'");
-	if($db->num_rows($query) == 1) {
-		$db->update_query("templates", $asb_staff_online_template, "title='adv_sidebox_staff_online_right'");
-	} else {
-		$db->insert_query("templates", $asb_staff_online_template);
-	}
-
-	// create staff online module bit template left (member related)
-	$asb_staff_online_template = array(
-			"title" 	=> "adv_sidebox_staff_online_bit_left",
-			"template"	=> "
-<tr>
-	<td class=\"trow{\$staff_online[\'bit_trow_x\']}\">
-
-		<a href=\"{\$staff_online[\'bit_userprofile\']}\" title=\"{\$staff_online[\'bit_usertype\']} : {\$staff_online[\'bit_username\']}\">
-			<img style=\"float: left; margin-left: 5px; margin-right: 10px;\" src=\"{\$staff_online[\'bit_useravatar\']}\" alt=\"{\$staff_online[\'bit_usertype\']} - {\$staff_online[\'bit_username\']}\" height=\"{\$staff_online[\'bit_useravatar_size\']}px\" width=\"{\$staff_online[\'bit_useravatar_size\']}px\" />
-			<span>{\$staff_online[\'bit_usertype_formatted\']} {\$staff_online[\'bit_username_formatted\']}</span><br/>
-		</a>
-
-		<a href=\"{\$mybb->settings[\'bburl\']}/private.php?action=send&amp;uid={\$staff_online[\'bit_userid\']}\" title=\"{\$staff_online[\'bit_usertype\']} : {\$staff_online[\'bit_username\']}\">
-			<span class=\"smalltext\">{\$lang->adv_sidebox_staff_online_askhelp}</span>
-		</a>
-
-	</td>
-</tr>
-					",
-					"sid"		=> -1
-	);
-	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_staff_online_bit_left'");
-	if($db->num_rows($query) == 1) {
-		$db->update_query("templates", $asb_staff_online_template, "title='adv_sidebox_staff_online_bit_left'");
-	} else {
-		$db->insert_query("templates", $asb_staff_online_template);
-	}
-	
-	// create staff online module bit template right (member related)
-	$asb_staff_online_template = array(
-			"title" 	=> "adv_sidebox_staff_online_bit_right",
-			"template"	=> "
-<tr>
-	<td class=\"trow{\$staff_online[\'bit_trow_x\']}\">
-
-		<a href=\"{\$staff_online[\'bit_userprofile\']}\" title=\"{\$staff_online[\'bit_usertype\']} : {\$staff_online[\'bit_username\']}\">
-			<img style=\"float: left; margin-left: 5px; margin-right: 10px;\" src=\"{\$staff_online[\'bit_useravatar\']}\" alt=\"{\$staff_online[\'bit_usertype\']} - {\$staff_online[\'bit_username\']}\" height=\"{\$staff_online[\'bit_useravatar_size\']}px\" width=\"{\$staff_online[\'bit_useravatar_size\']}px\" />
-			<span>{\$staff_online[\'bit_usertype_formatted\']} {\$staff_online[\'bit_username_formatted\']}</span><br/>
-		</a>
-
-		<a href=\"{\$mybb->settings[\'bburl\']}/private.php?action=send&amp;uid={\$staff_online[\'bit_userid\']}\" title=\"{\$staff_online[\'bit_usertype\']} : {\$staff_online[\'bit_username\']}\">
-			<span class=\"smalltext\">{\$lang->adv_sidebox_staff_online_askhelp}</span>
-		</a>
-
-	</td>
-</tr>
-					",
-					"sid"		=> -1
-	);
-	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_staff_online_bit_right'");
-	if($db->num_rows($query) == 1) {
-		$db->update_query("templates", $asb_staff_online_template, "title='adv_sidebox_staff_online_bit_right'");
-	} else {
-		$db->insert_query("templates", $asb_staff_online_template);
-	}
-}
-
-/*
- * Advanced Sidebox module - staff online plus
- * uninstall module
- */
-function staff_online_box_asb_uninstall() {
-	global $db;
-	
-	// delete all modules of this type
-	$db->query("DELETE FROM " . TABLE_PREFIX . "sideboxes WHERE box_type='" . $db->escape_string('staff_online_box') . "'");
-	
-	// remove module templates.
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_staff_online_left'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_staff_online_right'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_staff_online_bit_left'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_staff_online_bit_right'");
-
-	// remove module settings
-	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='adv_sidebox_staff_online_bydetail'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='adv_sidebox_staff_online_avatarsize'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='adv_sidebox_staff_online_bytype'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='adv_sidebox_staff_online_hideinfo'");
-	
-	rebuild_settings();
-
 }
 
 /*
  * Advanced Sidebox module - staff online plus
  * prepare module content
  */
-function staff_online_box_asb_build_template() {
+function staff_online_box_asb_build_template($settings)
+{
 	global $staff_online_box_l, $staff_online_box_r;
 	global $db, $mybb, $templates, $lang, $cache;
 
@@ -462,11 +365,11 @@ function staff_online_box_asb_build_template() {
 	"bit_userid"				=> "",
 	"bit_username_formatted"	=> "",
 	"bit_useravatar"			=> "",
-	"bit_useravatar_size"		=> intval($mybb->settings["adv_sidebox_staff_online_avatarsize"]),
+	"bit_useravatar_size"		=> intval($settings[1]),
 	"bit_userprofile" 			=> "",
 	"bit_usertype"				=> "",
 	"bit_usertype_formatted"	=> "",
-	"bit_max_to_show" 			=> intval($mybb->settings["adv_sidebox_staff_online_bydetail"])
+	"bit_max_to_show" 			=> intval($settings[0])
 	);
 
 	// prevent faulty input
@@ -482,7 +385,7 @@ function staff_online_box_asb_build_template() {
 	$bits_left					= "";
 	$bits_right					= "";
 	//									- ACP option show by type block
-	$bytype_enable				= intval($mybb->settings["adv_sidebox_staff_online_bytype"]) & 1;
+	$bytype_enable				= intval($settings[2]) & 1;
 
 	// Prepare debug if enabled
 	if ($staff_online_debug) {
@@ -595,7 +498,7 @@ function staff_online_box_asb_build_template() {
 		// There are no staff online. We cant show just empty box.
 		// Info about no staff will be shown regardles from ACP setting
 		$staff_online["hide_info"] = "";
-	}elseif ((intval($mybb->settings["adv_sidebox_staff_online_hideinfo"]) & 1)){
+	}elseif ((intval($settings[3]) & 1)){
 		// There are staff online and perhaps user want to use other info block for it.
 		// Hide info block if ACP setting is set to hide it.
 		$staff_online["hide_info"] = "";

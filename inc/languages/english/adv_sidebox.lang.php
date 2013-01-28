@@ -87,7 +87,9 @@ $l['adv_sidebox_page_desc'] = 'This page allows customization of Advanced Sidebo
 $l['adv_sidebox_box_type'] = 'Type';
 $l['adv_sidebox_content'] = 'Content';
 $l['adv_sidebox_scripts'] = 'Scripts';
+$l['adv_sidebox_groups'] = 'Groups';
 $l['adv_sidebox_controls'] = 'Controls';
+$l['adv_sidebox_options'] = 'Options';
 
 $l['adv_sidebox_position_left_boxes'] = 'Left Boxes';
 $l['adv_sidebox_position_right_boxes'] = 'Right Boxes';
@@ -113,6 +115,8 @@ $l['adv_sidebox_content_title'] = 'Custom HTML';
 $l['adv_sidebox_content_desc'] = 'select a custom box type to use HTML entered here';
 $l['adv_sidebox_position_desc'] = 'choose left or right';
 $l['adv_sidebox_all'] = 'All Scripts';
+$l['adv_sidebox_which_scripts'] = 'Which Scripts?';
+$l['adv_sidebox_all_groups'] = 'All User Groups';
 
 // modules
 $l['adv_sidebox_manage_modules'] = 'Manage Modules';
@@ -123,13 +127,15 @@ $l['adv_sidebox_uninstalled_modules'] = 'Uninstalled Modules';
 $l['adv_sidebox_uninstall'] = 'Uninstall';
 $l['adv_sidebox_install'] = 'Install';
 
-$l['adv_sidebox_install_addon_success'] = 'The new module was installed successfully';
-$l['adv_sidebox_install_addon_failure'] = 'The new module could not be installed';
-$l['adv_sidebox_uninstall_addon_success'] = 'The new module was uninstalled successfully';
-$l['adv_sidebox_uninstall_addon_failure'] = 'The new module could not be uninstalled';
+$l['adv_sidebox_install_addon_success'] = 'The module was installed successfully';
+$l['adv_sidebox_install_addon_failure'] = 'The module could not be installed';
+$l['adv_sidebox_uninstall_addon_success'] = 'The module was uninstalled successfully';
+$l['adv_sidebox_uninstall_addon_failure'] = 'The module could not be uninstalled';
 $l['adv_sidebox_delete_addon_success'] = 'The module was deleted successfully';
 $l['adv_sidebox_delete_addon_failure'] = 'The action couldn\'t be taken. Are you using the correct method to access this feature?';
 
+$l['adv_sidebox_modules_author'] = 'Author';
+$l['adv_sidebox_modules_channels'] = 'Channels';
 $l['adv_sidebox_modules_stereo'] = 'Stereo';
 $l['adv_sidebox_modules_mono'] = 'Mono';
 $l['adv_sidebox_modules_del_warning'] = 'Delete this add-on permanently?\n\nThis cannot be undone!';
@@ -172,9 +178,10 @@ $l['adv_sidebox_custom_import_file_corrupted'] = 'This file may be corrupted.';
 $l['adv_sidebox_custom_import_save_fail'] = 'Could not save the imported info in the database.';
 $l['adv_sidebox_custom_import_save_success'] = 'The box was successfully imported';
 
+$l['adv_sidebox_custom_export'] = 'Export';
 $l['adv_sidebox_custom_import'] = 'Import';
 $l['adv_sidebox_custom_import_box'] = 'Import A Custom Sidebox';
-$l['adv_sidebox_custom_import_description'] = 'backup and restore your user-defined box types';
+$l['adv_sidebox_custom_import_description'] = 'backup and restore user-defined box types';
 $l['adv_sidebox_custom_import_select_file'] = 'Select a local file:';
 
 $l['adv_sidebox_custom_export_error'] = 'An error occurred when attempting to export this sidebox: Sidebox does not exist';

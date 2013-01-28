@@ -57,7 +57,7 @@ function adv_sidebox_info()
 		"website"		=> "https://github.com/WildcardSearch/Advanced-Sidebox",
 		"author"		=> "Wildcard",
 		"authorsite"	=> "http://www.rantcentralforums.com",
-		"version"		=> "1.3.6",
+		"version"		=> "1.4",
 		"compatibility" => "16*",
 		"guid" 			=> "870e9163e2ae9b606a789d9f7d4d2462",
 	);
@@ -97,9 +97,11 @@ function adv_sidebox_install()
 				show_on_forumdisplay INT(2),
 				show_on_showthread INT(2),
 				show_on_portal INT(2),
+				groups TEXT,
 				stereo INT(2),
 				wrap_content INT(2),
-				content TEXT
+				content TEXT,
+				settings TEXT
 			) ENGINE=MyISAM{$collation};"
 		);
 	}

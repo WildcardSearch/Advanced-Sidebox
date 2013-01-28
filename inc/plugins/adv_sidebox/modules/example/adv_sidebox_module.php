@@ -18,7 +18,7 @@ function example_asb_info()
 	return array
 	(
 		"name"				=>	'Example Box',
-		"description"		=>	'A simple box to illustrate extending Advanced Sideboxes',
+		"description"		=>	'A simple box to illustrate extending Advanced Sidebox',
 		"stereo"			=>	false,
 		"wrap_content"	=>	true
 	);
