@@ -24,6 +24,69 @@
 	require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_classes.php';
 	require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_functions.php';
 	
+	// step up to 1.4 series
+	if(version_compare($old_version, '1.4', '<') || $old_version == '' || $old_version == 0)
+    {
+		// Check the main table, if it exists then check each field that was added after 1.4 and create it if it isn't already there
+		if($db->table_exists('sideboxes'))
+		{
+			if(!$db->field_exists('settings', 'sideboxes'))
+			{
+				$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD settings TEXT");
+			}
+			
+			if(!$db->field_exists('groups', 'sideboxes'))
+			{
+				$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD groups TEXT");
+			}
+		}
+		else
+		{
+			// If the table is missing, create it.
+			$collation = $db->build_create_table_collation();
+			$db->write_query
+			(
+				"CREATE TABLE " . TABLE_PREFIX . "sideboxes
+				(
+					id INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+					display_order INT(10) NOT NULL,
+					box_type VARCHAR(25) NOT NULL,
+					display_name VARCHAR(32) NOT NULL,
+					position INT(2),
+					show_on_index INT(2),
+					show_on_forumdisplay INT(2),
+					show_on_showthread INT(2),
+					show_on_portal INT(2),
+					groups TEXT,
+					stereo INT(2),
+					wrap_content INT(2),
+					content TEXT,
+					settings TEXT
+				) ENGINE=MyISAM{$collation};"
+			);
+		}
+		
+		// load the handler and upgrade all the addons
+		$adv_sidebox14 = new Sidebox_handler('', true);
+		
+		if(is_array($adv_sidebox14->addons))
+		{
+			foreach($adv_sidebox->addons as $this_module)
+			{
+				$this_module->upgrade();
+			}
+		}
+		
+		if(is_array($adv_sidebox14->sideboxes))
+		{
+			foreach($adv_sidebox14->sideboxes as $this_box)
+			{
+				$this_box->groups = 'all';
+				$this_box->save();
+			}
+		}
+	}
+	
 	// Version 1.3.4 is the first to have versioning. If the old version was earlier than that just check everything.	
 	if(version_compare($old_version, '1.3.4', '<') || $old_version == '' || $old_version == 0)
     {
@@ -181,44 +244,14 @@
 		@my_rmdir_recursive(ADV_SIDEBOX_MODULES_DIR . "/" . 'search');
 		@rmdir(ADV_SIDEBOX_MODULES_DIR . "/" . 'search');
 		
-		$query = $db->simple_select('custom_sideboxes');
-
-		// if there are saved types . . .
-		if($db->num_rows($query))
-		{
-			// store them
-			while($this_custom = $db->fetch_array($query))
-			{
-				$all_custom[$this_custom['id'] . '_asb_custom'] = $this_custom;
-			}
-		}
-		
-		$dir = opendir(ADV_SIDEBOX_MODULES_DIR);
-
-		// look for modules
-		while(($module = readdir($dir)) !== false)
-		{
-			if(is_dir(ADV_SIDEBOX_MODULES_DIR . "/" . $module) && !in_array($module, array(".", "..")) && file_exists(ADV_SIDEBOX_MODULES_DIR . "/" . $module . "/adv_sidebox_module.php"))
-			{
-				// store the modules
-				$all_modules[$module] = new Sidebox_addon($module);
-				
-				// and install them without cleanup (doesn't uninstall first)
-				$all_modules[$module]->install(true);
-			}
-		}
-		
-		// store all the sideboxes here as objects
-		$sideboxes = array();
-		
-		$sideboxes = adv_sidebox_get_all_sideboxes();
+		// get the handler now that we've updated the db and settings
+		$adv_sidebox_134 = new Sidebox_handler('', true);
 		
 		// no boxes
-		if(is_array($sideboxes))
+		if(is_array($adv_sidebox_134->sideboxes))
 		{
-			foreach($sideboxes as $this_box)
+			foreach($adv_sidebox_134->sideboxes as $this_box)
 			{
-				
 				// these modules have been renamed
 				if($this_box->box_type == 'pms')
 				{
@@ -234,18 +267,18 @@
 				}
 				
 				// if this isn't a custom box (there is a module matching the base_name)
-				if($all_modules[$this_box->box_type]->base_name == $this_box->box_type)
+				if($adv_sidebox_134->addons[$this_box->box_type]->base_name == $this_box->box_type)
 				{
 					// then update the properties added since 1.0
-					$this_box->stereo = $all_modules[$this_box->box_type]->stereo;
-					$this_box->wrap_content = $all_modules[$this_box->box_type]->wrap_content;
-					$this_box->display_name = $all_modules[$this_box->box_type]->name;
+					$this_box->stereo = $adv_sidebox_134->addons[$this_box->box_type]->stereo;
+					$this_box->wrap_content = $adv_sidebox_134->addons[$this_box->box_type]->wrap_content;
+					$this_box->display_name = $adv_sidebox_134->addons[$this_box->box_type]->name;
 				}
-				elseif($all_custom[$this_box->box_type])
+				elseif($adv_sidebox_134->custom[$this_box->box_type])
 				{
 					// update the properties added since 1.0
-					$this_box->wrap_content = $all_custom[$this_box->box_type]['wrap_content'];
-					$this_box->display_name = $all_custom[$this_box->box_type]['name'];
+					$this_box->wrap_content = $adv_sidebox_134->custom[$this_box->box_type]['wrap_content'];
+					$this_box->display_name = $adv_sidebox_134->custom[$this_box->box_type]['name'];
 				}
 				
 				// 'on-the-fly' custom boxes have been removed as of 1.3.4

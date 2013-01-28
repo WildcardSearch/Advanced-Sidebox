@@ -21,52 +21,22 @@ function rand_quote_asb_info()
 	return array
 	(
 		"name"				=>	'Random Quotes',
-		"description"		=>	'displays random quotes with a link and avatar',
+		"description"		=>	'Displays random quotes with a link and avatar',
 		"stereo"			=>	true,
-		"wrap_content"	=>	true
-	);
-}
-
-function rand_quote_asb_is_installed()
-{
-	global $db;
-	
-	// works just like a plugin
-	$query = $db->simple_select('templates', 'title', "title='rand_quote_sidebox_left'");
-	return $db->num_rows($query);
-}
-
-function rand_quote_asb_install()
-{
-	global $db;
-	
-	$template_1 = array(
-        "title" => "rand_quote_sidebox_left",
-        "template" => "<tr>
-		<td class=\"trow1\" colspan\"1\">
-			<div style=\"position: relative; max_height: 100px; overflow: hidden;\">
-				{\$rand_quote_avatar_l}{\$rand_quote_text}<br /><br />
-				{\$read_more_l}{\$rand_quote_author}
-			</div></td>
-	</tr>",
-        "sid" => -1
-    );
-	
-	$query = $db->simple_select('templates', 'title', "title='rand_quote_sidebox_left'");
-	
-	if($db->num_rows($query) == 1)
-	{
-		$db->update_query("templates", $template_1, "title='rand_quote_sidebox_left'");
-	}
-	else
-	{
-		$db->insert_query("templates", $template_1);
-	}
-	
-	// a simple template
-	$template_2 = array(
-        "title" => "rand_quote_sidebox_right",
-        "template" => "<tr>
+		"wrap_content"	=>	true,
+		"templates"		=>	array
+										(
+											array
+											(
+												"title" 			=> "adv_sidebox_latest_threads",
+												"template" 	=> "{\$threadlist}",
+												"sid"				=>	-1
+											),
+											array
+											(
+												"title" => "rand_quote_sidebox_right",
+												"template" => "
+	<tr>
 		<td class=\"trow1\" colspan=\"1\">
 			<table>
 				<tr>
@@ -82,33 +52,12 @@ function rand_quote_asb_install()
 				</tr>
 			</table>
 		</td>
-	</tr>",
-        "sid" => -1
-    );
-	
-	$query = $db->simple_select('templates', 'title', "title='rand_quote_sidebox_right'");
-	
-	if($db->num_rows($query) == 1)
-	{
-		$db->update_query("templates", $template_2, "title='rand_quote_sidebox_right'");
-	}
-	else
-	{
-		$db->insert_query("templates", $template_2);
-	}
-}
-
-/*
- * clean up after yourself.
- */
-function rand_quote_asb_uninstall()
-{
-	global $db;
-	
-	// delete all the boxes of this custom type and the template as well
-	$db->query("DELETE FROM " . TABLE_PREFIX . "sideboxes WHERE box_type='" . $db->escape_string('rand_quote') . "'");
-	$db->query("DELETE FROM " . TABLE_PREFIX . "templates WHERE title='rand_quote_sidebox_left'");
-	$db->query("DELETE FROM " . TABLE_PREFIX . "templates WHERE title='rand_quote_sidebox_right'");
+	</tr>
+												",
+												"sid" => -1
+											)
+										)
+	);
 }
 
 /*

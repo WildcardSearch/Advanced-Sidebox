@@ -20,29 +20,16 @@ function search_box_asb_info()
 	return array
 	(
 		"name"				=>	'Search',
-		"description"		=>	'simple textbox and button',
+		"description"		=>	'Simple textbox and button',
 		"stereo"			=>	false,
-		"wrap_content"	=>	true
-	);
-}
-
-function search_box_asb_is_installed()
-{
-	global $db;
-	
-	// works just like a plugin
-	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_search'");
-	return $db->num_rows($query);
-}
-
-function search_box_asb_install()
-{
-	global $db;
-	
-	// the search template
-	$template_6 = array(
-        "title" => "adv_sidebox_search",
-        "template" => "<tr>
+		"wrap_content"	=>	true,
+		"templates"					=>	array
+													(
+														array
+														(
+															"title" => "adv_sidebox_search",
+															"template" => "
+	<tr>
 		<td class=\"trow1\" align=\"center\">
 			<form method=\"post\" action=\"{\$mybb->settings[\'bburl\']}/search.php\">
 				<input type=\"hidden\" name=\"action\" value=\"do_search\" />
@@ -56,32 +43,12 @@ function search_box_asb_install()
 		(<a href=\"{\$mybb->settings[\'bburl\']}/search.php\">{\$lang->advanced_search}</a>)
 		</span>
 	</td>
-	</tr>",
-        "sid" => -1
-    );
-	
-	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_search'");
-	
-	if($db->num_rows($query) == 1)
-	{
-		$db->update_query("templates", $template_6, "title='adv_sidebox_search'");
-	}
-	else
-	{
-		$db->insert_query("templates", $template_6);
-	}
-}
-
-/*
- * This function is required. Clean up after yourself.
- */
-function search_box_asb_uninstall()
-{
-	global $db;
-	
-	// delete all the boxes of this custom type and the template as well
-	$db->query("DELETE FROM " . TABLE_PREFIX . "sideboxes WHERE box_type='" . $db->escape_string('search') . "'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_search'");
+	</tr>
+															",
+															"sid" => -1
+														)
+													)
+	);
 }
 
 /*

@@ -3,10 +3,8 @@
  * This file contains the Admin Control Panel functions for this plugin
  *
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x
- * Copyright © 2012 Wildcard
+ * Copyright © 2013 WildcardSearch
  * http://www.rantcentralforums.com
- *
- * BASED UPON THE CONCEPT AND CODE CREATED BY NAYAR IN THE ORIGINAL SIDEBOX PLUGIN
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +44,7 @@ $plugins->add_hook('admin_load', 'adv_sidebox_admin');
  */
 function adv_sidebox_admin()
 {
-	global $mybb, $db, $page, $lang, $plugins;
+	global $mybb, $db, $page, $lang, $plugins, $adv_sidebox;
 
 	if($page->active_action != 'adv_sidebox')
 	{
@@ -58,6 +56,11 @@ function adv_sidebox_admin()
 		$lang->load('adv_sidebox');
 	}
 
+	// get all the sidebox, addon and custom box info sorted and ready for use in all ACP pages
+	// calling _construct with the $acp=true loads a box_types list
+	require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_classes.php';
+	$adv_sidebox = new Sidebox_handler($mybb->input['mode'], true);
+	
 	// no action means the main page
 	if(!$mybb->input['action'])
 	{
@@ -90,11 +93,12 @@ function adv_sidebox_admin()
 		// info given?
 		if(isset($mybb->input['addon']))
 		{
-			require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_classes.php';
-
-			$this_module = new Sidebox_addon($mybb->input['addon']);
-
-			$errors = $this_module->install();
+			$this_module = $mybb->input['addon'];
+			
+			if($adv_sidebox->addons[$this_module]->valid)
+			{
+				$errors = $adv_sidebox->addons[$this_module]->install();
+			}
 
 			if(!$errors)
 			{
@@ -117,16 +121,17 @@ function adv_sidebox_admin()
 		// info given?
 		if(isset($mybb->input['addon']))
 		{
-			require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_classes.php';
-
-			$this_module = new Sidebox_addon($mybb->input['addon']);
-
-			$errors = $this_module->uninstall();
+			$this_module = $mybb->input['addon'];
+			
+			if($adv_sidebox->addons[$this_module]->valid)
+			{
+				$errors = $adv_sidebox->addons[$this_module]->uninstall();
+			}
 
 			if(!$errors)
 			{
 				// tell them all is well
-				flash_message($lang->adv_sidebox_install_addon_success, "success");
+				flash_message($lang->adv_sidebox_uninstall_addon_success, "success");
 				admin_redirect(ADV_SIDEBOX_MODULES_URL);
 			}
 			else
@@ -150,11 +155,12 @@ function adv_sidebox_admin()
 		// info goof?
 		if(isset($mybb->input['addon']))
 		{
-			require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_classes.php';
-
-			$this_module = new Sidebox_addon($mybb->input['addon']);
-
-			$errors = $this_module->remove();
+			$this_module = $mybb->input['addon'];
+			
+			if($adv_sidebox->addons[$this_module]->valid)
+			{
+				$errors = $adv_sidebox->addons[$this_module]->install();
+			}
 
 			// yay
 			flash_message($lang->adv_sidebox_delete_addon_success, "success");
@@ -225,15 +231,14 @@ function adv_sidebox_admin()
  */
 function adv_sidebox_manage_sideboxes()
 {
-	global $mybb, $db, $page, $lang, $plugins;
+	global $mybb, $db, $page, $lang, $plugins, $adv_sidebox;
 
-	require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_classes.php';
-	require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_functions.php';
-
-	if (!$lang->adv_sidebox)
+	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}
+	
+	require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_functions.php';
 
 	// delete a sidebox
 	if($mybb->input['function'] == 'delete_box')
@@ -241,12 +246,7 @@ function adv_sidebox_manage_sideboxes()
 		// info given?
 		if(isset($mybb->input['box']) && (int) $mybb->input['box'] > 0)
 		{
-			require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_classes.php';
-
-			$this_sidebox = new Sidebox();
-			$this_sidebox->id = (int) $mybb->input['box'];
-
-			$status = $this_sidebox->remove();
+			$status = $adv_sidebox->sideboxes[(int) $mybb->input['box']]->remove();
 		}
 		else
 		{
@@ -298,64 +298,40 @@ margin-bottom: -3px;
 	adv_sidebox_output_header();
 	adv_sidebox_output_tabs('adv_sidebox');
 
-	$box_types = array();
-	
-	// get all the user-defined types
-	$custom_box_types = get_all_custom_box_types();
-	if(!empty($custom_box_types))
-	{
-		$box_types = array_merge($box_types, $custom_box_types);
-	}
-
-	// get all the box types from plugins
-	$plugins->run_hooks('adv_sidebox_box_types', $box_types);
-
-	// get all the box types from modules
-	$all_modules = get_all_modules($box_types);
-
-	if(!empty($all_modules))
-	{
-		adv_sidebox_count_modules($all_modules, $count_instmods, $count_uninstmods, $count_simpmods);
-	}
-
 	// Sideboxes table
 	$left_table = new Table;
 	$left_table->construct_header($lang->adv_sidebox_box_type);
 	$left_table->construct_header($lang->adv_sidebox_scripts);
+	$left_table->construct_header($lang->adv_sidebox_groups);
 	$left_table->construct_header($lang->adv_sidebox_controls, array("colspan" => 2));
 
 	$right_table = new Table;
 	$right_table->construct_header($lang->adv_sidebox_box_type);
 	$right_table->construct_header($lang->adv_sidebox_scripts);
+	$right_table->construct_header($lang->adv_sidebox_groups);
 	$right_table->construct_header($lang->adv_sidebox_controls, array("colspan" => 2));
-
-	$sideboxes = array();
-	$sideboxes = adv_sidebox_get_all_sideboxes();
-
+	
 	// if there are sideboxes . . .
-	if(!empty($sideboxes))
+	if(!empty($adv_sidebox->sideboxes))
 	{
 		$left_box = false;
 		$right_box = false;
 
-		foreach($sideboxes as $box)
+		foreach($adv_sidebox->sideboxes as $box)
 		{
-			if(adv_sidebox_filter_by_script($box, $mybb->input['mode']))
+			// if this is the first right box . . .
+			if((int) $box->position)
 			{
-				// if this is the first right box . . .
-				if((int) $box->position)
-				{
-					// and add the label
-					$right_box = true;
+				// and add the label
+				$right_box = true;
 
-					$box->build_table_row($right_table);
-				}
-				else
-				{
-					// otherwise its a left box
-					$left_box = true;
-					$box->build_table_row($left_table);
-				}
+				$box->build_table_row($right_table);
+			}
+			else
+			{
+				// otherwise its a left box
+				$left_box = true;
+				$box->build_table_row($left_table);
 			}
 		}
 	}
@@ -364,7 +340,7 @@ margin-bottom: -3px;
 	if(!$left_box)
 	{
 		// let them know
-		$left_table->construct_cell('<span style="color: #888"><p>' . $lang->adv_sidebox_no_boxes_left . '</p></span>', array("colspan" => 5));
+		$left_table->construct_cell('<span style="color: #888"><p>' . $lang->adv_sidebox_no_boxes_left . '</p></span>', array("colspan" => 6));
 		$left_table->construct_row();
 	}
 
@@ -372,20 +348,20 @@ margin-bottom: -3px;
 	if(!$right_box)
 	{
 		// tell them what they already know
-		$right_table->construct_cell('<span style="color: #888"><p>' . $lang->adv_sidebox_no_boxes_right . '</p></span>', array("colspan" => 5));
+		$right_table->construct_cell('<span style="color: #888"><p>' . $lang->adv_sidebox_no_boxes_right . '</p></span>', array("colspan" => 6));
 		$right_table->construct_row();
 	}
 
 	// output the box table
 	echo('<table style="width: 100%;"><tr><td valign="top" style="width: 50%;">');
-	$left_table->output('Left');
+	$left_table->output($lang->adv_sidebox_position_left);
 	echo('</td><td valign="top" style="width: 50%;">');
-	$right_table->output('Right');
+	$right_table->output($lang->adv_sidebox_position_right);
 	echo('</td></tr></table><br />');
 
 	$filter_links = adv_sidebox_build_filter_links($mybb->input['mode']);
 
-	$module_info .= adv_sidebox_build_module_info_language($count_instmods, $count_uninstmods, $count_simpmods);
+	$module_info .= $adv_sidebox->build_addon_language();
 
 	// build link bar
 	$module_info .= " - <a href=\"" . ADV_SIDEBOX_MODULES_URL . "\">{$lang->adv_sidebox_manage_modules}</a>";
@@ -402,31 +378,14 @@ margin-bottom: -3px;
  */
 function adv_sidebox_admin_editbox()
 {
-	global $lang, $mybb, $db, $plugins, $page;
+	global $lang, $mybb, $db, $plugins, $page, $adv_sidebox;
 
-	if (!$lang->adv_sidebox)
+	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}
 
-	require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_classes.php';
 	require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_functions.php';
-
-	// add the one internal type
-	$box_types = array();
-
-	// get all the user-defined types
-	$custom_box_types = get_all_custom_box_types();
-	if(!empty($custom_box_types))
-	{
-		$box_types = array_merge($box_types, $custom_box_types);
-	}
-
-	// get all the plugin types
-	$plugins->run_hooks('adv_sidebox_box_types', $box_types);
-
-	// get all module types
-	get_all_modules($box_types);
 
 	// POSTing?
 	if($mybb->request_method == "post")
@@ -490,17 +449,73 @@ function adv_sidebox_admin_editbox()
 				}
 			}
 
+			$allowedgroups = array();
+			
+			if(is_array($mybb->input['group_select_box']))
+			{
+				foreach($mybb->input['group_select_box'] as $gid)
+				{
+					if($gid == "all")
+					{
+						$allowedgroups = "all";
+						break;
+					}
+					$gid = (int) $gid;
+					$allowedgroups[$gid] = $gid;
+				}
+				
+				if(count($allowedgroups) == (int) $mybb->input['this_group_count'] - 1)
+				{
+					$allowedgroups = '';
+				}
+			}
+			
+			if(is_array($allowedgroups))
+			{
+				$allowedgroups = implode(",", $allowedgroups);
+			}
+			
+			if($allowedgroups)
+			{
+				$this_sidebox->groups = $allowedgroups;
+			}
+			else
+			{
+				$this_sidebox->groups = 'all';
+			}
+			
 			$this_sidebox->box_type = $mybb->input['box_type_select'];
 			$this_sidebox->id = (int) $mybb->input['box'];
 			
-			$this_module = new Sidebox_addon($this_sidebox->box_type);
+			if($adv_sidebox->addons[$this_sidebox->box_type]->valid)
+			{
+				$this_sidebox->stereo = $adv_sidebox->addons[$this_sidebox->box_type]->stereo;
+				$this_sidebox->wrap_content = $adv_sidebox->addons[$this_sidebox->box_type]->wrap_content;
+				
+				if(is_array($adv_sidebox->addons[$this_sidebox->box_type]->settings))
+				{				
+					foreach($adv_sidebox->addons[$this_sidebox->box_type]->settings as $setting)
+					{
+						//die(var_dump($setting) . var_dump($mybb->input));
+						
+						if(isset($mybb->input[$setting['name']]))
+						{
+							$setting['value'] = $mybb->input[$setting['name']];
+							$this_sidebox->settings[] = $setting;
+						}
+					}
+				}
+			}
+			else
+			{
+				$this_sidebox->stereo = $this_module->false;
+				$this_sidebox->wrap_content = true;
+			}
 			
-			$this_sidebox->stereo = $this_module->stereo;
-			$this_sidebox->wrap_content = $this_module->wrap_content;
-			$this_sidebox->display_name = $box_types[$this_sidebox->box_type];
-
+			$this_sidebox->display_name = $adv_sidebox->box_types[$this_sidebox->box_type];
+			
 			$status = $this_sidebox->save();
-
+			
 			// success?
 			if($status)
 			{
@@ -521,25 +536,59 @@ function adv_sidebox_admin_editbox()
 	$page->add_breadcrumb_item($lang->adv_sidebox_add_a_sidebox);
 
 	// output ACP page stuff
+	$page->extra_header = $adv_sidebox->build_peekers();
 	adv_sidebox_output_header();
+	
 	adv_sidebox_output_tabs('adv_sidebox_add');
 
 	$this_sidebox = new Sidebox($mybb->input['box']);
 
+	// if $this_sidebox exists it will have a non-zero id property . . .
 	if($this_sidebox->id == 0)
 	{
-		$selected_scripts = 'all_scripts';
+		// if it doesn't then this is a new box, check the page view filter to try to predict which script the user will want
+		if(isset($mybb->input['mode']))
+		{
+			// start them out with the script they are viewing for Which Scripts
+			switch($mybb->input['mode'])
+			{
+				case 'index':
+					$selected_scripts[] = 'index.php';
+					break;
+				case 'forum':
+					$selected_scripts[] = 'forumdisplay.php';
+					break;
+				case 'thread':
+					$selected_scripts[] = 'showthread.php';
+					break;
+				case 'portal':
+					$selected_scripts[] = 'portal.php';
+					break;
+				// or all scripts if not filtering sideboxes
+				default:
+					$selected_scripts[] = 'all_scripts';
+			}
+		}
+		else
+		{
+			// if mode isn't set at all then just start out with all scripts
+			$selected_scripts = 'all_scripts';
+		}
 	}
 	else
 	{
+		// . . . otherwise we are editing so pull the actual info from the sidebox
 		$selected_scripts = array();
 
+		// all scripts?
 		if($this_sidebox->show_on_index && $this_sidebox->show_on_forumdisplay && $this_sidebox->show_on_showthread && $this_sidebox->show_on_portal)
 		{
+			// yes? mark it
 			$selected_scripts = 'all_scripts';
 		}
 		else
 		{
+			// no? check and set them individually
 			if($this_sidebox->show_on_index)
 			{
 				$selected_scripts[] = 'index.php';
@@ -562,17 +611,55 @@ function adv_sidebox_admin_editbox()
 	$form = new Form(ADV_SIDEBOX_EDIT_URL. "&amp;box=" . $this_sidebox->id, "post", "edit_box");
 	$form_container = new FormContainer($lang->adv_sidebox_edit_box);
 
-	$form_container->output_row($lang->adv_sidebox_box_type, $lang->adv_sidebox_type_desc, $form->generate_select_box('box_type_select', $box_types, $this_sidebox->box_type, array("id" => 'box_type_select')), array("id" => 'box_type_select_box'));
+	// box type
+	$form_container->output_row($lang->adv_sidebox_box_type, $lang->adv_sidebox_type_desc, $form->generate_select_box('box_type_select', $adv_sidebox->box_types, $this_sidebox->box_type, array("id" => 'box_type_select')), array("id" => 'box_type_select_box'));
+	
+	// position
 	$form_container->output_row($lang->adv_sidebox_position, '', $form->generate_radio_button('box_position', 'left', $lang->adv_sidebox_position_left, array("checked" => ((int) $this_sidebox->position == 0))) . '&nbsp;&nbsp;' . $form->generate_radio_button('box_position', 'right', $lang->adv_sidebox_position_right, array("checked" => ((int) $this_sidebox->position != 0))));
+	
+	// display order
 	$form_container->output_row($lang->adv_sidebox_display_order, '', $form->generate_text_box('display_order', $this_sidebox->display_order));
-	$form_container->output_row('Which Scripts?', '', $form->generate_select_box('script_select_box[]', array("all_scripts" => 'All Scripts', "index.php" => 'Index', "forumdisplay.php" => 'Forums', "showthread.php" => 'Threads', "portal.php" => 'Portal'), $selected_scripts, array("id" => 'script_select_box', "multiple" => true)), array("id" => 'script_select_box'));
-	$form_container->output_row('', '', $form->generate_hidden_field('this_mode', $mybb->input['mode']));
+	
+	// which scripts
+	$form_container->output_row($lang->adv_sidebox_which_scripts, '', $form->generate_select_box('script_select_box[]', array("all_scripts" => $lang->adv_sidebox_all, "index.php" => $lang->adv_sidebox_index, "forumdisplay.php" => $lang->adv_sidebox_forum, "showthread.php" => $lang->adv_sidebox_thread, "portal.php" => $lang->adv_sidebox_portal), $selected_scripts, array("id" => 'script_select_box', "multiple" => true)), array("id" => 'script_select_box'));
+	
+	// prepare options for which groups
+	$options = array();
+	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
+	$options['all'] = 'All User Groups';
+	while($usergroup = $db->fetch_array($query))
+	{
+		$options[(int)$usergroup['gid']] = $usergroup['title'];
+	}
+	
+	// prepare selected info for groups
+	$groups = array();
+	
+	// if we have info use it
+	if(is_array($this_sidebox->groups_array) && !empty($this_sidebox->groups_array))
+	{
+		$groups = $this_sidebox->groups_array;
+	}
+	else
+	{
+		// otherwise just start with all groups
+		$groups = 'all';
+	}
+	
+	// which groups
+	$form_container->output_row('Which Groups?', '', $form->generate_select_box('group_select_box[]', $options, $groups, array('id' => 'group_select_box', 'multiple' => true, 'size' => 5)), 'group_select_box');
+	
+	// allow the handler to build module settings
+	$adv_sidebox->build_settings($form, $form_container, $this_sidebox->id);
+	
+	// hidden forms to pass info to post
+	$form_container->output_row('', '', $form->generate_hidden_field('this_mode', $mybb->input['mode']) . $form->generate_hidden_field('this_group_count', count($options)));
 	$form_container->end();
 
+	// finish form and page
 	$buttons[] = $form->generate_submit_button('Save', array('name' => 'save_box_submit'));
 	$form->output_submit_wrapper($buttons);
 	$form->end();
-
 	$page->output_footer();
 }
 
@@ -583,7 +670,7 @@ function adv_sidebox_admin_editbox()
  */
 function adv_sidebox_admin_manage_modules()
 {
-	global $lang, $mybb, $db, $plugins, $page;
+	global $lang, $mybb, $db, $plugins, $page, $adv_sidebox;
 
 	if (!$lang->adv_sidebox)
 	{
@@ -623,15 +710,9 @@ function adv_sidebox_admin_manage_modules()
 	// allow plugins to add types
 	$plugins->run_hooks('adv_sidebox_box_types', $box_types);
 
-	require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_classes.php';
-	require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_functions.php';
-
-	// get all module types
-	$modules = get_all_modules($box_types);
-
-	if(is_array($modules))
+	if(is_array($adv_sidebox->addons))
 	{
-		foreach($modules as $this_module)
+		foreach($adv_sidebox->addons as $this_module)
 		{
 			if($this_module->module_type == 'simple')
 			{
@@ -654,25 +735,18 @@ function adv_sidebox_admin_manage_modules()
 	$table = new Table;
 	$table->construct_header($lang->adv_sidebox_custom_box_name);
 	$table->construct_header($lang->adv_sidebox_custom_box_desc);
+	$table->construct_header($lang->adv_sidebox_modules_author);
+	$table->construct_header($lang->adv_sidebox_modules_channels);
 	$table->construct_header($lang->adv_sidebox_controls, array("colspan" => 2));
 
 	// if there are simple modules display them
 	if(!empty($simple_modules))
 	{
-		$table->construct_cell("<div class=\"asb_label\">{$lang->adv_sidebox_simple_modules}</div>", array("colspan" => 4));
+		$table->construct_cell("<div class=\"asb_label\">{$lang->adv_sidebox_simple_modules}</div>", array("colspan" => 5));
 		$table->construct_row();
 
 		foreach($simple_modules as $this_module)
 		{
-			if($box_info[$this_module]['stereo'] == true)
-			{
-				$type = $lang->adv_sidebox_modules_stereo;
-			}
-			else
-			{
-				$type = $lang->adv_sidebox_modules_mono;
-			}
-
 			$modules[$this_module]->build_table_row($table);
 		}
 	}
@@ -680,20 +754,11 @@ function adv_sidebox_admin_manage_modules()
 	// if there are installed modules display them
 	if(!empty($installed_modules))
 	{
-		$table->construct_cell("<div class=\"asb_label\">{$lang->adv_sidebox_installed_modules}</div>", array("colspan" => 4));
+		$table->construct_cell("<div class=\"asb_label\">{$lang->adv_sidebox_installed_modules}</div>", array("colspan" => 5));
 		$table->construct_row();
 
 		foreach($installed_modules as $this_module)
 		{
-			if($box_info[$this_module]['stereo'] == true)
-			{
-				$type = $lang->adv_sidebox_modules_stereo;
-			}
-			else
-			{
-				$type = $lang->adv_sidebox_modules_mono;
-			}
-
 			$modules[$this_module]->build_table_row($table);
 		}
 	}
@@ -701,20 +766,11 @@ function adv_sidebox_admin_manage_modules()
 	// If there are uninstalled modules display them
 	if(!empty($uninstalled_modules))
 	{
-		$table->construct_cell("<div class=\"asb_label\">{$lang->adv_sidebox_uninstalled_modules}</div>", array("colspan" => 4));
+		$table->construct_cell("<div class=\"asb_label\">{$lang->adv_sidebox_uninstalled_modules}</div>", array("colspan" => 5));
 		$table->construct_row();
 
 		foreach($uninstalled_modules as $this_module)
 		{
-			if($box_info[$this_module]['stereo'] == true)
-			{
-				$type = $lang->adv_sidebox_modules_stereo;
-			}
-			else
-			{
-				$type = $lang->adv_sidebox_modules_mono;
-			}
-
 			$modules[$this_module]->build_table_row($table);
 		}
 	}
@@ -725,6 +781,7 @@ function adv_sidebox_admin_manage_modules()
 		$table->construct_cell($lang->adv_sidebox_no_modules_detected, array("colspan" => 4));
 		$table->construct_row();
 	}
+	
 	$table->output();
 	$page->output_footer();
 }
@@ -736,14 +793,12 @@ function adv_sidebox_admin_manage_modules()
  */
 function adv_sidebox_admin_custom_boxes()
 {
-	global $lang, $mybb, $db, $plugins, $page;
+	global $lang, $mybb, $db, $plugins, $page, $adv_sidebox;
 
 	if (!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}
-	
-	$info = adv_sidebox_info();
 	
 	if($mybb->input['mode'] == 'import')
 	{
@@ -802,14 +857,14 @@ function adv_sidebox_admin_custom_boxes()
 				
 				if($input_array['content'] && $input_array['checksum'] && my_strtolower(md5(base64_decode($input_array['content']))) == my_strtolower($input_array['checksum']))
 				{
-					unset($input_array['checksum']);
+					$this_custom = new Sidebox_custom;
 					
-					$input_array['name'] = $db->escape_string($input_array['name']);
-					$input_array['description'] = $db->escape_string($input_array['description']);
-					$input_array['wrap_content'] = (int) $input_array['wrap_content'];
-					$input_array['content'] = $db->escape_string(trim(base64_decode($input_array['content'])));
+					$this_custom->name = $input_array['name'];
+					$this_custom->description = $input_array['description'];
+					$this_custom->wrap_content = (int) $input_array['wrap_content'];
+					$this_custom->content = trim(base64_decode($input_array['content']));
 					
-					$status = $db->insert_query('custom_sideboxes', $input_array);
+					$status = $this_custom->save();
 					
 					if(!$status)
 					{
@@ -847,7 +902,7 @@ function adv_sidebox_admin_custom_boxes()
 		adv_sidebox_output_header();
 		adv_sidebox_output_tabs('adv_sidebox_import');
 		
-		$form=new Form(ADV_SIDEBOX_IMPORT_URL, 'post', '', 1);
+		$form = new Form(ADV_SIDEBOX_IMPORT_URL, 'post', '', 1);
 		$form_container = new FormContainer($lang->adv_sidebox_custom_import);
 		$form_container->output_row($lang->adv_sidebox_custom_import_select_file, '', $form->generate_file_upload_box('file'));
 		$form_container->end();
@@ -864,35 +919,13 @@ function adv_sidebox_admin_custom_boxes()
 	{
 		if(isset($mybb->input['box']))
 		{
-			$query = $db->simple_select('custom_sideboxes', '*', "id='" . (int) $mybb->input['box'] . "'");
-			
-			$this_custom = $db->fetch_array($query);
-			
-			if(!$this_custom['id'])
+			if(!$adv_sidebox->custom['asb_custom_' . $mybb->input['box']]->id)
 			{
 				flash_message($lang->adv_sidebox_custom_export_error,'error');
-				admin_redirect(ADV_SIDEBOX_IMPORT_URL);
+				admin_redirect(ADV_SIDEBOX_EXPORT_URL);
 			}
 			
-			$xml='<?xml version="1.0" encoding="' . $lang->settings['charset'] . '"?>
-<adv_sidebox version="' . $info['version'] . '" xmlns="' . $info['website'] . '">
-	<custom_sidebox>
-		<name><![CDATA[' . $this_custom['name'] . ']]></name>
-		<description><![CDATA[' . $this_custom['description'] . ']]></description>
-		<wrap_content><![CDATA[' . $this_custom['wrap_content'] . ']]></wrap_content>
-		<content><![CDATA[' . base64_encode($this_custom['content']) . ']]></content>
-		<checksum>' . md5($this_custom['content']) . '</checksum>
-	</custom_sidebox>
-</adv_sidebox>';
-			
-			$filename = implode('-', explode(' ', $this_custom['name']));
-
-			header('Content-Disposition: attachment; filename=' . $filename . '.xml');
-			header('Content-Type: application/xml');
-			header('Content-Length: ' . strlen($xml));
-			header('Pragma: no-cache');
-			header('Expires: 0');
-			echo $xml;
+			$adv_sidebox->custom['asb_custom_' . $mybb->input['box']]->export();
 			exit();
 		}
 	}
@@ -936,45 +969,21 @@ function adv_sidebox_admin_custom_boxes()
 			// saving?
 			if($mybb->input['save_box_submit'] == 'Save')
 			{
+				$this_custom = new Sidebox_custom;
+				
 				// get the info
-				$this_box['name'] = $db->escape_string($mybb->input['box_name']);
-				$this_box['description'] = $db->escape_string($mybb->input['box_description']);
-				$this_box['content'] = $db->escape_string($mybb->input['box_content']);
+				$this_custom->name = $mybb->input['box_name'];
+				$this_custom->description = $mybb->input['box_description'];
+				$this_custom->content = $mybb->input['box_content'];
 				
 				if($mybb->input['wrap_content'] == 'yes')
 				{
-					$this_box['wrap_content'] = true;
+					$this_custom->wrap_content = true;
 				}
 
-				// updating or creating a new type?
-				if(isset($mybb->input['box']))
-				{
-					$this_box['id'] = (int)$mybb->input['box'];
-
-					$query = $db->simple_select('custom_sideboxes', 'id', "id='" . $this_box['id'] . "'");
-
-					// its a bad record just store 0 to indicate its a new box
-					if($db->num_rows($query) == 0)
-					{
-						$this_box['id'] = 0;
-					}
-				}
-				else
-				{
-					$this_box['id'] = 0;
-				}
-
-				// update?
-				If($this_box['id'])
-				{
-					// yes
-					$status = $db->update_query('custom_sideboxes', $this_box, "id='" . $this_box['id'] . "'");
-				}
-				else
-				{
-					// no, create a new type
-					$status = $db->insert_query('custom_sideboxes', $this_box);
-				}
+				$this_custom->id = (int) $mybb->input['box'];
+				
+				$status = $this_custom->save();
 
 				// success?
 				if($status)
@@ -997,23 +1006,13 @@ function adv_sidebox_admin_custom_boxes()
 		$table->construct_header($lang->adv_sidebox_custom_box_desc);
 		$table->construct_header($lang->adv_sidebox_controls, array("colspan" => 2));
 
-		$query = $db->simple_select('custom_sideboxes');
-
 		// if there are saved types . . .
-		if($db->num_rows($query))
+		if(is_array($adv_sidebox->custom) && !empty($adv_sidebox->custom))
 		{
 			// display them
-			while($this_custom = $db->fetch_array($query))
+			foreach($adv_sidebox->custom as $this_custom)
 			{
-				$table->construct_cell('<a href="' . ADV_SIDEBOX_CUSTOM_URL . '&amp;mode=edit_box&amp;box=' . $this_custom['id'] . '" title="Edit">' . $this_custom['name'] . '</a>', array("width" => '30%'));
-				$table->construct_cell($this_custom['description'], array("width" => '60%'));
-				
-				$popup = new PopupMenu('box_' . $this_custom['id'], 'Options');
-				$popup->add_item($lang->adv_sidebox_edit, ADV_SIDEBOX_CUSTOM_URL . "&amp;mode=edit_box&amp;box={$this_custom['id']}");
-				$popup->add_item($lang->adv_sidebox_delete, ADV_SIDEBOX_CUSTOM_URL . "&amp;mode=delete_box&amp;box={$this_custom['id']}");
-				$popup->add_item('Export', ADV_SIDEBOX_EXPORT_URL . "&amp;box={$this_custom['id']}");
-				$table->construct_cell($popup->fetch(), array("width" => '10%'));
-				$table->construct_row();
+				$this_custom->build_table_row($table);
 			}
 		}
 		else
@@ -1030,24 +1029,18 @@ function adv_sidebox_admin_custom_boxes()
 
 	if($mybb->input['mode'] == 'edit_box')
 	{
+		$this_box = new Sidebox_custom($mybb->input['box']);
+		
 		// editing?
-		if(isset($mybb->input['box']))
+		if($this_box->id)
 		{
-			$query = $db->simple_select('custom_sideboxes', '*', "id='" . (int) $mybb->input['box'] . "'");
-
-			// does it exist?
-			if($db->num_rows($query) > 0)
-			{
-				$this_box = $db->fetch_array($query);
-
-				$specify_box = "&amp;box=" . (int) $mybb->input['box'];
-			}
+			$specify_box = "&amp;box=" . $this_box->id;
 		}
 		else
 		{
 			// new box
 			$specify_box = '';
-			$this_box['content'] = '
+			$this_box->content = '
 		<tr>
 			<td class="trow1">Place your custom content here. HTML can be used in conjunction with certain template variables, language variables and environment variables.</td>
 		</tr>
@@ -1063,17 +1056,26 @@ function adv_sidebox_admin_custom_boxes()
 		<tr>
 			<td class="trow1"><strong>Theme name:</strong> {$theme[\'name\']}</td>
 		</tr>';
-			$this_box['wrap_content'] = true;
+			$this_box->wrap_content = true;
 		}
 
 		$form = new Form(ADV_SIDEBOX_CUSTOM_URL . $specify_box, "post", "edit_box");
 		$form_container = new FormContainer($lang->adv_sidebox_edit_box);
-		$form_container->output_row($lang->adv_sidebox_custom_box_name, $lang->adv_sidebox_add_custom_box_name_desc, $form->generate_text_box('box_name', $this_box['name'], array("id" => 'box_name')));
-		$form_container->output_row($lang->adv_sidebox_custom_box_desc, $lang->adv_sidebox_add_custom_box_description_desc, $form->generate_text_box('box_description', $this_box['description'], array("id" => 'box_description')));
-		$form_container->output_row($lang->adv_sidebox_custom_box_wrap_content, '', $form->generate_check_box('wrap_content', 'yes', $lang->adv_sidebox_custom_box_wrap_content_desc, array("checked" => $this_box['wrap_content'])));
-		$form_container->output_row($lang->adv_sidebox_add_custom_box_edit, $lang->adv_sidebox_add_custom_box_edit_desc, $form->generate_text_area('box_content', $this_box['content'], array("id" => 'box_content', "rows" => '15', "cols" => '200')), array("id" => 'box_content'));
+		
+		//name
+		$form_container->output_row($lang->adv_sidebox_custom_box_name, $lang->adv_sidebox_add_custom_box_name_desc, $form->generate_text_box('box_name', $this_box->name, array("id" => 'box_name')));
+		
+		// description
+		$form_container->output_row($lang->adv_sidebox_custom_box_desc, $lang->adv_sidebox_add_custom_box_description_desc, $form->generate_text_box('box_description', $this_box->description, array("id" => 'box_description')));
+		
+		// wrap content?
+		$form_container->output_row($lang->adv_sidebox_custom_box_wrap_content, '', $form->generate_check_box('wrap_content', 'yes', $lang->adv_sidebox_custom_box_wrap_content_desc, array("checked" => $this_box->wrap_content)));
+		
+		// content
+		$form_container->output_row($lang->adv_sidebox_add_custom_box_edit, $lang->adv_sidebox_add_custom_box_edit_desc, $form->generate_text_area('box_content', $this_box->content, array("id" => 'box_content', "rows" => '15', "cols" => '200')), array("id" => 'box_content'));
+		
+		// finish form
 		$form_container->end();
-
 		$buttons[] = $form->generate_submit_button('Save', array('name' => 'save_box_submit'));
 		$form->output_submit_wrapper($buttons);
 		$form->end();
@@ -1085,7 +1087,9 @@ function adv_sidebox_admin_custom_boxes()
 		if(isset($mybb->input['box']))
 		{
 			// nuke it
-			$status = $db->query("DELETE FROM " . TABLE_PREFIX . "custom_sideboxes WHERE id='" . (int) $mybb->input['box'] . "'");
+			$this_box = new Sidebox_custom($mybb->input['box']);
+			
+			$status = $this_box->remove();
 
 			// success?
 			if($status)
@@ -1170,7 +1174,7 @@ function adv_sidebox_admin_permissions(&$admin_permissions)
 {
 	global $lang;
 
-	if (!$lang->adv_sidebox)
+	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}
@@ -1201,7 +1205,7 @@ function adv_sidebox_output_header()
 {
     global $page, $lang;
 
-	if (!$lang->adv_sidebox)
+	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}
@@ -1220,7 +1224,7 @@ function adv_sidebox_output_tabs($current)
 {
 	global $page, $lang, $mybb;
 
-	if (!$lang->adv_sidebox)
+	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}

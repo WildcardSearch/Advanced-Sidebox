@@ -22,31 +22,16 @@ function statistics_asb_info()
 	return array
 	(
 		"name"				=>	'Statistics',
-		"description"		=>	'forum statistics and figures',
+		"description"		=>	'Forum statistics and figures',
 		"stereo"			=>	false,
-		"wrap_content"	=>	true
-	);
-}
-
-function statistics_asb_is_installed()
-{
-	global $db;
-	
-	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_statistics'");
-	return $db->num_rows($query);
-}
-
-/*
- * This function is required. Make your mods here.
- */
-function statistics_asb_install()
-{
-	global $db;
-	
-	// the statistics template
-	$template_5 = array(
-        "title" => "adv_sidebox_statistics",
-        "template" => "<tr>
+		"wrap_content"	=>	true,
+		"templates"					=>	array
+													(
+														array
+														(
+															        "title" => "adv_sidebox_statistics",
+																	"template" => "
+	<tr>
 		<td class=\"trow1\">
 			<span class=\"smalltext\">
 			<strong>&raquo; </strong>{\$lang->num_members} {\$statistics[\'numusers\']}<br />
@@ -56,32 +41,12 @@ function statistics_asb_install()
 			<br /><br /><a href=\"{\$mybb->settings[\'bburl\']}/stats.php\">{\$lang->full_stats}</a>
 			</span>
 		</td>
-	</tr>",
-        "sid" => -1
-    );
-	
-	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_statistics'");
-	
-	if($db->num_rows($query) == 1)
-	{
-		$db->update_query("templates", $template_5, "title='adv_sidebox_statistics'");
-	}
-	else
-	{
-		$db->insert_query("templates", $template_5);
-	}
-}
-
-/*
- * This function is required. Clean up after yourself.
- */
-function statistics_asb_uninstall()
-{
-	global $db;
-	
-	// delete all the boxes of this custom type and the template as well
-	$db->query("DELETE FROM " . TABLE_PREFIX . "sideboxes WHERE box_type='" . $db->escape_string('{$statistics}') . "'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_statistics'");
+	</tr>
+																	",
+																	"sid" => -1
+														)
+													)
+	);
 }
 
 /*

@@ -20,55 +20,27 @@ function private_messages_asb_info()
 	return array
 	(
 		"name"				=>	'Private Messages',
-		"description"		=>	'lists the user\'s PM info',
+		"description"		=>	'Lists the user\'s PM info',
 		"stereo"			=>	false,
-		"wrap_content"	=>	true
-	);
-}
-
-function private_messages_asb_is_installed()
-{
-	global $db;
-	
-	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_pms'");
-	return $db->num_rows($query);
-}
-
-function private_messages_asb_install()
-{
-	global $db;
-	
-	// the pm template
-	$template_4 = array(
-        "title" => "adv_sidebox_pms",
-        "template" => "<tr>
+		"wrap_content"	=>	true,
+		"templates"					=>	array
+													(
+														array
+														(
+															"title" => "adv_sidebox_pms",
+															"template" => "
+	<tr>
 		<td class=\"trow1\">
 			<span class=\"smalltext\">{\$lang->pms_received_new}<br /><br />
 			<strong>&raquo; </strong> <strong>{\$messages[\'pms_unread\']}</strong> {\$lang->pms_unread}<br />
 			<strong>&raquo; </strong> <strong>{\$messages[\'pms_total\']}</strong> {\$lang->pms_total}</span>
 		</td>
-	</tr>",
-        "sid" => -1
-    );
-	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_pms'");
-	
-	if($db->num_rows($query) == 1)
-	{
-		$db->update_query("templates", $template_4, "title='adv_sidebox_pms'");
-	}
-	else
-	{
-		$db->insert_query("templates", $template_4);
-	}
-}
-
-function private_messages_asb_uninstall()
-{
-	global $db;
-	
-	// delete all the boxes of this custom type and the template as well
-	$db->query("DELETE FROM " . TABLE_PREFIX . "sideboxes WHERE box_type='" . $db->escape_string('private_messages') . "'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_pms'");
+	</tr>
+															",
+															"sid" => -1
+														)
+													)
+	);
 }
 
 function private_messages_asb_build_template()

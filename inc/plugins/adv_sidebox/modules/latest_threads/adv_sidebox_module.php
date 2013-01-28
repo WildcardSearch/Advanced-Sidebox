@@ -20,134 +20,65 @@ function latest_threads_asb_info()
 {
 	return array
 	(
-		"name"				=>	'Latest Threads',
-		"description"		=>	'lists the latest forum threads',
-		"stereo"			=>	false,
-		"wrap_content"	=>	true
+		"name"							=>	'Latest Threads',
+		"description"					=>	'Lists the latest forum threads',
+		"version"						=>	"2",
+		"stereo"						=>	false,
+		"wrap_content"				=>	true,
+		"discarded_settings"	=>	array
+													(
+														"adv_sidebox_latest_threads_max"
+													),
+		"settings"						=>	array
+													(
+														array
+														(
+															"sid"					=> "NULL",
+															"name"				=> "adv_sidebox_latest_threads_max",
+															"title"				=> "Latest Threads",
+															"description"		=> "Maximum number of threads to display",
+															"optionscode"	=> "text",
+															"value"				=> '20',
+															"disporder"		=> '10'
+														)
+													),
+		"templates"					=>	array
+													(
+														array
+														(
+															"title" 			=> "adv_sidebox_latest_threads",
+															"template" 	=> "{\$threadlist}",
+															"sid"				=>	-1
+														),
+														array
+														(
+															"title" => "adv_sidebox_latest_threads_thread",
+															"template" => "
+	<tr>
+		<td class=\"{\$altbg}\">
+			{\$gotounread}<a href=\"{\$mybb->settings[\'bburl\']}/{\$thread[\'threadlink\']}\" title=\"{\$thread[\'subject\']}\"><strong>{\$thread[\'subject\']}</strong></a>
+			<span class=\"smalltext\"><br />
+				<a href=\"{\$thread[\'lastpostlink\']}\" title=\"{\$lang->adv_sidebox_latest_threads_lastpost}\">{\$lang->adv_sidebox_latest_threads_lastpost}</a> {\$lastposterlink}<br />
+				{\$lastpostdate} {\$lastposttime}<br />
+				<strong>&raquo; </strong>{\$lang->adv_sidebox_latest_threads_replies} {\$thread[\'replies\']}<br />
+				<strong>&raquo; </strong>{\$lang->adv_sidebox_latest_threads_views} {\$thread[\'views\']}
+			</span>
+		</td>
+	</tr>
+															",
+															"sid"				=>	-1
+														),
+														array
+														(
+															"title" => "adv_sidebox_latest_threads_gotounread",
+															"template" => "<a href=\"{\$thread[\'newpostlink\']}\"><img src=\"{\$theme[\'imgdir\']}/jump.gif\" alt=\"{\$lang->adv_sidebox_gotounread}\" title=\"{\$lang->adv_sidebox_gotounread}\" /></a>",
+															"sid"				=>	-1
+														)
+													)
 	);
 }
 
-function latest_threads_asb_is_installed()
-{
-	global $db;
-	
-	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_latest_threads'");
-	return $db->num_rows($query);
-}
-
-function latest_threads_asb_install()
-{
-	global $db, $lang;
-	
-	if (!$lang->adv_sidebox)
-	{
-		$lang->load('adv_sidebox');
-	}
-	
-	$gid = adv_sidebox_get_settingsgroup();
-		
-	$adv_sidebox_setting_10 = array(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_latest_threads_max",
-		"title"					=> "Latest Threads",
-		"description"		=> "maximum number of threads to display",
-		"optionscode"	=> "text",
-		"value"				=> '20',
-		"disporder"		=> '100',
-		"gid"					=> intval($gid),
-	);
-	
-	$query = $db->simple_select('settings', 'title', "name='adv_sidebox_latest_threads_max'");
-	
-	if($db->num_rows($query) == 1)
-	{
-		unset($adv_sidebox_setting_10['sid']);
-		unset($adv_sidebox_setting_10['value']);
-		$db->update_query("settings", $adv_sidebox_setting_10, "name='adv_sidebox_latest_threads_max'");
-	}
-	else
-	{
-		$db->insert_query("settings", $adv_sidebox_setting_10);
-	}
-
-	rebuild_settings();
-	
-	// latest threads parent template
-	$template_9 = array(
-        "title" => "adv_sidebox_latest_threads",
-        "template" => "{\$threadlist}",
-        "sid" => -1
-    );
-	
-	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_latest_threads'");
-	
-	if($db->num_rows($query) == 1)
-	{
-		$db->update_query("templates", $template_9, "title='adv_sidebox_latest_threads'");
-	}
-	else
-	{
-		$db->insert_query("templates", $template_9);
-	}
-	
-	// latest threads child template
-	$template_10 = array(
-        "title" => "adv_sidebox_latest_threads_thread",
-        "template" => "<tr>
-<td class=\"{\$altbg}\">
-	{\$gotounread}<a href=\"{\$mybb->settings[\'bburl\']}/{\$thread[\'threadlink\']}\" title=\"{\$thread[\'subject\']}\"><strong>{\$thread[\'subject\']}</strong></a>
-	<span class=\"smalltext\"><br />
-		<a href=\"{\$thread[\'lastpostlink\']}\" title=\"{\$lang->adv_sidebox_latest_threads_lastpost}\">{\$lang->adv_sidebox_latest_threads_lastpost}</a> {\$lastposterlink}<br />
-		{\$lastpostdate} {\$lastposttime}<br />
-		<strong>&raquo; </strong>{\$lang->adv_sidebox_latest_threads_replies} {\$thread[\'replies\']}<br />
-		<strong>&raquo; </strong>{\$lang->adv_sidebox_latest_threads_views} {\$thread[\'views\']}
-	</span>
-</td>
-</tr>",
-        "sid" => -1
-    );
-	
-	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_latest_threads_thread'");
-	
-	if($db->num_rows($query) == 1)
-	{
-		$db->update_query("templates", $template_10, "title='adv_sidebox_latest_threads_thread'");
-	}
-	else
-	{
-		$db->insert_query("templates", $template_10);
-	}
-	
-	// gotounread jump icon
-	$template_11 = array(
-        "title" => "adv_sidebox_latest_threads_gotounread",
-        "template" => "<a href=\"{\$thread[\'newpostlink\']}\"><img src=\"{\$theme[\'imgdir\']}/jump.gif\" alt=\"{\$lang->adv_sidebox_gotounread}\" title=\"{\$lang->adv_sidebox_gotounread}\" /></a>",
-        "sid" => -1
-    );
-	$query = $db->simple_select('templates', 'title', "title='adv_sidebox_latest_threads_gotounread'");
-	
-	if($db->num_rows($query) == 1)
-	{
-		$db->update_query("templates", $template_11, "title='adv_sidebox_latest_threads_gotounread'");
-	}
-	else
-	{
-		$db->insert_query("templates", $template_11);
-	}
-}
-
-function latest_threads_asb_uninstall()
-{
-	global $db;
-	
-	// delete all the boxes of this type and the template as well
-	$db->query("DELETE FROM " . TABLE_PREFIX . "sideboxes WHERE box_type='" . $db->escape_string('latest_threads') . "'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_latest_threads'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_latest_threads_thread'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title='adv_sidebox_latest_threads_gotounread'");
-}
-
-function latest_threads_asb_build_template()
+function latest_threads_asb_build_template($settings)
 {
 	global $latest_threads, $threadlist, $gotounread; // <-- important!
 	
@@ -215,6 +146,8 @@ function latest_threads_asb_build_template()
 	$maxtitlelen = 48;
 	$threadlist = '';
 	
+	//die(var_dump((int) $settings[0]->value));
+	
 	// Query for the latest forum discussions
 	$query = $db->query("
 		SELECT t.*, u.username
@@ -222,7 +155,7 @@ function latest_threads_asb_build_template()
 		LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid=t.uid)
 		WHERE 1=1 $unviewwhere AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 		ORDER BY t.lastpost DESC
-		LIMIT 0, " . $mybb->settings['adv_sidebox_latest_threads_max']
+		LIMIT 0, " . (int) $settings[0]->value
 	);
 	
 	if($db->num_rows($query) > 0)
