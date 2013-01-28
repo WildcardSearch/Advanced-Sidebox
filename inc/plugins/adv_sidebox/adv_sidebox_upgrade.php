@@ -77,6 +77,10 @@
 			}
 		}
 		
+		// now reload the handler and update all the sidebox group permissions
+		$adv_sidebox14 =  '';
+		$adv_sidebox14 = new Sidebox_handler('', true);
+		
 		if(is_array($adv_sidebox14->sideboxes))
 		{
 			foreach($adv_sidebox14->sideboxes as $this_box)
