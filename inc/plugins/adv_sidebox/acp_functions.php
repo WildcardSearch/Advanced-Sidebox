@@ -3,7 +3,7 @@
  * This file contains the Admin Control Panel functions for this plugin
  *
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x
- * Copyright © 2013 WildcardSearch
+ * Copyright ï¿½ 2013 WildcardSearch
  * http://www.rantcentralforums.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -747,7 +747,7 @@ function adv_sidebox_admin_manage_modules()
 
 		foreach($simple_modules as $this_module)
 		{
-			$modules[$this_module]->build_table_row($table);
+			$adv_sidebox->addons[$this_module]->build_table_row($table);
 		}
 	}
 
@@ -759,7 +759,7 @@ function adv_sidebox_admin_manage_modules()
 
 		foreach($installed_modules as $this_module)
 		{
-			$modules[$this_module]->build_table_row($table);
+			$adv_sidebox->addons[$this_module]->build_table_row($table);
 		}
 	}
 
@@ -771,7 +771,7 @@ function adv_sidebox_admin_manage_modules()
 
 		foreach($uninstalled_modules as $this_module)
 		{
-			$modules[$this_module]->build_table_row($table);
+			$adv_sidebox->addons[$this_module]->build_table_row($table);
 		}
 	}
 
