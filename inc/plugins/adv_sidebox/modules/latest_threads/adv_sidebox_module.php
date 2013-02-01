@@ -82,7 +82,7 @@ function latest_threads_asb_build_template($settings)
 {
 	global $latest_threads, $threadlist, $gotounread; // <-- important!
 	
-	global $db, $mybb, $templates, $lang, $cache, $thread, $theme;
+	global $db, $mybb, $templates, $lang, $cache, $theme;
 	
 	// Load custom language phrases
 	if (!$lang->adv_sidebox)
