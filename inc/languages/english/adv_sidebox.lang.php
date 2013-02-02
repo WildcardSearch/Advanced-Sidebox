@@ -106,6 +106,9 @@ $l['adv_sidebox_add_new_box_desc'] = 'or edit an existing box';
 $l['adv_sidebox_add_a_sidebox'] = 'Add A Sidebox';
 $l['adv_sidebox_delete_box_success'] = 'The box was deleted successfully';
 $l['adv_sidebox_delete_box_failure'] = 'There was an error while attempting to remove the seleced sidebox';
+$l['adv_sidebox_current_title'] = 'current title: ';
+$l['adv_sidebox_use_custom_title'] = 'Use Custom Title?';
+$l['adv_sidebox_custom_title'] = 'Custom Title';
 
 // add/edit
 $l['adv_sidebox_edit_box'] = 'Edit Sidebox';

@@ -131,9 +131,9 @@ function staff_online_box_asb_info()
 													),
 		"settings"						=>	array
 													(
-														array
+														"adv_sidebox_staff_online_bydetail" => array
 														(
-															"sid"				=> "NULL",
+															"sid"					=> "NULL",
 															"name"				=> "adv_sidebox_staff_online_bydetail",
 															"title"				=> $db->escape_string($lang->adv_sidebox_staff_online_option_bydetail_title),
 															"description"		=> $db->escape_string($lang->adv_sidebox_staff_online_option_bydetail_description),
@@ -141,9 +141,9 @@ function staff_online_box_asb_info()
 															"value"				=> '5',
 															"disporder"			=> '492'
 														),
-														array
+														"adv_sidebox_staff_online_avatarsize" => array
 														(
-															"sid"				=> "NULL",
+															"sid"					=> "NULL",
 															"name"				=> "adv_sidebox_staff_online_avatarsize",
 															"title"				=> $db->escape_string($lang->adv_sidebox_staff_online_option_avatarsize_title),
 															"description"		=> $db->escape_string($lang->adv_sidebox_staff_online_option_avatarsize_description),
@@ -151,7 +151,7 @@ function staff_online_box_asb_info()
 															"value"				=> '36',
 															"disporder"			=> '493'
 														),
-														array
+														"adv_sidebox_staff_online_bytype" => array
 														(
 															"sid"				=> "NULL",
 															"name"				=> "adv_sidebox_staff_online_bytype",
@@ -161,7 +161,8 @@ function staff_online_box_asb_info()
 															"value"				=> '1',
 															"disporder"			=> '494'
 														),
-														array(
+														"adv_sidebox_staff_online_hideinfo" => array
+														(
 															"sid"				=> "NULL",
 															"name"				=> "adv_sidebox_staff_online_hideinfo",
 															"title"				=> $db->escape_string($lang->adv_sidebox_staff_online_option_hideinfo_title),
@@ -307,9 +308,11 @@ function staff_online_box_asb_info()
  * Advanced Sidebox module - staff online plus
  * prepare module content
  */
-function staff_online_box_asb_build_template($settings)
+function staff_online_box_asb_build_template($settings, $template_var)
 {
-	global $staff_online_box_l, $staff_online_box_r;
+	$left_var = $template_var . '_l';
+	$right_var = $template_var . '_r';
+	global $$left_var, $$right_var;
 	global $db, $mybb, $templates, $lang, $cache;
 
 //	====----
@@ -365,11 +368,11 @@ function staff_online_box_asb_build_template($settings)
 	"bit_userid"				=> "",
 	"bit_username_formatted"	=> "",
 	"bit_useravatar"			=> "",
-	"bit_useravatar_size"		=> intval($settings[1]),
+	"bit_useravatar_size"		=> intval($settings['adv_sidebox_staff_online_avatarsize']['value']),
 	"bit_userprofile" 			=> "",
 	"bit_usertype"				=> "",
 	"bit_usertype_formatted"	=> "",
-	"bit_max_to_show" 			=> intval($settings[0])
+	"bit_max_to_show" 			=> intval($settings['adv_sidebox_staff_online_bydetail']['value'])
 	);
 
 	// prevent faulty input
@@ -385,7 +388,7 @@ function staff_online_box_asb_build_template($settings)
 	$bits_left					= "";
 	$bits_right					= "";
 	//									- ACP option show by type block
-	$bytype_enable				= intval($settings[2]) & 1;
+	$bytype_enable				= intval($settings['adv_sidebox_staff_online_bytype']['value']) & 1;
 
 	// Prepare debug if enabled
 	if ($staff_online_debug) {
@@ -498,7 +501,7 @@ function staff_online_box_asb_build_template($settings)
 		// There are no staff online. We cant show just empty box.
 		// Info about no staff will be shown regardles from ACP setting
 		$staff_online["hide_info"] = "";
-	}elseif ((intval($settings[3]) & 1)){
+	}elseif ((intval($settings['adv_sidebox_staff_online_hideinfo']['value']) & 1)){
 		// There are staff online and perhaps user want to use other info block for it.
 		// Hide info block if ACP setting is set to hide it.
 		$staff_online["hide_info"] = "";
@@ -512,8 +515,8 @@ function staff_online_box_asb_build_template($settings)
 	}
 	
 	// Finally merge staff online box content with its template
-	eval("\$staff_online_box_l = \"" . $templates->get("adv_sidebox_staff_online_left") . "\";");
-	eval("\$staff_online_box_r = \"" . $templates->get("adv_sidebox_staff_online_right") . "\";");
+	eval("\$" . $left_var . " = \"" . $templates->get("adv_sidebox_staff_online_left") . "\";");
+	eval("\$" . $right_var . " = \"" . $templates->get("adv_sidebox_staff_online_right") . "\";");
 	
 }
 

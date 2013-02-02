@@ -1,8 +1,8 @@
 <?php
 /*
- * Advanced Sidebox Add-On Example #1 - Meta File
+ * Random Quotes
  *
- * This is an example of the extended method adding a sidebox. Use this method when you need to add a setting, template, stylesheet, table, etc . . . if you don't need to modify anything to accomplish your sideboxes purpose then just omit this file and auto-activate will occur in the sidebox module.
+ * This module is experimental and hasn't been officially released yet.
  *
  * Two required functions handle the sidebox in ACP and in when being displayed.
 */
@@ -24,6 +24,7 @@ function rand_quote_asb_info()
 		"description"		=>	'Displays random quotes with a link and avatar',
 		"stereo"			=>	true,
 		"wrap_content"	=>	true,
+		"version"			=>	"1",
 		"templates"		=>	array
 										(
 											array
@@ -63,12 +64,13 @@ function rand_quote_asb_info()
 /*
  * This function is required. It is used by adv_sidebox.php to display the custom content in your sidebox.
  */
-function rand_quote_asb_build_template()
+function rand_quote_asb_build_template($settings, $template_var)
 {
 	// don't forget to declare your variable! will not work without this
-	global $rand_quote_l, $rand_quote_r; // <-- important!
-	
-	global $db, $mybb, $templates, $theme, $lang;
+	$left_var = $template_var . '_l';
+	$right_var = $template_var . '_r';
+	global $$left_var, $$right_var; // <-- important!
+	global $db, $mybb, $templates, $lang;
 	
 	if(!$lang->adv_sidebox)
 	{
@@ -156,18 +158,18 @@ function rand_quote_asb_build_template()
 		$read_more_r = '<a href="' . $post_link . '"><img style="width: ' . $read_more_width_r . 'px; height: ' . $read_more_height_r . 'px; position: relative; float: right;" src="http://www.rantcentralforums.com/images/readmore.gif" title="Click to see the entire post" alt="read more" /></a>';
 
 		// eval the template and the sidebox will display
-		eval("\$rand_quote_l = \"" . $templates->get("rand_quote_sidebox_left") . "\";");
+		eval("\$" . $left_var . " = \"" . $templates->get("rand_quote_sidebox_left") . "\";");
 		
 		// eval the template and the sidebox will display
-		eval("\$rand_quote_r = \"" . $templates->get("rand_quote_sidebox_right") . "\";");
+		eval("\$" . $right_var . " = \"" . $templates->get("rand_quote_sidebox_right") . "\";");
 	}
 	else
 	{
 		// eval the template and the sidebox will display
-		eval("\$rand_quote_l = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_no_posts . "</td></tr>\";");
+		eval("\$" . $left_var . " = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_no_posts . "</td></tr>\";");
 		
 		// eval the template and the sidebox will display
-		eval("\$rand_quote_r = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_no_posts . "</td></tr>\";");
+		eval("\$" . $right_var . " = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_no_posts . "</td></tr>\";");
 	}
 }
 

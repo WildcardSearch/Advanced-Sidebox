@@ -3,7 +3,7 @@
  * This file contains the Admin Control Panel functions for this plugin
  *
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x
- * Copyright � 2013 WildcardSearch
+ * Copyright 2013 WildcardSearch
  * http://www.rantcentralforums.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -460,8 +460,17 @@ function adv_sidebox_admin_editbox()
 						$allowedgroups = "all";
 						break;
 					}
-					$gid = (int) $gid;
-					$allowedgroups[$gid] = $gid;
+					
+					if($gid == 'guests')
+					{
+						$key = 'guests';
+					}
+					else
+					{
+						$key = (int) $gid;
+					}
+					
+					$allowedgroups[$key] = $key;
 				}
 				
 				if(count($allowedgroups) == (int) $mybb->input['this_group_count'] - 1)
@@ -496,12 +505,10 @@ function adv_sidebox_admin_editbox()
 				{				
 					foreach($adv_sidebox->addons[$this_sidebox->box_type]->settings as $setting)
 					{
-						//die(var_dump($setting) . var_dump($mybb->input));
-						
 						if(isset($mybb->input[$setting['name']]))
 						{
 							$setting['value'] = $mybb->input[$setting['name']];
-							$this_sidebox->settings[] = $setting;
+							$this_sidebox->settings[$setting['name']] = $setting;
 						}
 					}
 				}
@@ -512,7 +519,14 @@ function adv_sidebox_admin_editbox()
 				$this_sidebox->wrap_content = true;
 			}
 			
-			$this_sidebox->display_name = $adv_sidebox->box_types[$this_sidebox->box_type];
+			if(isset($mybb->input['box_title']) && $mybb->input['box_title'] != '')
+			{
+				$this_sidebox->display_name = $mybb->input['box_title'];
+			}
+			else
+			{
+				$this_sidebox->display_name = $adv_sidebox->box_types[$this_sidebox->box_type];
+			}
 			
 			$status = $this_sidebox->save();
 			
@@ -536,13 +550,23 @@ function adv_sidebox_admin_editbox()
 	$page->add_breadcrumb_item($lang->adv_sidebox_add_a_sidebox);
 
 	// output ACP page stuff
-	$page->extra_header = $adv_sidebox->build_peekers();
+	$title_peeker = '
+			var peeker = new Peeker
+			(
+				$$(".box_custom_title"),
+				$("box_title"),
+				/1/,
+				true
+			);';
+	$page->extra_header = $adv_sidebox->build_peekers($title_peeker);
 	adv_sidebox_output_header();
 	
 	adv_sidebox_output_tabs('adv_sidebox_add');
 
-	$this_sidebox = new Sidebox($mybb->input['box']);
+	$this_sidebox = new Sidebox((int) $mybb->input['box']);
 
+	$custom_title = 0;
+	
 	// if $this_sidebox exists it will have a non-zero id property . . .
 	if($this_sidebox->id == 0)
 	{
@@ -574,6 +598,9 @@ function adv_sidebox_admin_editbox()
 			// if mode isn't set at all then just start out with all scripts
 			$selected_scripts = 'all_scripts';
 		}
+		
+		$custom_title = 0;
+		$current_title = '';
 	}
 	else
 	{
@@ -606,6 +633,30 @@ function adv_sidebox_admin_editbox()
 				$selected_scripts[] = 'portal.php';
 			}
 		}
+		
+		if($adv_sidebox->addons[$this_sidebox->box_type]->valid == true)
+		{
+			if($this_sidebox->display_name != $adv_sidebox->addons[$this_sidebox->box_type]->name)
+			{
+				$custom_title = 1;
+			}
+		}
+		elseif($adv_sidebox->custom[$this_sidebox->box_type]->valid == true)
+		{
+			if($this_sidebox->display_name != $adv_sidebox->custom[$this_sidebox->box_type]->name)
+			{
+				$custom_title = 1;
+			}
+		}
+		else
+		{
+			$custom_title = 0;
+		}
+	}
+	
+	if($custom_title == 1)
+	{
+		$current_title = '<br /><em>{$lang->adv_sidebox_current_title}</em><strong>' . $this_sidebox->display_name . '</strong>';	
 	}
 
 	$form = new Form(ADV_SIDEBOX_EDIT_URL. "&amp;box=" . $this_sidebox->id, "post", "edit_box");
@@ -613,6 +664,11 @@ function adv_sidebox_admin_editbox()
 
 	// box type
 	$form_container->output_row($lang->adv_sidebox_box_type, $lang->adv_sidebox_type_desc, $form->generate_select_box('box_type_select', $adv_sidebox->box_types, $this_sidebox->box_type, array("id" => 'box_type_select')), array("id" => 'box_type_select_box'));
+	
+	// box title
+	$form_container->output_row($lang->adv_sidebox_use_custom_title, '', $form->generate_yes_no_radio('box_custom_title', $custom_title, true, array('id' => 'box_custom_title_yes', 'class' => 'box_custom_title'), array('id' => 'box_custom_title_no', 'class' => 'box_custom_title')), 'box_custom_title', array('id' => 'box_custom_title'));
+	
+	$form_container->output_row($lang->adv_sidebox_custom_title, $current_title, $form->generate_text_box('box_title'), 'box_title', array("id" => 'box_title'));
 	
 	// position
 	$form_container->output_row($lang->adv_sidebox_position, '', $form->generate_radio_button('box_position', 'left', $lang->adv_sidebox_position_left, array("checked" => ((int) $this_sidebox->position == 0))) . '&nbsp;&nbsp;' . $form->generate_radio_button('box_position', 'right', $lang->adv_sidebox_position_right, array("checked" => ((int) $this_sidebox->position != 0))));
@@ -625,8 +681,9 @@ function adv_sidebox_admin_editbox()
 	
 	// prepare options for which groups
 	$options = array();
-	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
+	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'gid'));
 	$options['all'] = 'All User Groups';
+	$options['guests'] = 'Guests';
 	while($usergroup = $db->fetch_array($query))
 	{
 		$options[(int)$usergroup['gid']] = $usergroup['title'];

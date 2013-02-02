@@ -28,6 +28,7 @@ function welcome_box_asb_info()
 		"description"		=>	'Login for guest, info for member',
 		"stereo"			=>	false,
 		"wrap_content"	=>	true,
+		"version"			=>	"1",
 		"templates"					=>	array
 													(
 														array(
@@ -45,7 +46,7 @@ function welcome_box_asb_info()
 														(
 															"title" => "adv_sidebox_welcome_membertext",
 															"template" => "
-			<span class=\"smalltext\"><em>{\$lang->member_welcome_lastvisit}</em> {\$lastvisit}<br />
+			<span style=\"float: right;\"><img src=\"{\$mybb->settings[\'bburl\']}/{\$mybb->user[\'avatar\']}\" height=\"50\" width=\"50\" alt=\"{\$mybb->user[\'username\']}\'s avatar\"/>&nbsp;</span><span class=\"smalltext\"><em>{\$lang->member_welcome_lastvisit}</em> {\$lastvisit}<br />
 			{\$lang->since_then}<br />
 			<strong>&raquo;</strong> {\$lang->new_announcements}<br />
 			<strong>&raquo;</strong> {\$lang->new_threads}<br />
@@ -78,10 +79,10 @@ function welcome_box_asb_info()
 /*
  * This function is required. It is used by adv_sidebox.php to display the custom content in your sidebox.
  */
-function welcome_box_asb_build_template()
+function welcome_box_asb_build_template($settings, $template_var)
 {
 	// don't forget to declare your variable! will not work without this
-	global $welcome_box; // <-- important!
+	global $$template_var; // <-- important!
 	
 	global $db, $mybb, $templates, $lang, $lastvisit;
 	
@@ -188,7 +189,7 @@ function welcome_box_asb_build_template()
 		eval("\$welcometext = \"" . $templates->get("portal_welcome_guesttext") . "\";");
 	}
 	$lang->welcome = $lang->sprintf($lang->welcome, $mybb->user['username']);
-	eval("\$welcome_box = \"" . $templates->get("adv_sidebox_welcome") . "\";");
+	eval("\$" . $template_var . " = \"" . $templates->get("adv_sidebox_welcome") . "\";");
 	if($mybb->user['uid'] == 0)
 	{
 		$mybb->user['username'] = "";

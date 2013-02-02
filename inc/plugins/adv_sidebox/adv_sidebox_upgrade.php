@@ -66,29 +66,7 @@
 			);
 		}
 		
-		// load the handler and upgrade all the addons
-		$adv_sidebox14 = new Sidebox_handler('', true);
-		
-		if(is_array($adv_sidebox14->addons))
-		{
-			foreach($adv_sidebox->addons as $this_module)
-			{
-				$this_module->upgrade();
-			}
-		}
-		
-		// now reload the handler and update all the sidebox group permissions
-		$adv_sidebox14 =  '';
-		$adv_sidebox14 = new Sidebox_handler('', true);
-		
-		if(is_array($adv_sidebox14->sideboxes))
-		{
-			foreach($adv_sidebox14->sideboxes as $this_box)
-			{
-				$this_box->groups = 'all';
-				$this_box->save();
-			}
-		}
+		$adv_sidebox14 = new Sidebox_handler;
 	}
 	
 	// Version 1.3.4 is the first to have versioning. If the old version was earlier than that just check everything.	

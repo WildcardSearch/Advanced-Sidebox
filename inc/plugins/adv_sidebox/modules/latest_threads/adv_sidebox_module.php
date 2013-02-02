@@ -2,7 +2,7 @@
 /*
  * Advanced Sidebox Module
  *
- * Latest Threads (meta)
+ * Latest Threads
  *
  * This module is part of the Advanced Sidebox default module pack. It can be installed and uninstalled like any other module. Even though it is included in the original installation, it is not necessary and can be completely removed by deleting the containing folder (ie modules/thisfolder).
  *
@@ -31,7 +31,7 @@ function latest_threads_asb_info()
 													),
 		"settings"						=>	array
 													(
-														array
+														"adv_sidebox_latest_threads_max"		=> array
 														(
 															"sid"					=> "NULL",
 															"name"				=> "adv_sidebox_latest_threads_max",
@@ -78,11 +78,10 @@ function latest_threads_asb_info()
 	);
 }
 
-function latest_threads_asb_build_template($settings)
+function latest_threads_asb_build_template($settings, $template_var)
 {
-	global $latest_threads, $threadlist, $gotounread; // <-- important!
-	
-	global $db, $mybb, $templates, $lang, $cache, $theme;
+	global $$template_var;
+	global $db, $mybb, $templates, $lang, $cache, $threadlist, $gotounread;
 	
 	// Load custom language phrases
 	if (!$lang->adv_sidebox)
@@ -155,7 +154,7 @@ function latest_threads_asb_build_template($settings)
 		LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid=t.uid)
 		WHERE 1=1 $unviewwhere AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 		ORDER BY t.lastpost DESC
-		LIMIT 0, " . (int) $settings[0]->value
+		LIMIT 0, " . (int) $settings['adv_sidebox_latest_threads_max']['value']
 	);
 	
 	if($db->num_rows($query) > 0)
@@ -264,13 +263,13 @@ function latest_threads_asb_build_template($settings)
 		if($threadlist)
 		{
 			// Show the table only if there are threads
-			eval("\$latest_threads = \"" . $templates->get("adv_sidebox_latest_threads") . "\";");
+			eval("\$" . $template_var . " = \"" . $templates->get("adv_sidebox_latest_threads") . "\";");
 		}
 	}
 	else
 	{
 		// Show the table only if there are threads
-		eval("\$latest_threads = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_latest_threads_no_threads . "</td></tr>\";");
+		eval("\$" . $template_var . " = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_latest_threads_no_threads . "</td></tr>\";");
 	}
 }
 

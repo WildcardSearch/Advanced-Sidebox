@@ -2,7 +2,7 @@
 /*
  * Advanced Sidebox Module
  *
- * Search (meta)
+ * Search
  *
  * This module is part of the Advanced Sidebox  default module pack. It can be installed and uninstalled like any other module. Even though it is included in the original installation, it is not necessary and can be completely removed by deleting the containing folder (ie modules/thisfolder).
  *
@@ -23,6 +23,7 @@ function search_box_asb_info()
 		"description"		=>	'Simple textbox and button',
 		"stereo"			=>	false,
 		"wrap_content"	=>	true,
+		"version"			=>	"1",
 		"templates"					=>	array
 													(
 														array
@@ -54,10 +55,10 @@ function search_box_asb_info()
 /*
  * This function is required. It is used by adv_sidebox.php to display the custom content in your sidebox.
  */
-function search_box_asb_build_template()
+function search_box_asb_build_template($settings, $template_var)
 {
 	// don't forget to declare your variable! will not work without this
-	global $search_box; // <-- important!
+	global $$template_var; // <-- important!
 	
 	global $db, $mybb, $templates, $lang, $gobutton;
 	
@@ -71,7 +72,7 @@ function search_box_asb_build_template()
 		$lang->load('adv_sidebox');
 	}
 	
-	eval("\$search_box = \"" . $templates->get("adv_sidebox_search") . "\";");
+	eval("\$" . $template_var . " = \"" . $templates->get("adv_sidebox_search") . "\";");
 }
 
 ?>

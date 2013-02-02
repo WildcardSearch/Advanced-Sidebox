@@ -115,13 +115,16 @@
 			$this->show_on_portal = $data['show_on_portal'];
 			
 			// load the group permissions
-			$this->groups = $data['groups'];
-			
-			// if there are specific groups used . . .
-			if($this->groups != null)
+			if($data['groups'] != null)
 			{
+				$this->groups = $data['groups'];
+				
 				// convert them to an array as well
 				$this->groups_array = explode(",", $this->groups);
+			}
+			else
+			{
+				$this->groups = 'all';
 			}
 
 			$this->stereo = $data['stereo'];
@@ -132,24 +135,24 @@
 				// split the template variable into two channels
 				if($this->position)
 				{
-					$this->content = '{$' . $this->box_type . '_r}';
+					$this->content = '{$' . $this->box_type . '_' . $this->id . '_r}';
 				}
 				else
 				{
-					$this->content = '{$' . $this->box_type . '_l}';
+					$this->content = '{$' . $this->box_type . '_' . $this->id  . '_l}';
 				}
 			}
 			else
 			{
 				// otherwise just build a template variable for this sidebox
-				$this->content = '{$' . $this->box_type . '}';
+				$this->content = '{$' . $this->box_type . '_' . $this->id . '}';
 			}
 			
 			// are there settings?
 			if($data['settings'])
 			{
 				// if so decode them
-				$this->settings = json_decode($data['settings']);
+				$this->settings = json_decode($data['settings'], true);
 				
 				// if they seem legit 
 				if(is_array($this->settings))
@@ -233,10 +236,9 @@
 			$lang->load('adv_sidebox');
 		}
 
+		// construct the table row
 		if($this_table instanceof Table)
 		{
-			// construct the table row
-			
 			// name (edit link)
 			$this_table->construct_cell('<a href="' . ADV_SIDEBOX_EDIT_URL . '&amp;mode=' . $mybb->input['mode'] . '&amp;box=' . $this->id . '">' . $this->display_name . '</a>', array("width" => '30%'));
 			
@@ -250,7 +252,23 @@
 			}
 			else
 			{
-				$groups = $this->groups;
+				if(is_array($this->groups_array))
+				{
+					foreach($this->groups_array as $group)
+					{
+						if($group == 'guests')
+						{
+							$group = '0';
+						}
+
+						if($groups != '')
+						{
+							$groups .= ',';
+						}
+						
+						$groups .= $group;
+					}
+				}
 			}
 			
 			// groups
@@ -370,7 +388,7 @@
 		}
 		
 		return '
-<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
+<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder ' . $this->box_type . '_main_' . $this->id . '">
 	<thead>
 		<tr>
 			<td class="thead"><div class="expcolimage"><img src="{$theme[\'imgdir\']}/' . $expcolimage . '" id="' . $this->box_type . '_' . $this->id . '_img" class="expander" alt="' . $expaltext . '" title="' . $expaltext . '" /></div><strong>' . $this->display_name . '</strong>
@@ -544,18 +562,22 @@ class Sidebox_addon
 			$status = $this->uninstall();
 		}
 
+		// if there are templates . . .
 		if(is_array($this->templates))
 		{
+			// loop[ through them
 			foreach($this->templates as $template)
 			{
 				$query = $db->simple_select('templates', '*', "title='{$template['title']}'");
 				
+				// if it exists, update
 				if($db->num_rows($query) == 1)
 				{
 					$db->update_query("templates", $template, "title='{$template['title']}'");
 				}
 				else
 				{
+					// if not, create a new template
 					$db->insert_query("templates", $template);
 				}
 			}
@@ -574,20 +596,23 @@ class Sidebox_addon
 		// installed?
 		if($this->is_installed)
 		{
+			$this->unset_cache_version();
+			
+			// if there are templates . . .
 			if(is_array($this->templates))
 			{
+				// remove them all
 				foreach($this->templates as $template)
 				{
 					$status = $db->query("DELETE FROM " . TABLE_PREFIX . "templates WHERE title='{$template['title']}'");
 				}
 				
+				// unless specifically asked not to, delete any boxes that use this module
 				if(!$no_cleanup)
 				{
 					$status = $db->query("DELETE FROM " . TABLE_PREFIX . "sideboxes WHERE box_type='{$this->base_name}'");
 				}
 			}
-			
-			$this->unset_cache_version();
 		}
 	}
 
@@ -604,7 +629,9 @@ class Sidebox_addon
 		// don't waste time if everything is in order
 		if(!$this->is_upgraded)
 		{
-			// if there are settings left over from a pre-1.4 module installation
+			$this->unset_cache_version();
+			
+			// if there are settings left over from a previous installation . . .
 			if(is_array($this->discarded_settings))
 			{
 				// delete them all
@@ -613,9 +640,6 @@ class Sidebox_addon
 					$status = $db->query("DELETE FROM " . TABLE_PREFIX . "settings WHERE name='{$setting}'");
 				}
 			}
-			
-			// update any sideboxes created with the older version of this module to contain the correct settings (default values)
-			$query = $db->update_query('sideboxes', array("settings" => $db->escape_string(json_encode($this->settings))), "box_type='{$this->base_name}'");
 			
 			// if any templates were dropped in this version
 			if(is_array($this->discarded_templates))
@@ -627,7 +651,7 @@ class Sidebox_addon
 				}
 			}
 			
-			// now install the new templates
+			// now install the updated module
 			$this->install(true);
 			
 			// update the version cache and the upgrade is complete
@@ -659,7 +683,7 @@ class Sidebox_addon
 	{
 		global $cache, $mybb, $db;
 
-		//get currently installed version, if there is one
+		// get currently installed version, if there is one
 		$wildcard_plugins = $cache->read('wildcard_plugins');
 		
 		if(is_array($wildcard_plugins))
@@ -707,7 +731,7 @@ class Sidebox_addon
 	 *
 	 * runs template building code for the current module referenced by this object
 	 */
-	function build_template($settings)
+	function build_template($settings, $template_variable)
 	{
 		// if the files are intact . . .
 		if(file_exists(ADV_SIDEBOX_MODULES_DIR . "/" . $this->base_name . "/adv_sidebox_module.php"))
@@ -718,7 +742,7 @@ class Sidebox_addon
 			if(function_exists($this->base_name . '_asb_build_template'))
 			{
 				$build_template_function = $this->base_name . '_asb_build_template';
-				$build_template_function($settings);
+				$build_template_function($settings, $template_variable);
 			}
 		}
 	}
@@ -805,7 +829,9 @@ class Sidebox_custom
 	public $name;
 	public $description;
 	public $content;
+	
 	public $wrap_content;
+	public $valid = false;
 	
 	/*
 	 * __construct()
@@ -853,6 +879,8 @@ class Sidebox_custom
 			$this->description = $data['description'];
 			$this->wrap_content = (int) $data['wrap_content'];
 			$this->content = $data['content'];
+			
+			$this->valid = true;
 		}
 	}
 	
@@ -1051,7 +1079,7 @@ class Sidebox_handler
 	 * called upon object creation constructs a new handler and attempts to load all necessary objects and properties
 	 *
 	 * @param - $script is a string containing the active MyBB PHP script filename (or in some cases a shortened psuedonym) and controls sorting within the handler object
-	 * @param - $acp = false
+	 * @param - $acp allows the handler to avoid wasted execution when called for the ACP
 	 */
 	function __construct($script = '', $acp = false)
 	{
@@ -1065,13 +1093,13 @@ class Sidebox_handler
 	/*
 	 * load()
 	 *
-	 * attempts to load all sideboxes, addons, custom_boxes and establish properties to be used by ASB and ASB module functions
+	 * attempts to load all side boxes, addons, custom_boxes and establish properties to be used by ASB and ASB module functions
 	 *
 	 * @param - $acp, if true, will avoid wasted execution when in ACP by only loading necessary properties
 	 */
 	function load($acp = false)
 	{
-		global $db;
+		global $db, $mybb;
 		
 		// load everything detected (sideboxes will be filtered by script if applicable)
 		$this->get_users_groups($acp);
@@ -1124,8 +1152,8 @@ class Sidebox_handler
 				}
 				
 				// if the columns contain viable content then pad them to ensure they remain a consistent width
-				$this->left_boxes = $this->pad_column($this->left_boxes);
-				$this->right_boxes = $this->pad_column($this->right_boxes);
+				$this->left_boxes = $this->pad_column($this->left_boxes, (int) $mybb->settings['adv_sidebox_width_left']);
+				$this->right_boxes = $this->pad_column($this->right_boxes, (int) $mybb->settings['adv_sidebox_width_right']);
 			}
 		}
 	}
@@ -1143,32 +1171,40 @@ class Sidebox_handler
 		
 		$this->users_groups = array();
 		
-		// if not a guest and not in ACP
-		if($mybb->user['uid'] > 0 && !$acp)
+		// if not in ACP
+		if(!$acp)
 		{
-			// add the main group
-			if($mybb->user['usergroup'])
+			// and not a guest . . .
+			if($mybb->user['uid'] > 0)
 			{
-				$this->users_groups[] = (int) $mybb->user['usergroup'];
-			}
-			
-			// add any additional groups
-			if($mybb->user['additionalgroups'])
-			{
-				$additional = array();
-				$additional = explode(",", $mybb->user['additionalgroups']);
-				
-				// if more than one . . .
-				if(is_array($additional))
+				// add the main group
+				if($mybb->user['usergroup'])
 				{
-					// merge the arrays
-					$this->users_groups = array_merge($this->users_groups, $additional);
+					$this->users_groups[] = (int) $mybb->user['usergroup'];
 				}
-				else
+				
+				// add any additional groups
+				if($mybb->user['additionalgroups'])
 				{
-					// otherwise just add an index to the existing array
-					$this->users_groups[] = (int) $additional;
-				}				
+					$additional = array();
+					$additional = explode(",", $mybb->user['additionalgroups']);
+					
+					// if more than one . . .
+					if(is_array($additional))
+					{
+						// merge the arrays
+						$this->users_groups = array_merge($this->users_groups, $additional);
+					}
+					else
+					{
+						// otherwise just add an index to the existing array
+						$this->users_groups[] = (int) $additional;
+					}				
+				}
+			}
+			else
+			{
+				$this->users_groups[] = 0;
 			}
 		}
 	}
@@ -1202,6 +1238,10 @@ class Sidebox_handler
 		
 		// get all the plugin types
 		$plugins->run_hooks('adv_sidebox_box_types', $this->box_types);
+		
+		$box_types_lowercase = array_map('strtolower', $this->box_types);
+
+		array_multisort($box_types_lowercase, SORT_ASC, SORT_STRING, $this->box_types);
 	}
 	
 	/*
@@ -1230,7 +1270,7 @@ class Sidebox_handler
 		// if there are sideboxes . . .
 		if($db->num_rows($query) > 0)
 		{
-			// loop throug them all
+			// loop through them all
 			while($this_box = $db->fetch_array($query))
 			{
 				// attempt to load the side box
@@ -1239,7 +1279,7 @@ class Sidebox_handler
 				// if we aren't in ACP . . .
 				if(!$acp)
 				{
-					// if the side box has multiple group permissions . . .
+					// if the side box has group permissions . . .
 					if(is_array($test_box->groups_array))
 					{
 						// loop through them
@@ -1250,6 +1290,11 @@ class Sidebox_handler
 							{
 								$can_view = true;
 								break;
+							}
+							
+							if($gid == 'guests')
+							{
+								$gid = 0;
 							}
 							
 							// if the current user is a member of multiple groups . . .
@@ -1278,6 +1323,10 @@ class Sidebox_handler
 								}
 							}
 						}
+					}
+					else
+					{
+						$can_view = true;
 					}
 				}
 				else
@@ -1446,8 +1495,15 @@ class Sidebox_handler
 				// if this type was created by an addon module . . .
 				if($this->addons[$module])
 				{
+					if($this->sideboxes[$this_box]->has_settings == false && $this->addons[$module]->has_settings)
+					{
+						$this->sideboxes[$this_box]->settings = $this->addons[$module]->settings;
+					}
+					
+					$this_template_variable = $this->sideboxes[$this_box]->box_type . '_' . $this->sideboxes[$this_box]->id;
+					
 					// build the template
-					$this->addons[$module]->build_template($this->sideboxes[$this_box]->settings);
+					$this->addons[$module]->build_template($this->sideboxes[$this_box]->settings, $this_template_variable);
 				}
 				// or if it is a custom static box . . .
 				elseif($this->custom[$module])
@@ -1474,7 +1530,7 @@ class Sidebox_handler
 	 *
 	 * @param - $content is a string with template HTML for a column of sideboxes
 	 */
-	function pad_column($content)
+	function pad_column($content, $width)
 	{
 		// if it is empty, leave it that way
 		if($content)
@@ -1528,7 +1584,7 @@ class Sidebox_handler
 	 *
 	 * automates the process of hiding inactive addon settings in the edit box page
 	 */
-	function build_peekers()
+	function build_peekers($more_peekers = '')
 	{
 		// if there are addons (custom boxes can't contain settings)
 		if(is_array($this->addons))
@@ -1573,7 +1629,7 @@ class Sidebox_handler
 			"load",
 			function()
 			{
-				' . $peekers . '	
+				' . $peekers . $more_peekers . '	
 			}
 		);
 	</script>';

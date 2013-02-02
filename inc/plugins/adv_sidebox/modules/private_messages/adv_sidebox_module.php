@@ -2,7 +2,7 @@
 /*
  * Advanced Sidebox Module
  *
- * Private Messages (meta)
+ * Private Messages
  *
  * This module is part of the Advanced Sidebox  default module pack. It can be installed and uninstalled like any other module. Even though it is included in the original installation, it is not necessary and can be completely removed by deleting the containing folder (ie modules/thisfolder).
  *
@@ -23,6 +23,7 @@ function private_messages_asb_info()
 		"description"		=>	'Lists the user\'s PM info',
 		"stereo"			=>	false,
 		"wrap_content"	=>	true,
+		"version"			=>	"1",
 		"templates"					=>	array
 													(
 														array
@@ -43,10 +44,10 @@ function private_messages_asb_info()
 	);
 }
 
-function private_messages_asb_build_template()
+function private_messages_asb_build_template($settings, $template_var)
 {
 	// don't forget to declare your variable! will not work without this
-	global $private_messages; // <-- important!
+	global $$template_var; // <-- important!
 	
 	global $db, $mybb, $templates, $lang;
 	
@@ -95,7 +96,7 @@ function private_messages_asb_build_template()
 		$messages['pms_unread'] *= 1;
 
 		$lang->pms_received_new = $lang->sprintf($lang->pms_received_new, $mybb->user['username'], $messages['pms_unread']);
-		eval("\$private_messages = \"" . $templates->get("adv_sidebox_pms") . "\";");
+		eval("\$" . $template_var . " = \"" . $templates->get("adv_sidebox_pms") . "\";");
 	}
 }
 

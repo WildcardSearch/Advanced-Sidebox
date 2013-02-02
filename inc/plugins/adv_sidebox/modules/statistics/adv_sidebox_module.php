@@ -25,6 +25,7 @@ function statistics_asb_info()
 		"description"		=>	'Forum statistics and figures',
 		"stereo"			=>	false,
 		"wrap_content"	=>	true,
+		"version"			=>	"1",
 		"templates"					=>	array
 													(
 														array
@@ -52,10 +53,10 @@ function statistics_asb_info()
 /*
  * This function is required. It is used by adv_sidebox.php to display the custom content in your sidebox.
  */
-function statistics_asb_build_template()
+function statistics_asb_build_template($settings, $template_var)
 {
 	// don't forget to declare your variable! will not work without this
-	global $statistics; // <-- important!
+	global $$template_var; // <-- important!
 	
 	global $mybb, $cache, $templates, $lang;
 	
@@ -83,7 +84,7 @@ function statistics_asb_build_template()
 	{
 		$newestmember = build_profile_link($statistics['lastusername'], $statistics['lastuid']);
 	}
-	eval("\$statistics = \"" . $templates->get("adv_sidebox_statistics") . "\";");
+	eval("\$" . $template_var . " = \"" . $templates->get("adv_sidebox_statistics") . "\";");
 }
 
 ?>

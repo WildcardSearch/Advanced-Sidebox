@@ -2,15 +2,13 @@
 /*
  * Advanced Sidebox Module
  *
- * Who's Online Avatar List (meta)
+ * Who's Online Avatar List
  *
  * This module is part of the Advanced Sidebox  default module pack. It can be installed and uninstalled like any other module. Even though it is included in the original installation, it is not necessary and can be completely removed by deleting the containing folder (ie modules/thisfolder).
  *
  * If you delete this folder from the installation pack this module will never be installed (and everything should work just fine without it). Don't worry, if you decide you want it back you can always download them again. The best move would be to install the entire package and try them out. Then be sure that the packages you don't want are uninstalled and then delete those folders from your server.
  *
  * This is a 'stereo' module, meaning that it outputs two different template variables to correspond with the two different box widths. If your module doesn't depend on the width of the sidebox its shown in (to size content) then set this option to false and simple output one 'mono' sidebox.
- *
- * This is a default portal box. Any changes from portal.php (MyBB 1.6.9) will be noted here.
  */
  
 // Include a check for Advanced Sidebox
@@ -42,7 +40,7 @@ function whosonline_asb_info()
 													),
 		"settings"						=>	array
 													(
-														array
+														"adv_sidebox_avatar_per_row"	=> array
 														(
 															"sid"					=> "NULL",
 															"name"				=> "adv_sidebox_avatar_per_row",
@@ -52,7 +50,7 @@ function whosonline_asb_info()
 															"value"				=> '4',
 															"disporder"		=> '80'
 														),
-														array
+														"adv_sidebox_avatar_max_rows"	=> array
 														(
 															"sid"					=> "NULL",
 															"name"				=> "adv_sidebox_avatar_max_rows",
@@ -115,9 +113,12 @@ function whosonline_asb_info()
 	);
 }
 
-function whosonline_asb_build_template($settings)
+function whosonline_asb_build_template($settings, $template_var)
 {
-	global $whosonline_l, $whosonline_r;
+	$left_var = $template_var . '_l';
+	$right_var = $template_var . '_r';
+	global $$left_var, $$right_var;
+	
 	global $db, $mybb, $templates, $lang, $cache;
 	
 	// Load global and custom language phrases
@@ -136,8 +137,8 @@ function whosonline_asb_build_template($settings)
 	
 	//die(var_dump($settings));
 	
-	$rowlength = (int) $settings[0]->value;
-	$max_rows = (int) $settings[1]->value;
+	$rowlength = (int) $settings['adv_sidebox_avatar_per_row']['value'];
+	$max_rows = (int) $settings['adv_sidebox_avatar_max_rows']['value'];
 	$row = 1;
 	$avatar_count = 0;
 	$enough_already = false;
@@ -307,13 +308,13 @@ function whosonline_asb_build_template($settings)
 	
 	if($membercount)
 	{
-		eval("\$whosonline_l = \"" . $templates->get("adv_sidebox_whosonline_left") . "\";");
-		eval("\$whosonline_r = \"" . $templates->get("adv_sidebox_whosonline_right") . "\";");
+		eval("\$" . $left_var . " = \"" . $templates->get("adv_sidebox_whosonline_left") . "\";");
+		eval("\$" . $right_var . " = \"" . $templates->get("adv_sidebox_whosonline_right") . "\";");
 	}
 	else
 	{
-		eval("\$whosonline_l = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_noone_online . "</td></tr>\";");
-		eval("\$whosonline_r = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_noone_online . "</td></tr>\";");
+		eval("\$" . $left_var . " = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_noone_online . "</td></tr>\";");
+		eval("\$" . $right_var . " = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_noone_online . "</td></tr>\";");
 	}
 }
 

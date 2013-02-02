@@ -3,7 +3,7 @@
  * This file contains the install functions for adv_sidebox.php
  *
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x
- * Copyright © 2013 WildcardSearch
+ * Copyright 2013 WildcardSearch
  * http://www.rantcentralforums.com
  *
  * Check out this project on GitHub: https://github.com/WildcardSearch/Advanced-Sidebox
@@ -153,6 +153,27 @@ function adv_sidebox_install()
 	}
 }
 
+/*
+ * adv_sidebox_activate()
+ *
+ * checks upgrade status by checking cached version info
+ *
+ * Derived from the work of pavemen in MyBB Publisher
+ */
+function adv_sidebox_activate()
+{
+	$old_version = adv_sidebox_get_cache_version() ;
+
+	if(file_exists(MYBB_ROOT . '/inc/plugins/adv_sidebox/adv_sidebox_upgrade.php'))
+	{
+		require_once MYBB_ROOT . '/inc/plugins/adv_sidebox/adv_sidebox_upgrade.php';
+    }
+	
+	adv_sidebox_set_cache_version();
+
+ 	rebuild_settings();
+}
+
 /* adv_sidebox_uninstall()
  *
  * DROP the table added to the DB and the column previously added to the mybb_users table (show_sidebox), delete the plugin settings, templates and stylesheets.
@@ -197,22 +218,12 @@ function adv_sidebox_uninstall()
 
 	rebuild_settings();
 	
-	$throw_away = adv_sidebox_unset_cache_version();
+	adv_sidebox_unset_cache_version();
 }
 
-function adv_sidebox_activate()
-{
-	$old_version = adv_sidebox_get_cache_version() ;
-
-	if(file_exists(MYBB_ROOT . '/inc/plugins/adv_sidebox/adv_sidebox_upgrade.php'))
-	{
-		require_once MYBB_ROOT . '/inc/plugins/adv_sidebox/adv_sidebox_upgrade.php';
-    }
-	$retval = adv_sidebox_set_cache_version();
-
- 	rebuild_settings();
-}
-
+/*
+ * Settings
+  */
 /* adv_sidebox_get_settingsgroup()
  *
  * retrieves the plugin's settingsgroup gid if it exists
@@ -223,6 +234,20 @@ function adv_sidebox_get_settingsgroup()
 
 	$query = $db->simple_select("settinggroups", "gid", "name='adv_sidebox_settings'", array("order_dir" => 'DESC'));
 	return $db->fetch_field($query, 'gid');
+}
+
+/* adv_sidebox_build_settings_url()
+ *
+ * builds the url to modify plugin settings if given valid info
+ *
+ * @param - $gid is an integer representing a valid settingsgroup id
+ */
+function adv_sidebox_build_settings_url($gid)
+{
+	if($gid)
+	{
+		return "index.php?module=config-settings&amp;action=change&amp;gid=" . $gid;
+	}
 }
 
 /* adv_sidebox_build_settings_link()
@@ -252,61 +277,11 @@ function adv_sidebox_build_settings_link()
 	return false;
 }
 
-/* adv_sidebox_build_settings_url()
+/*
+ * adv_sidebox_create_base_settings()
  *
- * builds the url to modify plugin settings if given valid info
- *
- * @param - $gid is an integer representing a valid settingsgroup id
+ * separate function to create settings so that upgrade script can share it
  */
-function adv_sidebox_build_settings_url($gid)
-{
-	if($gid)
-	{
-		return "index.php?module=config-settings&amp;action=change&amp;gid=" . $gid;
-	}
-}
-
-// VERSIONING
-
-function adv_sidebox_get_cache_version() 
-{
-	global $cache, $mybb, $db;
-
-	//get currently installed version, if there is one
-	$wildcard_plugins = $cache->read('wildcard_plugins');
-	if(is_array($wildcard_plugins))
-	{
-        return $wildcard_plugins['versions']['adv_sidebox'];
-	}
-    return 0;
-}
-
-function adv_sidebox_set_cache_version() 
-{
-	global $cache;
-	
-	//get version from this plugin file
-	$adv_sidebox_info = adv_sidebox_info();
-    
-	//update version cache to latest
-	$wildcard_plugins = $cache->read('wildcard_plugins');
-	$wildcard_plugins['versions']['adv_sidebox'] = $adv_sidebox_info['version'];
-	$cache->update('wildcard_plugins', $wildcard_plugins);
-
-    return true;
-}
-
-function adv_sidebox_unset_cache_version() 
-{
-	global $cache;
-
-	$wildcard_plugins = $cache->read('wildcard_plugins');
-	unset($wildcard_plugins['versions']['adv_sidebox']);
-	$cache->update('wildcard_plugins', $wildcard_plugins);
-    
-    return true;
-}
-
 function adv_sidebox_create_base_settings()
 {
 	global $db, $lang;
@@ -412,6 +387,71 @@ function adv_sidebox_create_base_settings()
 	$db->insert_query("settings", $adv_sidebox_setting_7);
 
 	rebuild_settings();
+}
+
+/*
+ * Versioning
+ */
+
+/*
+ * adv_sidebox_get_cache_version()
+ *
+ * check cached version info
+ *
+ * Derived from the work of pavemen in MyBB Publisher 
+ */
+function adv_sidebox_get_cache_version() 
+{
+	global $cache, $mybb, $db;
+
+	//get currently installed version, if there is one
+	$wildcard_plugins = $cache->read('wildcard_plugins');
+	if(is_array($wildcard_plugins))
+	{
+        return $wildcard_plugins['versions']['adv_sidebox'];
+	}
+    return 0;
+}
+
+/*
+ * adv_sidebox_set_cache_version()
+ *
+ * set cached version info
+ *
+ * Derived from the work of pavemen in MyBB Publisher
+ *
+ */
+function adv_sidebox_set_cache_version() 
+{
+	global $cache;
+	
+	//get version from this plugin file
+	$adv_sidebox_info = adv_sidebox_info();
+    
+	//update version cache to latest
+	$wildcard_plugins = $cache->read('wildcard_plugins');
+	$wildcard_plugins['versions']['adv_sidebox'] = $adv_sidebox_info['version'];
+	$cache->update('wildcard_plugins', $wildcard_plugins);
+
+    return true;
+}
+
+/*
+ * adv_sidebox_unset_cache_version()
+ *
+ * remove cached version info
+ *
+ * Derived from the work of pavemen in MyBB Publisher
+ */
+function adv_sidebox_unset_cache_version() 
+{
+	global $cache;
+
+	$wildcard_plugins = $cache->read('wildcard_plugins');
+	unset($wildcard_plugins['versions']['adv_sidebox']);
+	$cache->update('wildcard_plugins', $wildcard_plugins);
+    
+    return true;
 }
 
 ?>
