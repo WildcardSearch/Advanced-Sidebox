@@ -2,7 +2,6 @@ Advanced-Sidebox 1.3.7
 ===================
 
 ![Advanced Sidebox Logo](https://github.com/WildcardSearch/Advanced-Sidebox/wiki/asb_logo_320.png)
-Format: ![ASB Logo](url)
 
 A plugin for MyBB forums that displays portal boxes on various forum pages.
 
