@@ -3,7 +3,7 @@
  * This file contains class definitions for the entire project
  *
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x
- * Copyright © 2013 WildcardSearch
+ * Copyright 2013 WildcardSearch
  * http://www.rantcentralforums.com
  *
  * Check out this project on GitHub: https://github.com/WildcardSearch/Advanced-Sidebox
@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses
  */
- 
+
 /*
  * wrapper for individual sideboxes
  */
@@ -30,21 +30,19 @@
 	public $box_type;
 	public $position = 0;
 	public $display_order;
-	public $stereo = false;
-	
-	public $wrap_content = false;
-	public $content;
 
+	public $stereo = false;
+	public $wrap_content = false;
 	public $valid = false;
 
 	public $show_on_index = false;
 	public $show_on_forumdisplay = false;
 	public $show_on_showthread = false;
 	public $show_on_portal = false;
-	
+
 	public $groups;
 	public $groups_array;
-	
+
 	public $settings;
 	public $has_settings = false;
 
@@ -59,12 +57,6 @@
 	{
 		// try to load the sidebox
 		$this->load($sidebox);
-
-		// if nothing loaded then the sidebox is new (and unavailable for admin to use)
-		if($this->content)
-		{
-			$this->valid = true;
-		}
 	}
 
 	/*
@@ -100,11 +92,14 @@
 		// ID = 0 means nothing to do
 		if($data['id'])
 		{
-			// good id? then store the data in our object
+			// good id? then store the data in our object and validate
+			$this->valid = true;
+
 			$this->id = (int) $data['id'];
 			$this->display_name = $data['display_name'];
 			$this->box_type = $data['box_type'];
 			$this->position = (int) $data['position'];
+
 			$this->display_order = (int) $data['display_order'];
 			$this->stereo = (int) $data['stereo'];
 			$this->wrap_content = (int) $data['wrap_content'];
@@ -113,12 +108,12 @@
 			$this->show_on_forumdisplay = $data['show_on_forumdisplay'];
 			$this->show_on_showthread = $data['show_on_showthread'];
 			$this->show_on_portal = $data['show_on_portal'];
-			
+
 			// load the group permissions
 			if($data['groups'] != null)
 			{
 				$this->groups = $data['groups'];
-				
+
 				// convert them to an array as well
 				$this->groups_array = explode(",", $this->groups);
 			}
@@ -127,34 +122,13 @@
 				$this->groups = 'all';
 			}
 
-			$this->stereo = $data['stereo'];
-
-			// stereo boxes get a little special consideration
-			if($this->stereo)
-			{
-				// split the template variable into two channels
-				if($this->position)
-				{
-					$this->content = '{$' . $this->box_type . '_' . $this->id . '_r}';
-				}
-				else
-				{
-					$this->content = '{$' . $this->box_type . '_' . $this->id  . '_l}';
-				}
-			}
-			else
-			{
-				// otherwise just build a template variable for this sidebox
-				$this->content = '{$' . $this->box_type . '_' . $this->id . '}';
-			}
-			
 			// are there settings?
 			if($data['settings'])
 			{
 				// if so decode them
 				$this->settings = json_decode($data['settings'], true);
-				
-				// if they seem legit 
+
+				// if they seem legit
 				if(is_array($this->settings))
 				{
 					// set a marker
@@ -181,7 +155,6 @@
 			"display_order"					=> 	(int) $this->display_order,
 			"stereo"							=>	(int) $this->stereo,
 			"wrap_content"					=>	(int) $this->wrap_content,
-			"content"							=>	$db->escape_string($this->content),
 			"show_on_index"				=>	(int) $this->show_on_index,
 			"show_on_forumdisplay"	=>	(int) $this->show_on_forumdisplay,
 			"show_on_showthread"	=>	(int) $this->show_on_showthread,
@@ -241,17 +214,20 @@
 		{
 			// name (edit link)
 			$this_table->construct_cell('<a href="' . ADV_SIDEBOX_EDIT_URL . '&amp;mode=' . $mybb->input['mode'] . '&amp;box=' . $this->id . '">' . $this->display_name . '</a>', array("width" => '30%'));
-			
+
 			// scripts
 			$this_table->construct_cell($this->build_script_list(), array("width" => '30%'));
-			
+
 			// prepare group info
+			// all groups enabled?
 			if($this->groups == 'all')
 			{
+				// get that language
 				$groups = $lang->adv_sidebox_all_groups;
 			}
 			else
 			{
+				// otherwise display a list
 				if(is_array($this->groups_array))
 				{
 					foreach($this->groups_array as $group)
@@ -265,27 +241,27 @@
 						{
 							$groups .= ',';
 						}
-						
+
 						$groups .= $group;
 					}
 				}
 			}
-			
+
 			// groups
 			$this_table->construct_cell($groups, array("width" => '20%'));
-			
+
 			// options popup
 			$popup = new PopupMenu('box_' . $this->id, $lang->adv_sidebox_options);
-			
+
 			// edit
 			$popup->add_item($lang->adv_sidebox_edit, ADV_SIDEBOX_EDIT_URL . '&amp;mode=' . $mybb->input['mode'] . '&amp;box=' . $this->id);
-			
+
 			// delete
 			$popup->add_item($lang->adv_sidebox_delete, ADV_SIDEBOX_DEL_URL . '&amp;mode=' . $mybb->input['mode'] . '&amp;box=' . $this->id);
-			
+
 			// popup cell
 			$this_table->construct_cell($popup->fetch(), array("width" => '20%'));
-			
+
 			// finish row
 			$this_table->construct_row();
 		}
@@ -299,12 +275,12 @@
 	function build_script_list()
 	{
 		global $lang;
-		
+
 		if(!$lang->adv_sidebox)
 		{
 			$lang->load('adv_sidebox');
 		}
-		
+
 		// if all scripts be brief
 		if($this->show_on_index && $this->show_on_forumdisplay && $this->show_on_showthread && $this->show_on_portal)
 		{
@@ -335,9 +311,9 @@
 				$script_list[] = $lang->adv_sidebox_portal;
 			}
 			// return a comma space separated list
-			
+
 			$return_val = implode(", ", $script_list);
-			
+
 			// if there are scripts . . .
 			if($return_val)
 			{
@@ -351,54 +327,108 @@
 			}
 		}
 	}
-	
+
 	/*
-	 * build_wrapped_content()
+	 * get_content()
+	 *
+	 * replaces content property by building each side box's content based upon object properties
 	 *
 	 * if a sidebox's wrap_content property is true it will be 'wrapped' in a table with a header and expander
 	 */
-	function build_wrapped_content()
+	function get_content()
 	{
 		global $collapsed;
-		
-		// Check if this sidebox is either expanded or collapsed and hide it as necessary.
-		$expdisplay = '';
-		$collapsed_name = $this->box_type . '_' . $this->id . '_c';
-		if(isset($collapsed[$collapsed_name]) && $collapsed[$collapsed_name] == "display: show;")
+
+		// get the base variable name
+		$template_var = $this->build_template_variable();
+
+		// if it is valid (anything but '' or null)
+		if($template_var)
 		{
-			$expcolimage = "collapse_collapsed.gif";
-			$expdisplay = "display: none;";
-			$expaltext = "[+]";
+			// create a template variable of that name
+			$content = '{$' . $template_var . '}';
 		}
 		else
 		{
-			$expcolimage = "collapse.gif";
-			$expaltext = "[-]";
+			// otherwise no content
+			return false;
 		}
-		
-		// prevents empty tbody section in custom box
-		// when user do not provide any content for it
-		if(!$this->content)
+
+		// if we are building header and expander . . .
+		if($this->wrap_content)
 		{
-			// user want it empty ? let it be.
-			$this->content = '
-	<tr>
-		<td class="trow1"></td>
-	</tr>';
+			// check if this sidebox is either expanded or collapsed and hide it as necessary.
+			$expdisplay = '';
+			$collapsed_name = $this->box_type . '_' . $this->id . '_c';
+			if(isset($collapsed[$collapsed_name]) && $collapsed[$collapsed_name] == "display: show;")
+			{
+				$expcolimage = "collapse_collapsed.gif";
+				$expdisplay = "display: none;";
+				$expaltext = "[+]";
+			}
+			else
+			{
+				$expcolimage = "collapse.gif";
+				$expaltext = "[-]";
+			}
+
+			$content =  '
+	<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder ' . $this->box_type . '_main_' . $this->id . '">
+		<thead>
+			<tr>
+				<td class="thead"><div class="expcolimage"><img src="{$theme[\'imgdir\']}/' . $expcolimage . '" id="' . $this->box_type . '_' . $this->id . '_img" class="expander" alt="' . $expaltext . '" title="' . $expaltext . '" /></div><strong>' . $this->display_name . '</strong>
+				</td>
+			</tr>
+		</thead>
+		<tbody style="' . $expdisplay . '" id="' . $this->box_type . '_' . $this->id . '_e">
+			' . $content . '
+		</tbody>
+	</table><br />';
 		}
-		
-		return '
-<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder ' . $this->box_type . '_main_' . $this->id . '">
-	<thead>
-		<tr>
-			<td class="thead"><div class="expcolimage"><img src="{$theme[\'imgdir\']}/' . $expcolimage . '" id="' . $this->box_type . '_' . $this->id . '_img" class="expander" alt="' . $expaltext . '" title="' . $expaltext . '" /></div><strong>' . $this->display_name . '</strong>
-			</td>
-		</tr>
-	</thead>
-	<tbody style="' . $expdisplay . '" id="' . $this->box_type . '_' . $this->id . '_e">
-		' . $this->content . '
-	</tbody>
-</table><br />';
+
+		// if there is anything to return
+		if($content)
+		{
+			// give it up
+			return $content;
+		}
+
+		// otherwise return failure
+		return false;
+	}
+
+	/*
+	 * build_template_variable()
+	 *
+	 * renders a template variable based on side box properties
+	 */
+	function build_template_variable()
+	{
+		// stereo boxes get a little special consideration
+		if($this->stereo)
+		{
+			// split the template variable into two channels
+			if($this->position)
+			{
+				$template_var = $this->box_type . '_' . $this->id . '_r';
+			}
+			else
+			{
+				$template_var = $this->box_type . '_' . $this->id  . '_l';
+			}
+		}
+		else
+		{
+			// otherwise just build a template variable for this sidebox
+			$template_var = $this->box_type . '_' . $this->id;
+		}
+
+		if($template_var)
+		{
+			return $template_var;
+		}
+
+		return false;
 	}
 }
 
@@ -412,12 +442,12 @@ class Sidebox_addon
 	public $description = '';
 	public $author;
 	public $author_site;
-	
+
 	public $stereo = false;
 	public $wrap_content = false;
 	public $valid = false;
 	public $module_type;
-	
+
 	public $settings;
 	public $templates;
 
@@ -450,7 +480,7 @@ class Sidebox_addon
 	function load($module)
 	{
 		global $db;
-		
+
 		// input is necessary
 		if($module)
 		{
@@ -472,7 +502,7 @@ class Sidebox_addon
 					$this->base_name = $module;
 					$this->name = $this_info['name'];
 					$this->description = $this_info['description'];
-					
+
 					// if no author is specified assume this addon is default
 					if(!$this_info['author'])
 					{
@@ -485,27 +515,27 @@ class Sidebox_addon
 
 					$this->author = $this_info['author'];
 					$this->author_site = $this_info['author_site'];
-					
+
 					$this->wrap_content = $this_info['wrap_content'];
 					$this->stereo = $this_info['stereo'];
-					
+
 					$this->settings = $this_info['settings'];
 					$this->discarded_settings = $this_info['discarded_settings'];
-					
+
 					$this->templates = $this_info['templates'];
 					$this->discarded_templates = $this_info['discarded_templates'];
-					
+
 					// if this addon needs templates(s) to work, it is considered complex
 					if(is_array($this->templates))
 					{
 						$this->module_type = 'complex';
-						
+
 						// if the first template seems valid . . .
 						if($this->templates[0]['title'])
 						{
 							// see if it exists
 							$query = $db->simple_select('templates', '*', "title='{$this->templates[0]['title']}'");
-							
+
 							// if so then mark this addon as installed
 							if($db->num_rows($query) == 1)
 							{
@@ -520,16 +550,16 @@ class Sidebox_addon
 						$this->is_installed = false;
 						$this->is_upgraded = true;
 					}
-					
+
 					if(is_array($this->settings))
 					{
 						$this->has_settings = true;
 					}
-					
+
 					// version control
 					$this->version = $this_info['version'];
 					$this->old_version = $this->get_cache_version();
-					
+
 					// if this module needs to be upgraded . . .
 					if(version_compare($this->old_version, $this->version, '<') || $this->old_version == '' || $this->old_version == 0)
 					{
@@ -554,7 +584,7 @@ class Sidebox_addon
 	function install($no_cleanup = false)
 	{
 		global $db;
-		
+
 		// already installed? unless $no_cleanup is specifically asked for . . .
 		if($this->is_installed && !$no_cleanup)
 		{
@@ -569,7 +599,7 @@ class Sidebox_addon
 			foreach($this->templates as $template)
 			{
 				$query = $db->simple_select('templates', '*', "title='{$template['title']}'");
-				
+
 				// if it exists, update
 				if($db->num_rows($query) == 1)
 				{
@@ -592,12 +622,12 @@ class Sidebox_addon
 	function uninstall($no_cleanup = false)
 	{
 		global $db;
-		
+
 		// installed?
 		if($this->is_installed)
 		{
 			$this->unset_cache_version();
-			
+
 			// if there are templates . . .
 			if(is_array($this->templates))
 			{
@@ -606,7 +636,7 @@ class Sidebox_addon
 				{
 					$status = $db->query("DELETE FROM " . TABLE_PREFIX . "templates WHERE title='{$template['title']}'");
 				}
-				
+
 				// unless specifically asked not to, delete any boxes that use this module
 				if(!$no_cleanup)
 				{
@@ -625,12 +655,12 @@ class Sidebox_addon
 	function upgrade()
 	{
 		global $db;
-		
+
 		// don't waste time if everything is in order
 		if(!$this->is_upgraded)
 		{
 			$this->unset_cache_version();
-			
+
 			// if there are settings left over from a previous installation . . .
 			if(is_array($this->discarded_settings))
 			{
@@ -640,7 +670,7 @@ class Sidebox_addon
 					$status = $db->query("DELETE FROM " . TABLE_PREFIX . "settings WHERE name='{$setting}'");
 				}
 			}
-			
+
 			// if any templates were dropped in this version
 			if(is_array($this->discarded_templates))
 			{
@@ -650,15 +680,15 @@ class Sidebox_addon
 					$status = $db->query("DELETE FROM " . TABLE_PREFIX . "templates WHERE title='{$template}'");
 				}
 			}
-			
+
 			// now install the updated module
 			$this->install(true);
-			
+
 			// update the version cache and the upgrade is complete
 			$this->is_upgraded = $this->set_cache_version();
 		}
 	}
-	
+
 	/*
 	 * remove()
 	 *
@@ -685,7 +715,7 @@ class Sidebox_addon
 
 		// get currently installed version, if there is one
 		$wildcard_plugins = $cache->read('wildcard_plugins');
-		
+
 		if(is_array($wildcard_plugins))
 		{
 			return $wildcard_plugins['versions']['adv_sidebox_' . $this->base_name];
@@ -701,7 +731,7 @@ class Sidebox_addon
 	function set_cache_version()
 	{
 		global $cache;
-		
+
 		//update version cache to latest
 		$wildcard_plugins = $cache->read('wildcard_plugins');
 		$wildcard_plugins['versions']['adv_sidebox_' . $this->base_name] = $this->version;
@@ -722,7 +752,7 @@ class Sidebox_addon
 		$wildcard_plugins = $cache->read('wildcard_plugins');
 		unset($wildcard_plugins['versions']['adv_sidebox_' . $this->base_name]);
 		$cache->update('wildcard_plugins', $wildcard_plugins);
-		
+
 		return true;
 	}
 
@@ -731,7 +761,7 @@ class Sidebox_addon
 	 *
 	 * runs template building code for the current module referenced by this object
 	 */
-	function build_template($settings, $template_variable)
+	function build_template($settings, $template_variable, $width)
 	{
 		// if the files are intact . . .
 		if(file_exists(ADV_SIDEBOX_MODULES_DIR . "/" . $this->base_name . "/adv_sidebox_module.php"))
@@ -742,7 +772,7 @@ class Sidebox_addon
 			if(function_exists($this->base_name . '_asb_build_template'))
 			{
 				$build_template_function = $this->base_name . '_asb_build_template';
-				$build_template_function($settings, $template_variable);
+				$build_template_function($settings, $template_variable, $width);
 			}
 		}
 	}
@@ -768,13 +798,16 @@ class Sidebox_addon
 		{
 			// name
 			$this_table->construct_cell($this->name);
-			
+
+			// version
+			$this_table->construct_cell('<strong>' . $this->version . '</strong>');
+
 			// description
 			$this_table->construct_cell($this->description);
-			
+
 			// author (site link)
 			$this_table->construct_cell('<a href="' . $this->author_site . '">' . $this->author . '</a>');
-			
+
 			// channel prep
 			if($this->stereo)
 			{
@@ -784,10 +817,10 @@ class Sidebox_addon
 			{
 				$channel_info = $lang->adv_sidebox_modules_mono;
 			}
-			
+
 			// channels
 			$this_table->construct_cell($channel_info);
-			
+
 			// options popup
 			$popup = new PopupMenu('module_' . $this->base_name, $lang->adv_sidebox_options);
 
@@ -809,10 +842,10 @@ class Sidebox_addon
 
 			// delete
 			$popup->add_item($lang->adv_sidebox_delete, ADV_SIDEBOX_URL . '&amp;action=delete_addon&amp;addon=' . $this->base_name);
-			
+
 			// popup cell
 			$this_table->construct_cell($popup->fetch(), array("width" => '10%'));
-			
+
 			// finish row
 			$this_table->construct_row();
 		}
@@ -829,10 +862,10 @@ class Sidebox_custom
 	public $name;
 	public $description;
 	public $content;
-	
+
 	public $wrap_content;
 	public $valid = false;
-	
+
 	/*
 	 * __construct()
 	 *
@@ -845,7 +878,7 @@ class Sidebox_custom
 		// attempt to load the box
 		$this->load($data);
 	}
-	
+
 	/*
 	 * load()
 	 *
@@ -860,7 +893,7 @@ class Sidebox_custom
 		{
 			// check the db
 			$query = $db->simple_select('custom_sideboxes', '*', "id='{$data}'");
-			
+
 			// if it exists . . .
 			if($db->num_rows($query) == 1)
 			{
@@ -868,7 +901,7 @@ class Sidebox_custom
 				$data = $db->fetch_array($query);
 			}
 		}
-		
+
 		// if we have data (either from the calling script or from a load above) . . .
 		if(is_array($data))
 		{
@@ -879,11 +912,11 @@ class Sidebox_custom
 			$this->description = $data['description'];
 			$this->wrap_content = (int) $data['wrap_content'];
 			$this->content = $data['content'];
-			
+
 			$this->valid = true;
 		}
 	}
-	
+
 	/*
 	 * save()
 	 *
@@ -892,7 +925,7 @@ class Sidebox_custom
 	function save()
 	{
 		global $db;
-		
+
 		// set up the array
 		$data = array
 		(
@@ -901,7 +934,7 @@ class Sidebox_custom
 			"wrap_content"	=>	(int) $this->wrap_content,
 			"content"			=>	$db->escape_string($this->content)
 		);
-		
+
 		// if we have a ID . . .
 		if($this->id > 0)
 		{
@@ -914,7 +947,7 @@ class Sidebox_custom
 			return $db->insert_query('custom_sideboxes', $data);
 		}
 	}
-	
+
 	/*
 	 * remove()
 	 *
@@ -935,7 +968,7 @@ class Sidebox_custom
 				// delete all boxes of this type in use
 				$db->query("DELETE FROM " . TABLE_PREFIX . "sideboxes WHERE box_type='" . $this->base_name . "'");
 			}
-			
+
 			// attempt to delete it and return the result
 			return $db->query("DELETE FROM " . TABLE_PREFIX . "custom_sideboxes WHERE id='" . (int) $this->id . "'");
 		}
@@ -949,10 +982,10 @@ class Sidebox_custom
 	function export()
 	{
 		global $lang;
-		
+
 		// get the plugin info for versioning
 		$info = adv_sidebox_info();
-	
+
 		// set up the XML
 		$xml = '<?xml version="1.0" encoding="' . $lang->settings['charset'] . '"?>
 <adv_sidebox version="' . $info['version'] . '" xmlns="' . $info['website'] . '">
@@ -964,7 +997,7 @@ class Sidebox_custom
 		<checksum>' . md5($this->content) . '</checksum>
 	</custom_sidebox>
 </adv_sidebox>';
-			
+
 		// replace spaces with dashes in the filename
 		$filename = implode('-', explode(' ', $this->name));
 
@@ -982,13 +1015,13 @@ class Sidebox_custom
 	 *
 	 * builds the template variable used for this custom box
 	 */
-	function build_template()
+	function build_template($template_variable)
 	{
 		// note the double-$'s . . . we are declaring the base_name of this custom module as global so that our eval will take effect where it is needed
-		global $$this->base_name;
-		
+		global $$template_variable;
+
 		$content = $this->content;
-		
+
 		// if the user doesn't want content then at least make it validate
 		if(!$content)
 		{
@@ -997,49 +1030,51 @@ class Sidebox_custom
 		<td></td>
 	</tr>';
 		}
-		
+
 		// store the content
-		eval("\$" . $this->base_name . " = \"" . addslashes($content) . "\";");
+		eval("\$" . $template_variable . " = \"" . addslashes($content) . "\";");
 	}
-	
+
 	/*
 	 * build_table_row()
+	 *
+	 * renders html with details for this custom box
 	 *
 	 * @param - $this_table is a valid object of class DefaultTable
 	 */
 	function build_table_row($this_table)
 	{
 		global $lang;
-		
+
 		if(!$lang->adv_sidebox)
 		{
 			$lang->load('adv_sidebox');
 		}
-		
+
 		// valid table?
 		if($this_table instanceof Table)
 		{
 			// name (edit link)
 			$this_table->construct_cell('<a href="' . ADV_SIDEBOX_CUSTOM_URL . '&amp;mode=edit_box&amp;box=' . $this->id . '" title="' . $lang->adv_sidebox_edit . '">' . $this->name . '</a>', array("width" => '30%'));
-			
+
 			// description
 			$this_table->construct_cell($this->description, array("width" => '60%'));
-			
+
 			// options popup
 			$popup = new PopupMenu('box_' . $this->id, $lang->adv_sidebox_options);
-			
+
 			// edit
 			$popup->add_item($lang->adv_sidebox_edit, ADV_SIDEBOX_CUSTOM_URL . "&amp;mode=edit_box&amp;box={$this->id}");
-			
+
 			// delete
 			$popup->add_item($lang->adv_sidebox_delete, ADV_SIDEBOX_CUSTOM_URL . "&amp;mode=delete_box&amp;box={$this->id}");
-			
+
 			// export
 			$popup->add_item($lang->adv_sidebox_custom_export, ADV_SIDEBOX_EXPORT_URL . "&amp;box={$this->id}");
-			
+
 			// popup cell
 			$this_table->construct_cell($popup->fetch(), array("width" => '10%'));
-			
+
 			// finish the table
 			$this_table->construct_row();
 		}
@@ -1053,24 +1088,24 @@ class Sidebox_handler
 {
 	public $left_boxes;
 	public $right_boxes;
-	
+
 	public $sideboxes;
 	public $boxes_to_show = false;
 	public $used_box_types;
-	
+
 	public $script;
 	public $script_base_name;
-	
+
 	public $users_groups;
-	
+
 	public $box_types;
-	
+
 	public $addons;
 	public $installed_addons;
 	public $uninstalled_addons;
 	public $simple_addons;
 	public $total_addons;
-	
+
 	public $custom;
 
 	/*
@@ -1085,11 +1120,11 @@ class Sidebox_handler
 	{
 		// make sure the script is in a format that works in all classes
 		$this->process_script($script);
-		
+
 		// attempt to load the handler
 		$this->load($acp);
 	}
-	
+
 	/*
 	 * load()
 	 *
@@ -1100,13 +1135,13 @@ class Sidebox_handler
 	function load($acp = false)
 	{
 		global $db, $mybb;
-		
+
 		// load everything detected (sideboxes will be filtered by script if applicable)
 		$this->get_users_groups($acp);
 		$this->boxes_to_show = $this->get_all_sideboxes($acp);
 		$this->get_all_addons();
 		$this->get_all_custom_boxes();
-		
+
 		// if we are in ACP, string conversion, template building and column padding/sorting won't be necessary . . .
 		if($acp)
 		{
@@ -1119,23 +1154,15 @@ class Sidebox_handler
 			$this->used_box_types = array();
 			$this->left_boxes = '';
 			$this->right_boxes = '';
-			
+
 			// if there are sideboxes . . .
 			if(is_array($this->sideboxes))
-			{			
+			{
 				// loop through and sort them
 				foreach($this->sideboxes as $this_box)
 				{
-					// wrap the content if applicable
-					if($this_box->wrap_content)
-					{
-						$content = $this_box->build_wrapped_content();
-					}
-					else
-					{
-						$content = $this_box->content;
-					}
-					
+					$content = $this_box->get_content();
+
 					// sort by position (0 = left, non-zero = right)
 					if($this_box->position)
 					{
@@ -1145,12 +1172,12 @@ class Sidebox_handler
 					{
 						$this->left_boxes .= $content;
 					}
-					
+
 					// save wasted execution by producing an array of all used modules/custom_boxes
 					// used when building templates
 					$this->used_box_types[$this_box->id] = $this_box->box_type;
 				}
-				
+
 				// if the columns contain viable content then pad them to ensure they remain a consistent width
 				$this->left_boxes = $this->pad_column($this->left_boxes, (int) $mybb->settings['adv_sidebox_width_left']);
 				$this->right_boxes = $this->pad_column($this->right_boxes, (int) $mybb->settings['adv_sidebox_width_right']);
@@ -1168,9 +1195,9 @@ class Sidebox_handler
 	function get_users_groups($acp = false)
 	{
 		global $mybb;
-		
+
 		$this->users_groups = array();
-		
+
 		// if not in ACP
 		if(!$acp)
 		{
@@ -1182,13 +1209,13 @@ class Sidebox_handler
 				{
 					$this->users_groups[] = (int) $mybb->user['usergroup'];
 				}
-				
+
 				// add any additional groups
 				if($mybb->user['additionalgroups'])
 				{
 					$additional = array();
 					$additional = explode(",", $mybb->user['additionalgroups']);
-					
+
 					// if more than one . . .
 					if(is_array($additional))
 					{
@@ -1199,7 +1226,7 @@ class Sidebox_handler
 					{
 						// otherwise just add an index to the existing array
 						$this->users_groups[] = (int) $additional;
-					}				
+					}
 				}
 			}
 			else
@@ -1208,7 +1235,7 @@ class Sidebox_handler
 			}
 		}
 	}
-	
+
 	/*
 	 * compile_box_types()
 	 *
@@ -1217,33 +1244,33 @@ class Sidebox_handler
 	function compile_box_types()
 	{
 		global $plugins;
-		
+
 		// get user-defined static types
 		if(is_array($this->custom))
 		{
 			foreach($this->custom as $module)
-			{	
+			{
 				$this->box_types[$module->base_name] = $module->name;
 			}
 		}
-		
+
 		// get addon modules
 		if(is_array($this->addons))
 		{
 			foreach($this->addons as $module)
-			{	
+			{
 				$this->box_types[$module->base_name] = $module->name;
 			}
 		}
-		
+
 		// get all the plugin types
 		$plugins->run_hooks('adv_sidebox_box_types', $this->box_types);
-		
+
 		$box_types_lowercase = array_map('strtolower', $this->box_types);
 
 		array_multisort($box_types_lowercase, SORT_ASC, SORT_STRING, $this->box_types);
 	}
-	
+
 	/*
 	 * get_all_sideboxes()
 	 *
@@ -1257,7 +1284,7 @@ class Sidebox_handler
 
 		$this->sideboxes = array();
 		$where = '';
-		
+
 		// filter by script if applicable
 		if($this->script_base_name && in_array($this->script_base_name, array("index", "forumdisplay", "showthread", "portal")))
 		{
@@ -1275,7 +1302,7 @@ class Sidebox_handler
 			{
 				// attempt to load the side box
 				$test_box = new Sidebox($this_box);
-				
+
 				// if we aren't in ACP . . .
 				if(!$acp)
 				{
@@ -1291,12 +1318,12 @@ class Sidebox_handler
 								$can_view = true;
 								break;
 							}
-							
+
 							if($gid == 'guests')
 							{
 								$gid = 0;
 							}
-							
+
 							// if the current user is a member of multiple groups . . .
 							if(is_array($this->users_groups))
 							{
@@ -1334,7 +1361,7 @@ class Sidebox_handler
 					// if in ACP show all side boxes
 					$can_view = true;
 				}
-				
+
 				// permission is granted . . .
 				if($can_view)
 				{
@@ -1342,12 +1369,12 @@ class Sidebox_handler
 					$this->sideboxes[$this_box['id']] = $test_box;
 				}
 			}
-			
+
 			// true indicates that there is content to show
 			return true;
 		}
 	}
-	
+
 	/*
 	 * get_all_addons()
 	 *
@@ -1366,7 +1393,7 @@ class Sidebox_handler
 			if(is_dir(ADV_SIDEBOX_MODULES_DIR . "/" . $module) && !in_array($module, array(".", "..")) && file_exists(ADV_SIDEBOX_MODULES_DIR . "/" . $module . "/adv_sidebox_module.php"))
 			{
 				$this->addons[$module] = new Sidebox_addon($module);
-				
+
 				// update handler counts
 				if($this->addons[$module]->module_type == 'complex')
 				{
@@ -1385,11 +1412,11 @@ class Sidebox_handler
 				}
 			}
 		}
-		
+
 		// get a total
 		$this->total_addons = $this->installed_addons + $this->uninstalled_addons + $this->simple_addons;
 	}
-	
+
 	/*
 	 * build_addon_language()
 	 *
@@ -1448,7 +1475,7 @@ class Sidebox_handler
 
 		return $module_info;
 	}
-	
+
 	/*
 	 * get_all_custom_boxes()
 	 *
@@ -1457,9 +1484,9 @@ class Sidebox_handler
 	function get_all_custom_boxes()
 	{
 		global $db;
-		
+
 		$this->custom = array();
-		
+
 		$query = $db->simple_select('custom_sideboxes');
 
 		// if ther are custom boxes . . .
@@ -1473,7 +1500,7 @@ class Sidebox_handler
 			}
 		}
 	}
-	
+
 	/*
 	 * build_all_templates()
 	 *
@@ -1481,35 +1508,49 @@ class Sidebox_handler
 	 */
 	function build_all_templates()
 	{
-		global $plugins;
-		
+		global $plugins, $mybb;
+
 		// don't waste time if there are no sideboxes to build templates for
 		if($this->boxes_to_show && is_array($this->used_box_types))
 		{
 			// create this array to catch any sidebox types that aren't custom or addon, these will be added by plugins (if that ever happens :p )
 			$box_types = array();
-			
+
 			// loop through all used types
 			foreach($this->used_box_types as $this_box => $module)
-			{	
+			{
+				// get the template variable with encoding
+				$this_template_variable = $this->sideboxes[$this_box]->build_template_variable();
+
+				// get the correct width to send (1 = right, 0 = left)
+				if($this->sideboxes[$this_box]->position)
+				{
+					$this_column_width = (int) $mybb->settings['adv_sidebox_width_right'];
+				}
+				else
+				{
+					$this_column_width = (int) $mybb->settings['adv_sidebox_width_left'];
+				}
+
 				// if this type was created by an addon module . . .
 				if($this->addons[$module])
 				{
+					// if this side box doesn't have any settings, but the add-on module it was derived from does . . .
 					if($this->sideboxes[$this_box]->has_settings == false && $this->addons[$module]->has_settings)
 					{
+						// . . . this side box hasn't been upgraded to the new on-board settings system. Use the settings (and values) from the add-on module as default settings
 						$this->sideboxes[$this_box]->settings = $this->addons[$module]->settings;
 					}
-					
-					$this_template_variable = $this->sideboxes[$this_box]->box_type . '_' . $this->sideboxes[$this_box]->id;
-					
+
 					// build the template
-					$this->addons[$module]->build_template($this->sideboxes[$this_box]->settings, $this_template_variable);
+					// pass settings, template variable name and column width
+					$this->addons[$module]->build_template($this->sideboxes[$this_box]->settings, $this_template_variable, $this_column_width);
 				}
 				// or if it is a custom static box . . .
 				elseif($this->custom[$module])
 				{
 					// build the custom box template
-					$this->custom[$module]->build_template();
+					$this->custom[$module]->build_template($this_template_variable);
 				}
 				else
 				{
@@ -1517,7 +1558,7 @@ class Sidebox_handler
 					$box_types[$module] = true;
 				}
 			}
-			
+
 			// this hook will allow a plugin to process its custom box type for display (you will first need to hook into adv_sidebox_add_type to add the box
 			$plugins->run_hooks('adv_sidebox_output_end', $box_types);
 		}
@@ -1539,7 +1580,7 @@ class Sidebox_handler
 			return $content . '<img src="inc/plugins/adv_sidebox/images/transparent.gif" width="' . $width . '" height="1" alt="" title=""/>';
 		}
 	}
-	
+
 	/*
 	 * process_script()
 	 *
@@ -1617,7 +1658,7 @@ class Sidebox_handler
 				}
 			}
 		}
-		
+
 		// if there were peekers to show then return content
 		if($peekers)
 		{
@@ -1629,13 +1670,13 @@ class Sidebox_handler
 			"load",
 			function()
 			{
-				' . $peekers . $more_peekers . '	
+				' . $peekers . $more_peekers . '
 			}
 		);
 	</script>';
 		}
 	}
-	
+
 	/*
 	 * build_settings()
 	 *
@@ -1668,7 +1709,7 @@ class Sidebox_handler
 							$type[0] = trim($type[0]);
 							$element_name = "{$setting['name']}";
 							$element_id = "setting_{$setting['name']}";
-							
+
 							// if editing and the current box uses this module . . .
 							if($this->sideboxes[$this_box]->box_type == $module->base_name)
 							{
@@ -1687,11 +1728,11 @@ class Sidebox_handler
 									}
 								}
 							}
-							
+
 							// prepare labels
 							$this_label = '<strong>' . $setting['title'] . '</strong>';
 							$this_desc = '<i>' . $setting['description'] . '</i>';
-							
+
 							// sort by type
 							if($type[0] == "text" || $type[0] == "")
 							{
@@ -1721,15 +1762,15 @@ class Sidebox_handler
 								}
 								closedir($dir);
 								ksort($folders);
-								
+
 								$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $folders, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
 							}
-							else if($type[0] == "language") 
+							else if($type[0] == "language")
 							{
 								$languages = $lang->get_languages();
 								$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
 							}
-							else if($type[0] == "adminlanguage") 
+							else if($type[0] == "adminlanguage")
 							{
 								$languages = $lang->get_languages(1);
 								$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
@@ -1757,7 +1798,7 @@ class Sidebox_handler
 									{
 										$optionsexp[1] = $lang->$title_lang;
 									}
-									
+
 									if($type[0] == "select")
 									{
 										$option_list[$optionsexp[0]] = htmlspecialchars_uni($optionsexp[1]);

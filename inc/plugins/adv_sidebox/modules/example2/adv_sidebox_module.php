@@ -31,27 +31,23 @@ function example2_asb_info()
 }
 
 // this function is called when it is time to display your box
-function example2_asb_build_template($settings, $template_var)
+function example2_asb_build_template($settings, $template_var, $width)
 {
-	// create a template variable based on the passed $template_var to allow independent left and right 'channels'
-	$left_var = $template_var . '_l';
-	$right_var = $template_var . '_r';
-	global $$left_var, $$right_var;
-	
+	global $$template_var;
+
+	$inner_width = (int) ($width * .79);
+	$margin = (int) (($width - $inner_width) / 2);
+
 	// Add-on modules can create their own templates (stored and editable in ACP) but you can also use in-line templates like this:
 	$template = '
 		<tr>
 			<td class=\"trow1\">{$hello_world}</td>
 		</tr>';
-	
+
 	// set any variables in your template (or string as in this case) here just before the eval()
-	// left
-	$hello_world = "Different content on the left";
-	eval("\$" . $left_var . " = \"" . $template . "\";");
-	
-	// and again for the right
-	$hello_world = "Different content on the right";
-	eval("\$" . $right_var . " = \"" . $template . "\";");
+	$hello_world = "Image sized to side box colum:<br/><img src=\"images/logo.gif\" alt=\"logo\" title=\"example\" width=\"{$inner_width}px\" style=\"margin: {$margin}px;\" />";
+
+	eval("\$" . $template_var . " = \"" . $template . "\";");
 }
 
 ?>

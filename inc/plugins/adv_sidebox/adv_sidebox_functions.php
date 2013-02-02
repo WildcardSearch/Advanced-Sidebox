@@ -68,12 +68,12 @@ function adv_sidebox_do_checks()
 function adv_sidebox_build_filter_links($filter)
 {
 	global $lang;
-	
+
 	if (!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}
-	
+
 	// normal status
 	$all_disabled = ' class="filter_link_inactive"';
 	$index_disabled = ' class="filter_link_inactive"';
@@ -81,30 +81,42 @@ function adv_sidebox_build_filter_links($filter)
 	$thread_disabled = ' class="filter_link_inactive"';
 	$portal_disabled = ' class="filter_link_inactive"';
 
+	$all_scripts = '<a href="' . ADV_SIDEBOX_URL . '"/>' . $lang->adv_sidebox_all . '</a>';
+	$index_script = '<a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=index"/>' . $lang->adv_sidebox_index . '</a>';
+	$forum_script = '<a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=forum"/>' . $lang->adv_sidebox_forum . '</a>';
+	$thread_script = '<a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=thread"/>' . $lang->adv_sidebox_thread . '</a>';
+	$portal_script = '<a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=portal"/>' . $lang->adv_sidebox_portal . '</a>';
+
 	if(isset($filter))
 	{
 		switch($filter)
 		{
 			case 'index':
 				$index_disabled = ' class="filter_link_active"'; // selected status
+				$index_script = $lang->adv_sidebox_index;
 				break;
 			case 'forum':
 				$forum_disabled = ' class="filter_link_active"';
+				$forum_script = $lang->adv_sidebox_forum;
 				break;
 			case 'thread':
 				$thread_disabled = ' class="filter_link_active"';
+				$thread_script = $lang->adv_sidebox_thread;
 				break;
 			case 'portal':
 				$portal_disabled = ' class="filter_link_active"';
+				$portal_script = $lang->adv_sidebox_portal;
 				break;
 			default:
 				$all_disabled = ' class="filter_link_active"';
+				$all_scripts = $lang->adv_sidebox_all;
 				break;
 		}
 	}
 	else
 	{
 		$all_disabled = ' class="filter_link_active"';
+		$all_scripts = $lang->adv_sidebox_all;
 	}
 
 	return '
@@ -129,7 +141,13 @@ function adv_sidebox_build_filter_links($filter)
 	position: relative;
 	top: 5px;
 }
-</style><span' . $all_disabled . '><a href="' . ADV_SIDEBOX_URL . '"/>' . $lang->adv_sidebox_all . '</a></span><span' . $index_disabled . '><a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=index"/>' . $lang->adv_sidebox_index . '</a></span><span' . $forum_disabled . '><a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=forum"/>' . $lang->adv_sidebox_forum . '</a></span><span' . $thread_disabled . '><a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=thread"/>' . $lang->adv_sidebox_thread . '</a></span><span' . $portal_disabled . '><a href="' . ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=portal"/>' . $lang->adv_sidebox_portal . '</a></span>';
+.filter_link_inactive:hover, .filter_link_inactive:hover a
+{
+	background: #02426c;
+	color: #F2F2F2;
+	text-decoration: none;
+}
+</style><span' . $all_disabled . '>' . $all_scripts . '</span><span' . $index_disabled . '>' . $index_script . '</span><span' . $forum_disabled . '>' . $forum_script . '</span><span' . $thread_disabled . '>' . $thread_script . '</span><span' . $portal_disabled . '>' . $portal_script . '</span>';
 }
 
 /*
@@ -175,7 +193,7 @@ function adv_sidebox_strip_quotes($message)
 		""
 	);
 	$message = preg_replace($find, $replace, $message);
-	
+
 	return $message;
 }
 

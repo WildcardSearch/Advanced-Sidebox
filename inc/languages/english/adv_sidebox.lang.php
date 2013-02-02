@@ -45,8 +45,8 @@ $l['adv_sidebox_wol_avatar_list'] = "Avatar settings for Who's Online module";
 $l['adv_sidebox_latest_threads'] = "Latest Threads";
 
 // WOL
-$l['adv_sidebox_num_avatars_per_row'] = "Number of avatars per row<br /><i>(enter number of columns in which avatars will be shown within module, or enter 0 to disable module avatars)</i>";
-$l['adv_sidebox_avatar_max_rows'] = "maximum number of avatar rows<br /><i>(enter how many rows avatars may occupy within module before show all link will be displayed, or enter 0 to disable module avatars)</i>";
+$l['adv_sidebox_num_avatars_per_row'] = "Number of avatars per row<br /><i>(enter number of columns in which avatars will be shown within the module, or 0 to disable avatars)</i>";
+$l['adv_sidebox_avatar_max_rows'] = "maximum number of avatar rows<br /><i>(enter the maximum amount of rows that avatars may occupy, or 0 to disable avatars)</i>";
 $l['adv_sidebox_noone_online'] = "There are no members currently online.";
 
 // latest threads
@@ -109,17 +109,20 @@ $l['adv_sidebox_delete_box_failure'] = 'There was an error while attempting to r
 $l['adv_sidebox_current_title'] = 'current title: ';
 $l['adv_sidebox_use_custom_title'] = 'Use Custom Title?';
 $l['adv_sidebox_custom_title'] = 'Custom Title';
+$l['adv_sidebox_default_title'] = 'currently using default title';
 
 // add/edit
 $l['adv_sidebox_edit_box'] = 'Edit Sidebox';
 $l['adv_sidebox_display_order'] = 'Display Order';
-$l['adv_sidebox_type_desc'] = 'select one of several presets or create a custom sidebox';
+$l['adv_sidebox_type_desc'] = 'select one of several presets';
 $l['adv_sidebox_content_title'] = 'Custom HTML';
 $l['adv_sidebox_content_desc'] = 'select a custom box type to use HTML entered here';
 $l['adv_sidebox_position_desc'] = 'choose left or right';
 $l['adv_sidebox_all'] = 'All Scripts';
 $l['adv_sidebox_which_scripts'] = 'Which Scripts?';
+$l['adv_sidebox_which_groups'] = 'Which Groups?';
 $l['adv_sidebox_all_groups'] = 'All User Groups';
+$l['adv_sidebox_guests'] = 'Guests';
 
 // modules
 $l['adv_sidebox_manage_modules'] = 'Manage Modules';
@@ -137,6 +140,7 @@ $l['adv_sidebox_uninstall_addon_failure'] = 'The module could not be uninstalled
 $l['adv_sidebox_delete_addon_success'] = 'The module was deleted successfully';
 $l['adv_sidebox_delete_addon_failure'] = 'The action couldn\'t be taken. Are you using the correct method to access this feature?';
 
+$l['adv_sidebox_modules_version'] = 'Version';
 $l['adv_sidebox_modules_author'] = 'Author';
 $l['adv_sidebox_modules_channels'] = 'Channels';
 $l['adv_sidebox_modules_stereo'] = 'Stereo';

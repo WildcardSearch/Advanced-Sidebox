@@ -100,7 +100,6 @@ function adv_sidebox_install()
 				groups TEXT,
 				stereo INT(2),
 				wrap_content INT(2),
-				content TEXT,
 				settings TEXT
 			) ENGINE=MyISAM{$collation};"
 		);
@@ -168,7 +167,7 @@ function adv_sidebox_activate()
 	{
 		require_once MYBB_ROOT . '/inc/plugins/adv_sidebox/adv_sidebox_upgrade.php';
     }
-	
+
 	adv_sidebox_set_cache_version();
 
  	rebuild_settings();
@@ -217,7 +216,7 @@ function adv_sidebox_uninstall()
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='adv_sidebox_avatar_max_rows'");
 
 	rebuild_settings();
-	
+
 	adv_sidebox_unset_cache_version();
 }
 
@@ -285,7 +284,7 @@ function adv_sidebox_build_settings_link()
 function adv_sidebox_create_base_settings()
 {
 	global $db, $lang;
-	
+
 	if (!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
@@ -300,10 +299,10 @@ function adv_sidebox_create_base_settings()
 		"isdefault" 			=> "no",
 	);
 	$db->insert_query("settinggroups", $adv_sidebox_group);
-	
+
 	// store the gid # for the settings
 	$gid = $db->insert_id();
-	
+
 	$adv_sidebox_setting_1 = array(
 		"sid"					=> "NULL",
 		"name"				=> "adv_sidebox_on_index",
@@ -398,9 +397,9 @@ function adv_sidebox_create_base_settings()
  *
  * check cached version info
  *
- * Derived from the work of pavemen in MyBB Publisher 
+ * Derived from the work of pavemen in MyBB Publisher
  */
-function adv_sidebox_get_cache_version() 
+function adv_sidebox_get_cache_version()
 {
 	global $cache, $mybb, $db;
 
@@ -421,13 +420,13 @@ function adv_sidebox_get_cache_version()
  * Derived from the work of pavemen in MyBB Publisher
  *
  */
-function adv_sidebox_set_cache_version() 
+function adv_sidebox_set_cache_version()
 {
 	global $cache;
-	
+
 	//get version from this plugin file
 	$adv_sidebox_info = adv_sidebox_info();
-    
+
 	//update version cache to latest
 	$wildcard_plugins = $cache->read('wildcard_plugins');
 	$wildcard_plugins['versions']['adv_sidebox'] = $adv_sidebox_info['version'];
@@ -443,14 +442,14 @@ function adv_sidebox_set_cache_version()
  *
  * Derived from the work of pavemen in MyBB Publisher
  */
-function adv_sidebox_unset_cache_version() 
+function adv_sidebox_unset_cache_version()
 {
 	global $cache;
 
 	$wildcard_plugins = $cache->read('wildcard_plugins');
 	unset($wildcard_plugins['versions']['adv_sidebox']);
 	$cache->update('wildcard_plugins', $wildcard_plugins);
-    
+
     return true;
 }
 

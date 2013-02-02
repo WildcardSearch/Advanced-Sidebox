@@ -117,7 +117,7 @@ function staff_online_box_asb_info()
 	(
 		"name"							=>	'Online Staff',
 		"description"					=>	'Display online staff members list',
-		"version"						=>	"2",
+		"version"						=>	"3",
 		"author"						=>	'Avril',
 		"author_site"				=>	'http://avril-gh.github.com/Online-Staff-module',
 		"stereo"						=>	true,
@@ -172,12 +172,19 @@ function staff_online_box_asb_info()
 															"disporder"			=> '495'
 														)
 													),
+		"discarded_templates"	=>	array
+													(
+														"adv_sidebox_staff_online_left",
+														"adv_sidebox_staff_online_right",			
+														"adv_sidebox_staff_online_bit_left",
+														"adv_sidebox_staff_online_bit_right"
+													),
 		"templates"					=>	array
 													(
 														array
 														(
-																		"title" 	=> "adv_sidebox_staff_online_left",
-																		"template"	=> "
+																		"title" 			=> "adv_sidebox_staff_online",
+																		"template"		=> "
 	<tr style=\"{\$staff_online[\'hide_info\']}\">
 		<td class=\"trow1\">
 			<span class=\"smalltext\">{\$staff_online[\'lang_info\']}</span>
@@ -205,7 +212,7 @@ function staff_online_box_asb_info()
 		</td>
 	</tr>
 
-	{\$bits_left}
+	{\$bits}
 	<tr style=\"{\$staff_online[\'hide_seemore\']}\">
 		<td class=\"trow1\">
 			<a href=\"{\$mybb->settings[\'bburl\']}/showteam.php\" title=\"{\$lang->adv_sidebox_staff_online_findother}\">
@@ -218,70 +225,7 @@ function staff_online_box_asb_info()
 														),
 														array
 														(
-															"title" 	=> "adv_sidebox_staff_online_right",
-															"template"	=> "
-	<tr style=\"{\$staff_online[\'hide_info\']}\">
-		<td class=\"trow1\">
-			<span class=\"smalltext\">{\$staff_online[\'lang_info\']}</span>
-		</td>
-	</tr>
-
-	<tr class=\"trow2\" style=\"{\$staff_online[\'hide_admins\']}\">
-		<td>
-			<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_admins\']} {\$staff_online[\'lang_admin\']}(s).</span>
-		</td>
-	</tr>
-	<tr class=\"trow1\" style=\"{\$staff_online[\'hide_supermods\']}\">
-		<td>
-			<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_supermods\']} {\$staff_online[\'lang_supermod\']}(s).</span>
-		</td>
-	</tr>
-	<tr class=\"trow2\" style=\"{\$staff_online[\'hide_mods\']}\">
-		<td>
-			<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_mods\']} {\$staff_online[\'lang_mod\']}(s).</span>
-		</td>
-	</tr>
-	<tr class=\"trow1\" style=\"{\$staff_online[\'hide_others\']}\">
-		<td>
-			<span class=\"smalltext\"> &raquo; {\$staff_online[\'count_others\']} {\$staff_online[\'lang_other\']}(s).</span>
-		</td>
-	</tr>
-
-	{\$bits_right}
-	<tr style=\"{\$staff_online[\'hide_seemore\']}\">
-		<td class=\"trow1\">
-			<a href=\"{\$mybb->settings[\'bburl\']}/showteam.php\" title=\"{\$lang->adv_sidebox_staff_online_findother}\">
-				<span class=\"smalltext\"> &raquo; {\$lang->adv_sidebox_staff_online_findother}</span>
-			</a>
-		</td>
-	</tr>
-						",
-						"sid"		=> -1
-			),
-			array
-			(
-				"title" 	=> "adv_sidebox_staff_online_bit_left",
-				"template"	=> "
-	<tr>
-		<td class=\"trow{\$staff_online[\'bit_trow_x\']}\">
-
-			<a href=\"{\$staff_online[\'bit_userprofile\']}\" title=\"{\$staff_online[\'bit_usertype\']} : {\$staff_online[\'bit_username\']}\">
-				<img style=\"float: left; margin-left: 5px; margin-right: 10px;\" src=\"{\$staff_online[\'bit_useravatar\']}\" alt=\"{\$staff_online[\'bit_usertype\']} - {\$staff_online[\'bit_username\']}\" height=\"{\$staff_online[\'bit_useravatar_size\']}px\" width=\"{\$staff_online[\'bit_useravatar_size\']}px\" />
-				<span>{\$staff_online[\'bit_usertype_formatted\']} {\$staff_online[\'bit_username_formatted\']}</span><br/>
-			</a>
-
-			<a href=\"{\$mybb->settings[\'bburl\']}/private.php?action=send&amp;uid={\$staff_online[\'bit_userid\']}\" title=\"{\$staff_online[\'bit_usertype\']} : {\$staff_online[\'bit_username\']}\">
-				<span class=\"smalltext\">{\$lang->adv_sidebox_staff_online_askhelp}</span>
-			</a>
-
-		</td>
-	</tr>
-																	",
-																	"sid"		=> -1
-														),
-														array
-														(
-															"title" 	=> "adv_sidebox_staff_online_bit_right",
+															"title" 	=> "adv_sidebox_staff_online_bit",
 															"template"	=> "
 	<tr>
 		<td class=\"trow{\$staff_online[\'bit_trow_x\']}\">
@@ -297,8 +241,8 @@ function staff_online_box_asb_info()
 
 		</td>
 	</tr>
-																	",
-																	"sid"		=> -1
+															",
+															"sid"		=> -1
 														)
 													)
 	);
@@ -310,9 +254,7 @@ function staff_online_box_asb_info()
  */
 function staff_online_box_asb_build_template($settings, $template_var)
 {
-	$left_var = $template_var . '_l';
-	$right_var = $template_var . '_r';
-	global $$left_var, $$right_var;
+	global $$template_var;
 	global $db, $mybb, $templates, $lang, $cache;
 
 //	====----
@@ -385,8 +327,7 @@ function staff_online_box_asb_build_template($settings, $template_var)
 	
 	//	Main template					- collection of data created by repeating bit template
 	//									  for every visible staff member
-	$bits_left					= "";
-	$bits_right					= "";
+	$bits									= "";
 	//									- ACP option show by type block
 	$bytype_enable				= intval($settings['adv_sidebox_staff_online_bytype']['value']) & 1;
 
@@ -462,8 +403,7 @@ function staff_online_box_asb_build_template($settings, $template_var)
 					$staff_online["bit_trow_x"] ^= 3;
 				
 					// add bit template to stack
-					eval("\$bits_left .= \"" . $templates->get("adv_sidebox_staff_online_bit_left") . "\";");
-					eval("\$bits_right .= \"" . $templates->get("adv_sidebox_staff_online_bit_right") . "\";");
+					eval("\$bits .= \"" . $templates->get("adv_sidebox_staff_online_bit") . "\";");
 				}
 			}
 		}
@@ -515,8 +455,7 @@ function staff_online_box_asb_build_template($settings, $template_var)
 	}
 	
 	// Finally merge staff online box content with its template
-	eval("\$" . $left_var . " = \"" . $templates->get("adv_sidebox_staff_online_left") . "\";");
-	eval("\$" . $right_var . " = \"" . $templates->get("adv_sidebox_staff_online_right") . "\";");
+	eval("\$" . $template_var . " = \"" . $templates->get("adv_sidebox_staff_online") . "\";");
 	
 }
 

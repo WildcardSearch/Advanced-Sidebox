@@ -24,18 +24,17 @@ function rand_quote_asb_info()
 		"description"		=>	'Displays random quotes with a link and avatar',
 		"stereo"			=>	true,
 		"wrap_content"	=>	true,
-		"version"			=>	"1",
+		"version"			=>	"1.1",
+		"discarded_templates"	=>	array
+													(
+														"rand_quote_sidebox_left",
+														"rand_quote_sidebox_right"
+													),
 		"templates"		=>	array
 										(
 											array
 											(
-												"title" 			=> "adv_sidebox_latest_threads",
-												"template" 	=> "{\$threadlist}",
-												"sid"				=>	-1
-											),
-											array
-											(
-												"title" => "rand_quote_sidebox_right",
+												"title" => "rand_quote_sidebox",
 												"template" => "
 	<tr>
 		<td class=\"trow1\" colspan=\"1\">
@@ -43,12 +42,12 @@ function rand_quote_asb_info()
 				<tr>
 					<td style=\"max-height: 130px;\">
 						<div style=\"position: relative; max_height: 100px; overflow: hidden;\">
-							{\$rand_quote_avatar_r}{\$rand_quote_text}
+							{\$rand_quote_avatar}{\$rand_quote_text}
 						</div>
 					</td>
 				</tr>
 				<tr>
-					<td>{\$read_more_r}{\$rand_quote_author}
+					<td>{\$read_more}{\$rand_quote_author}
 					</td>
 				</tr>
 			</table>
@@ -61,15 +60,10 @@ function rand_quote_asb_info()
 	);
 }
 
-/*
- * This function is required. It is used by adv_sidebox.php to display the custom content in your sidebox.
- */
-function rand_quote_asb_build_template($settings, $template_var)
+function rand_quote_asb_build_template($settings, $template_var, $width)
 {
 	// don't forget to declare your variable! will not work without this
-	$left_var = $template_var . '_l';
-	$right_var = $template_var . '_r';
-	global $$left_var, $$right_var; // <-- important!
+	global $$template_var; // <-- important!
 	global $db, $mybb, $templates, $lang;
 	
 	if(!$lang->adv_sidebox)
@@ -124,13 +118,9 @@ function rand_quote_asb_build_template($settings, $template_var)
 		$uid = $rand_post['uid'];
 		$user = get_user($uid);
 		
-		$asb_width_l = (int) $mybb->settings['adv_sidebox_width_left'];
-		$asb_inner_size_l = $asb_width_l * .83;
-		$avatar_size_l = (int) ($asb_inner_size_l / 5);
-		
-		$asb_width_r = (int) $mybb->settings['adv_sidebox_width_right'];
-		$asb_inner_size_r = $asb_width_r * .83;
-		$avatar_size_r = (int) ($asb_inner_size_r / 5);
+		$asb_width = (int) $width;
+		$asb_inner_size = $asb_width * .83;
+		$avatar_size = (int) ($asb_inner_size / 5);
 		
 		// set up the username link so that it displays correctly for the display group of the user
 		$username = htmlspecialchars_uni($user['username']);
@@ -141,35 +131,25 @@ function rand_quote_asb_build_template($settings, $template_var)
 		$post_link = get_post_link($rand_post['pid'], $rand_post['tid']) . '#pid' . $rand_post['pid'];
 		
 		// image sizes and text variables
-		$read_more_height_l = $asb_inner_size_l / 12;
-		$read_more_height_r = $asb_inner_size_r / 12;
+		$read_more_height = $asb_inner_size / 10;
 		
-		$read_more_width_l = (int) ($read_more_height_l * 4.5);
-		$read_more_width_r = (int) ($read_more_height_r * 4.5);
+		$read_more_width = (int) ($read_more_height * 4.5);
 		
 		$rand_quote_text = $style . '<span class="quote_box">' . $new_message . '</span>';
 		
-		$rand_quote_avatar_l = '<img style="position: relative; float: right; padding: 4px; width: ' . $avatar_size_l . 'px; height: ' . $avatar_size_l . 'px;" src="' . ($user['avatar'] ? $user['avatar'] : 'images/default_avatar.gif') . '" alt="" title=""/>';
-		$rand_quote_avatar_r = '<img style="position: relative; float: right; padding: 4px; width: ' . $avatar_size_r . 'px; height: ' . $avatar_size_r . 'px;" src="' . ($user['avatar'] ? $user['avatar'] : 'images/default_avatar.gif') . '" alt="" title=""/>';
+		$rand_quote_avatar = '<img style="position: relative; float: right; padding: 4px; width: ' . $avatar_size . 'px; height: ' . $avatar_size . 'px;" src="' . ($user['avatar'] ? $user['avatar'] : 'images/default_avatar.gif') . '" alt="" title=""/>';
 		
 		$rand_quote_author = "<a href=\"{$author_link}\">{$username}</a>";
 		
-		$read_more_l = '<a href="' . $post_link . '"><img style="width: ' . $read_more_width_l . 'px; height: ' . $read_more_height_l . 'px; position: relative; float: right;" src="http://www.rantcentralforums.com/images/readmore.gif" title="Click to see the entire post" alt="read more" /></a>';
-		$read_more_r = '<a href="' . $post_link . '"><img style="width: ' . $read_more_width_r . 'px; height: ' . $read_more_height_r . 'px; position: relative; float: right;" src="http://www.rantcentralforums.com/images/readmore.gif" title="Click to see the entire post" alt="read more" /></a>';
+		$read_more = '<a href="' . $post_link . '"><img style="width: ' . $read_more_width . 'px; height: ' . $read_more_height . 'px; position: relative; float: right;" src="http://www.rantcentralforums.com/images/readmore.gif" title="Click to see the entire post" alt="read more" /></a>';
 
 		// eval the template and the sidebox will display
-		eval("\$" . $left_var . " = \"" . $templates->get("rand_quote_sidebox_left") . "\";");
-		
-		// eval the template and the sidebox will display
-		eval("\$" . $right_var . " = \"" . $templates->get("rand_quote_sidebox_right") . "\";");
+		eval("\$" . $template_var . " = \"" . $templates->get("rand_quote_sidebox") . "\";");
 	}
 	else
 	{
 		// eval the template and the sidebox will display
-		eval("\$" . $left_var . " = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_no_posts . "</td></tr>\";");
-		
-		// eval the template and the sidebox will display
-		eval("\$" . $right_var . " = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_no_posts . "</td></tr>\";");
+		eval("\$" . $template_var . " = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_no_posts . "</td></tr>\";");
 	}
 }
 

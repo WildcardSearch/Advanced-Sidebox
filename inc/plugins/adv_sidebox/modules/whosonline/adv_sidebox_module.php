@@ -10,7 +10,7 @@
  *
  * This is a 'stereo' module, meaning that it outputs two different template variables to correspond with the two different box widths. If your module doesn't depend on the width of the sidebox its shown in (to size content) then set this option to false and simple output one 'mono' sidebox.
  */
- 
+
 // Include a check for Advanced Sidebox
 if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 {
@@ -20,17 +20,17 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 function whosonline_asb_info()
 {
 	global $db, $lang;
-	
+
 	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}
-	
+
 	return array
 	(
 		"name"							=>	'Who\'s Online',
 		"description"					=>	'Currently online members\' avatars',
-		"version"						=>	"2",
+		"version"						=>	"3",
 		"stereo"						=>	true,
 		"wrap_content"				=>	true,
 		"discarded_settings"	=>	array
@@ -61,11 +61,18 @@ function whosonline_asb_info()
 															"disporder"		=> '90'
 														)
 													),
+		"discarded_templates"	=>	array
+													(
+														"adv_sidebox_whosonline_left",
+														"adv_sidebox_whosonline_right",
+														"adv_sidebox_whosonline_memberbit_left",
+														"adv_sidebox_whosonline_memberbit_right"
+													),
 		"templates"					=>	array
 													(
 														array
 														(
-															"title" => "adv_sidebox_whosonline_left",
+															"title" => "adv_sidebox_whosonline",
 															"template" => "
 	<tr>
 		<td class=\"trow1\">
@@ -73,56 +80,30 @@ function whosonline_asb_info()
 		</td>
 	</tr>
 	<tr style=\"{\$adv_sidebox_hide}\">
-		<td class=\"trow2\">{\$onlinemembers_l}</td>
+		<td class=\"trow2\">{\$onlinemembers}</td>
 	</tr>
 															",
 															"sid" => -1
 														),
 														array
 														(
-															"title" => "adv_sidebox_whosonline_right",
+															"title" => "adv_sidebox_whosonline_memberbit",
 															"template" => "
-	<tr>
-		<td class=\"trow1\">
-			<span class=\"smalltext\">
-			{\$lang->online_users}<br /><strong>&raquo;</strong> {\$lang->online_counts}
-			</span>
-		</td>
-	</tr>
-	<tr style=\"{\$adv_sidebox_hide}\">
-		<td class=\"trow2\">{\$onlinemembers_r}</td>
-	</tr>
-															",
-															"sid" => -1
-														),
-														array
-														(
-															"title" => "adv_sidebox_whosonline_memberbit_left",
-															"template" => "
-			<a href=\"{\$mybb->settings[\'bburl\']}/{\$user[\'profilelink\']}\">{\$user_avatar_l}</a>",
-															"sid" => -1
-														),
-														array
-														(
-															"title" => "adv_sidebox_whosonline_memberbit_right",
-															"template" => "
-			<a href=\"{\$mybb->settings[\'bburl\']}/{\$user[\'profilelink\']}\">{\$user_avatar_r}</a>",
+			<a href=\"{\$mybb->settings[\'bburl\']}/{\$user[\'profilelink\']}\">{\$user_avatar}</a>",
 															"sid" => -1
 														)
 													)
 	);
 }
 
-function whosonline_asb_build_template($settings, $template_var)
+function whosonline_asb_build_template($settings, $template_var, $width)
 {
-	$left_var = $template_var . '_l';
-	$right_var = $template_var . '_r';
-	global $$left_var, $$right_var;
-	
+	global $$template_var;
+
 	global $db, $mybb, $templates, $lang, $cache;
-	
+
 	// Load global and custom language phrases
-	if (!$lang->portal)
+	if(!$lang->portal)
 	{
 		$lang->load('portal');
 	}
@@ -130,13 +111,13 @@ function whosonline_asb_build_template($settings, $template_var)
 	{
 		$lang->load('adv_sidebox');
 	}
-	
+
 	// width
 	$adv_sidebox_width_left = (int) $mybb->settings['adv_sidebox_width_left'];
 	$adv_sidebox_width_right = (int) $mybb->settings['adv_sidebox_width_right'];
-	
+
 	//die(var_dump($settings));
-	
+
 	$rowlength = (int) $settings['adv_sidebox_avatar_per_row']['value'];
 	$max_rows = (int) $settings['adv_sidebox_avatar_max_rows']['value'];
 	$row = 1;
@@ -154,13 +135,9 @@ function whosonline_asb_build_template($settings, $template_var)
 		$adv_sidebox_hide = "display: none";
 	}
 	// Scale the avatars based on the width of the sideboxes in Admin CP
-	$avatar_width_l = (int) ($adv_sidebox_width_left * .83) / $rowlength;
-	$avatar_height_l = (int) ($adv_sidebox_width_left * .83) / $rowlength;
-	$avatar_margin_l = (int) ($adv_sidebox_width_left * .83) *.02;
-	$avatar_width_r = (int) ($adv_sidebox_width_right * .83) / $rowlength;
-	$avatar_height_r = (int) ($adv_sidebox_width_right * .83) / $rowlength;
-	$avatar_margin_r = (int) ($adv_sidebox_width_right *.83) *.02;
-	
+	$avatar_height = $avatar_width = (int) ($width * .83) / $rowlength;
+	$avatar_margin = (int) ($avatar_width *.02);
+
 	$timesearch = TIME_NOW - $mybb->settings['wolcutoff'];
 	$guestcount = 0;
 	$membercount = 0;
@@ -172,7 +149,7 @@ function whosonline_asb_build_template($settings, $template_var)
 		WHERE s.time > '$timesearch'
 		ORDER BY u.username ASC, s.time DESC
 	");
-	
+
 	while($user = $db->fetch_array($query))
 	{
 
@@ -201,16 +178,14 @@ function whosonline_asb_build_template($settings, $template_var)
 				if($user['invisible'] == 1)
 				{
 					++$anoncount;
-				
+
 					// The invisible mark just throws off the layout here.
 					// Instead we will border the avatar if the user is invisibile.
-					$avatar_style_l = 'margin: ' . ($avatar_margin_l / 2) . 'px; position:relative; top:-' . ($avatar_margin_l / 4) . 'px; border: ' . ($avatar_margin_l / 2) . 'px ridge #ff3333;';
-					$avatar_style_r = 'margin: ' . ($avatar_margin_r / 2) . 'px; position:relative; top:-' . ($avatar_margin_r / 4) . 'px; border: ' . ($avatar_margin_r / 2) . 'px ridge #ff3333;';
+					$avatar_style = 'margin: ' . ($avatar_margin / 2) . 'px; position:relative; top:-' . ($avatar_margin / 4) . 'px; border: ' . ($avatar_margin / 2) . 'px ridge #ff3333;';
 				}
 				else
 				{
-					$avatar_style_l = 'margin: ' . $avatar_margin_l . 'px; border: none;';
-					$avatar_style_r = 'margin: ' . $avatar_margin_r . 'px; border: none;';
+					$avatar_style = 'margin: ' . $avatar_margin . 'px; border: none;';
 				}
 
 				// If the user has an avatar then display it . . .
@@ -223,16 +198,13 @@ function whosonline_asb_build_template($settings, $template_var)
 					// . . . otherwise force the default avatar.
 					$avatar_filename = "images/default_avatar.gif";
 				}
-				
-				$user_avatar_l = '<img style="' . $avatar_style_l . '" src="' . $avatar_filename . '" alt="' . $lang->adv_sidebox_avatar . '" title="' . $user['username'] . '\'s ' . $lang->adv_sidebox_avatar_lc . '" width="' . $avatar_width_l . 'px" height="' . $avatar_height_l . 'px"/>';
-				
-				$user_avatar_r = '<img style="' . $avatar_style_r . '" src="' . $avatar_filename . '" alt="' . $lang->adv_sidebox_avatar . '" title="' . $user['username'] . '\'s ' . $lang->adv_sidebox_avatar_lc . '" width="' . $avatar_width_r . 'px" height="' . $avatar_height_r . 'px"/>';
+
+				$user_avatar = '<img style="' . $avatar_style . '" src="' . $avatar_filename . '" alt="' . $lang->adv_sidebox_avatar . '" title="' . $user['username'] . '\'s ' . $lang->adv_sidebox_avatar_lc . '" width="' . $avatar_width . 'px" height="' . $avatar_height . 'px"/>';
 
 				// If we reach the end of the row, insert a <br />
 				if (($membercount - (($row - 1) * $rowlength)) == $rowlength)
 				{
-					$user_avatar_l .= "<br />";
-					$user_avatar_r .= "<br />";
+					$user_avatar .= "<br />";
 					$row = $row + 1;
 				}
 
@@ -240,7 +212,7 @@ function whosonline_asb_build_template($settings, $template_var)
 				{
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = get_profile_link($user['uid']);
-					
+
 					// if this is the last allowable avatar (conforming to ACP settings)
 					if($avatar_count >= (($max_rows * $rowlength) - 1) && $avatar_count)
 					{
@@ -249,19 +221,16 @@ function whosonline_asb_build_template($settings, $template_var)
 						{
 							// . . . if not, set a flag
 							$enough_already = true;
-							
+
 							// . . . and insert link to the WOL full list
-							$onlinemembers_l .= '<a href="' . $mybb->settings['bburl'] . '/online.php" title="' . $lang->adv_sidebox_see_all_title . '">'.$lang->adv_sidebox_see_all_alt.'</a>';
-												
-							$onlinemembers_r .= '<a href="' . $mybb->settings['bburl'] . '/online.php" title="' . $lang->adv_sidebox_see_all_title . '">'.$lang->adv_sidebox_see_all_alt.'</a>';
+							$onlinemembers .= '<a href="' . $mybb->settings['bburl'] . '/online.php" title="' . $lang->adv_sidebox_see_all_title . '">'.$lang->adv_sidebox_see_all_alt.'</a>';
 						}
 					}
 					// . . . otherwise, add this avy to the list
 					else
 					{
-						eval("\$onlinemembers_l .= \"".$templates->get("adv_sidebox_whosonline_memberbit_left", 1, 0)."\";");
-						eval("\$onlinemembers_r .= \"".$templates->get("adv_sidebox_whosonline_memberbit_right", 1, 0)."\";");
-					
+						eval("\$onlinemembers .= \"".$templates->get("adv_sidebox_whosonline_memberbit", 1, 0)."\";");
+
 						++$avatar_count;
 					}
 				}
@@ -305,16 +274,14 @@ function whosonline_asb_build_template($settings, $template_var)
 	  $lang->online_users = $lang->sprintf($lang->online_users, $onlinecount);
 	}
 	$lang->online_counts = $lang->sprintf($lang->online_counts, $membercount, $guestcount);
-	
+
 	if($membercount)
 	{
-		eval("\$" . $left_var . " = \"" . $templates->get("adv_sidebox_whosonline_left") . "\";");
-		eval("\$" . $right_var . " = \"" . $templates->get("adv_sidebox_whosonline_right") . "\";");
+		eval("\$" . $template_var . " = \"" . $templates->get("adv_sidebox_whosonline") . "\";");
 	}
 	else
 	{
-		eval("\$" . $left_var . " = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_noone_online . "</td></tr>\";");
-		eval("\$" . $right_var . " = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_noone_online . "</td></tr>\";");
+		eval("\$" . $template_var . " = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_noone_online . "</td></tr>\";");
 	}
 }
 

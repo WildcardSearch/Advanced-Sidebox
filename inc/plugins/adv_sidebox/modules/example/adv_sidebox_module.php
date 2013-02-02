@@ -24,7 +24,7 @@ function example_asb_info()
 }
 
 // this function is called when it is time to display your box
-function example_asb_build_template($settings, $template_var)
+function example_asb_build_template($settings, $template_var, $width)
 {
 	// Using variable variables (thanks Euan T.) we declare the template variable as global here and eval() its contents.
 	global $$template_var; //<-- this is necessary

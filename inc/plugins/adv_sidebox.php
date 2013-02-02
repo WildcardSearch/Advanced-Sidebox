@@ -73,7 +73,7 @@ function adv_sidebox_start()
 	global $mybb, $templates, $plugins;
 	global $adv_sidebox_width_left, $adv_sidebox_width_right;
 	global $adv_sidebox_inner_left, $adv_sidebox_inner_right;
-	
+
 	// will need all classes and functions here
 	require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_classes.php';
 	require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_functions.php';
@@ -85,33 +85,34 @@ function adv_sidebox_start()
 	}
 
 	$adv_sidebox = new Sidebox_handler(THIS_SCRIPT);
-	
+
 	// no boxes
 	if(!$adv_sidebox->boxes_to_show)
 	{
 		// get out
 		return false;
 	}
-	
+
 	// width (these  values are global and can be used in custom boxes)
 	$adv_sidebox_width_left = (int) $mybb->settings['adv_sidebox_width_left'];
 	$adv_sidebox_width_right = (int) $mybb->settings['adv_sidebox_width_right'];
 	$adv_sidebox_inner_left = (int) ($mybb->settings['adv_sidebox_width_left'] * .83);
 	$adv_sidebox_inner_right = (int) ($mybb->settings['adv_sidebox_width_right'] * .83);
-	
+
 	// display boxes (unless we're on portal)
 	if($mybb->settings['adv_sidebox_on_' . $adv_sidebox->script_base_name] && in_array(THIS_SCRIPT, array("index.php", "forumdisplay.php", "showthread.php")))
 	{
+		// prepare left and right side box column if there is content
 		if($adv_sidebox->left_boxes)
 		{
 			$left_insert = '<td width="' . $adv_sidebox_width_left . '" valign="top">' . $adv_sidebox->left_boxes . '</td>';
 		}
-		
 		if($adv_sidebox->right_boxes)
 		{
 			$right_insert = '<td width="' . $adv_sidebox_width_right . '" valign="top">' . $adv_sidebox->right_boxes . '</td>';
 		}
-		
+
+		// if either column has content then perform the insertion
 		if($adv_sidebox->left_boxes || $adv_sidebox->right_boxes)
 		{
 			$templates->cache[$adv_sidebox->script_base_name] = str_replace('{$header}', '{$header}<table width="100%" border="0" cellspacing="5"><tr>' . $left_insert . '<td width="auto" valign="top">', $templates->cache[$adv_sidebox->script_base_name]);
@@ -130,24 +131,24 @@ function adv_sidebox_start()
 		{$header}
 		<table width="100%" cellspacing="0" cellpadding="{$theme[\'tablespace\']}" border="0">
 			<tr>';
-		
+
 		if($adv_sidebox->left_boxes)
 		{
 			$this_template .= '
 				<td valign="top" width="' . $adv_sidebox_width_left . '"><div style="max-width: ' . $adv_sidebox_width_left . 'px min-width: ' . $adv_sidebox_width_left . 'px">' . $adv_sidebox->left_boxes . '</div></td>
 				<td>&nbsp;</td>';
 		}
-		
+
 		$this_template .= '
 				<td style="max-width:' . (1000 - ($adv_sidebox_width_right + $adv_sidebox_width_left)) . 'px;"><div style="max-width: ' . (1000 - ($adv_sidebox_width_right + $adv_sidebox_width_left)) . 'px min-width: ' . (1000 - ($adv_sidebox_width_right + $adv_sidebox_width_left)) . 'px">{$announcements}</div></td>
 				<td>&nbsp;</td>';
-		
+
 		if($adv_sidebox->right_boxes)
 		{
 			$this_template .= '
 				<td valign="top" width="' . $adv_sidebox_width_right . '"><div style="max-width: ' . $adv_sidebox_width_right . 'px min-width: ' . $adv_sidebox_width_right . 'px">' . $adv_sidebox->right_boxes . '</div></td>';
 		}
-		
+
 		$this_template .= '
 			</tr>
 		</table>
@@ -157,7 +158,7 @@ function adv_sidebox_start()
 
 		$templates->cache['portal'] = $this_template;
 	}
-	
+
 	// build all the templates, producing the content through modules and custom boxes
 	$adv_sidebox->build_all_templates();
 }
@@ -176,7 +177,7 @@ $plugins->add_hook("usercp_do_options_end", "adv_sidebox_options");
 function adv_sidebox_options()
 {
 	global $db, $mybb, $templates, $user, $lang;
-	
+
 	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
