@@ -45,8 +45,10 @@ $l['adv_sidebox_wol_avatar_list'] = "Avatar settings for Who's Online module";
 $l['adv_sidebox_latest_threads'] = "Latest Threads";
 
 // WOL
-$l['adv_sidebox_num_avatars_per_row'] = "Number of avatars per row<br /><i>(enter number of columns in which avatars will be shown within the module, or 0 to disable avatars)</i>";
-$l['adv_sidebox_avatar_max_rows'] = "maximum number of avatar rows<br /><i>(enter the maximum amount of rows that avatars may occupy, or 0 to disable avatars)</i>";
+$l['adv_sidebox_num_avatars_per_row'] = "Number of Avatars Per Row";
+$l['adv_sidebox_num_avatars_per_row_description'] = "(enter number of columns in which avatars will be shown within the module, or 0 to disable avatars)";
+$l['adv_sidebox_avatar_max_rows'] = "Maximum Number of Avatar Rows";
+$l['adv_sidebox_avatar_max_rows_description'] = "(enter the maximum amount of rows that avatars may occupy, or 0 to disable avatars)";
 $l['adv_sidebox_noone_online'] = "There are no members currently online.";
 
 // latest threads

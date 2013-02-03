@@ -22,7 +22,7 @@ function search_box_asb_info()
 		"name"				=>	'Search',
 		"description"		=>	'Simple textbox and button',
 		"wrap_content"	=>	true,
-		"version"			=>	"1",
+		"version"			=>	"1.1",
 		"templates"					=>	array
 													(
 														array
@@ -30,12 +30,23 @@ function search_box_asb_info()
 															"title" => "adv_sidebox_search",
 															"template" => "
 	<tr>
-		<td class=\"trow1\" align=\"center\">
+		<td class=\"trow1\">
 			<form method=\"post\" action=\"{\$mybb->settings[\'bburl\']}/search.php\">
 				<input type=\"hidden\" name=\"action\" value=\"do_search\" />
-				<input type=\"hidden\" name=\"postthread\" value=\"1\" />
 				<input type=\"hidden\" name=\"forums\" value=\"all\" />
-				<input type=\"hidden\" name=\"showresults\" value=\"threads\" />
+				<input type=\"hidden\" name=\"sortby\" value=\"lastpost\" />
+				<input type=\"hidden\" name=\"sortordr\" value=\"desc\" />
+				<label><strong>Search In:</strong></label><br />
+				<input type=\"radio\" class=\"radio\" name=\"postthread\" value=\"1\" checked=\"checked\" />
+				<label for=\"postthread\">Messages</label>
+				<input type=\"radio\" class=\"radio\" name=\"postthread\" value=\"2\" />
+				<label for=\"postthread\">Titles</label><br /><br />
+				<label><strong>Results As:</strong></label><br />
+				<input type=\"radio\" class=\"radio\" name=\"showresults\" value=\"posts\" />
+				<label for=\"showresults\">Posts</label>
+				<input type=\"radio\" class=\"radio\" name=\"showresults\" value=\"threads\" checked=\"checked\" />
+				<label for=\"showresults\">Threads</label><br /><br />
+				<label for=\"keywords\"><strong>Keywords</strong></label><br />
 				<input type=\"text\" class=\"textbox\" name=\"keywords\" value=\"\" />
 				{\$gobutton}
 			</form><br />
@@ -51,9 +62,6 @@ function search_box_asb_info()
 	);
 }
 
-/*
- * This function is required. It is used by adv_sidebox.php to display the custom content in your sidebox.
- */
 function search_box_asb_build_template($settings, $template_var)
 {
 	// don't forget to declare your variable! will not work without this
@@ -62,13 +70,9 @@ function search_box_asb_build_template($settings, $template_var)
 	global $db, $mybb, $templates, $lang, $gobutton;
 
 	// Load global and custom language phrases
-	if (!$lang->portal)
+	if(!$lang->portal)
 	{
 		$lang->load('portal');
-	}
-	if (!$lang->adv_sidebox)
-	{
-		$lang->load('adv_sidebox');
 	}
 
 	eval("\$" . $template_var . " = \"" . $templates->get("adv_sidebox_search") . "\";");

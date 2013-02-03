@@ -43,8 +43,8 @@ function whosonline_asb_info()
 														(
 															"sid"					=> "NULL",
 															"name"				=> "adv_sidebox_avatar_per_row",
-															"title"				=> $lang->adv_sidebox_wol_avatar_list,
-															"description"		=> $lang->adv_sidebox_num_avatars_per_row . ":",
+															"title"				=> $lang->adv_sidebox_num_avatars_per_row,
+															"description"		=> $lang->adv_sidebox_num_avatars_per_row_description,
 															"optionscode"	=> "text",
 															"value"				=> '4'
 														),
@@ -52,8 +52,8 @@ function whosonline_asb_info()
 														(
 															"sid"					=> "NULL",
 															"name"				=> "adv_sidebox_avatar_max_rows",
-															"title"					=> '',
-															"description"		=> $lang->adv_sidebox_avatar_max_rows . ":",
+															"title"				=> $lang->adv_sidebox_avatar_max_rows,
+															"description"		=> $lang->adv_sidebox_avatar_max_rows_description,
 															"optionscode"	=> "text",
 															"value"				=> '3'
 														)

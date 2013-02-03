@@ -22,7 +22,7 @@ function private_messages_asb_info()
 		"name"				=>	'Private Messages',
 		"description"		=>	'Lists the user\'s PM info',
 		"wrap_content"	=>	true,
-		"version"			=>	"1",
+		"version"			=>	"1.1",
 		"templates"					=>	array
 													(
 														array
@@ -32,8 +32,8 @@ function private_messages_asb_info()
 	<tr>
 		<td class=\"trow1\">
 			<span class=\"smalltext\">{\$lang->pms_received_new}<br /><br />
-			<strong>&raquo; </strong> <strong>{\$messages[\'pms_unread\']}</strong> {\$lang->pms_unread}<br />
-			<strong>&raquo; </strong> <strong>{\$messages[\'pms_total\']}</strong> {\$lang->pms_total}</span>
+			<strong>&raquo; </strong> <strong>{\$mybb->user[\'pms_unread\']}</strong> {\$lang->pms_unread}<br />
+			<strong>&raquo; </strong> <strong>{\$mybb->user[\'pms_total\']}</strong> {\$lang->pms_total}</span>
 		</td>
 	</tr>
 															",
@@ -77,24 +77,8 @@ function private_messages_asb_build_template($settings, $template_var)
 	}
 	else
 	{
-		switch($db->type)
-		{
-			case "sqlite":
-			case "pgsql":
-				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total", "uid='" . $mybb->user['uid'] . "'");
-				$messages['pms_total'] = $db->fetch_field($query, "pms_total");
-
-				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_unread", "uid='" . $mybb->user['uid'] . "' AND CASE WHEN status = '0' AND folder = '0' THEN TRUE ELSE FALSE END");
-				$messages['pms_unread'] = $db->fetch_field($query, "pms_unread");
-				break;
-			default:
-				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread", "uid='" . $mybb->user['uid'] . "'");
-				$messages = $db->fetch_array($query);
-		}
-		// the SUM() thing returns "" instead of 0 (make it int anyway)
-		$messages['pms_unread'] *= 1;
-
-		$lang->pms_received_new = $lang->sprintf($lang->pms_received_new, $mybb->user['username'], $messages['pms_unread']);
+		$lang->pms_received_new = $lang->sprintf($lang->pms_received_new, $mybb->user['username'], $mybb->user['pms_unread']);
+		
 		eval("\$" . $template_var . " = \"" . $templates->get("adv_sidebox_pms") . "\";");
 	}
 }

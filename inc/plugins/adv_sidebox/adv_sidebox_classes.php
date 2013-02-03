@@ -558,16 +558,20 @@ class Sidebox_addon
 					$this->version = $this_info['version'];
 					$this->old_version = $this->get_cache_version();
 
-					// if this module needs to be upgraded . . .
-					if(version_compare($this->old_version, $this->version, '<') || $this->old_version == '' || $this->old_version == 0)
+					// if this module is installed
+					if($this->is_installed)
 					{
-						// get-r-done
-						$this->upgrade();
-					}
-					else
-					{
-						// otherwise mark upgrade status
-						$this->is_upgraded = true;
+						// and this module needs to be upgraded . . .
+						if(version_compare($this->old_version, $this->version, '<') || $this->old_version == '' || $this->old_version == 0)
+						{
+							// get-r-done
+							$this->upgrade();
+						}
+						else
+						{
+							// otherwise mark upgrade status
+							$this->is_upgraded = true;
+						}
 					}
 				}
 			}
@@ -1347,7 +1351,7 @@ class Sidebox_handler
 					$can_view = true;
 				}
 
-				// permission is granted . . .
+				// if permission is granted . . .
 				if($can_view)
 				{
 					// add the side box

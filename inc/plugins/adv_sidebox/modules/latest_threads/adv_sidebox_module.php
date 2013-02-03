@@ -30,12 +30,12 @@ function latest_threads_asb_info()
 													),
 		"settings"						=>	array
 													(
-														"adv_sidebox_latest_threads_max"		=> array
+														"latest_threads_max"		=> array
 														(
 															"sid"					=> "NULL",
-															"name"				=> "adv_sidebox_latest_threads_max",
-															"title"				=> "Latest Threads",
-															"description"		=> "Maximum number of threads to display",
+															"name"				=> "latest_threads_max",
+															"title"				=> "Thread Limit",
+															"description"		=> "maximum number of threads to display",
 															"optionscode"	=> "text",
 															"value"				=> '20'
 														)
@@ -150,7 +150,7 @@ function latest_threads_asb_build_template($settings, $template_var)
 		LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid=t.uid)
 		WHERE 1=1 $unviewwhere AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 		ORDER BY t.lastpost DESC
-		LIMIT 0, " . (int) $settings['adv_sidebox_latest_threads_max']['value']
+		LIMIT 0, " . (int) $settings['latest_threads_max']['value']
 	);
 
 	if($db->num_rows($query) > 0)

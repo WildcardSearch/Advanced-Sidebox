@@ -17,13 +17,12 @@ $l['adv_sidebox_staff_online_askhelp'] = 'ask for assistance.';
 $l['adv_sidebox_staff_online_findother'] = 'Find other staff members.';
 
 // staff online (ACP translation)
-$l['adv_sidebox_staff_online_option_bydetail_title'] = 'Staff Online - Display detailed info blocks';
+$l['adv_sidebox_staff_online_option_bydetail_title'] = 'Display Detailed Info Blocks';
 $l['adv_sidebox_staff_online_option_bydetail_description'] = 'Max count of detailed info blocks (Detailed info block show user name, avatar ect.) <i>(Set to 0 to hide detailed info blocks)</i>';
-$l['adv_sidebox_staff_online_option_avatarsize_title'] = 'Staff Online - Size of user avatar';
-$l['adv_sidebox_staff_online_option_avatarsize_description'] = '(User avatars are displayed within Detailed info block.)';
-$l['adv_sidebox_staff_online_option_bytype_title'] = 'Staff Online - Display type blocks';
-$l['adv_sidebox_staff_online_option_bytype_description'] = 'Display blocks related to staff type (<i>eg. of type block</i> 2 moderator(s))';
-$l['adv_sidebox_staff_online_option_hideinfo_title'] = 'Staff Online - Display main info block';
-$l['adv_sidebox_staff_online_option_hideinfo_description'] = '(Info block show message when there are no staff members online or total count of staff members online when available)<br/><i>(This option allow you to hide info block only when there are staff members online. Its always visible when no staff online is available.)</i>';
-
+$l['adv_sidebox_staff_online_option_avatarsize_title'] = 'Avatar Size';
+$l['adv_sidebox_staff_online_option_avatarsize_description'] = '(user avatars are displayed within the detailed info block.)';
+$l['adv_sidebox_staff_online_option_bytype_title'] = 'Display Staff Type Blocks';
+$l['adv_sidebox_staff_online_option_bytype_description'] = 'display blocks related to staff type (<i>eg. of type block</i> 2 moderator(s))';
+$l['adv_sidebox_staff_online_option_hideinfo_title'] = 'Display Main Info Block';
+$l['adv_sidebox_staff_online_option_hideinfo_description'] = '(info block show message when there are no staff members online or total count of staff members online when available)<br/><i>(this option allow you to hide info block only when there are staff members online. Its always visible when no staff online is available.)</i>';
 ?>
