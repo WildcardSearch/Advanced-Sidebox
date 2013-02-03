@@ -31,7 +31,6 @@ function whosonline_asb_info()
 		"name"							=>	'Who\'s Online',
 		"description"					=>	'Currently online members\' avatars',
 		"version"						=>	"3",
-		"stereo"						=>	true,
 		"wrap_content"				=>	true,
 		"discarded_settings"	=>	array
 													(
@@ -47,8 +46,7 @@ function whosonline_asb_info()
 															"title"				=> $lang->adv_sidebox_wol_avatar_list,
 															"description"		=> $lang->adv_sidebox_num_avatars_per_row . ":",
 															"optionscode"	=> "text",
-															"value"				=> '4',
-															"disporder"		=> '80'
+															"value"				=> '4'
 														),
 														"adv_sidebox_avatar_max_rows"	=> array
 														(
@@ -57,8 +55,7 @@ function whosonline_asb_info()
 															"title"					=> '',
 															"description"		=> $lang->adv_sidebox_avatar_max_rows . ":",
 															"optionscode"	=> "text",
-															"value"				=> '3',
-															"disporder"		=> '90'
+															"value"				=> '3'
 														)
 													),
 		"discarded_templates"	=>	array

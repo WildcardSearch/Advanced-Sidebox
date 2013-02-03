@@ -256,7 +256,7 @@
 				if($adv_sidebox_134->addons[$this_box->box_type]->base_name == $this_box->box_type)
 				{
 					// then update the properties added since 1.0
-					$this_box->stereo = $adv_sidebox_134->addons[$this_box->box_type]->stereo;
+					$this_box->stereo = true;
 					$this_box->wrap_content = $adv_sidebox_134->addons[$this_box->box_type]->wrap_content;
 					$this_box->display_name = $adv_sidebox_134->addons[$this_box->box_type]->name;
 				}

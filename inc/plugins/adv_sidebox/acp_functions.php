@@ -511,8 +511,8 @@ function adv_sidebox_admin_editbox()
 			// is this side box create by an add-on module?
 			if($adv_sidebox->addons[$this_sidebox->box_type]->valid)
 			{
-				// get the stereo and wrap_content properties from the add-on module
-				$this_sidebox->stereo = $adv_sidebox->addons[$this_sidebox->box_type]->stereo;
+				// add-on module are stereo
+				$this_sidebox->stereo = true;
 				$this_sidebox->wrap_content = $adv_sidebox->addons[$this_sidebox->box_type]->wrap_content;
 
 				// if the parent module has settings . . .
@@ -812,17 +812,17 @@ function adv_sidebox_admin_manage_modules()
 		{
 			if($this_module->module_type == 'simple')
 			{
-				$simple_modules[] = $this_module->base_name;
+				$active_modules[] = $this_module->base_name;
 			}
 			else
 			{
 				if($this_module->is_installed)
 				{
-					$installed_modules[] = $this_module->base_name;
+					$active_modules[] = $this_module->base_name;
 				}
 				else
 				{
-					$uninstalled_modules[] = $this_module->base_name;
+					$inactive_modules[] = $this_module->base_name;
 				}
 			}
 		}
@@ -833,47 +833,34 @@ function adv_sidebox_admin_manage_modules()
 	$table->construct_header($lang->adv_sidebox_modules_version);
 	$table->construct_header($lang->adv_sidebox_custom_box_desc);
 	$table->construct_header($lang->adv_sidebox_modules_author);
-	$table->construct_header($lang->adv_sidebox_modules_channels);
 	$table->construct_header($lang->adv_sidebox_controls, array("colspan" => 2));
 
-	// if there are simple modules display them
-	if(!empty($simple_modules))
-	{
-		$table->construct_cell("<div class=\"asb_label\">{$lang->adv_sidebox_simple_modules}</div>", array("colspan" => 6));
-		$table->construct_row();
-
-		foreach($simple_modules as $this_module)
-		{
-			$adv_sidebox->addons[$this_module]->build_table_row($table);
-		}
-	}
-
 	// if there are installed modules display them
-	if(!empty($installed_modules))
+	if(!empty($active_modules))
 	{
-		$table->construct_cell("<div class=\"asb_label\">{$lang->adv_sidebox_installed_modules}</div>", array("colspan" => 6));
+		$table->construct_cell("<div class=\"asb_label\">{$lang->adv_sidebox_active_modules}</div>", array("colspan" => 6));
 		$table->construct_row();
 
-		foreach($installed_modules as $this_module)
+		foreach($active_modules as $this_module)
 		{
 			$adv_sidebox->addons[$this_module]->build_table_row($table);
 		}
 	}
 
 	// If there are uninstalled modules display them
-	if(!empty($uninstalled_modules))
+	if(!empty($inactive_modules))
 	{
-		$table->construct_cell("<div class=\"asb_label\">{$lang->adv_sidebox_uninstalled_modules}</div>", array("colspan" => 6));
+		$table->construct_cell("<div class=\"asb_label\">{$lang->adv_sidebox_inactive_modules}</div>", array("colspan" => 6));
 		$table->construct_row();
 
-		foreach($uninstalled_modules as $this_module)
+		foreach($inactive_modules as $this_module)
 		{
 			$adv_sidebox->addons[$this_module]->build_table_row($table);
 		}
 	}
 
 	// if there are no modules detected, tell them so
-	if(empty($installed_modules) && empty($uninstalled_modules) && empty($simple_modules))
+	if(empty($active_modules) && empty($inactive_modules))
 	{
 		$table->construct_cell($lang->adv_sidebox_no_modules_detected, array("colspan" => 4));
 		$table->construct_row();

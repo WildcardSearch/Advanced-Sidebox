@@ -10,7 +10,7 @@
  *
  * This is a default portal box. Any changes from portal.php (MyBB 1.6.9) will be noted here.
  */
- 
+
 // Include a check for Advanced Sidebox
 if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 {
@@ -26,7 +26,6 @@ function welcome_box_asb_info()
 	(
 		"name"				=>	'Welcome',
 		"description"		=>	'Login for guest, info for member',
-		"stereo"			=>	false,
 		"wrap_content"	=>	true,
 		"version"			=>	"1",
 		"templates"					=>	array
@@ -83,11 +82,11 @@ function welcome_box_asb_build_template($settings, $template_var)
 {
 	// don't forget to declare your variable! will not work without this
 	global $$template_var; // <-- important!
-	
+
 	global $db, $mybb, $templates, $lang, $lastvisit;
-	
+
 	$portal_url='member.php';
-	
+
 	// Load global and custom language phrases
 	if (!$lang->portal)
 	{
@@ -97,7 +96,7 @@ function welcome_box_asb_build_template($settings, $template_var)
 	{
 		$lang->load('adv_sidebox');
 	}
-	
+
 	if($mybb->user['uid'] != 0)
 	{
 		// Get number of new posts, threads, announcements
@@ -114,9 +113,9 @@ function welcome_box_asb_build_template($settings, $template_var)
 			{
 				foreach($announcementsfids as $fid)
 				{
-					$fid_array[] = intval($fid);	
+					$fid_array[] = intval($fid);
 				}
-				
+
 				$announcementsfids = implode(',', $fid_array);
 				$query = $db->simple_select("threads", "COUNT(tid) AS newann", "visible=1 AND dateline>'" . $mybb->user['lastvisit'] . "' AND fid IN (" . $announcementsfids . ") $unviewwhere");
 				$newann = $db->fetch_field($query, "newann");

@@ -10,7 +10,7 @@
  *
  * This is a default portal box. Any changes from portal.php (MyBB 1.6.9) will be noted here.
  */
- 
+
 // Include a check for Advanced Sidebox
 if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 {
@@ -23,7 +23,6 @@ function statistics_asb_info()
 	(
 		"name"				=>	'Statistics',
 		"description"		=>	'Forum statistics and figures',
-		"stereo"			=>	false,
 		"wrap_content"	=>	true,
 		"version"			=>	"1",
 		"templates"					=>	array
@@ -57,9 +56,9 @@ function statistics_asb_build_template($settings, $template_var)
 {
 	// don't forget to declare your variable! will not work without this
 	global $$template_var; // <-- important!
-	
+
 	global $mybb, $cache, $templates, $lang;
-	
+
 	// Load global and custom language phrases
 	if (!$lang->portal)
 	{
@@ -69,13 +68,13 @@ function statistics_asb_build_template($settings, $template_var)
 	{
 		$lang->load('adv_sidebox');
 	}
-	
+
 	// get forum statistics
 	$statistics = $cache->read("stats");
 	$statistics['numthreads'] = my_number_format($statistics['numthreads']);
 	$statistics['numposts'] = my_number_format($statistics['numposts']);
 	$statistics['numusers'] = my_number_format($statistics['numusers']);
-	
+
 	if(!$statistics['lastusername'])
 	{
 		$newestmember = "<strong>" . $lang->no_one . "</strong>";

@@ -127,9 +127,8 @@ $l['adv_sidebox_guests'] = 'Guests';
 // modules
 $l['adv_sidebox_manage_modules'] = 'Manage Modules';
 $l['adv_sidebox_manage_modules_desc'] = 'install, uninstall and delete add-ons';
-$l['adv_sidebox_simple_modules'] = 'Simple Modules';
-$l['adv_sidebox_installed_modules'] = 'Installed Modules';
-$l['adv_sidebox_uninstalled_modules'] = 'Uninstalled Modules';
+$l['adv_sidebox_active_modules'] = 'Active Modules';
+$l['adv_sidebox_inactive_modules'] = 'Inactive Modules';
 $l['adv_sidebox_uninstall'] = 'Uninstall';
 $l['adv_sidebox_install'] = 'Install';
 
@@ -142,9 +141,6 @@ $l['adv_sidebox_delete_addon_failure'] = 'The action couldn\'t be taken. Are you
 
 $l['adv_sidebox_modules_version'] = 'Version';
 $l['adv_sidebox_modules_author'] = 'Author';
-$l['adv_sidebox_modules_channels'] = 'Channels';
-$l['adv_sidebox_modules_stereo'] = 'Stereo';
-$l['adv_sidebox_modules_mono'] = 'Mono';
 $l['adv_sidebox_modules_del_warning'] = 'Delete this add-on permanently?\n\nThis cannot be undone!';
 
 // module info

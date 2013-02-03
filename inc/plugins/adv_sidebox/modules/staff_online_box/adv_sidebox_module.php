@@ -3,12 +3,12 @@
  * ****========================================================================
  * module 'Online Staff' v1.0 (c) 2013 by Avril,
  * for 'Advanced Sidebox' by Wildcard.
- * 
+ *
  * You may get latest version of 'Online Staff' module at
  * http://avril-gh.github.com/Online-Staff-module
- * 
+ *
  * THIS MODULE REQUIRE 'ADVANCED SIDEBOX' INSTALLED !
- * 
+ *
  * You may get latest version of 'Advanced Sidebox' plugin for MyBB at
  * github.com/WildcardSearch/Advanced-Sidebox
  * ============================================================================
@@ -27,21 +27,21 @@
  * however under condition that your copy of this module is in its latest
  * original and unmodified official release version.
  * ============================================================================
- * 
+ *
  * 'Online Staff' module - short Readme :
  * If you actually looking inside this file,
  * then perhaps these informations may be useful to you.
- * 
+ *
  * 1. 'Staff Online' module use following templates :
  * Global Templates -> adv_sidebox_staff_online_left
  * Global Templates -> adv_sidebox_staff_online_right
  * Global Templates -> adv_sidebox_staff_online_bit_left
  * Global Templates -> adv_sidebox_staff_online_bit_right
- * 
+ *
  * 2. 'Staff Online' module use following variables
- * 
+ *
  * General use variables :
- * 
+ *
  *	$staff_online["count_admins"]			- value
  *	$staff_online["count_supermods"]		- value
  *	$staff_online["count_mods"]				- value
@@ -57,7 +57,7 @@
  * Dynamic CSS variables used to hide various template blocks.
  * Contain "display: none;" or "" depending on content of related general use variables.
  * eg. If $staff_online["count_admins"] = 0 then $staff_online["hide_admins"] = "display: none;" else $staff_online["hide_admins"] = ""
- * 
+ *
  *	$staff_online["hide_info"]				- depends on ACP setting
  *	$staff_online["hide_admins"]			- depends on online admins count
  *	$staff_online["hide_supermods"]			- depends on online super moderators count
@@ -70,8 +70,8 @@
  *
  *	$staff_online[$bits_left]				- contain collection of bit templates
  *	$staff_online[$bits_right]				- contain collection of bit templates
- *											(bit template is used to output detailed staff member info) 
- *				
+ *											(bit template is used to output detailed staff member info)
+ *
  * Bit variables
  * (used to create detailed info for every staff member online in bit template)
  *
@@ -87,7 +87,7 @@
  *	$staff_online["bit_userprofile"] 		- link to user profile
  *	$staff_online["bit_usertype"]			- type of user (eg. moderator)
  *	$staff_online["bit_usertype_formatted"]	- formatted type of user (group color ect)
- * 
+ *
  * ============================================================================
  * For more informations about styling and techniques
  * used to build 'Online Staff' module template blocks
@@ -107,12 +107,12 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX")) {
 function staff_online_box_asb_info()
 {
 	global $db, $lang;
-	
+
 	if (!$lang->adv_sidebox_staff_online_box)
 	{
 		$lang->load('adv_sidebox_staff_online_box');
 	}
-	
+
 	return array
 	(
 		"name"							=>	'Online Staff',
@@ -120,7 +120,6 @@ function staff_online_box_asb_info()
 		"version"						=>	"3",
 		"author"						=>	'Avril',
 		"author_site"				=>	'http://avril-gh.github.com/Online-Staff-module',
-		"stereo"						=>	true,
 		"wrap_content"				=>	true,
 		"discarded_settings"	=>	array
 													(
@@ -138,8 +137,7 @@ function staff_online_box_asb_info()
 															"title"				=> $db->escape_string($lang->adv_sidebox_staff_online_option_bydetail_title),
 															"description"		=> $db->escape_string($lang->adv_sidebox_staff_online_option_bydetail_description),
 															"optionscode"		=> "text",
-															"value"				=> '5',
-															"disporder"			=> '492'
+															"value"				=> '5'
 														),
 														"adv_sidebox_staff_online_avatarsize" => array
 														(
@@ -148,8 +146,7 @@ function staff_online_box_asb_info()
 															"title"				=> $db->escape_string($lang->adv_sidebox_staff_online_option_avatarsize_title),
 															"description"		=> $db->escape_string($lang->adv_sidebox_staff_online_option_avatarsize_description),
 															"optionscode"		=> "text",
-															"value"				=> '36',
-															"disporder"			=> '493'
+															"value"				=> '36'
 														),
 														"adv_sidebox_staff_online_bytype" => array
 														(
@@ -158,8 +155,7 @@ function staff_online_box_asb_info()
 															"title"				=> $db->escape_string($lang->adv_sidebox_staff_online_option_bytype_title),
 															"description"		=> $db->escape_string($lang->adv_sidebox_staff_online_option_bytype_description),
 															"optionscode"		=> "yesno",
-															"value"				=> '1',
-															"disporder"			=> '494'
+															"value"				=> '1'
 														),
 														"adv_sidebox_staff_online_hideinfo" => array
 														(
@@ -168,14 +164,13 @@ function staff_online_box_asb_info()
 															"title"				=> $db->escape_string($lang->adv_sidebox_staff_online_option_hideinfo_title),
 															"description"		=> $db->escape_string($lang->adv_sidebox_staff_online_option_hideinfo_description),
 															"optionscode"		=> "yesno",
-															"value"				=> '1',
-															"disporder"			=> '495'
+															"value"				=> '1'
 														)
 													),
 		"discarded_templates"	=>	array
 													(
 														"adv_sidebox_staff_online_left",
-														"adv_sidebox_staff_online_right",			
+														"adv_sidebox_staff_online_right",
 														"adv_sidebox_staff_online_bit_left",
 														"adv_sidebox_staff_online_bit_right"
 													),
@@ -260,14 +255,14 @@ function staff_online_box_asb_build_template($settings, $template_var)
 //	====----
 	$staff_online_debug = false;		// dev mode. Multiply staff member x10 for bits test.
 //	====----
-	
+
 	if (!$lang->adv_sidebox_staff_online_box) {
 		$lang->load('adv_sidebox_staff_online_box');
 	}
 
 //	Init variables to state as there are no staff members online
 	$staff_online				= Array (
-	
+
 //	Main template			 		- General use variables (value)
 	"count_admins"				=> 0,
 	"count_supermods"			=> 0,
@@ -291,7 +286,7 @@ function staff_online_box_asb_build_template($settings, $template_var)
 	"hide_seemore"				=> "display: none;",
 	"hide_ifnostaff"			=> "display: none;",
 	"hide_ifstaff"				=> "display: none;",
-				
+
 //	Main template					- Language file strings
 	"lang_info"					=> $lang->adv_sidebox_staff_online_nostaff,
 	"lang_admin" 				=> $lang->adv_sidebox_staff_online_admin,
@@ -324,7 +319,7 @@ function staff_online_box_asb_build_template($settings, $template_var)
 	if ($staff_online["bit_max_to_show"] < 0 || $staff_online["bit_max_to_show"] > 100) {
 		$staff_online["bit_max_to_show"] = 0;
 	}
-	
+
 	//	Main template					- collection of data created by repeating bit template
 	//									  for every visible staff member
 	$bits									= "";
@@ -337,12 +332,12 @@ function staff_online_box_asb_build_template($settings, $template_var)
 	}else{
 		$xTestMultiply=1;
 	}
-	
+
 //	Main loop - modify variables if required and output as box
-	
+
 	// if this user can view whos online then build list of staff members online for him
 	if ($mybb->usergroup['canviewonline']) {
-		
+
 		// Get online users
 		$timesearch = TIME_NOW - $mybb->settings['wolcutoff'];
 		$query = $db->query("
@@ -352,7 +347,7 @@ function staff_online_box_asb_build_template($settings, $template_var)
 				WHERE s.time > '$timesearch'
 				ORDER BY u.username ASC, s.time DESC
 				");
-	
+
 		// and loop through them to get staff members.
 		while($user = $db->fetch_array($query)) {
 
@@ -360,7 +355,7 @@ function staff_online_box_asb_build_template($settings, $template_var)
 			for ($xTest = 0; $xTest < $xTestMultiply; $xTest++) {
 
 				$userpermissions = user_permissions($user['uid']);
-				
+
 				$this_user_is = "nostaff";
 				if ($user['uid']) {									// not a guest
 					if (!$user['invisible']) {						// and not invisible
@@ -383,11 +378,11 @@ function staff_online_box_asb_build_template($settings, $template_var)
 						}
 					}
 				}
-				
+
 				// if user has been countedin as visible staff member,
 				// and there are space to put member bit
 				if ($this_user_is != "nostaff" && $staff_online["count_total"] <= $staff_online["bit_max_to_show"]) {
-				
+
 					// Set bit variables for this staff member
 					if ($user['avatar']) {			// if have avatar just get it
 						$staff_online["bit_useravatar"] = $user['avatar'];
@@ -401,24 +396,24 @@ function staff_online_box_asb_build_template($settings, $template_var)
 					$staff_online["bit_username_formatted"] = format_name($staff_online["bit_username"], $user['usergroup'], $user['displaygroup']);
 					$staff_online["bit_usertype_formatted"] = format_name($staff_online["bit_usertype"], $user['usergroup'], $user['displaygroup']);
 					$staff_online["bit_trow_x"] ^= 3;
-				
+
 					// add bit template to stack
 					eval("\$bits .= \"" . $templates->get("adv_sidebox_staff_online_bit") . "\";");
 				}
 			}
 		}
 	}
-	
+
 	// did we found any visible staff member online to show ?
 	// (if viewer have no privilages to see online members,
 	// then they wasnt even counted and this will be 0
 	// as well as other variables which are allready set to default - no staff online)
 	if ($staff_online["count_total"]) {
 		// There are some visible staff members online to show and viewer may see them.
-		
+
 		// update info message, (total staff members online ect)
 		$staff_online["lang_info"] = $lang->sprintf($lang->adv_sidebox_staff_online_staff,$staff_online["count_total"]);
-		
+
 		// unhide fields related to visible staff members and ACP setting
 		if ($bytype_enable) {
 			if ($staff_online["count_admins"])		$staff_online["hide_admins"]	= "";
@@ -427,13 +422,13 @@ function staff_online_box_asb_build_template($settings, $template_var)
 			if ($staff_online["count_others"])		$staff_online["hide_others"]	= "";
 		}
 		if ($staff_online["count_total"])		$staff_online["hide_total"]		= "";
-	
+
 		// display see more
 		// if there are more staff online but bits count was limited in ACP settings
 		if ($staff_online["count_total"] > $staff_online["bit_max_to_show"]) {
 			$staff_online["hide_seemore"] = "";
-		}		
-		
+		}
+
 	}
 
 	// show Info block according to ACP settings and staff online presence.
@@ -446,17 +441,17 @@ function staff_online_box_asb_build_template($settings, $template_var)
 		// Hide info block if ACP setting is set to hide it.
 		$staff_online["hide_info"] = "";
 	}
-	
+
 	// Set related CSS logic for templating.
 	if ($staff_online["count_total"]) {
 		$staff_online["hide_ifnostaff"] = "";
 	}else{
 		$staff_online["hide_ifstaff"] = "";
 	}
-	
+
 	// Finally merge staff online box content with its template
 	eval("\$" . $template_var . " = \"" . $templates->get("adv_sidebox_staff_online") . "\";");
-	
+
 }
 
 ?>

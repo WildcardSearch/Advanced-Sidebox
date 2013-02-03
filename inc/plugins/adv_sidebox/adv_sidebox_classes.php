@@ -443,7 +443,6 @@ class Sidebox_addon
 	public $author;
 	public $author_site;
 
-	public $stereo = false;
 	public $wrap_content = false;
 	public $valid = false;
 	public $module_type;
@@ -517,7 +516,6 @@ class Sidebox_addon
 					$this->author_site = $this_info['author_site'];
 
 					$this->wrap_content = $this_info['wrap_content'];
-					$this->stereo = $this_info['stereo'];
 
 					$this->settings = $this_info['settings'];
 					$this->discarded_settings = $this_info['discarded_settings'];
@@ -807,19 +805,6 @@ class Sidebox_addon
 
 			// author (site link)
 			$this_table->construct_cell('<a href="' . $this->author_site . '">' . $this->author . '</a>');
-
-			// channel prep
-			if($this->stereo)
-			{
-				$channel_info = $lang->adv_sidebox_modules_stereo;
-			}
-			else
-			{
-				$channel_info = $lang->adv_sidebox_modules_mono;
-			}
-
-			// channels
-			$this_table->construct_cell($channel_info);
 
 			// options popup
 			$popup = new PopupMenu('module_' . $this->base_name, $lang->adv_sidebox_options);
@@ -1720,10 +1705,10 @@ class Sidebox_handler
 									foreach($this->sideboxes[$this_box]->settings as $this_box_setting)
 									{
 										// if the current setting has a stored value
-										if($this_box_setting->name == $setting['name'])
+										if($this_box_setting['name'] == $setting['name'])
 										{
 											// store to be included in the produced HTML value property
-											$setting['value'] = $this_box_setting->value;
+											$setting['value'] = $this_box_setting['value'];
 										}
 									}
 								}

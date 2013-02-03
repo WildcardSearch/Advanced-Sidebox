@@ -8,7 +8,7 @@
  *
  * If you delete this folder from the installation pack this module will never be installed (and everything should work just fine without it). Don't worry, if you decide you want it back you can always download them again. The best move would be to install the entire package and try them out. Then be sure that the packages you don't want are uninstalled and then delete those folders from your server.
  */
- 
+
 // Include a check for Advanced Sidebox
 if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 {
@@ -21,7 +21,6 @@ function search_box_asb_info()
 	(
 		"name"				=>	'Search',
 		"description"		=>	'Simple textbox and button',
-		"stereo"			=>	false,
 		"wrap_content"	=>	true,
 		"version"			=>	"1",
 		"templates"					=>	array
@@ -59,9 +58,9 @@ function search_box_asb_build_template($settings, $template_var)
 {
 	// don't forget to declare your variable! will not work without this
 	global $$template_var; // <-- important!
-	
+
 	global $db, $mybb, $templates, $lang, $gobutton;
-	
+
 	// Load global and custom language phrases
 	if (!$lang->portal)
 	{
@@ -71,7 +70,7 @@ function search_box_asb_build_template($settings, $template_var)
 	{
 		$lang->load('adv_sidebox');
 	}
-	
+
 	eval("\$" . $template_var . " = \"" . $templates->get("adv_sidebox_search") . "\";");
 }
 

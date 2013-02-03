@@ -9,7 +9,7 @@
  * If you delete this folder from the installation pack this module will never be installed (and everything should work just fine without it). Don't worry, if you decide you want it back you can always download them again. The best move would be to install the entire package and try them out. Then be sure that the packages you don't want are uninstalled and then delete those folders from your server.
  *
  */
- 
+
 // Include a check for Advanced Sidebox
 if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 {
@@ -23,7 +23,6 @@ function latest_threads_asb_info()
 		"name"							=>	'Latest Threads',
 		"description"					=>	'Lists the latest forum threads',
 		"version"						=>	"2",
-		"stereo"						=>	false,
 		"wrap_content"				=>	true,
 		"discarded_settings"	=>	array
 													(
@@ -38,8 +37,7 @@ function latest_threads_asb_info()
 															"title"				=> "Latest Threads",
 															"description"		=> "Maximum number of threads to display",
 															"optionscode"	=> "text",
-															"value"				=> '20',
-															"disporder"		=> '10'
+															"value"				=> '20'
 														)
 													),
 		"templates"					=>	array
@@ -82,23 +80,23 @@ function latest_threads_asb_build_template($settings, $template_var)
 {
 	global $$template_var;
 	global $db, $mybb, $templates, $lang, $cache, $threadlist, $gotounread;
-	
+
 	// Load custom language phrases
-	if (!$lang->adv_sidebox)
+	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}
-	
+
 	// get forums user cannot view
 	$unviewable = get_unviewable_forums(true);
 	if($unviewable)
 	{
 		$unviewwhere = "AND fid NOT IN ($unviewable)";
 	}
-	
+
 	// Read some values we will be using
 	$forumcache = $cache->read("forums");
-	
+
 	$threads = array();
 
 	if($mybb->user['uid'] == 0)
@@ -110,7 +108,7 @@ function latest_threads_asb_build_template($settings, $template_var)
 			WHERE active != 0
 			ORDER BY pid, disporder
 		");
-		
+
 		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
 	}
 	else
@@ -136,17 +134,15 @@ function latest_threads_asb_build_template($settings, $template_var)
 		}
 		$readforums[$forum['fid']] = $forum['lastread'];
 	}
-	
+
 	// Build a post parser
 	require_once MYBB_ROOT."inc/class_parser.php";
 	$parser = new postParser;
-	
+
 	$altbg = alt_trow();
 	$maxtitlelen = 48;
 	$threadlist = '';
-	
-	//die(var_dump((int) $settings[0]->value));
-	
+
 	// Query for the latest forum discussions
 	$query = $db->query("
 		SELECT t.*, u.username
@@ -156,18 +152,18 @@ function latest_threads_asb_build_template($settings, $template_var)
 		ORDER BY t.lastpost DESC
 		LIMIT 0, " . (int) $settings['adv_sidebox_latest_threads_max']['value']
 	);
-	
+
 	if($db->num_rows($query) > 0)
 	{
 		$thread_cache = array();
-		
+
 		while($thread = $db->fetch_array($query))
 		{
 			$thread_cache[$thread['tid']] = $thread;
 		}
-	
+
 		$thread_ids = implode(",", array_keys($thread_cache));
-		
+
 		// Fetch the read threads.
 		if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0)
 		{
@@ -209,14 +205,14 @@ function latest_threads_asb_build_template($settings, $template_var)
 			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$thread['threadlink'] = get_thread_link($thread['tid']);
 			$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
-			
+
 			$gotounread = '';
 			$last_read = 0;
-			
+
 			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 			{
 				$forum_read = $readforums[$thread['fid']];
-			
+
 				$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 				if($forum_read == 0 || $forum_read < $read_cutoff)
 				{
@@ -227,7 +223,7 @@ function latest_threads_asb_build_template($settings, $template_var)
 			{
 				$forum_read = $forumsread[$thread['fid']];
 			}
-			
+
 			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forum_read)
 			{
 				if($thread['lastread'])
@@ -255,7 +251,7 @@ function latest_threads_asb_build_template($settings, $template_var)
 				eval("\$gotounread = \"" . $templates->get("adv_sidebox_latest_threads_gotounread") . "\";");
 				$unreadpost = 1;
 			}
-			
+
 			eval("\$threadlist .= \"".$templates->get("adv_sidebox_latest_threads_thread")."\";");
 			$altbg = alt_trow();
 		}
