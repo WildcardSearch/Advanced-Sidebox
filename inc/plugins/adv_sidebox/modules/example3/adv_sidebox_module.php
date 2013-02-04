@@ -26,7 +26,7 @@ function example3_asb_info()
 												"sid"					=> "NULL",
 												"name"				=> "example3_setting",
 												"title"				=> "Announcement Text",
-												"description"		=> "This text will be styled and displayed",
+												"description"		=> "this text will be styled and displayed",
 												"optionscode"	=> "text",
 												"value"				=> ''
 											)
@@ -34,7 +34,7 @@ function example3_asb_info()
 	);
 }
 
-function example3_asb_build_template($settings, $template_var, $width)
+function example3_asb_build_template($settings, $template_var)
 {
 	global $$template_var;
 
@@ -42,7 +42,7 @@ function example3_asb_build_template($settings, $template_var, $width)
 	{
 		$template = '
 	<tr>
-		<td><span style=\"color: red; font-size: 1.2em; font-weight: bold;\">' . $settings['example3_setting']['value'] . '</span>
+		<td><span style=\"color: red; font-size: 1.4em; font-weight: bold;\">' . $settings['example3_setting']['value'] . '</span>
 		</td>
 	</tr>';
 	}

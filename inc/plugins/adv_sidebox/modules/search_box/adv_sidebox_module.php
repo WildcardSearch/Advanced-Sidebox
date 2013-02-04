@@ -20,7 +20,7 @@ function search_box_asb_info()
 	return array
 	(
 		"name"				=>	'Search',
-		"description"		=>	'Simple textbox and button',
+		"description"		=>	'Simple options, a keyword textbox and a go button',
 		"wrap_content"	=>	true,
 		"version"			=>	"1.1",
 		"templates"					=>	array

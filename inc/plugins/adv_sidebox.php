@@ -1,10 +1,10 @@
 <?php
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x
- * Copyright © 2013 WildcardSearch
+ * Copyright 2013 WildcardSearch
  * http://www.rantcentralforums.com
  *
- * Check out this project on GitHub: https://github.com/WildcardSearch/Advanced-Sidebox
+ * Check out this project on GitHub: http://wildcardsearch.github.com/Advanced-Sidebox
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-// other modules will check this
+// modules will check this
 define("ADV_SIDEBOX", true);
 
 // used by all module routines
@@ -71,8 +71,6 @@ if($settings['adv_sidebox_portal_replace'])
 function adv_sidebox_start()
 {
 	global $mybb, $templates, $plugins;
-	global $adv_sidebox_width_left, $adv_sidebox_width_right;
-	global $adv_sidebox_inner_left, $adv_sidebox_inner_right;
 
 	// will need all classes and functions here
 	require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_classes.php';
@@ -96,8 +94,6 @@ function adv_sidebox_start()
 	// width (these  values are global and can be used in custom boxes)
 	$adv_sidebox_width_left = (int) $mybb->settings['adv_sidebox_width_left'];
 	$adv_sidebox_width_right = (int) $mybb->settings['adv_sidebox_width_right'];
-	$adv_sidebox_inner_left = (int) ($mybb->settings['adv_sidebox_width_left'] * .83);
-	$adv_sidebox_inner_right = (int) ($mybb->settings['adv_sidebox_width_right'] * .83);
 
 	// display boxes (unless we're on portal)
 	if($mybb->settings['adv_sidebox_on_' . $adv_sidebox->script_base_name] && in_array(THIS_SCRIPT, array("index.php", "forumdisplay.php", "showthread.php")))
@@ -196,7 +192,7 @@ function adv_sidebox_options()
 	// Get the users setting and display the checkbox accordingly (checked/unchecked)
 	$query = $db->simple_select("users", "show_sidebox", "uid = '".$user['uid']."' AND show_sidebox='1'", array("order_dir" => 'DESC'));
 
-	if ($db->num_rows($query) > 0)
+	if($db->num_rows($query) > 0)
 	{
 		// checked
 		$checked = 'checked="checked" ';

@@ -4,7 +4,8 @@
  *
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.rantcentralforums.com
+ *
+ * Visit this project page on GitHub: http://wildcardsearch.github.com/Advanced-Sidebox
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,68 +89,6 @@ function adv_sidebox_admin()
 	}
 
 	// delete module
-	if($mybb->input['action'] == 'install_addon')
-	{
-		// info given?
-		if(isset($mybb->input['addon']))
-		{
-			$this_module = $mybb->input['addon'];
-
-			if($adv_sidebox->addons[$this_module]->valid)
-			{
-				$errors = $adv_sidebox->addons[$this_module]->install();
-			}
-
-			if(!$errors)
-			{
-				// tell them all is well
-				flash_message($lang->adv_sidebox_install_addon_success, "success");
-				admin_redirect(ADV_SIDEBOX_MODULES_URL);
-			}
-			else
-			{
-				// module no good
-				flash_message($errors, "error");
-				admin_redirect(ADV_SIDEBOX_MODULES_URL);
-			}
-		}
-	}
-
-	// uninstall module
-	if($mybb->input['action'] == 'uninstall_addon')
-	{
-		// info given?
-		if(isset($mybb->input['addon']))
-		{
-			$this_module = $mybb->input['addon'];
-
-			if($adv_sidebox->addons[$this_module]->valid)
-			{
-				$errors = $adv_sidebox->addons[$this_module]->uninstall();
-			}
-
-			if(!$errors)
-			{
-				// tell them all is well
-				flash_message($lang->adv_sidebox_uninstall_addon_success, "success");
-				admin_redirect(ADV_SIDEBOX_MODULES_URL);
-			}
-			else
-			{
-				// module no good
-				flash_message($errors, "error");
-				admin_redirect(ADV_SIDEBOX_MODULES_URL);
-			}
-		}
-		else
-		{
-			// :(
-			flash_message($lang->adv_sidebox_uninstall_addon_failure, "error");
-			admin_redirect(ADV_SIDEBOX_MODULES_URL);
-		}
-	}
-
-	// delete module
 	if($mybb->input['action'] == 'delete_addon')
 	{
 		// info goof?
@@ -159,7 +98,7 @@ function adv_sidebox_admin()
 
 			if($adv_sidebox->addons[$this_module]->valid)
 			{
-				$errors = $adv_sidebox->addons[$this_module]->install();
+				$errors = $adv_sidebox->addons[$this_module]->remove();
 			}
 
 			// yay
@@ -247,12 +186,6 @@ function adv_sidebox_manage_sideboxes()
 		if(isset($mybb->input['box']) && (int) $mybb->input['box'] > 0)
 		{
 			$status = $adv_sidebox->sideboxes[(int) $mybb->input['box']]->remove();
-		}
-		else
-		{
-			// no info, give error
-			flash_message($lang->adv_sidebox_delete_box_failure, "error");
-			admin_redirect(ADV_SIDEBOX_MAIN_URL . '&amp;mode=' . $mybb->input['mode']);
 		}
 
 		// success?
@@ -768,7 +701,7 @@ function adv_sidebox_admin_manage_modules()
 {
 	global $lang, $mybb, $db, $plugins, $page, $adv_sidebox;
 
-	if (!$lang->adv_sidebox)
+	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}
@@ -806,28 +739,6 @@ function adv_sidebox_admin_manage_modules()
 	// allow plugins to add types
 	$plugins->run_hooks('adv_sidebox_box_types', $box_types);
 
-	if(is_array($adv_sidebox->addons))
-	{
-		foreach($adv_sidebox->addons as $this_module)
-		{
-			if($this_module->module_type == 'simple')
-			{
-				$active_modules[] = $this_module->base_name;
-			}
-			else
-			{
-				if($this_module->is_installed)
-				{
-					$active_modules[] = $this_module->base_name;
-				}
-				else
-				{
-					$inactive_modules[] = $this_module->base_name;
-				}
-			}
-		}
-	}
-
 	$table = new Table;
 	$table->construct_header($lang->adv_sidebox_custom_box_name);
 	$table->construct_header($lang->adv_sidebox_modules_version);
@@ -836,33 +747,16 @@ function adv_sidebox_admin_manage_modules()
 	$table->construct_header($lang->adv_sidebox_controls, array("colspan" => 2));
 
 	// if there are installed modules display them
-	if(!empty($active_modules))
+	if(!empty($adv_sidebox->addons) && is_array($adv_sidebox->addons))
 	{
-		$table->construct_cell("<div class=\"asb_label\">{$lang->adv_sidebox_active_modules}</div>", array("colspan" => 6));
-		$table->construct_row();
-
-		foreach($active_modules as $this_module)
+		foreach($adv_sidebox->addons as $this_module)
 		{
-			$adv_sidebox->addons[$this_module]->build_table_row($table);
+			$this_module->build_table_row($table);
 		}
 	}
-
-	// If there are uninstalled modules display them
-	if(!empty($inactive_modules))
+	else
 	{
-		$table->construct_cell("<div class=\"asb_label\">{$lang->adv_sidebox_inactive_modules}</div>", array("colspan" => 6));
-		$table->construct_row();
-
-		foreach($inactive_modules as $this_module)
-		{
-			$adv_sidebox->addons[$this_module]->build_table_row($table);
-		}
-	}
-
-	// if there are no modules detected, tell them so
-	if(empty($active_modules) && empty($inactive_modules))
-	{
-		$table->construct_cell($lang->adv_sidebox_no_modules_detected, array("colspan" => 4));
+		$table->construct_cell('<span style="color: #888;">' . $lang->adv_sidebox_no_modules_detected . '</span>', array("colspan" => 6));
 		$table->construct_row();
 	}
 
@@ -879,7 +773,7 @@ function adv_sidebox_admin_custom_boxes()
 {
 	global $lang, $mybb, $db, $plugins, $page, $adv_sidebox;
 
-	if (!$lang->adv_sidebox)
+	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}
@@ -941,7 +835,7 @@ function adv_sidebox_admin_custom_boxes()
 
 				if($input_array['content'] && $input_array['checksum'] && my_strtolower(md5(base64_decode($input_array['content']))) == my_strtolower($input_array['checksum']))
 				{
-					$this_custom = new Sidebox_custom;
+					$this_custom = new Sidebox_custom(0);
 
 					$this_custom->name = $input_array['name'];
 					$this_custom->description = $input_array['description'];
@@ -1053,7 +947,7 @@ function adv_sidebox_admin_custom_boxes()
 			// saving?
 			if($mybb->input['save_box_submit'] == 'Save')
 			{
-				$this_custom = new Sidebox_custom;
+				$this_custom = new Sidebox_custom((int) $mybb->input['box']);
 
 				// get the info
 				$this_custom->name = $mybb->input['box_name'];
@@ -1064,8 +958,6 @@ function adv_sidebox_admin_custom_boxes()
 				{
 					$this_custom->wrap_content = true;
 				}
-
-				$this_custom->id = (int) $mybb->input['box'];
 
 				$status = $this_custom->save();
 
@@ -1230,7 +1122,7 @@ function adv_sidebox_admin_menu(&$sub_menu)
 {
 	global $lang;
 
-	if (!$lang->adv_sidebox)
+	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}

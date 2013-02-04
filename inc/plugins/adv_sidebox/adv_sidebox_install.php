@@ -6,7 +6,7 @@
  * Copyright 2013 WildcardSearch
  * http://www.rantcentralforums.com
  *
- * Check out this project on GitHub: https://github.com/WildcardSearch/Advanced-Sidebox
+ * Check out this project on GitHub: http://wildcardsearch.github.com/Advanced-Sidebox
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ function adv_sidebox_info()
 {
 	global $db, $mybb, $lang;
 
-	if (!$lang->adv_sidebox)
+	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}
@@ -54,7 +54,7 @@ function adv_sidebox_info()
 	return array(
 		"name"			=> $lang->adv_sidebox_name,
 		"description"	=> $lang->adv_sidebox_description1 . "<br/><br/>" . $lang->adv_sidebox_description2 . $settings_link,
-		"website"		=> "https://github.com/WildcardSearch/Advanced-Sidebox",
+		"website"		=> "http://wildcardsearch.github.com/Advanced-Sidebox",
 		"author"		=> "Wildcard",
 		"authorsite"	=> "http://www.rantcentralforums.com",
 		"version"		=> "1.4",
@@ -130,7 +130,10 @@ function adv_sidebox_install()
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD show_sidebox varchar(1) DEFAULT '1'");
 
 	// load language variables
-	$lang->load("adv_sidebox");
+	if(!$lang->adv_sidebox)
+	{
+		$lang->load('adv_sidebox');
+	}
 
 	// settings group and settings
 	adv_sidebox_create_base_settings();
@@ -212,8 +215,6 @@ function adv_sidebox_uninstall()
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='adv_sidebox_width_left'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='adv_sidebox_width_right'");
 	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='adv_sidebox_exclude_theme'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='adv_sidebox_avatar_per_row'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name='adv_sidebox_avatar_max_rows'");
 
 	rebuild_settings();
 
@@ -257,7 +258,7 @@ function adv_sidebox_build_settings_link()
 {
 	global $lang;
 
-	if (!$lang->adv_sidebox)
+	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}
@@ -285,7 +286,7 @@ function adv_sidebox_create_base_settings()
 {
 	global $db, $lang;
 
-	if (!$lang->adv_sidebox)
+	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}

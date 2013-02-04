@@ -6,7 +6,7 @@
  * Copyright © 2013 WildcardSearch
  * http://www.rantcentralforums.com
  *
- * Check out this project on GitHub: https://github.com/WildcardSearch/Advanced-Sidebox
+ * Check out this project on GitHub: http://wildcardsearch.github.com/Advanced-Sidebox
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,7 +69,7 @@ function adv_sidebox_build_filter_links($filter)
 {
 	global $lang;
 
-	if (!$lang->adv_sidebox)
+	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}

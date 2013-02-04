@@ -6,7 +6,7 @@
  * Copyright 2013 WildcardSearch
  * http://www.rantcentralforums.com
  *
- * Check out this project on GitHub: https://github.com/WildcardSearch/Advanced-Sidebox
+ * Check out this project on GitHub: http://wildcardsearch.github.com/Advanced-Sidebox
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -149,17 +149,17 @@
 
 		// set up db array
 		$this_box = array(
-			"display_name"				=>	$db->escape_string($this->display_name),
-			"box_type"						=>	$db->escape_string($this->box_type),
+			"display_name"					=>	$db->escape_string($this->display_name),
+			"box_type"							=>	$db->escape_string($this->box_type),
 			"position"							=>	(int) $this->position,
 			"display_order"					=> 	(int) $this->display_order,
-			"stereo"							=>	(int) $this->stereo,
+			"stereo"								=>	(int) $this->stereo,
 			"wrap_content"					=>	(int) $this->wrap_content,
 			"show_on_index"				=>	(int) $this->show_on_index,
 			"show_on_forumdisplay"	=>	(int) $this->show_on_forumdisplay,
 			"show_on_showthread"	=>	(int) $this->show_on_showthread,
 			"show_on_portal"				=>	(int) $this->show_on_portal,
-			"groups"							=>	$db->escape_string($this->groups),
+			"groups"								=>	$db->escape_string($this->groups),
 			"settings"							=>	$db->escape_string(json_encode($this->settings))
 		);
 
@@ -483,96 +483,88 @@ class Sidebox_addon
 		// input is necessary
 		if($module)
 		{
-			// if the directory exists, it isn't . or .. and it contains a valid module file . . .
-			if(is_dir(ADV_SIDEBOX_MODULES_DIR . "/" . $module) && !in_array($module, array(".", "..")) && file_exists(ADV_SIDEBOX_MODULES_DIR . "/" . $module . "/adv_sidebox_module.php"))
+			$this->base_name = $module;
+
+			$this_info = $this->get_info();
+
+			if($this_info && is_array($this_info))
 			{
-				// require the module for inspection/info
-				require_once ADV_SIDEBOX_MODULES_DIR . "/" . $module . "/adv_sidebox_module.php";
+				// validate and store data
+				$this->valid = true;
+				$this->name = $this_info['name'];
+				$this->description = $this_info['description'];
 
-				// if the info function exists . . .
-				if(function_exists($module . '_asb_info'))
+				// if no author is specified assume this addon is default
+				if(!$this_info['author'])
 				{
-					// get the data
-					$info_function = $module . '_asb_info';
-					$this_info = $info_function();
+					$this_info['author'] = 'Wildcard';
+				}
+				if(!$this_info['author_site'])
+				{
+					$this_info['author_site'] = 'http://wildcardsearch.github.com/Advanced-Sidebox';
+				}
 
-					// validate and store data
-					$this->valid = true;
-					$this->base_name = $module;
-					$this->name = $this_info['name'];
-					$this->description = $this_info['description'];
+				$this->author = $this_info['author'];
+				$this->author_site = $this_info['author_site'];
 
-					// if no author is specified assume this addon is default
-					if(!$this_info['author'])
+				$this->wrap_content = $this_info['wrap_content'];
+
+				$this->settings = $this_info['settings'];
+				$this->discarded_settings = $this_info['discarded_settings'];
+
+				$this->templates = $this_info['templates'];
+				$this->discarded_templates = $this_info['discarded_templates'];
+
+				// if this addon needs templates(s) to work, it is considered complex
+				if(is_array($this->templates))
+				{
+					$this->module_type = 'complex';
+
+					// if the first template seems valid . . .
+					if($this->templates[0]['title'])
 					{
-						$this_info['author'] = 'Wildcard';
-					}
-					if(!$this_info['author_site'])
-					{
-						$this_info['author_site'] = 'https://github.com/WildcardSearch/Advanced-Sidebox';
-					}
+						// see if it exists
+						$query = $db->simple_select('templates', '*', "title='{$this->templates[0]['title']}'");
 
-					$this->author = $this_info['author'];
-					$this->author_site = $this_info['author_site'];
-
-					$this->wrap_content = $this_info['wrap_content'];
-
-					$this->settings = $this_info['settings'];
-					$this->discarded_settings = $this_info['discarded_settings'];
-
-					$this->templates = $this_info['templates'];
-					$this->discarded_templates = $this_info['discarded_templates'];
-
-					// if this addon needs templates(s) to work, it is considered complex
-					if(is_array($this->templates))
-					{
-						$this->module_type = 'complex';
-
-						// if the first template seems valid . . .
-						if($this->templates[0]['title'])
+						// if so then mark this addon as installed
+						if($db->num_rows($query) == 1)
 						{
-							// see if it exists
-							$query = $db->simple_select('templates', '*', "title='{$this->templates[0]['title']}'");
-
-							// if so then mark this addon as installed
-							if($db->num_rows($query) == 1)
-							{
-								$this->is_installed = true;
-							}
+							$this->is_installed = true;
 						}
+					}
+				}
+				else
+				{
+					// otherwise it is a simple module
+					$this->module_type = 'simple';
+					$this->is_installed = true;
+					$this->is_upgraded = true;
+				}
+
+				$this->has_settings = is_array($this->settings);
+
+				// version control
+				$this->version = $this_info['version'];
+				$this->old_version = $this->get_cache_version();
+
+				if($this->is_installed)
+				{
+					// if this module needs to be upgraded . . .
+					if(version_compare($this->old_version, $this->version, '<') || $this->old_version == '' || $this->old_version == 0)
+					{
+						// get-r-done
+						$this->upgrade();
 					}
 					else
 					{
-						// otherwise it is a simple module
-						$this->module_type = 'simple';
-						$this->is_installed = false;
+						// otherwise mark upgrade status
 						$this->is_upgraded = true;
 					}
-
-					if(is_array($this->settings))
-					{
-						$this->has_settings = true;
-					}
-
-					// version control
-					$this->version = $this_info['version'];
-					$this->old_version = $this->get_cache_version();
-
-					// if this module is installed
-					if($this->is_installed)
-					{
-						// and this module needs to be upgraded . . .
-						if(version_compare($this->old_version, $this->version, '<') || $this->old_version == '' || $this->old_version == 0)
-						{
-							// get-r-done
-							$this->upgrade();
-						}
-						else
-						{
-							// otherwise mark upgrade status
-							$this->is_upgraded = true;
-						}
-					}
+				}
+				else
+				{
+					// modules may be marked as uninstalled because of upgrades or fresh installs, lets not take a chance and do an upgrade instead of a fresh install to make sure no trash is left behind from an upgrade
+					$this->upgrade();
 				}
 			}
 		}
@@ -597,7 +589,7 @@ class Sidebox_addon
 		// if there are templates . . .
 		if(is_array($this->templates))
 		{
-			// loop[ through them
+			// loop through them
 			foreach($this->templates as $template)
 			{
 				$query = $db->simple_select('templates', '*', "title='{$template['title']}'");
@@ -605,15 +597,22 @@ class Sidebox_addon
 				// if it exists, update
 				if($db->num_rows($query) == 1)
 				{
-					$db->update_query("templates", $template, "title='{$template['title']}'");
+					$status = $db->update_query("templates", $template, "title='{$template['title']}'");
 				}
 				else
 				{
 					// if not, create a new template
-					$db->insert_query("templates", $template);
+					$status = $db->insert_query("templates", $template);
+				}
+
+				if(!$status)
+				{
+					$error = true;
 				}
 			}
 		}
+
+		return $error;
 	}
 
 	/*
@@ -639,13 +638,25 @@ class Sidebox_addon
 					$status = $db->query("DELETE FROM " . TABLE_PREFIX . "templates WHERE title='{$template['title']}'");
 				}
 
+				if(!$status)
+				{
+					$error = true;
+				}
+
 				// unless specifically asked not to, delete any boxes that use this module
 				if(!$no_cleanup)
 				{
 					$status = $db->query("DELETE FROM " . TABLE_PREFIX . "sideboxes WHERE box_type='{$this->base_name}'");
+
+					if(!$status)
+					{
+						$error = true;
+					}
 				}
 			}
 		}
+
+		return $error;
 	}
 
 	/*
@@ -671,6 +682,11 @@ class Sidebox_addon
 				{
 					$status = $db->query("DELETE FROM " . TABLE_PREFIX . "settings WHERE name='{$setting}'");
 				}
+
+				if(!$status)
+				{
+					$error = true;
+				}
 			}
 
 			// if any templates were dropped in this version
@@ -680,14 +696,22 @@ class Sidebox_addon
 				foreach($this->discarded_templates as $template)
 				{
 					$status = $db->query("DELETE FROM " . TABLE_PREFIX . "templates WHERE title='{$template}'");
+
+					if(!$status)
+					{
+						$error = true;
+					}
 				}
 			}
 
-			// now install the updated module
+			// now install the updated module ($no_cleanup = true signifies no uninstall first)
 			$this->install(true);
 
 			// update the version cache and the upgrade is complete
 			$this->is_upgraded = $this->set_cache_version();
+			$this->is_installed = true;
+
+			return $error;
 		}
 	}
 
@@ -704,6 +728,8 @@ class Sidebox_addon
 		// nuke it
 		@my_rmdir_recursive(ADV_SIDEBOX_MODULES_DIR . "/" . $this->base_name);
 		@rmdir(ADV_SIDEBOX_MODULES_DIR . "/" . $this->base_name);
+
+		return true;
 	}
 
 	/*
@@ -780,6 +806,35 @@ class Sidebox_addon
 	}
 
 	/*
+	 * get_info()
+	 *
+	 * gather information from the module
+	 */
+	function get_info()
+	{
+		if($this->base_name)
+		{
+			$module = $this->base_name;
+
+			// if the directory exists, it isn't . or .. and it contains a valid module file . . .
+			if(is_dir(ADV_SIDEBOX_MODULES_DIR . "/" . $module) && !in_array($module, array(".", "..")) && file_exists(ADV_SIDEBOX_MODULES_DIR . "/" . $module . "/adv_sidebox_module.php"))
+			{
+				// require the module for inspection/info
+				require_once ADV_SIDEBOX_MODULES_DIR . "/" . $module . "/adv_sidebox_module.php";
+
+				// if the info function exists . . .
+				if(function_exists($module . '_asb_info'))
+				{
+					// get the data
+					$info_function = $module . '_asb_info';
+					return $info_function();
+				}
+			}
+		}
+		return false;
+	}
+
+	/*
 	 * build_table_row()
 	 *
 	 * ACP module management page function to build a table row for the current sidebox object
@@ -790,7 +845,7 @@ class Sidebox_addon
 	{
 		global $mybb, $lang;
 
-		if (!$lang->adv_sidebox)
+		if(!$lang->adv_sidebox)
 		{
 			$lang->load('adv_sidebox');
 		}
@@ -813,24 +868,8 @@ class Sidebox_addon
 			// options popup
 			$popup = new PopupMenu('module_' . $this->base_name, $lang->adv_sidebox_options);
 
-			// complex modules get install/uninstall links
-			if($this->module_type == 'complex')
-			{
-				// installed?
-				if($this->is_installed)
-				{
-					// uninstall link
-					$popup->add_item($lang->adv_sidebox_uninstall, ADV_SIDEBOX_URL . '&amp;action=uninstall_addon&amp;addon=' . $this->base_name);
-				}
-				else
-				{
-					// install link
-					$popup->add_item($lang->adv_sidebox_install, ADV_SIDEBOX_URL . '&amp;action=install_addon&amp;addon=' . $this->base_name);
-				}
-			}
-
 			// delete
-			$popup->add_item($lang->adv_sidebox_delete, ADV_SIDEBOX_URL . '&amp;action=delete_addon&amp;addon=' . $this->base_name);
+			$popup->add_item($lang->adv_sidebox_delete, ADV_SIDEBOX_URL . '&amp;action=delete_addon&amp;addon=' . $this->base_name, 'return confirm(\'' . $lang->adv_sidebox_modules_del_warning . '\');');
 
 			// popup cell
 			$this_table->construct_cell($popup->fetch(), array("width" => '10%'));
@@ -862,7 +901,7 @@ class Sidebox_custom
 	 *
 	 * @param - $data is either an int TID of the database record of this custom box or an associative array pulled from the database externally
 	 */
-	function __construct($data)
+	function __construct($data = 0)
 	{
 		// attempt to load the box
 		$this->load($data);
@@ -873,7 +912,7 @@ class Sidebox_custom
 	 *
 	 * @param - $data
 	 */
-	function load($data)
+	function load($data = 0)
 	{
 		global $db;
 
@@ -1056,7 +1095,7 @@ class Sidebox_custom
 			$popup->add_item($lang->adv_sidebox_edit, ADV_SIDEBOX_CUSTOM_URL . "&amp;mode=edit_box&amp;box={$this->id}");
 
 			// delete
-			$popup->add_item($lang->adv_sidebox_delete, ADV_SIDEBOX_CUSTOM_URL . "&amp;mode=delete_box&amp;box={$this->id}");
+			$popup->add_item($lang->adv_sidebox_delete, ADV_SIDEBOX_CUSTOM_URL . "&amp;mode=delete_box&amp;box={$this->id}", 'return confirm(\'' . $lang->adv_sidebox_custom_del_warning . '\');');
 
 			// export
 			$popup->add_item($lang->adv_sidebox_custom_export, ADV_SIDEBOX_EXPORT_URL . "&amp;box={$this->id}");
