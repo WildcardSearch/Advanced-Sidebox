@@ -117,7 +117,7 @@ $l['adv_sidebox_position_right'] = "Right";
 
 // controls
 $l['adv_sidebox_edit'] = 'Edit';
-$l['adv_sidebox_delete'] = 'Delete';
+$l['adv_sidebox_delete'] = 'Remove';
 
 // messages
 $l['adv_sidebox_no_boxes'] = 'no sideboxes added yet';
@@ -125,7 +125,7 @@ $l['adv_sidebox_no_boxes_left'] = 'no left sideboxes';
 $l['adv_sidebox_no_boxes_right'] = 'no right sideboxes';
 $l['adv_sidebox_save_success'] = 'The box was saved successfully';
 $l['adv_sidebox_save_fail'] = 'The box could not be saved';
-$l['adv_sidebox_delete_box_success'] = 'The box was deleted successfully';
+$l['adv_sidebox_delete_box_success'] = 'The box has been removed successfully';
 $l['adv_sidebox_delete_box_failure'] = 'There was an error while attempting to remove the seleced sidebox';
 
 // menus
@@ -200,7 +200,7 @@ $l['adv_sidebox_uninstall_addon_success'] = 'The module was uninstalled successf
 $l['adv_sidebox_uninstall_addon_failure'] = 'The module could not be uninstalled';
 $l['adv_sidebox_delete_addon_success'] = 'The module was deleted successfully';
 $l['adv_sidebox_delete_addon_failure'] = 'The action couldn\'t be taken. Are you using the correct method to access this feature?';
-$l['adv_sidebox_modules_del_warning'] = 'Delete this add-on permanently?\n\nThis cannot be undone!';
+$l['adv_sidebox_modules_del_warning'] = 'If you dont want to lose Advanced Sidebox functionality provided by this addon type,\nbut only unpublish certain box from users view,\nyou should use [remove] option within [manage sideboxes] tab instead.\n\nCAUTION\nYou have selected option which will permanently delete files of selected addon\nfrom your plugins folder, along with its functionality provided to Advanced Sidebox.\nAll boxes which depends on functionality of this addon\nwill be unpublished and removed as well.\nFrom hereafter you will have no more ability to create boxes\ndependend on deleted addon type and its features\n\nThis action cannot be undone without manually reinstalling deleted addon files\nPLEASE CONFIRM PERMANENT DELETION OF FILES';
 
 /*
  * Custom Boxes
