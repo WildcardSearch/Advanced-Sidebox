@@ -1,4 +1,4 @@
-## Advanced-Sidebox 1.3.7
+## Advanced-Sidebox 1.4
 
 <p align="center">
   <img title="Advanced Sidebox Logo" alt="Advanced Sidebox Logo" src="https://github.com/WildcardSearch/Advanced-Sidebox/wiki/asb_logo_320.png" />
@@ -17,10 +17,14 @@ This plugin seeks to give the admin more options when adding side boxes to the f
 * Admin can control many settings for where and how side boxes display
 * Choose one of many default presets with updated content or create semi-static custom boxes with HTML and template variables
 * Import/Export custom boxes to share and backup your work
-* 1.4 currently in testing!
+* Control which scripts side boxes display on
+* Individual side box settings
+* Extensive user group permissions for side boxes
+* Now supports CodePress
+* Newly redesigned Online Staff module
 
 ## Latest upate
 
-01-27-2013 - 1.3.7 released (bug fix) Issue #23 where latest threads module altered thread titles inadvertently
+02-05-2013 1.4 - prerelease
 
-Full Change Log: https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Change-Log
+[Full Change Log](https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Change-Log)
