@@ -19,20 +19,20 @@ function welcome_box_asb_info()
 {
 	return array
 	(
-		"name"				=>	'Welcome',
-		"description"		=>	'Login for guest, info for member',
-		"wrap_content"	=>	true,
-		"version"			=>	"1",
+		"name"						=>	'Welcome',
+		"description"				=>	'Login for guest, info for member',
+		"wrap_content"			=>	true,
+		"version"						=>	"1",
 		"templates"					=>	array
 													(
 														array(
 															"title" => "adv_sidebox_welcome",
-															"template" => "
-	<tr>
-		<td class=\"trow1\">
-			{\$welcometext}
-		</td>
-	</tr>
+															"template" =>
+					"<tr>
+						<td class=\"trow1\">
+							{\$welcometext}
+						</td>
+					</tr>
 															",
 															"sid" => -1
 														),
@@ -40,13 +40,13 @@ function welcome_box_asb_info()
 														(
 															"title" => "adv_sidebox_welcome_membertext",
 															"template" => "
-			<span style=\"float: right;\"><img src=\"{\$mybb->settings[\'bburl\']}/{\$mybb->user[\'avatar\']}\" height=\"50\" width=\"50\" alt=\"{\$mybb->user[\'username\']}\'s avatar\"/>&nbsp;</span><span class=\"smalltext\"><em>{\$lang->member_welcome_lastvisit}</em> {\$lastvisit}<br />
-			{\$lang->since_then}<br />
-			<strong>&raquo;</strong> {\$lang->new_announcements}<br />
-			<strong>&raquo;</strong> {\$lang->new_threads}<br />
-			<strong>&raquo;</strong> {\$lang->new_posts}<br /><br />
-			<a href=\"{\$mybb->settings[\'bburl\']}/search.php?action=getnew\">{\$lang->view_new}</a><br /><a href=\"{\$mybb->settings[\'bburl\']}/search.php?action=getdaily\">{\$lang->view_todays}</a>
-			</span>
+							<span style=\"float: right;\"><img src=\"{\$mybb->settings[\'bburl\']}/{\$mybb->user[\'avatar\']}\" width=\"{\$avatar_width}\" alt=\"{\$mybb->user[\'username\']}\'s avatar\"/>&nbsp;</span><span class=\"smalltext\"><em>{\$lang->member_welcome_lastvisit}</em> {\$lastvisit}<br />
+							{\$lang->since_then}<br />
+							<strong>&raquo;</strong> {\$lang->new_announcements}<br />
+							<strong>&raquo;</strong> {\$lang->new_threads}<br />
+							<strong>&raquo;</strong> {\$lang->new_posts}<br /><br />
+							<a href=\"{\$mybb->settings[\'bburl\']}/search.php?action=getnew\">{\$lang->view_new}</a><br /><a href=\"{\$mybb->settings[\'bburl\']}/search.php?action=getdaily\">{\$lang->view_todays}</a>
+							</span>
 														",
 															"sid" => -1
 														),
@@ -54,15 +54,15 @@ function welcome_box_asb_info()
 														(
 															"title" => "adv_sidebox_welcome_guesttext",
 															"template" => "
-			<span class=\"smalltext\">{\$lang->guest_welcome_registration}</span><br />
-			<br />
-			<form method=\"post\" action=\"{\$mybb->settings[\'bburl\']}/member.php\"><input type=\"hidden\" name=\"action\" value=\"do_login\" />
-				<input type=\"hidden\" name=\"url\" value=\"{\$portal_url}\" />
-				{\$username}<br />&nbsp;&nbsp;<input type=\"text\" class=\"textbox\" name=\"username\" value=\"\" /><br /><br />
-				{\$lang->password}<br />&nbsp;&nbsp;<input type=\"password\" class=\"textbox\" name=\"password\" value=\"\" /><br /><br />
-				<label title=\"{\$lang->remember_me_desc}\"><input type=\"checkbox\" class=\"checkbox\" name=\"remember\" value=\"yes\" /> {\$lang->remember_me}</label><br /><br />
-				<br /><input type=\"submit\" class=\"button\" name=\"loginsubmit\" value=\"{\$lang->login}\" />
-			</form>
+							<span class=\"smalltext\">{\$lang->guest_welcome_registration}</span><br />
+							<br />
+							<form method=\"post\" action=\"{\$mybb->settings[\'bburl\']}/member.php\"><input type=\"hidden\" name=\"action\" value=\"do_login\" />
+								<input type=\"hidden\" name=\"url\" value=\"{\$portal_url}\" />
+								{\$username}<br />&nbsp;&nbsp;<input type=\"text\" class=\"textbox\" name=\"username\" value=\"\" /><br /><br />
+								{\$lang->password}<br />&nbsp;&nbsp;<input type=\"password\" class=\"textbox\" name=\"password\" value=\"\" /><br /><br />
+								<label title=\"{\$lang->remember_me_desc}\"><input type=\"checkbox\" class=\"checkbox\" name=\"remember\" value=\"yes\" /> {\$lang->remember_me}</label><br /><br />
+								<br /><input type=\"submit\" class=\"button\" name=\"loginsubmit\" value=\"{\$lang->login}\" />
+							</form>
 															",
 															"sid" => -1
 														)
@@ -70,7 +70,7 @@ function welcome_box_asb_info()
 	);
 }
 
-function welcome_box_asb_build_template($settings, $template_var)
+function welcome_box_asb_build_template($settings, $template_var, $width)
 {
 	// don't forget to declare your variable! will not work without this
 	global $$template_var; // <-- important!
@@ -80,11 +80,11 @@ function welcome_box_asb_build_template($settings, $template_var)
 	$portal_url='member.php';
 
 	// Load global and custom language phrases
-	if (!$lang->portal)
+	if(!$lang->portal)
 	{
 		$lang->load('portal');
 	}
-	if (!$lang->adv_sidebox)
+	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}
@@ -155,6 +155,9 @@ function welcome_box_asb_build_template($settings, $template_var)
 		{
 			$lang->new_posts = $lang->sprintf($lang->new_posts, $newposts);
 		}
+
+		$avatar_width = (int) ($width / 5);
+
 		eval("\$welcometext = \"".$templates->get("adv_sidebox_welcome_membertext")."\";");
 
 	}
@@ -179,12 +182,9 @@ function welcome_box_asb_build_template($settings, $template_var)
 		}
 		eval("\$welcometext = \"" . $templates->get("portal_welcome_guesttext") . "\";");
 	}
+
 	$lang->welcome = $lang->sprintf($lang->welcome, $mybb->user['username']);
 	eval("\$" . $template_var . " = \"" . $templates->get("adv_sidebox_welcome") . "\";");
-	if($mybb->user['uid'] == 0)
-	{
-		$mybb->user['username'] = "";
-	}
 }
 
 ?>

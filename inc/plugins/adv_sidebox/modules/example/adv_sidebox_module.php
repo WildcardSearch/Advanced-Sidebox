@@ -18,7 +18,7 @@ function example_asb_info()
 		"name"				=>	'[Example 1] Simplest Box',
 		"description"		=>	'As simple as it gets. This box illustrates the easiest way to create an addon module',
 		"wrap_content"	=>	true,
-		"version"			=>	"1"
+		"version"				=>	"1"
 	);
 }
 
@@ -36,9 +36,9 @@ function example_asb_build_template($settings, $template_var)
 	 * note the structure, this content should appropriate (and validate) as the contents of an HTML <tbody> element in structure and content.
 	 */
 	$hello_world = '
-		<tr>
-			<td class=\"trow1\">Same from either side.</td>
-		</tr>';
+					<tr>
+						<td class=\"trow1\">Same from either side.</td>
+					</tr>';
 
 	// then we will set the modules template variable by eval()ing its contents to the variable we declared global above
 	eval("\$" . $template_var . " = \"" . $hello_world . "\";");

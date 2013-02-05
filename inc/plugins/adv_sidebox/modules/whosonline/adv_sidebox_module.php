@@ -30,66 +30,66 @@ function whosonline_asb_info()
 	(
 		"name"							=>	'Who\'s Online',
 		"description"					=>	'Currently online members\' avatars',
-		"version"						=>	"3",
+		"version"							=>	"1",
 		"wrap_content"				=>	true,
-		"discarded_settings"	=>	array
-													(
-														"adv_sidebox_avatar_per_row",
-														"adv_sidebox_avatar_max_rows"
-													),
+		"discarded_settings"		=>	array
+														(
+															"adv_sidebox_avatar_per_row",
+															"adv_sidebox_avatar_max_rows"
+														),
 		"settings"						=>	array
-													(
-														"adv_sidebox_avatar_per_row"	=> array
 														(
-															"sid"					=> "NULL",
-															"name"				=> "adv_sidebox_avatar_per_row",
-															"title"				=> $lang->adv_sidebox_num_avatars_per_row,
-															"description"		=> $lang->adv_sidebox_num_avatars_per_row_description,
-															"optionscode"	=> "text",
-															"value"				=> '4'
+															"adv_sidebox_avatar_per_row"	=> array
+															(
+																"sid"					=> "NULL",
+																"name"				=> "adv_sidebox_avatar_per_row",
+																"title"				=> $lang->adv_sidebox_num_avatars_per_row,
+																"description"		=> $lang->adv_sidebox_num_avatars_per_row_description,
+																"optionscode"	=> "text",
+																"value"				=> '4'
+															),
+															"adv_sidebox_avatar_max_rows"	=> array
+															(
+																"sid"					=> "NULL",
+																"name"				=> "adv_sidebox_avatar_max_rows",
+																"title"				=> $lang->adv_sidebox_avatar_max_rows,
+																"description"		=> $lang->adv_sidebox_avatar_max_rows_description,
+																"optionscode"	=> "text",
+																"value"				=> '3'
+															)
 														),
-														"adv_sidebox_avatar_max_rows"	=> array
-														(
-															"sid"					=> "NULL",
-															"name"				=> "adv_sidebox_avatar_max_rows",
-															"title"				=> $lang->adv_sidebox_avatar_max_rows,
-															"description"		=> $lang->adv_sidebox_avatar_max_rows_description,
-															"optionscode"	=> "text",
-															"value"				=> '3'
-														)
-													),
 		"discarded_templates"	=>	array
-													(
-														"adv_sidebox_whosonline_left",
-														"adv_sidebox_whosonline_right",
-														"adv_sidebox_whosonline_memberbit_left",
-														"adv_sidebox_whosonline_memberbit_right"
-													),
-		"templates"					=>	array
-													(
-														array
 														(
-															"title" => "adv_sidebox_whosonline",
-															"template" => "
-	<tr>
-		<td class=\"trow1\">
-			<span class=\"smalltext\">{\$lang->online_users}<br /><strong>&raquo;</strong> {\$lang->online_counts}</span>
-		</td>
-	</tr>
-	<tr style=\"{\$adv_sidebox_hide}\">
-		<td class=\"trow2\">{\$onlinemembers}</td>
-	</tr>
-															",
-															"sid" => -1
+															"adv_sidebox_whosonline_left",
+															"adv_sidebox_whosonline_right",
+															"adv_sidebox_whosonline_memberbit_left",
+															"adv_sidebox_whosonline_memberbit_right"
 														),
-														array
+		"templates"						=>	array
 														(
-															"title" => "adv_sidebox_whosonline_memberbit",
-															"template" => "
-			<a href=\"{\$mybb->settings[\'bburl\']}/{\$user[\'profilelink\']}\">{\$user_avatar}</a>",
-															"sid" => -1
+															array
+															(
+																"title" => "adv_sidebox_whosonline",
+																"template" => "
+						<tr>
+							<td class=\"trow1\">
+								<span class=\"smalltext\">{\$lang->online_users}<br /><strong>&raquo;</strong> {\$lang->online_counts}</span>
+							</td>
+						</tr>
+						<tr style=\"{\$adv_sidebox_hide}\">
+							<td class=\"trow2\">{\$onlinemembers}</td>
+						</tr>
+																",
+																"sid" => -1
+															),
+															array
+															(
+																"title" => "adv_sidebox_whosonline_memberbit",
+																"template" => "
+				<a href=\"{\$mybb->settings[\'bburl\']}/{\$user[\'profilelink\']}\">{\$user_avatar}</a>",
+																"sid" => -1
+															)
 														)
-													)
 	);
 }
 
@@ -112,8 +112,6 @@ function whosonline_asb_build_template($settings, $template_var, $width)
 	// width
 	$adv_sidebox_width_left = (int) $mybb->settings['adv_sidebox_width_left'];
 	$adv_sidebox_width_right = (int) $mybb->settings['adv_sidebox_width_right'];
-
-	//die(var_dump($settings));
 
 	$rowlength = (int) $settings['adv_sidebox_avatar_per_row']['value'];
 	$max_rows = (int) $settings['adv_sidebox_avatar_max_rows']['value'];
@@ -196,7 +194,7 @@ function whosonline_asb_build_template($settings, $template_var, $width)
 					$avatar_filename = "images/default_avatar.gif";
 				}
 
-				$user_avatar = '<img style="' . $avatar_style . '" src="' . $avatar_filename . '" alt="' . $lang->adv_sidebox_avatar . '" title="' . $user['username'] . '\'s ' . $lang->adv_sidebox_avatar_lc . '" width="' . $avatar_width . 'px" height="' . $avatar_height . 'px"/>';
+				$user_avatar = '<img style="' . $avatar_style . '" src="' . $avatar_filename . '" alt="' . $lang->adv_sidebox_avatar . '" title="' . $user['username'] . '\'s ' . $lang->adv_sidebox_avatar_lc . '" width="' . $avatar_width . 'px"/>';
 
 				// If we reach the end of the row, insert a <br />
 				if (($membercount - (($row - 1) * $rowlength)) == $rowlength)
@@ -220,7 +218,7 @@ function whosonline_asb_build_template($settings, $template_var, $width)
 							$enough_already = true;
 
 							// . . . and insert link to the WOL full list
-							$onlinemembers .= '<a href="' . $mybb->settings['bburl'] . '/online.php" title="' . $lang->adv_sidebox_see_all_title . '">'.$lang->adv_sidebox_see_all_alt.'</a>';
+							$onlinemembers .= '<a href="' . $mybb->settings['bburl'] . '/online.php" title="' . $lang->adv_sidebox_see_all_title . '"><img style="' . $avatar_style . '" src="images/see_all.gif" alt="' . $lang->adv_sidebox_see_all_alt . '" title="' . adv_sidebox_see_all_alt . '" width="' . $avatar_width . 'px"/></a>';
 						}
 					}
 					// . . . otherwise, add this avy to the list

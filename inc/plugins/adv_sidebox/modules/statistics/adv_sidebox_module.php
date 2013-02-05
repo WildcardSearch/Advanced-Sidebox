@@ -21,27 +21,27 @@ function statistics_asb_info()
 {
 	return array
 	(
-		"name"				=>	'Statistics',
-		"description"		=>	'Forum statistics and figures',
-		"wrap_content"	=>	true,
-		"version"			=>	"1",
+		"name"						=>	'Statistics',
+		"description"				=>	'Forum statistics and figures',
+		"wrap_content"			=>	true,
+		"version"						=>	"1",
 		"templates"					=>	array
 													(
 														array
 														(
 															        "title" => "adv_sidebox_statistics",
 																	"template" => "
-	<tr>
-		<td class=\"trow1\">
-			<span class=\"smalltext\">
-			<strong>&raquo; </strong>{\$lang->num_members} {\$statistics[\'numusers\']}<br />
-			<strong>&raquo; </strong>{\$lang->latest_member} {\$newestmember}<br />
-			<strong>&raquo; </strong>{\$lang->num_threads} {\$statistics[\'numthreads\']}<br />
-			<strong>&raquo; </strong>{\$lang->num_posts} {\$statistics[\'numposts\']}
-			<br /><br /><a href=\"{\$mybb->settings[\'bburl\']}/stats.php\">{\$lang->full_stats}</a>
-			</span>
-		</td>
-	</tr>
+					<tr>
+						<td class=\"trow1\">
+							<span class=\"smalltext\">
+							<strong>&raquo; </strong>{\$lang->num_members} {\$statistics[\'numusers\']}<br />
+							<strong>&raquo; </strong>{\$lang->latest_member} {\$newestmember}<br />
+							<strong>&raquo; </strong>{\$lang->num_threads} {\$statistics[\'numthreads\']}<br />
+							<strong>&raquo; </strong>{\$lang->num_posts} {\$statistics[\'numposts\']}
+							<br /><br /><a href=\"{\$mybb->settings[\'bburl\']}/stats.php\">{\$lang->full_stats}</a>
+							</span>
+						</td>
+					</tr>
 																	",
 																	"sid" => -1
 														)

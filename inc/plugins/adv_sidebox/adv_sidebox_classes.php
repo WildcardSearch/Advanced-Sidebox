@@ -373,24 +373,29 @@
 			}
 
 			$content =  '
-	<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder ' . $this->box_type . '_main_' . $this->id . '">
-		<thead>
-			<tr>
-				<td class="thead"><div class="expcolimage"><img src="{$theme[\'imgdir\']}/' . $expcolimage . '" id="' . $this->box_type . '_' . $this->id . '_img" class="expander" alt="' . $expaltext . '" title="' . $expaltext . '" /></div><strong>' . $this->display_name . '</strong>
-				</td>
-			</tr>
-		</thead>
-		<tbody style="' . $expdisplay . '" id="' . $this->box_type . '_' . $this->id . '_e">
-			' . $content . '
-		</tbody>
-	</table><br />';
+			<!-- start: adv_sidebox header and expander for side box #' . $this->id . ' -->
+			<table style="word-wrap: break-word;" border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder ' . $this->box_type . '_main_' . $this->id . '">
+				<thead>
+					<tr>
+						<td class="thead"><div class="expcolimage"><img src="{$theme[\'imgdir\']}/' . $expcolimage . '" id="' . $this->box_type . '_' . $this->id . '_img" class="expander" alt="' . $expaltext . '" title="' . $expaltext . '" /></div><strong>' . $this->display_name . '</strong>
+						</td>
+					</tr>
+				</thead>
+				<tbody style="' . $expdisplay . '" id="' . $this->box_type . '_' . $this->id . '_e">
+					' . $content . '
+				</tbody>
+			</table><br />
+			<!-- end: adv_sidebox header and expander for side box #' . $this->id . ' -->';
 		}
 
 		// if there is anything to return
 		if($content)
 		{
 			// give it up
-			return $content;
+			return '
+			<!-- start side box #' . $this->id . ' - box type ' . $this->box_type . ' -->
+			' . $content . '
+			<!-- end side box #' . $this->id . ' - box type ' . $this->box_type . ' -->';
 		}
 
 		// otherwise return failure
@@ -856,14 +861,8 @@ class Sidebox_addon
 			// name
 			$this_table->construct_cell($this->name);
 
-			// version
-			$this_table->construct_cell('<strong>' . $this->version . '</strong>');
-
 			// description
 			$this_table->construct_cell($this->description);
-
-			// author (site link)
-			$this_table->construct_cell('<a href="' . $this->author_site . '">' . $this->author . '</a>');
 
 			// options popup
 			$popup = new PopupMenu('module_' . $this->base_name, $lang->adv_sidebox_options);
@@ -1605,7 +1604,10 @@ class Sidebox_handler
 		if($content)
 		{
 			// if not, pad it to ensure the width is constant regardless of content
-			return $content . '<img src="inc/plugins/adv_sidebox/images/transparent.gif" width="' . $width . '" height="1" alt="" title=""/>';
+			return $content . '
+		<!-- start: content pad -->
+		<img src="inc/plugins/adv_sidebox/images/transparent.gif" width="' . $width . '" height="1" alt="" title=""/>
+		<!-- end: content pad -->';
 		}
 	}
 

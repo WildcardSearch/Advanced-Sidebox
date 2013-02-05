@@ -19,23 +19,23 @@ function private_messages_asb_info()
 {
 	return array
 	(
-		"name"				=>	'Private Messages',
-		"description"		=>	'Lists the user\'s PM info',
-		"wrap_content"	=>	true,
-		"version"			=>	"1.1",
+		"name"						=>	'Private Messages',
+		"description"				=>	'Lists the user\'s PM info',
+		"wrap_content"			=>	true,
+		"version"						=>	"1",
 		"templates"					=>	array
 													(
 														array
 														(
 															"title" => "adv_sidebox_pms",
 															"template" => "
-	<tr>
-		<td class=\"trow1\">
-			<span class=\"smalltext\">{\$lang->pms_received_new}<br /><br />
-			<strong>&raquo; </strong> <strong>{\$mybb->user[\'pms_unread\']}</strong> {\$lang->pms_unread}<br />
-			<strong>&raquo; </strong> <strong>{\$mybb->user[\'pms_total\']}</strong> {\$lang->pms_total}</span>
-		</td>
-	</tr>
+					<tr>
+						<td class=\"trow1\">
+							<span class=\"smalltext\">{\$lang->pms_received_new}<br /><br />
+							<strong>&raquo; </strong> <strong>{\$mybb->user[\'pms_unread\']}</strong> {\$lang->pms_unread}<br />
+							<strong>&raquo; </strong> <strong>{\$mybb->user[\'pms_total\']}</strong> {\$lang->pms_total}</span>
+						</td>
+					</tr>
 															",
 															"sid" => -1
 														)
@@ -78,7 +78,7 @@ function private_messages_asb_build_template($settings, $template_var)
 	else
 	{
 		$lang->pms_received_new = $lang->sprintf($lang->pms_received_new, $mybb->user['username'], $mybb->user['pms_unread']);
-		
+
 		eval("\$" . $template_var . " = \"" . $templates->get("adv_sidebox_pms") . "\";");
 	}
 }

@@ -138,26 +138,12 @@ function adv_sidebox_admin()
 					flash_message($lang->adv_sidebox_theme_exclude_select_update_success, "success");
 					admin_redirect(adv_sidebox_build_settings_url($gid));
 				}
-				else
-				{
-					// weep
-					flash_message($lang->adv_sidebox_theme_exclude_select_update_fail, "error");
-					admin_redirect(adv_sidebox_build_settings_url($gid));
-				}
-			}
-			else
-			{
-				// setting doesn't exist
-				flash_message($lang->adv_sidebox_theme_exclude_select_update_fail, "error");
-				admin_redirect(adv_sidebox_build_settings_url($gid));
 			}
 		}
-		else
-		{
-			// settingsgroup doesn't exist
-			flash_message($lang->adv_sidebox_theme_exclude_select_update_fail, "error");
-			admin_redirect('index.php?module=config-settings');
-		}
+
+		// settingsgroup doesn't exist
+		flash_message($lang->adv_sidebox_theme_exclude_select_update_fail, "error");
+		admin_redirect('index.php?module=config-settings');
 	}
 
 	exit();
@@ -194,12 +180,10 @@ function adv_sidebox_manage_sideboxes()
 			flash_message($lang->adv_sidebox_delete_box_success, "success");
 			admin_redirect(ADV_SIDEBOX_MAIN_URL . '&amp;mode=' . $mybb->input['mode']);
 		}
-		else
-		{
-			// fail
-			flash_message($lang->adv_sidebox_delete_box_failure, "error");
-			admin_redirect(ADV_SIDEBOX_MAIN_URL . '&amp;mode=' . $mybb->input['mode']);
-		}
+
+		// fail
+		flash_message($lang->adv_sidebox_delete_box_failure, "error");
+		admin_redirect(ADV_SIDEBOX_MAIN_URL . '&amp;mode=' . $mybb->input['mode']);
 	}
 
 	$page->add_breadcrumb_item($lang->adv_sidebox_name);
@@ -326,23 +310,24 @@ function adv_sidebox_admin_editbox()
 		{
 			$this_sidebox = new Sidebox();
 
+			// translate the position
+			if($mybb->input['box_position'] == 'right')
+			{
+				$this_sidebox->position = 1;
+			}
+
 			// help them keep their display orders spaced
 			if(!isset($mybb->input['display_order']) || (int) $mybb->input['display_order'] == 0)
 			{
-				$query = $db->simple_select('sideboxes', 'display_order');
+				// get a total number of sideboxes on the same side and put it at the bottom
+				$query = $db->simple_select('sideboxes', 'display_order', "position='{$this_sidebox->position}'");
 
-				$this_sidebox->display_order = ((int) $db->num_rows($query) + 1) * 10;
+				$this_sidebox->display_order = (int) (($db->num_rows($query) + 1) * 10);
 			}
 			else
 			{
 				// or back off if they entered a value
 				$this_sidebox->display_order = (int) $mybb->input['display_order'];
-			}
-
-			// translate the position
-			if($mybb->input['box_position'] == 'right')
-			{
-				$this_sidebox->position = 1;
 			}
 
 			// store all the scripts
@@ -433,6 +418,10 @@ function adv_sidebox_admin_editbox()
 			{
 				// otherwise enable for all groups
 				$this_sidebox->groups = 'all';
+
+				/*
+				 * the reason that no_groups=all_groups is that side boxes from earlier versions (< 1.4) didn't have group permissions and therefore didn't store those values-- so the default value for side boxes is to be shown to all groups
+				 */
 			}
 
 			// box_type
@@ -504,12 +493,11 @@ function adv_sidebox_admin_editbox()
 				flash_message($lang->adv_sidebox_save_success, "success");
 				admin_redirect(ADV_SIDEBOX_MAIN_URL . '&amp;mode=' . $mybb->input['this_mode']);
 			}
-			else
-			{
-				// :(
-				flash_message($lang->adv_sidebox_save_fail, "error");
-				admin_redirect(ADV_SIDEBOX_MAIN_URL . '&amp;mode=' . $mybb->input['this_mode']);
-			}
+
+			// :(
+			flash_message($lang->adv_sidebox_save_fail, "error");
+			admin_redirect(ADV_SIDEBOX_MAIN_URL . '&amp;mode=' . $mybb->input['this_mode']);
+
 		}
 	}
 
@@ -741,10 +729,8 @@ function adv_sidebox_admin_manage_modules()
 
 	$table = new Table;
 	$table->construct_header($lang->adv_sidebox_custom_box_name);
-	$table->construct_header($lang->adv_sidebox_modules_version);
 	$table->construct_header($lang->adv_sidebox_custom_box_desc);
-	$table->construct_header($lang->adv_sidebox_modules_author);
-	$table->construct_header($lang->adv_sidebox_controls, array("colspan" => 2));
+	$table->construct_header($lang->adv_sidebox_controls);
 
 	// if there are installed modules display them
 	if(!empty($adv_sidebox->addons) && is_array($adv_sidebox->addons))
@@ -756,7 +742,7 @@ function adv_sidebox_admin_manage_modules()
 	}
 	else
 	{
-		$table->construct_cell('<span style="color: #888;">' . $lang->adv_sidebox_no_modules_detected . '</span>', array("colspan" => 6));
+		$table->construct_cell('<span style="color: #888;">' . $lang->adv_sidebox_no_modules_detected . '</span>', array("colspan" => 3));
 		$table->construct_row();
 	}
 
@@ -830,34 +816,34 @@ function adv_sidebox_admin_custom_boxes()
 							}
 							$input_array[$property] = $value['value'];
 						}
-					}
-				}
 
-				if($input_array['content'] && $input_array['checksum'] && my_strtolower(md5(base64_decode($input_array['content']))) == my_strtolower($input_array['checksum']))
-				{
-					$this_custom = new Sidebox_custom(0);
+						if($input_array['content'] && $input_array['checksum'] && my_strtolower(md5(base64_decode($input_array['content']))) == my_strtolower($input_array['checksum']))
+						{
+							$this_custom = new Sidebox_custom(0);
 
-					$this_custom->name = $input_array['name'];
-					$this_custom->description = $input_array['description'];
-					$this_custom->wrap_content = (int) $input_array['wrap_content'];
-					$this_custom->content = trim(base64_decode($input_array['content']));
+							$this_custom->name = $input_array['name'];
+							$this_custom->description = $input_array['description'];
+							$this_custom->wrap_content = (int) $input_array['wrap_content'];
+							$this_custom->content = trim(base64_decode($input_array['content']));
 
-					$status = $this_custom->save();
+							$status = $this_custom->save();
 
-					if(!$status)
-					{
-						$error = $lang->adv_sidebox_custom_import_save_fail;
-					}
-				}
-				else
-				{
-					if($input_array['content'])
-					{
-						$error = $lang->adv_sidebox_custom_import_file_corrupted;
-					}
-					else
-					{
-						$error = $lang->adv_sidebox_custom_import_file_empty;
+							if(!$status)
+							{
+								$error = $lang->adv_sidebox_custom_import_save_fail;
+							}
+						}
+						else
+						{
+							if($input_array['content'])
+							{
+								$error = $lang->adv_sidebox_custom_import_file_corrupted;
+							}
+							else
+							{
+								$error = $lang->adv_sidebox_custom_import_file_empty;
+							}
+						}
 					}
 				}
 
@@ -884,7 +870,6 @@ function adv_sidebox_admin_custom_boxes()
 		$form_container = new FormContainer($lang->adv_sidebox_custom_import);
 		$form_container->output_row($lang->adv_sidebox_custom_import_select_file, '', $form->generate_file_upload_box('file'));
 		$form_container->end();
-
 		$buttons[] = $form->generate_submit_button($lang->adv_sidebox_custom_import, array('name' => 'import'));
 		$form->output_submit_wrapper($buttons);
 		$form->end();
@@ -895,7 +880,7 @@ function adv_sidebox_admin_custom_boxes()
 
 	if($mybb->input['mode'] == 'export')
 	{
-		if(isset($mybb->input['box']))
+		if(isset($mybb->input['box']) && (int) $mybb->input['box'] > 0)
 		{
 			if(!$adv_sidebox->custom['asb_custom_' . $mybb->input['box']]->id)
 			{
@@ -935,6 +920,18 @@ function adv_sidebox_admin_custom_boxes()
 	margin-bottom: -3px;
 }
 </style>';
+
+	$queryadmin=$db->simple_select('adminoptions','*','uid='.$mybb->user['uid']);
+	$admin_options=$db->fetch_array($queryadmin);
+	if($admin_options['codepress'] != 0 && $mybb->input['mode'] == 'edit_box')
+	{
+		$page->extra_header = '<link type="text/css" href="./jscripts/codepress/languages/codepress-mybb.css" rel="stylesheet" id="cp-lang-style" />
+<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
+<script type="text/javascript">
+CodePress.language=\'mybb\';
+</script>';
+	}
+
 	adv_sidebox_output_header();
 	adv_sidebox_output_tabs('adv_sidebox_custom');
 
@@ -968,12 +965,10 @@ function adv_sidebox_admin_custom_boxes()
 					flash_message($lang->adv_sidebox_custom_box_save_success, "success");
 					admin_redirect(ADV_SIDEBOX_CUSTOM_URL);
 				}
-				else
-				{
-					// :(
-					flash_message($lang->adv_sidebox_custom_box_save_failure, "error");
-					admin_redirect(ADV_SIDEBOX_CUSTOM_URL);
-				}
+
+				// :(
+				flash_message($lang->adv_sidebox_custom_box_save_failure, "error");
+				admin_redirect(ADV_SIDEBOX_CUSTOM_URL);
 			}
 		}
 
@@ -1017,21 +1012,21 @@ function adv_sidebox_admin_custom_boxes()
 			// new box
 			$specify_box = '';
 			$this_box->content = '
-		<tr>
-			<td class="trow1">Place your custom content here. HTML can be used in conjunction with certain template variables, language variables and environment variables.</td>
-		</tr>
-		<tr>
-			<td class="trow2">For example:</td>
-		</tr>
-		<tr>
-			<td class="trow1"><strong>User:</strong> {$mybb->user[\'username\']}</td>
-		</tr>
-		<tr>
-			<td class="trow2"><strong>UID:</strong> {$mybb->user[\'uid\']}</td>
-		</tr>
-		<tr>
-			<td class="trow1"><strong>Theme name:</strong> {$theme[\'name\']}</td>
-		</tr>';
+	<tr>
+		<td class="trow1">Place your custom content here. HTML can be used in conjunction with certain template variables, language variables and environment variables.</td>
+	</tr>
+	<tr>
+		<td class="trow2">For example:</td>
+	</tr>
+	<tr>
+		<td class="trow1"><strong>User:</strong> {$mybb->user[\'username\']}</td>
+	</tr>
+	<tr>
+		<td class="trow2"><strong>UID:</strong> {$mybb->user[\'uid\']}</td>
+	</tr>
+	<tr>
+		<td class="trow1"><strong>Theme name:</strong> {$theme[\'name\']}</td>
+	</tr>';
 			$this_box->wrap_content = true;
 		}
 
@@ -1048,13 +1043,29 @@ function adv_sidebox_admin_custom_boxes()
 		$form_container->output_row($lang->adv_sidebox_custom_box_wrap_content, '', $form->generate_check_box('wrap_content', 'yes', $lang->adv_sidebox_custom_box_wrap_content_desc, array("checked" => $this_box->wrap_content)));
 
 		// content
-		$form_container->output_row($lang->adv_sidebox_add_custom_box_edit, $lang->adv_sidebox_add_custom_box_edit_desc, $form->generate_text_area('box_content', $this_box->content, array("id" => 'box_content', "rows" => '15', "cols" => '200')), array("id" => 'box_content'));
+		$form_container->output_row($lang->adv_sidebox_add_custom_box_edit, $lang->adv_sidebox_add_custom_box_edit_desc, $form->generate_text_area('box_content', $this_box->content, array("id" => 'box_content', 'class'=>'codepress mybb', 'style'=>'width:100%; height:320px;')), array("id" => 'box_content'));
 
 		// finish form
 		$form_container->end();
 		$buttons[] = $form->generate_submit_button('Save', array('name' => 'save_box_submit'));
 		$form->output_submit_wrapper($buttons);
 		$form->end();
+
+		if($admin_options['codepress'] != 0)
+		{
+			echo '<script type="text/javascript">
+	Event.observe(\'edit_box\',\'submit\',function()
+	{
+		if($(\'box_content_cp\'))
+		{
+			var area=$(\'box_content_cp\');
+			area.id=\'box_content\';
+			area.value=box_content.getCode();
+			area.disabled=false;
+		}
+	});
+</script>';
+		}
 	}
 
 	if($mybb->input['mode'] == 'delete_box')

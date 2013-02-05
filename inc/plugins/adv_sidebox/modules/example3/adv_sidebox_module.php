@@ -2,7 +2,7 @@
 /*
  * Advanced Sidebox Add-On Example #3
  *
- * This is an example of the an Advanced Sidebox add-on, but using a MyBB standard template to eval() content.
+ * This is an example of the an Advanced Sidebox add-on, but using a simple text setting to control content.
  */
 
 // Include a check for Advanced Sidebox
@@ -18,7 +18,7 @@ function example3_asb_info()
 		"name"				=>	'[Example 3] Using Settings',
 		"description"		=>	'A simple box to illustrate using settings to control content',
 		"wrap_content"	=>	true,
-		"version"			=>	"1",
+		"version"				=>	"1",
 		"settings"			=>	array
 										(
 											"example3_setting"	=>	array
@@ -38,14 +38,18 @@ function example3_asb_build_template($settings, $template_var)
 {
 	global $$template_var;
 
-	if($settings['example3_setting']['value'] != '')
+	if(!$settings['example3_setting']['value'])
 	{
-		$template = '
-	<tr>
-		<td><span style=\"color: red; font-size: 1.4em; font-weight: bold;\">' . $settings['example3_setting']['value'] . '</span>
-		</td>
-	</tr>';
+		$settings['example3_setting']['value'] = 'Custom text can be used by entering a value for the Announcement Text.';
 	}
+
+	$template = '
+			<tr>
+				<td><span style=\"color: red; font-size: 1.4em; font-weight: bold;\">' . $settings['example3_setting']['value'] . '</span>
+				</td>
+			</tr>
+			';
+
 
 	// then eval() the template variable with the template above and you are done
 	eval("\$" . $template_var . " = \"" . $template . "\";");

@@ -22,7 +22,7 @@ function latest_threads_asb_info()
 	(
 		"name"							=>	'Latest Threads',
 		"description"					=>	'Lists the latest forum threads',
-		"version"						=>	"2",
+		"version"							=>	"1",
 		"wrap_content"				=>	true,
 		"discarded_settings"	=>	array
 													(
@@ -52,17 +52,17 @@ function latest_threads_asb_info()
 														(
 															"title" => "adv_sidebox_latest_threads_thread",
 															"template" => "
-	<tr>
-		<td class=\"{\$altbg}\">
-			{\$gotounread}<a href=\"{\$mybb->settings[\'bburl\']}/{\$thread[\'threadlink\']}\" title=\"{\$thread[\'subject\']}\"><strong>{\$thread[\'subject\']}</strong></a>
-			<span class=\"smalltext\"><br />
-				<a href=\"{\$thread[\'lastpostlink\']}\" title=\"{\$lang->adv_sidebox_latest_threads_lastpost}\">{\$lang->adv_sidebox_latest_threads_lastpost}</a> {\$lastposterlink}<br />
-				{\$lastpostdate} {\$lastposttime}<br />
-				<strong>&raquo; </strong>{\$lang->adv_sidebox_latest_threads_replies} {\$thread[\'replies\']}<br />
-				<strong>&raquo; </strong>{\$lang->adv_sidebox_latest_threads_views} {\$thread[\'views\']}
-			</span>
-		</td>
-	</tr>
+					<tr>
+						<td class=\"{\$altbg}\">
+							{\$gotounread}<a href=\"{\$mybb->settings[\'bburl\']}/{\$thread[\'threadlink\']}\" title=\"{\$thread[\'subject\']}\"><strong>{\$thread[\'subject\']}</strong></a>
+							<span class=\"smalltext\"><br />
+								<a href=\"{\$thread[\'lastpostlink\']}\" title=\"{\$lang->adv_sidebox_latest_threads_lastpost}\">{\$lang->adv_sidebox_latest_threads_lastpost}</a> {\$lastposterlink}<br />
+								{\$lastpostdate} {\$lastposttime}<br />
+								<strong>&raquo; </strong>{\$lang->adv_sidebox_latest_threads_replies} {\$thread[\'replies\']}<br />
+								<strong>&raquo; </strong>{\$lang->adv_sidebox_latest_threads_views} {\$thread[\'views\']}
+							</span>
+						</td>
+					</tr>
 															",
 															"sid"				=>	-1
 														),

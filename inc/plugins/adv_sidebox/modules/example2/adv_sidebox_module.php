@@ -18,25 +18,24 @@ function example2_asb_info()
 		"name"				=>	'[Example 2] Using Templates',
 		"description"		=>	'A simple box to illustrate using templates to produce content',
 		"wrap_content"	=>	true,
-		"version"			=>	"1.1",
-		"templates"		=>	array
-										(
-											array
+		"version"				=>	"1",
+		"templates"			=>	array
 											(
-												"title" 			=> "adv_sidebox_example",
-												"template" 	=> "
-	<tr>
-		<td class=\"trow1\">Image sized to side box colum:</td>
-	</tr>
-	<tr>
-		<td class=\"trow2\">
-			<img src=\"images/logo.gif\" alt=\"logo\" title=\"example\" width=\"{\$inner_width}px\" style=\"margin: {\$margin}px;\" />
-		</td>
-	</tr>
-												",
-												"sid"				=>	-1
+												array
+												(
+													"title" 			=> "adv_sidebox_example",
+													"template" 	=> "
+					<tr>
+						<td class=\"trow1\">Image sized to side box colum:</td>
+					</tr>
+					<tr>
+						<td class=\"trow2\">
+							<img src=\"images/logo.gif\" alt=\"logo\" title=\"example\" width=\"{\$inner_width}px\" style=\"margin: {\$margin}px;\" />
+						</td>
+					</tr>",
+													"sid"				=>	-1
+												)
 											)
-										)
 	);
 }
 

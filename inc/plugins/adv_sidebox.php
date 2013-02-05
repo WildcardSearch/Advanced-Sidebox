@@ -91,7 +91,7 @@ function adv_sidebox_start()
 		return false;
 	}
 
-	// width (these  values are global and can be used in custom boxes)
+	// width
 	$adv_sidebox_width_left = (int) $mybb->settings['adv_sidebox_width_left'];
 	$adv_sidebox_width_right = (int) $mybb->settings['adv_sidebox_width_right'];
 
@@ -101,18 +101,37 @@ function adv_sidebox_start()
 		// prepare left and right side box column if there is content
 		if($adv_sidebox->left_boxes)
 		{
-			$left_insert = '<td width="' . $adv_sidebox_width_left . '" valign="top">' . $adv_sidebox->left_boxes . '</td>';
+			$left_insert = '
+		<!-- start: adv_sidebox left column -->
+		<td width="' . $adv_sidebox_width_left . '" valign="top">' . $adv_sidebox->left_boxes . '
+		</td>
+		<!-- end: adv_sidebox left column -->';
 		}
 		if($adv_sidebox->right_boxes)
 		{
-			$right_insert = '<td width="' . $adv_sidebox_width_right . '" valign="top">' . $adv_sidebox->right_boxes . '</td>';
+			$right_insert = '
+		<!-- start: adv_sidebox right column -->
+		<td width="' . $adv_sidebox_width_right . '" valign="top">' . $adv_sidebox->right_boxes . '
+		</td>
+		<!-- end: adv_sidebox right column -->';
 		}
 
 		// if either column has content then perform the insertion
 		if($adv_sidebox->left_boxes || $adv_sidebox->right_boxes)
 		{
-			$templates->cache[$adv_sidebox->script_base_name] = str_replace('{$header}', '{$header}<table width="100%" border="0" cellspacing="5"><tr>' . $left_insert . '<td width="auto" valign="top">', $templates->cache[$adv_sidebox->script_base_name]);
-			$templates->cache[$adv_sidebox->script_base_name] = str_replace('{$footer}','</td>' . $right_insert . '</tr></table>{$footer}', $templates->cache[$adv_sidebox->script_base_name]);
+			$templates->cache[$adv_sidebox->script_base_name] = str_replace('{$header}', '{$header}
+<!-- start: adv_sidebox -->
+<table width="100%" border="0" cellspacing="5">
+	<tr>' . $left_insert . '
+		<!-- start: adv_sidebox middle column (page contents of ' . THIS_SCRIPT . ') -->
+		<td width="auto" valign="top">', $templates->cache[$adv_sidebox->script_base_name]);
+			$templates->cache[$adv_sidebox->script_base_name] = str_replace('{$footer}','
+		</td>
+		<!-- end: adv_sidebox middle column (page contents of ' . THIS_SCRIPT . ') -->' . $right_insert . '
+	</tr>
+</table>
+<!-- end adv_sidebox -->
+{$footer}', $templates->cache[$adv_sidebox->script_base_name]);
 		}
 	}
 	// display additional boxes on portal (if 'Replace Portal Boxes With Custom' is set to yes)
@@ -125,29 +144,37 @@ function adv_sidebox_start()
 	</head>
 	<body>
 		{$header}
+		<!-- start: adv_sidebox -->
 		<table width="100%" cellspacing="0" cellpadding="{$theme[\'tablespace\']}" border="0">
 			<tr>';
 
 		if($adv_sidebox->left_boxes)
 		{
 			$this_template .= '
+				<!-- start: adv_sidebox left column -->
 				<td valign="top" width="' . $adv_sidebox_width_left . '"><div style="max-width: ' . $adv_sidebox_width_left . 'px min-width: ' . $adv_sidebox_width_left . 'px">' . $adv_sidebox->left_boxes . '</div></td>
-				<td>&nbsp;</td>';
+				<td>&nbsp;</td>
+				<!-- end: adv_sidebox left column -->';
 		}
 
 		$this_template .= '
+				<!-- start: adv_sidebox middle column (page contents of ' . THIS_SCRIPT . ') -->
 				<td style="max-width:' . (1000 - ($adv_sidebox_width_right + $adv_sidebox_width_left)) . 'px;"><div style="max-width: ' . (1000 - ($adv_sidebox_width_right + $adv_sidebox_width_left)) . 'px min-width: ' . (1000 - ($adv_sidebox_width_right + $adv_sidebox_width_left)) . 'px">{$announcements}</div></td>
-				<td>&nbsp;</td>';
+				<td>&nbsp;</td>
+				<!-- end: adv_sidebox middle column (page contents of ' . THIS_SCRIPT . ') -->';
 
 		if($adv_sidebox->right_boxes)
 		{
 			$this_template .= '
-				<td valign="top" width="' . $adv_sidebox_width_right . '"><div style="max-width: ' . $adv_sidebox_width_right . 'px min-width: ' . $adv_sidebox_width_right . 'px">' . $adv_sidebox->right_boxes . '</div></td>';
+				<!-- start: adv_sidebox right column -->
+				<td valign="top" width="' . $adv_sidebox_width_right . '"><div style="max-width: ' . $adv_sidebox_width_right . 'px min-width: ' . $adv_sidebox_width_right . 'px">' . $adv_sidebox->right_boxes . '</div></td>
+				<!-- end: adv_sidebox right column -->';
 		}
 
 		$this_template .= '
 			</tr>
 		</table>
+		<!-- end adv_sidebox -->
 		{$footer}
 	</body>
 </html>';

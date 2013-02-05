@@ -19,42 +19,42 @@ function search_box_asb_info()
 {
 	return array
 	(
-		"name"				=>	'Search',
-		"description"		=>	'Simple options, a keyword textbox and a go button',
-		"wrap_content"	=>	true,
-		"version"			=>	"1.1",
+		"name"						=>	'Search',
+		"description"				=>	'Simple options, a keyword textbox and a go button',
+		"wrap_content"			=>	true,
+		"version"						=>	"1",
 		"templates"					=>	array
 													(
 														array
 														(
 															"title" => "adv_sidebox_search",
 															"template" => "
-	<tr>
-		<td class=\"trow1\">
-			<form method=\"post\" action=\"{\$mybb->settings[\'bburl\']}/search.php\">
-				<input type=\"hidden\" name=\"action\" value=\"do_search\" />
-				<input type=\"hidden\" name=\"forums\" value=\"all\" />
-				<input type=\"hidden\" name=\"sortby\" value=\"lastpost\" />
-				<input type=\"hidden\" name=\"sortordr\" value=\"desc\" />
-				<label><strong>Search In:</strong></label><br />
-				<input type=\"radio\" class=\"radio\" name=\"postthread\" value=\"1\" checked=\"checked\" />
-				<label for=\"postthread\">Messages</label>
-				<input type=\"radio\" class=\"radio\" name=\"postthread\" value=\"2\" />
-				<label for=\"postthread\">Titles</label><br /><br />
-				<label><strong>Results As:</strong></label><br />
-				<input type=\"radio\" class=\"radio\" name=\"showresults\" value=\"posts\" />
-				<label for=\"showresults\">Posts</label>
-				<input type=\"radio\" class=\"radio\" name=\"showresults\" value=\"threads\" checked=\"checked\" />
-				<label for=\"showresults\">Threads</label><br /><br />
-				<label for=\"keywords\"><strong>Keywords</strong></label><br />
-				<input type=\"text\" class=\"textbox\" name=\"keywords\" value=\"\" />
-				{\$gobutton}
-			</form><br />
-		<span class=\"smalltext\">
-		(<a href=\"{\$mybb->settings[\'bburl\']}/search.php\">{\$lang->advanced_search}</a>)
-		</span>
-	</td>
-	</tr>
+					<tr>
+						<td class=\"trow1\">
+							<form method=\"post\" action=\"{\$mybb->settings[\'bburl\']}/search.php\">
+								<input type=\"hidden\" name=\"action\" value=\"do_search\" />
+								<input type=\"hidden\" name=\"forums\" value=\"all\" />
+								<input type=\"hidden\" name=\"sortby\" value=\"lastpost\" />
+								<input type=\"hidden\" name=\"sortordr\" value=\"desc\" />
+								<label><strong>Search In:</strong></label><br />
+								<input type=\"radio\" class=\"radio\" name=\"postthread\" value=\"1\" checked=\"checked\" />
+								<label for=\"postthread\">Messages</label>
+								<input type=\"radio\" class=\"radio\" name=\"postthread\" value=\"2\" />
+								<label for=\"postthread\">Titles</label><br /><br />
+								<label><strong>Results As:</strong></label><br />
+								<input type=\"radio\" class=\"radio\" name=\"showresults\" value=\"posts\" />
+								<label for=\"showresults\">Posts</label>
+								<input type=\"radio\" class=\"radio\" name=\"showresults\" value=\"threads\" checked=\"checked\" />
+								<label for=\"showresults\">Threads</label><br /><br />
+								<label for=\"keywords\"><strong>Keywords</strong></label><br />
+								<input type=\"text\" class=\"textbox\" name=\"keywords\" value=\"\" />
+								{\$gobutton}
+							</form><br />
+							<span class=\"smalltext\">
+							(<a href=\"{\$mybb->settings[\'bburl\']}/search.php\">{\$lang->advanced_search}</a>)
+							</span>
+						</td>
+					</tr>
 															",
 															"sid" => -1
 														)
