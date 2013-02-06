@@ -1258,7 +1258,7 @@ class Sidebox_handler
 			}
 			else
 			{
-				$this->users_groups[] = 0;
+				$this->users_groups[] = 'guests';
 			}
 		}
 	}
@@ -1321,6 +1321,8 @@ class Sidebox_handler
 		// Look for all sideboxes (if any)
 		$query = $db->simple_select('sideboxes', '*', $where, array("order_by" => 'position, display_order', "order_dir" => 'ASC'));
 
+		$can_view = false;
+
 		// if there are sideboxes . . .
 		if($db->num_rows($query) > 0)
 		{
@@ -1329,6 +1331,8 @@ class Sidebox_handler
 			{
 				// attempt to load the side box
 				$test_box = new Sidebox($this_box);
+
+				$can_view = false;
 
 				// if we aren't in ACP . . .
 				if(!$acp)
@@ -1346,11 +1350,6 @@ class Sidebox_handler
 								break;
 							}
 
-							if($gid == 'guests')
-							{
-								$gid = 0;
-							}
-
 							// if the current user is a member of multiple groups . . .
 							if(is_array($this->users_groups))
 							{
@@ -1362,24 +1361,11 @@ class Sidebox_handler
 									break;
 								}
 							}
-							else
-							{
-								// otherwise the user is in one group
-								if($this->users_groups)
-								{
-									// if it matches . . .
-									if($this->users_groups == $gid)
-									{
-										// they are cool
-										$can_view = true;
-										break;
-									}
-								}
-							}
 						}
 					}
 					else
 					{
+						// if the box has a non-array then show it to all (to catch upgraded side boxes from < 1.4)
 						$can_view = true;
 					}
 				}

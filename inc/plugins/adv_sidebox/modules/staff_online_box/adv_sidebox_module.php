@@ -194,7 +194,7 @@ function staff_online_box_asb_build_template($settings, $template_var, $width)
 		foreach($usergroup['user_list'] as $user)
 		{
 			// if we are over our limit
-			if($counter > $max_rows || $user['uid'] == $mybb->user['uid'])
+			if($counter > $max_rows)
 			{
 				// don't add any more
 				continue;
