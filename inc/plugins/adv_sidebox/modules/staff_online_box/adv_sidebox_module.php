@@ -22,13 +22,6 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX")) {
  */
 function staff_online_box_asb_info()
 {
-	global $db, $lang;
-
-	if (!$lang->adv_sidebox_staff_online_box)
-	{
-		$lang->load('adv_sidebox_staff_online_box');
-	}
-
 	return array
 	(
 		"name"							=>	'Online Staff',
