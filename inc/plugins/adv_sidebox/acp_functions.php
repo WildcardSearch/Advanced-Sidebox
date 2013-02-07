@@ -433,8 +433,6 @@ function adv_sidebox_admin_editbox()
 			// is this side box create by an add-on module?
 			if($adv_sidebox->addons[$this_sidebox->box_type]->valid)
 			{
-				// add-on module are stereo
-				$this_sidebox->stereo = true;
 				$this_sidebox->wrap_content = $adv_sidebox->addons[$this_sidebox->box_type]->wrap_content;
 
 				// if the parent module has settings . . .
@@ -455,9 +453,6 @@ function adv_sidebox_admin_editbox()
 			}
 			else
 			{
-				// otherwise it is a custom box or a plugin and neither of those can have settings (or be 'stereo')
-				$this_sidebox->stereo = false;
-
 				// did this box come from a custom static box?
 				if($adv_sidebox->custom[$this_sidebox->box_type]->valid)
 				{
@@ -1013,19 +1008,13 @@ CodePress.language=\'mybb\';
 			$specify_box = '';
 			$this_box->content = '
 	<tr>
-		<td class="trow1">Place your custom content here. HTML can be used in conjunction with certain template variables, language variables and environment variables.</td>
+		<td class="trow1">Place your custom content here. (HTML)</td>
 	</tr>
 	<tr>
 		<td class="trow2">For example:</td>
 	</tr>
 	<tr>
-		<td class="trow1"><strong>User:</strong> {$mybb->user[\'username\']}</td>
-	</tr>
-	<tr>
-		<td class="trow2"><strong>UID:</strong> {$mybb->user[\'uid\']}</td>
-	</tr>
-	<tr>
-		<td class="trow1"><strong>Theme name:</strong> {$theme[\'name\']}</td>
+		<td class="trow1"><strong>my custom content</td>
 	</tr>';
 			$this_box->wrap_content = true;
 		}

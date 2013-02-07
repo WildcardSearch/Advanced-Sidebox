@@ -31,7 +31,6 @@
 	public $position = 0;
 	public $display_order;
 
-	public $stereo = false;
 	public $wrap_content = false;
 	public $valid = false;
 
@@ -101,7 +100,6 @@
 			$this->position = (int) $data['position'];
 
 			$this->display_order = (int) $data['display_order'];
-			$this->stereo = (int) $data['stereo'];
 			$this->wrap_content = (int) $data['wrap_content'];
 
 			$this->show_on_index = $data['show_on_index'];
@@ -153,7 +151,6 @@
 			"box_type"							=>	$db->escape_string($this->box_type),
 			"position"							=>	(int) $this->position,
 			"display_order"					=> 	(int) $this->display_order,
-			"stereo"								=>	(int) $this->stereo,
 			"wrap_content"					=>	(int) $this->wrap_content,
 			"show_on_index"				=>	(int) $this->show_on_index,
 			"show_on_forumdisplay"	=>	(int) $this->show_on_forumdisplay,
@@ -409,24 +406,7 @@
 	 */
 	function build_template_variable()
 	{
-		// stereo boxes get a little special consideration
-		if($this->stereo)
-		{
-			// split the template variable into two channels
-			if($this->position)
-			{
-				$template_var = $this->box_type . '_' . $this->id . '_r';
-			}
-			else
-			{
-				$template_var = $this->box_type . '_' . $this->id  . '_l';
-			}
-		}
-		else
-		{
-			// otherwise just build a template variable for this sidebox
-			$template_var = $this->box_type . '_' . $this->id;
-		}
+		$template_var = $this->box_type . '_' . $this->id;
 
 		if($template_var)
 		{
@@ -1059,7 +1039,7 @@ class Sidebox_custom
 		}
 
 		// store the content
-		eval("\$" . $template_variable . " = \"" . addslashes($content) . "\";");
+		$$template_variable = $content;
 	}
 
 	/*

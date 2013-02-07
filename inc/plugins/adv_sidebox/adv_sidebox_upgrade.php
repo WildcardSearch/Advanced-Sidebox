@@ -44,6 +44,11 @@
 			{
 				$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes DROP COLUMN content");
 			}
+
+			if($db->field_exists('stereo', 'sideboxes'))
+			{
+				$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes DROP COLUMN stereo");
+			}
 		}
 		else
 		{
@@ -63,7 +68,6 @@
 					show_on_showthread INT(2),
 					show_on_portal INT(2),
 					groups TEXT,
-					stereo INT(2),
 					wrap_content INT(2),
 					settings TEXT
 				) ENGINE=MyISAM{$collation};"
@@ -109,11 +113,6 @@
 				$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD show_on_portal INT(2) DEFAULT 1");
 			}
 
-			if(!$db->field_exists('stereo', 'sideboxes'))
-			{
-				$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD stereo INT(2)");
-			}
-
 			if(!$db->field_exists('wrap_content', 'sideboxes'))
 			{
 				$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD wrap_content INT(2)");
@@ -136,7 +135,6 @@
 					show_on_forumdisplay INT(2),
 					show_on_showthread INT(2),
 					show_on_portal INT(2),
-					stereo INT(2),
 					wrap_content INT(2)
 				) ENGINE=MyISAM{$collation};"
 			);
@@ -255,7 +253,6 @@
 				if($adv_sidebox_134->addons[$this_box->box_type]->base_name == $this_box->box_type)
 				{
 					// then update the properties added since 1.0
-					$this_box->stereo = true;
 					$this_box->wrap_content = $adv_sidebox_134->addons[$this_box->box_type]->wrap_content;
 					$this_box->display_name = $adv_sidebox_134->addons[$this_box->box_type]->name;
 				}

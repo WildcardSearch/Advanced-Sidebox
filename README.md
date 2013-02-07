@@ -1,4 +1,4 @@
-## Advanced-Sidebox 1.4
+## Advanced-Sidebox 1.4.1
 
 <p align="center">
   <img title="Advanced Sidebox Logo" alt="Advanced Sidebox Logo" src="https://github.com/WildcardSearch/Advanced-Sidebox/wiki/asb_logo_320.png" />
@@ -25,6 +25,6 @@ This plugin seeks to give the admin more options when adding side boxes to the f
 
 ## Latest upate
 
-02-05-2013 1.4 - prerelease
+02-07-2013 - 1.4.1 released to fix bug where custom boxes did not receive content
 
 [Full Change Log](https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Change-Log)
