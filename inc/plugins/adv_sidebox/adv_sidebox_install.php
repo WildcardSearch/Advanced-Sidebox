@@ -43,21 +43,33 @@ function adv_sidebox_info()
 
 	if($settings_link)
 	{
-		$settings_link = "<ul><li>{$settings_link}</li></ul>";
+		$settings_link = "<ul><li>{$settings_link}</li><li><a href=\"" . ADV_SIDEBOX_URL . "\" title=\"{$lang->adv_sidebox_manage_sideboxes}\">{$lang->adv_sidebox_manage_sideboxes}</a></li><li><a href=\"javascript:void()\" onclick=\"window.open('{$mybb->settings['bburl']}/inc/plugins/adv_sidebox/help/index.php?topic=install', 'mywindowtitle', 'width=840, height=520, scrollbars=yes')\" title=\"Help\">Help</a></li></ul>";
 	}
 	else
 	{
 		$settings_link = "<br />";
 	}
 
+	$mention_description = "
+<table width=\"100%\">
+	<tbody>
+		<tr>
+			<td>{$lang->adv_sidebox_description1}<br/><br/>{$lang->adv_sidebox_description2}{$settings_link}
+			</td>
+			<td><img style\"position: relative; float: right;\" src=\"{$mybb->settings['bburl']}/inc/plugins/adv_sidebox/images/asb_logo_80.png\" alt=\"{$lang->adv_sidebox_logo}\" title=\"{$lang->adv_sidebox_logo}\"/>
+			</td>
+		</tr>
+	</tbody>
+</table>";
+
 	// This array returns information about the plugin, some of which was prefabricated above based on whether the plugin has been installed or not.
 	return array(
 		"name"			=> $lang->adv_sidebox_name,
-		"description"	=> $lang->adv_sidebox_description1 . "<br/><br/>" . $lang->adv_sidebox_description2 . $settings_link,
+		"description"	=> $mention_description,
 		"website"		=> "http://wildcardsearch.github.com/Advanced-Sidebox",
 		"author"		=> "Wildcard",
 		"authorsite"	=> "http://www.rantcentralforums.com",
-		"version"		=> "1.4.1",
+		"version"		=> "1.4.2",
 		"compatibility" => "16*",
 		"guid" 			=> "870e9163e2ae9b606a789d9f7d4d2462",
 	);

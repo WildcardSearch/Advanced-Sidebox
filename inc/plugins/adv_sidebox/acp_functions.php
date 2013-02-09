@@ -45,7 +45,9 @@ $plugins->add_hook('admin_load', 'adv_sidebox_admin');
  */
 function adv_sidebox_admin()
 {
-	global $mybb, $db, $page, $lang, $plugins, $adv_sidebox;
+	global $mybb, $db, $page, $lang, $adv_sidebox;
+
+	define("ADV_SIDEBOX_HELP", $mybb->settings['bburl'] . "/inc/plugins/adv_sidebox/help/index.php");
 
 	if($page->active_action != 'adv_sidebox')
 	{
@@ -156,7 +158,7 @@ function adv_sidebox_admin()
  */
 function adv_sidebox_manage_sideboxes()
 {
-	global $mybb, $db, $page, $lang, $plugins, $adv_sidebox;
+	global $mybb, $db, $page, $lang, $adv_sidebox;
 
 	if(!$lang->adv_sidebox)
 	{
@@ -278,14 +280,28 @@ margin-bottom: -3px;
 
 	$filter_links = adv_sidebox_build_filter_links($mybb->input['mode']);
 
-	$module_info .= $adv_sidebox->build_addon_language();
-
 	// build link bar
 	$module_info .= " - <a href=\"" . ADV_SIDEBOX_MODULES_URL . "\">{$lang->adv_sidebox_manage_modules}</a>";
-	$settings_link = adv_sidebox_build_settings_link();
-	echo('<div class="asb_label">' . $filter_links . '<br /><br /><a href="' . ADV_SIDEBOX_EDIT_URL . '&amp;mode=' . $mybb->input['mode'] . '"><img src="' . $mybb->settings['bburl'] . '/inc/plugins/adv_sidebox/images/add.png" /></a>&nbsp;<a href="' . ADV_SIDEBOX_EDIT_URL . '&amp;mode=' . $mybb->input['mode'] . '">' . $lang->adv_sidebox_add_new_box . '</a> - ' . $module_info . ' - ' . $settings_link . '</div>');
+	$settings_link = adv_sidebox_build_settings_menu_link();
+	$help_link = adv_sidebox_build_help_link('sideboxes');
+	echo('<div class="asb_label">' . $filter_links . '<br /><br /><a href="' . ADV_SIDEBOX_EDIT_URL . '&amp;mode=' . $mybb->input['mode'] . '"><img src="' . $mybb->settings['bburl'] . '/inc/plugins/adv_sidebox/images/add.png" /></a>&nbsp;<a href="' . ADV_SIDEBOX_EDIT_URL . '&amp;mode=' . $mybb->input['mode'] . '">' . $lang->adv_sidebox_add_new_box . '</a>&nbsp;' . $settings_link . '&nbsp;' . $help_link . '</div>');
 
 	$page->output_footer();
+}
+
+function adv_sidebox_build_settings_menu_link()
+{
+	return '<a href="' . adv_sidebox_build_settings_url(adv_sidebox_get_settingsgroup()) . '" target="_blank"/><img src="styles/default/images/icons/custom.gif" alt="' . $lang->adv_sidebox_plugin_settings . '" title="' . $lang->adv_sidebox_plugin_settings . '"/></a>&nbsp;' . adv_sidebox_build_settings_link();
+}
+
+function adv_sidebox_build_help_link($topic = '')
+{
+	global $mybb, $lang;
+
+	if($topic)
+	{
+		return '<a href="javascript:void()" onclick="window.open(\'' . ADV_SIDEBOX_HELP . '?topic=' . $topic . '\', \'mywindowtitle\', \'width=640, height=480, scrollbars=yes\')"><img src="' . $mybb->settings['bburl'] . '/images/toplinks/help.gif" /></a>&nbsp;<a href="javascript:void()" onclick="window.open(\'' . ADV_SIDEBOX_HELP . '?topic=' . $topic . '\', \'mywindowtitle\', \'width=840, height=520, scrollbars=yes\')">Help</a>';
+	}
 }
 
 /*
@@ -295,7 +311,7 @@ margin-bottom: -3px;
  */
 function adv_sidebox_admin_editbox()
 {
-	global $lang, $mybb, $db, $plugins, $page, $adv_sidebox;
+	global $lang, $mybb, $db, $page, $adv_sidebox;
 
 	if(!$lang->adv_sidebox)
 	{
@@ -467,14 +483,32 @@ function adv_sidebox_admin_editbox()
 			}
 
 			// if we are using a custom title
-			if(isset($mybb->input['box_title']) && $mybb->input['box_title'] != '')
+			if(isset($mybb->input['box_custom_title']) && $mybb->input['box_custom_title'])
 			{
-				// store it
-				$this_sidebox->display_name = $mybb->input['box_title'];
+				// if the text field isn't empty . . .
+				if(isset($mybb->input['box_title']) && $mybb->input['box_title'])
+				{
+					// use it
+					$this_sidebox->display_name = $mybb->input['box_title'];
+				}
+				else
+				{
+					// otherwise, check the hidden field (original title)
+					if(isset($mybb->input['current_title']) && $mybb->input['current_title'])
+					{
+						// if it exists, use it
+						$this_sidebox->display_name = $mybb->input['current_title'];
+					}
+					else
+					{
+						// otherwise use the default title
+						$this_sidebox->display_name = $adv_sidebox->box_types[$this_sidebox->box_type];
+					}
+				}
 			}
 			else
 			{
-				// otherwise use the default title
+				// if all else fails, use the default title
 				$this_sidebox->display_name = $adv_sidebox->box_types[$this_sidebox->box_type];
 			}
 
@@ -510,6 +544,30 @@ function adv_sidebox_admin_editbox()
 				true
 			);';
 	$page->extra_header = $adv_sidebox->build_peekers($title_peeker);
+	// add a little CSS
+	$page->extra_header .= '<style type="text/css">
+.asb_label
+{
+background: #EBF3FF;
+color: #333;
+font-weight: bold;
+width: 100%
+margin: auto auto;
+padding: 5px;
+border: 1px solid #85B1EE;
+text-align: center;
+}
+
+.asb_label a:hover, a:active
+{
+color: #333;
+}
+
+.asb_label img
+{
+margin-bottom: -3px;
+}
+</style>';
 	adv_sidebox_output_header();
 
 	adv_sidebox_output_tabs('adv_sidebox_add');
@@ -585,35 +643,46 @@ function adv_sidebox_admin_editbox()
 			}
 		}
 
+		// is this sidebox from an add-on?
 		if($adv_sidebox->addons[$this_sidebox->box_type]->valid == true)
 		{
+			// check the name of the add-on against the display name of the sidebox, if they differ . . .
 			if($this_sidebox->display_name != $adv_sidebox->addons[$this_sidebox->box_type]->name)
 			{
+				// then this box has a custom title
 				$custom_title = 1;
 			}
 		}
+		// is this side box from a custom static box?
 		elseif($adv_sidebox->custom[$this_sidebox->box_type]->valid == true)
 		{
+			// if so, then is the title differnt than the original?
 			if($this_sidebox->display_name != $adv_sidebox->custom[$this_sidebox->box_type]->name)
 			{
+				// custom title
 				$custom_title = 1;
 			}
 		}
 		else
 		{
+			// default title
 			$custom_title = 0;
 		}
 	}
 
+	// custom title?
 	if($custom_title == 1)
 	{
-		$current_title = '<br /><em>' . $lang->adv_sidebox_current_title . '</em><strong>' . $this_sidebox->display_name . '</strong>';
+		// alter the descrption
+		$current_title = '<br /><em>' . $lang->adv_sidebox_current_title . '</em><br /><br /><strong>' . $this_sidebox->display_name . '</strong><br />' . $lang->adv_sidebox_current_title_info;
 	}
 	else
 	{
-		$current_title = '<br /><em>' . $lang->adv_sidebox_default_title . ' </em><strong>' . $this_sidebox->display_name . '</strong>';
+		// default description
+		$current_title = '<br /><em>' . $lang->adv_sidebox_default_title . ' </em><br /><br /><strong>' . $this_sidebox->display_name . '</strong><br />' . $lang->adv_sidebox_default_title_info;
 	}
 
+	// the input form
 	$form = new Form(ADV_SIDEBOX_EDIT_URL. "&amp;box=" . $this_sidebox->id, "post", "edit_box");
 	$form_container = new FormContainer($lang->adv_sidebox_edit_box);
 
@@ -621,8 +690,10 @@ function adv_sidebox_admin_editbox()
 	$form_container->output_row($lang->adv_sidebox_box_type, $lang->adv_sidebox_type_desc, $form->generate_select_box('box_type_select', $adv_sidebox->box_types, $this_sidebox->box_type, array("id" => 'box_type_select')), array("id" => 'box_type_select_box'));
 
 	// box title
+		// on/off
 	$form_container->output_row($lang->adv_sidebox_use_custom_title, '', $form->generate_yes_no_radio('box_custom_title', $custom_title, true, array('id' => 'box_custom_title_yes', 'class' => 'box_custom_title'), array('id' => 'box_custom_title_no', 'class' => 'box_custom_title')), 'box_custom_title', array('id' => 'box_custom_title'));
 
+		// text field
 	$form_container->output_row($lang->adv_sidebox_custom_title, $current_title, $form->generate_text_box('box_title'), 'box_title', array("id" => 'box_title'));
 
 	// position
@@ -665,24 +736,30 @@ function adv_sidebox_admin_editbox()
 	$adv_sidebox->build_settings($form, $form_container, $this_sidebox->id);
 
 	// hidden forms to pass info to post
-	$form_container->output_row('', '', $form->generate_hidden_field('this_mode', $mybb->input['mode']) . $form->generate_hidden_field('this_group_count', count($options)));
+	$form_container->output_row('', '', $form->generate_hidden_field('this_mode', $mybb->input['mode']) . $form->generate_hidden_field('this_group_count', count($options)) . $form->generate_hidden_field('current_title', $this_sidebox->display_name));
 	$form_container->end();
 
 	// finish form and page
 	$buttons[] = $form->generate_submit_button('Save', array('name' => 'save_box_submit'));
 	$form->output_submit_wrapper($buttons);
 	$form->end();
+
+	// build link bar
+	$settings_link = adv_sidebox_build_settings_menu_link();
+	$help_link = adv_sidebox_build_help_link('edit_box');
+	echo('<div class="asb_label">' . $settings_link . '&nbsp;' . $help_link);
+
 	$page->output_footer();
 }
 
 /*
  * adv_sidebox_admin_manage_modules()
  *
- * Install/Uninstall/Delete addons
+ * view and delete addons
  */
 function adv_sidebox_admin_manage_modules()
 {
-	global $lang, $mybb, $db, $plugins, $page, $adv_sidebox;
+	global $lang, $mybb, $db, $page, $adv_sidebox;
 
 	if(!$lang->adv_sidebox)
 	{
@@ -719,9 +796,6 @@ function adv_sidebox_admin_manage_modules()
 	adv_sidebox_output_header();
 	adv_sidebox_output_tabs('adv_sidebox_modules');
 
-	// allow plugins to add types
-	$plugins->run_hooks('adv_sidebox_box_types', $box_types);
-
 	$table = new Table;
 	$table->construct_header($lang->adv_sidebox_custom_box_name);
 	$table->construct_header($lang->adv_sidebox_custom_box_desc);
@@ -742,6 +816,14 @@ function adv_sidebox_admin_manage_modules()
 	}
 
 	$table->output();
+
+	$module_info = $adv_sidebox->build_addon_language();
+
+	// build link bar
+	$settings_link = adv_sidebox_build_settings_menu_link();
+	$help_link = adv_sidebox_build_help_link('addons');
+	echo('<div class="asb_label"><a href="' . ADV_SIDEBOX_EDIT_URL . '&amp;mode=' . $mybb->input['mode'] . '"><img src="' . $mybb->settings['bburl'] . '/inc/plugins/adv_sidebox/images/add.png" /></a>&nbsp;<a href="' . ADV_SIDEBOX_EDIT_URL . '&amp;mode=' . $mybb->input['mode'] . '">' . $lang->adv_sidebox_add_new_box . '</a> - ' . $module_info . '&nbsp;' . $settings_link . '&nbsp;' . $help_link);
+
 	$page->output_footer();
 }
 
@@ -752,7 +834,7 @@ function adv_sidebox_admin_manage_modules()
  */
 function adv_sidebox_admin_custom_boxes()
 {
-	global $lang, $mybb, $db, $plugins, $page, $adv_sidebox;
+	global $lang, $mybb, $db, $page, $adv_sidebox;
 
 	if(!$lang->adv_sidebox)
 	{
@@ -858,6 +940,31 @@ function adv_sidebox_admin_custom_boxes()
 		$page->add_breadcrumb_item($lang->adv_sidebox_name, ADV_SIDEBOX_URL);
 		$page->add_breadcrumb_item($lang->adv_sidebox_custom_import);
 
+		// add a little CSS
+		$page->extra_header .= '<style type="text/css">
+.asb_label
+{
+	background: #EBF3FF;
+	color: #333;
+	font-weight: bold;
+	width: 100%
+	margin: auto auto;
+	padding: 5px;
+	border: 1px solid #85B1EE;
+	text-align: center;
+}
+
+.asb_label a:hover, a:active
+{
+	color: #333;
+}
+
+.asb_label img
+{
+	margin-bottom: -3px;
+}
+</style>';
+
 		adv_sidebox_output_header();
 		adv_sidebox_output_tabs('adv_sidebox_import');
 
@@ -868,6 +975,10 @@ function adv_sidebox_admin_custom_boxes()
 		$buttons[] = $form->generate_submit_button($lang->adv_sidebox_custom_import, array('name' => 'import'));
 		$form->output_submit_wrapper($buttons);
 		$form->end();
+
+		$settings_link = adv_sidebox_build_settings_menu_link();
+		$help_link = adv_sidebox_build_help_link('import_custom');
+		echo('<div class="asb_label">' . $settings_link . '&nbsp;' . $help_link);
 
 		$page->output_footer();
 		exit();
@@ -920,7 +1031,7 @@ function adv_sidebox_admin_custom_boxes()
 	$admin_options=$db->fetch_array($queryadmin);
 	if($admin_options['codepress'] != 0 && $mybb->input['mode'] == 'edit_box')
 	{
-		$page->extra_header = '<link type="text/css" href="./jscripts/codepress/languages/codepress-mybb.css" rel="stylesheet" id="cp-lang-style" />
+		$page->extra_header .= '<link type="text/css" href="./jscripts/codepress/languages/codepress-mybb.css" rel="stylesheet" id="cp-lang-style" />
 <script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
 <script type="text/javascript">
 CodePress.language=\'mybb\';
@@ -989,8 +1100,9 @@ CodePress.language=\'mybb\';
 		}
 		$table->output($lang->adv_sidebox_custom_box_types);
 
-		// add link bar
-		echo('<div class="asb_label"><a href="' . ADV_SIDEBOX_CUSTOM_URL . '&amp;mode=edit_box"><img src="' . $mybb->settings['bburl'] . '/inc/plugins/adv_sidebox/images/add.png" style="margin-bottom: -3px;"/></a>&nbsp<a href="' . ADV_SIDEBOX_CUSTOM_URL . '&amp;mode=edit_box">' . $lang->adv_sidebox_add_custom_box_types . '</a>&nbsp<a href="' . ADV_SIDEBOX_IMPORT_URL . '"><img src="' . $mybb->settings['bburl'] . '/inc/plugins/adv_sidebox/images/import.png" style="margin-bottom: -3px;"/></a>&nbsp<a href="' . ADV_SIDEBOX_IMPORT_URL . '" title="' . $lang->adv_sidebox_custom_import_box . '">' . $lang->adv_sidebox_custom_import_box . '</a></div>');
+		$settings_link = adv_sidebox_build_settings_menu_link();
+		$help_link = adv_sidebox_build_help_link('custom');
+		echo('<div class="asb_label"><a href="' . ADV_SIDEBOX_CUSTOM_URL . '&amp;mode=edit_box"><img src="' . $mybb->settings['bburl'] . '/inc/plugins/adv_sidebox/images/add.png" style="margin-bottom: -3px;"/></a>&nbsp<a href="' . ADV_SIDEBOX_CUSTOM_URL . '&amp;mode=edit_box">' . $lang->adv_sidebox_add_custom_box_types . '</a>&nbsp<a href="' . ADV_SIDEBOX_IMPORT_URL . '"><img src="' . $mybb->settings['bburl'] . '/inc/plugins/adv_sidebox/images/import.png" style="margin-bottom: -3px;"/></a>&nbsp<a href="' . ADV_SIDEBOX_IMPORT_URL . '" title="' . $lang->adv_sidebox_custom_import_box . '">' . $lang->adv_sidebox_custom_import_box . '</a>&nbsp;' . $settings_link . '&nbsp;' . $help_link);
 	}
 
 	if($mybb->input['mode'] == 'edit_box')
@@ -1039,6 +1151,10 @@ CodePress.language=\'mybb\';
 		$buttons[] = $form->generate_submit_button('Save', array('name' => 'save_box_submit'));
 		$form->output_submit_wrapper($buttons);
 		$form->end();
+
+		$settings_link = adv_sidebox_build_settings_menu_link();
+		$help_link = adv_sidebox_build_help_link('edit_custom');
+		echo('<div class="asb_label"><a href="' . ADV_SIDEBOX_IMPORT_URL . '"><img src="' . $mybb->settings['bburl'] . '/inc/plugins/adv_sidebox/images/import.png" style="margin-bottom: -3px;"/></a>&nbsp<a href="' . ADV_SIDEBOX_IMPORT_URL . '" title="' . $lang->adv_sidebox_custom_import_box . '">' . $lang->adv_sidebox_custom_import_box . '</a>&nbsp;' . $settings_link . '&nbsp;' . $help_link);
 
 		if($admin_options['codepress'] != 0)
 		{

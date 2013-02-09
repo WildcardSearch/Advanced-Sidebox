@@ -29,7 +29,8 @@
  // plugin info
 $l['adv_sidebox_name'] = 'Advanced Sidebox';
 $l['adv_sidebox_description1'] = "Display sideboxes with custom dynamic content.";
-$l['adv_sidebox_description2'] = "This is an attempt to create a versatile plugin that is easy to set up and use.";
+$l['adv_sidebox_description2'] = "This is a versatile plugin that is easy to set up and use, but packed with powerful options for controlling where and to whom these side boxes display";
+$l['adv_sidebox_logo'] = "Advanced Sidebox logo";
 
 // settings and descriptions
 $l['adv_sidebox_plugin_settings'] = "Plugin Settings";
@@ -156,9 +157,11 @@ $l['adv_sidebox_portal'] = 'Portal';
 
 // custom titles
 $l['adv_sidebox_current_title'] = 'current title: ';
+$l['adv_sidebox_current_title_info'] = '(leave blank to keep current custom title)';
 $l['adv_sidebox_use_custom_title'] = 'Use Custom Title?';
 $l['adv_sidebox_custom_title'] = 'Custom Title';
 $l['adv_sidebox_default_title'] = 'currently using default title';
+$l['adv_sidebox_default_title_info'] = '(leave blank to keep default title)';
 
 // misc. options
 $l['adv_sidebox_display_order'] = 'Display Order';

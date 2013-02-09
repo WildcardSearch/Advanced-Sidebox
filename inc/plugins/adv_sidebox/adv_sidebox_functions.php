@@ -159,8 +159,6 @@ function adv_sidebox_build_filter_links($filter)
  */
 function adv_sidebox_strip_quotes($message)
 {
-	global $lang, $templates, $theme, $mybb;
-
 	// Assign pattern and replace values.
 	$pattern = array(
 		"#\[quote=([\"']|&quot;|)(.*?)(?:\\1)(.*?)(?:[\"']|&quot;)?\](.*?)\[/quote\](\r\n?|\n?)#esi",
