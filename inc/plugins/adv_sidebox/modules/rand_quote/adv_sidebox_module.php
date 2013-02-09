@@ -124,31 +124,41 @@ function rand_quote_asb_build_template($settings, $template_var, $width)
 			'filter_badwords' => 1,
 			'me_username' => $user['username']
 		);
-		$new_message = strip_tags($parser->parse_message(adv_sidebox_strip_quotes($rand_post['message'])));
-
-		// concantate it if it is too long
-		if(strlen($new_message) > 80)
-		{
-			$new_message = substr($new_message, 0, 80) . ' . . .';
-		}
-
-		$new_message = $parser->text_parse_message($new_message);
-
-		$parser_options_smilies = array(
-			"allow_smilies" => 1,
-			'allow_mycode' => 1
-		);
-
-		$new_message = $parser->parse_message($new_message, $parser_options_smilies);
+		$new_message = strip_tags($parser->parse_message(adv_sidebox_strip_quotes($rand_post['message']), $parser_options));
 
 		if(strlen($parser->text_parse_message($new_message)) < 20)
 		{
 			$new_message = 'I love ' . $mybb->settings['bbname'] . '!!!';
 		}
+		// concantate it if it is too long
+		elseif(strlen($new_message) > 80)
+		{
+			$new_message = substr($new_message, 0, 80) . ' . . .';
+		}
 
-		$max_width = $asb_width = (int) $width;
+		$parser_options_smilies = array(
+			"allow_smilies" => 1,
+			'allow_imgcode' => 1
+		);
+
+		$new_message = $parser->parse_message($new_message, $parser_options_smilies);
+
+		$asb_width = (int) $width;
 		$asb_inner_size = $asb_width * .83;
-		$avatar_size = (int) ($asb_inner_size / 7);
+		$avatar_size = (int) ($asb_inner_size / 7.5);
+		$font_size = $asb_width / 4.5;
+
+		if($font_size > 16)
+		{
+			$font_size = 16;
+		}
+		if($font_size < 10)
+		{
+			$font_size = 10;
+		}
+		$username_font_size = (int) $font_size * .9;
+		$title_font_size = (int) $font_size * .65;
+		$message_font_size = (int) $font_size;
 
 		// set up the username link so that it displays correctly for the display group of the user
 		$plain_text_username = $username = htmlspecialchars_uni($user['username']);
@@ -159,24 +169,34 @@ function rand_quote_asb_build_template($settings, $template_var, $width)
 		$post_link = get_post_link($rand_post['pid'], $rand_post['tid']) . '#pid' . $rand_post['pid'];
 
 		// image sizes and text variables
-		$read_more_height = $asb_inner_size / 11;
-		$read_more_width = (int) ($read_more_height * 4.5);
-		$rand_quote_text = $new_message;
+		$read_more_width = (int) ($asb_inner_size / 2.5);
+
+		if($read_more_width < 40)
+		{
+			$read_more_width = 40;
+		}
+
+		if($read_more_width > 85)
+		{
+			$read_more_width = 85;
+		}
+
+		$rand_quote_text = '<span style="font-size: ' . $message_font_size . 'px;">' . $new_message . '</span>';
 
 		$rand_quote_avatar = '<img style="padding: 4px; width: ' . $avatar_size . 'px; position: relative; float: left;" src="' . ($user['avatar'] ? $user['avatar'] : 'images/default_avatar.gif') . '" alt="' . $plain_text_username . '\s avatar" title="' . $plain_text_username . '\'s avatar"/>';
 
-		$rand_quote_author = "<a  style=\"padding-top: 10px\" href=\"{$author_link}\" title=\"{$plain_text_username}\">{$username}</a>";
+		$rand_quote_author = "<a  style=\"padding-top: 10px\" href=\"{$author_link}\" title=\"{$plain_text_username}\"><span style=\"font-size: {$username_font_size}px;\">{$username}</span></a>";
 
 		$read_more = '<a href="' . $post_link . '"><img style="width: ' . $read_more_width . 'px; position: relative; float: right; padding: 8px;" src="http://www.rantcentralforums.com/images/readmore.gif" title="Click to see the entire post" alt="read more . . ." /></a>';
 
 		if(my_strlen($rand_post['subject']) > 40)
 		{
-			$rand_post['subject'] = my_substr($rand_post['subject'], 0, 40) . " . . .";
+			$rand_post['subject'] = my_substr($rand_post['subject'], 0, 60) . " . . .";
 		}
 
 		$rand_post['subject'] = htmlspecialchars_uni($parser->parse_badwords($rand_post['subject']));
 
-		$thread_title_link = '<strong><a href="' . $post_link . '" title="' . $rand_post['subject'] . '"/>' . $rand_post['subject'] . '</a></strong>';
+		$thread_title_link = '<strong><a href="' . $post_link . '" title="' . $rand_post['subject'] . '"/><span style="font-size: ' . $title_font_size . 'px;">' . $rand_post['subject'] . '</span></a></strong>';
 
 		// eval the template and the sidebox will display
 		eval("\$" . $template_var . " = \"" . $templates->get("rand_quote_sidebox") . "\";");

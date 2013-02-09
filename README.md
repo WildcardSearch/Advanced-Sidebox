@@ -1,4 +1,4 @@
-## Advanced-Sidebox 1.4.1
+## Advanced-Sidebox 1.4.2
 
 <p align="center">
   <img title="Advanced Sidebox Logo" alt="Advanced Sidebox Logo" src="https://github.com/WildcardSearch/Advanced-Sidebox/wiki/asb_logo_320.png" />
@@ -22,9 +22,10 @@ This plugin seeks to give the admin more options when adding side boxes to the f
 * Extensive user group permissions for side boxes
 * Now supports CodePress
 * Newly redesigned Online Staff module
+* Context-sensitive help for ACP pages
 
 ## Latest upate
 
-02-07-2013 - 1.4.1 released to fix bug where custom boxes did not receive content
+02-08-2013 - 1.4.2 to add context-sensitive help to ACP pages, fix a bug where random quotes modules was allowing bb code to display unparsed and reworked the add/edit side box page to preserve custom titles implicitly.
 
 [Full Change Log](https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Change-Log)

@@ -97,7 +97,7 @@ function staff_online_box_asb_build_template($settings, $template_var, $width)
 	// prepare an oops template just in case
 	$template = '
 	<tr>
-		<td>nothing to show</td>
+		<td class=\"trow1\">nothing to show</td>
 	</tr>';
 
 	// if max_rows is set to 0 then show nothing
