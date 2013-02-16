@@ -1,0 +1,21 @@
+.asb_label
+{
+	background: #EBF3FF;
+	color: #333;
+	font-weight: bold;
+	width: 100%;
+	margin: auto auto;
+	padding: 5px;
+	border: 1px solid #85B1EE;
+	text-align: center;
+}
+
+.asb_label a:hover, a:active
+{
+	color: #333;
+}
+
+.asb_label img
+{
+	margin-bottom: -3px;
+}

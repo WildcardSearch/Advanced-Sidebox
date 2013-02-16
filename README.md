@@ -1,4 +1,4 @@
-## Advanced-Sidebox 1.4.2
+## Advanced-Sidebox 1.5
 
 <p align="center">
   <img title="Advanced Sidebox Logo" alt="Advanced Sidebox Logo" src="https://github.com/WildcardSearch/Advanced-Sidebox/wiki/asb_logo_320.png" />
@@ -15,6 +15,7 @@ This plugin seeks to give the admin more options when adding side boxes to the f
 ## Features
 
 * Admin can control many settings for where and how side boxes display
+* Eight scripts available! (Index, Forum, Thread, Member Profiles, Member List, Forum Team, Statistics and Portal)
 * Choose one of many default presets with updated content or create semi-static custom boxes with HTML and template variables
 * Import/Export custom boxes to share and backup your work
 * Control which scripts side boxes display on
@@ -26,6 +27,6 @@ This plugin seeks to give the admin more options when adding side boxes to the f
 
 ## Latest upate
 
-02-08-2013 - 1.4.2 to add context-sensitive help to ACP pages, fix a bug where random quotes modules was allowing bb code to display unparsed and reworked the add/edit side box page to preserve custom titles implicitly.
+02-11-2013 - 1.5 released adding four new scripts and a completely redesigned template handler
 
 [Full Change Log](https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Change-Log)
