@@ -383,7 +383,7 @@ class Sidebox
 				$base_name = substr($script, 0, strlen($script) - 4);
 				$language_name = 'adv_sidebox_' . $base_name;
 				$setting_name = 'adv_sidebox_on_' . $base_name;
-				
+
 				if($script = 'portal')
 				{
 					$setting_name = 'adv_sidebox_portal_replace';
@@ -1792,15 +1792,26 @@ class Sidebox_handler
 			// otherwise load all detected modules
 			foreach(new DirectoryIterator(ADV_SIDEBOX_MODULES_DIR) as $file)
 			{
-				// skip directories, '.' '..' and non PHP files
-				if($file->isDot() || $file->isDir() || $file->getExtension() != 'php') continue;
+				if($file->isFile())
+				{
+					// skip directories, '.' '..' and non PHP files
+					if($file->isDot() || $file->isDir())
+					{
+						continue;
+					}
 
-				// extract the base_name from the module filename
-				$filename = $file->getFilename();
-				$module = substr($filename, 0, strlen($filename) - 4);
+					$extension = pathinfo($file->getFilename(), PATHINFO_EXTENSION);
 
-				// atempt to load the module
-				$this->addons[$module] = new Addon_type($module);
+					if($extension == 'php')
+					{
+						// extract the base_name from the module filename
+						$filename = $file->getFilename();
+						$module = substr($filename, 0, strlen($filename) - 4);
+
+						// atempt to load the module
+						$this->addons[$module] = new Addon_type($module);
+					}
+				}
 			}
 		}
 	}
