@@ -708,7 +708,7 @@ function adv_sidebox_undo_db_changes()
 
 	$settings_list = array
 	(
-		"'adv_sidebox_on_index",
+		"adv_sidebox_on_index",
 		"adv_sidebox_on_forumdisplay",
 		"adv_sidebox_on_showthread",
 		"adv_sidebox_on_member",

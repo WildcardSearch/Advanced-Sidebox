@@ -17,7 +17,7 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 
 function whosonline_asb_info()
 {
-	global $db, $lang;
+	global $db, $lang, $theme;
 
 	if(!$lang->adv_sidebox)
 	{
@@ -95,7 +95,7 @@ function whosonline_asb_build_template($settings, $template_var, $width)
 {
 	global $$template_var;
 
-	global $db, $mybb, $templates, $lang, $cache;
+	global $db, $mybb, $templates, $lang, $cache, $theme;
 
 	// Load global and custom language phrases
 	if(!$lang->portal)
@@ -182,17 +182,17 @@ function whosonline_asb_build_template($settings, $template_var, $width)
 				}
 
 				// If the user has an avatar then display it . . .
-				if ($user['avatar'] != "")
+				if($user['avatar'] != "")
 				{
 					$avatar_filename = $user['avatar'];
 				}
 				else
 				{
 					// . . . otherwise force the default avatar.
-					$avatar_filename = "images/default_avatar.gif";
+					$avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
 				}
 
-				$user_avatar = '<img style="' . $avatar_style . '" src="' . $avatar_filename . '" alt="' . $lang->adv_sidebox_avatar . '" title="' . $user['username'] . '\'s ' . $lang->adv_sidebox_avatar_lc . '" width="' . $avatar_width . 'px"/>';
+				$user_avatar = '<img style="' . $avatar_style . '" src="' . $avatar_filename . '" alt="' . $lang->adv_sidebox_avatar . '" title="' . $user['username'] . '\'s ' . $lang->adv_sidebox_avatar_lc . '" width="' . $avatar_width . 'px" height="' . $avatar_width . 'px"/>';
 
 				// If we reach the end of the row, insert a <br />
 				if (($membercount - (($row - 1) * $rowlength)) == $rowlength)
