@@ -18,12 +18,19 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
  */
 function rand_quote_asb_info()
 {
+	global $lang;
+
+	if(!$lang->adv_sidebox)
+	{
+		$lang->load('adv_sidebox');
+	}
+
 	return array
 	(
 		"name"					=>	'Random Quotes',
 		"description"			=>	'Displays random quotes with a link and avatar',
 		"wrap_content"		=>	true,
-		"version"					=>	"1",
+		"version"					=>	"1.3",
 		"discarded_templates"	=>	array
 													(
 														"rand_quote_sidebox_left",
@@ -35,9 +42,36 @@ function rand_quote_asb_info()
 											(
 												"sid"					=> "NULL",
 												"name"				=> "forum_id",
-												"title"				=> "Forum List",
-												"description"		=> "single fid or comma-separated fid list of forums to pull random posts from",
+												"title"				=> $lang->adv_sidebox_quote_forums_title,
+												"description"		=> $lang->adv_sidebox_quote_forums,
 												"optionscode"	=> "text",
+												"value"				=> ''
+											),
+											"min_length"		=> array
+											(
+												"sid"					=> "NULL",
+												"name"				=> "min_length",
+												"title"				=> $lang->adv_sidebox_min_quote_length_title,
+												"description"		=> $lang->adv_sidebox_min_quote_length,
+												"optionscode"	=> "text",
+												"value"				=> '20'
+											),
+											"max_length"		=> array
+											(
+												"sid"					=> "NULL",
+												"name"				=> "max_length",
+												"title"				=> $lang->adv_sidebox_max_quote_length_title,
+												"description"		=> $lang->adv_sidebox_max_quote_length,
+												"optionscode"	=> "text",
+												"value"				=> '160'
+											),
+											"fade_out"		=> array
+											(
+												"sid"					=> "NULL",
+												"name"				=> "fade_out",
+												"title"				=> $lang->adv_sidebox_fade_out_title,
+												"description"		=> $lang->adv_sidebox_fade_out,
+												"optionscode"	=> "yesno",
 												"value"				=> ''
 											)
 										),
@@ -47,6 +81,7 @@ function rand_quote_asb_info()
 											(
 												"title" => "rand_quote_sidebox",
 												"template" => "
+
 					<tr class=\"tcat\">
 						<td>
 							{\$thread_title_link}
@@ -54,15 +89,15 @@ function rand_quote_asb_info()
 					</tr>
 					<tr class=\"trow1\">
 						<td>
-							{\$rand_quote_text}
+							{\$rand_quote_avatar}&nbsp;{\$rand_quote_author}
 						</td>
 					</tr>
 					<tr class=\"trow2\">
 						<td>
-							{\$read_more}
-							{\$rand_quote_avatar}&nbsp;{\$rand_quote_author}
+							{\$rand_quote_text}
 						</td>
 					</tr>
+					{\$read_more}
 												",
 												"sid" => -1
 											)
@@ -85,6 +120,8 @@ function rand_quote_asb_build_template($settings, $template_var, $width)
 	{
 		$view_only = "fid IN ({$settings['forum_id']['value']})";
 	}
+
+	$settings['min_length']['value'] = (int) $settings['min_length'];
 
 	// get forums user cannot view
 	$unviewable = get_unviewable_forums(true);
@@ -127,28 +164,9 @@ function rand_quote_asb_build_template($settings, $template_var, $width)
 		);
 		$new_message = strip_tags($parser->parse_message(adv_sidebox_strip_quotes($rand_post['message']), $parser_options));
 
-		if(strlen($parser->text_parse_message($new_message)) < 20)
-		{
-			$new_message = 'I love ' . $mybb->settings['bbname'] . '!!!';
-		}
-		// concantate it if it is too long
-		elseif(strlen($new_message) > 80)
-		{
-			$new_message = substr($new_message, 0, 80) . ' . . .';
-		}
-		
-		$new_message = rand_quote_asb_strip_url($new_message);
-
-		$parser_options_smilies = array(
-			"allow_smilies" => 1,
-			'allow_imgcode' => 1
-		);
-
-		$new_message = $parser->parse_message($new_message, $parser_options_smilies);
-
 		$asb_width = (int) $width;
 		$asb_inner_size = $asb_width * .83;
-		$avatar_size = (int) ($asb_inner_size / 6.5);
+		$avatar_size = (int) ($asb_inner_size / 7);
 		$font_size = $asb_width / 4.5;
 
 		if($font_size > 16)
@@ -163,6 +181,41 @@ function rand_quote_asb_build_template($settings, $template_var, $width)
 		$title_font_size = (int) $font_size * .65;
 		$message_font_size = (int) $font_size;
 
+		if(strlen($parser->text_parse_message($new_message)) < $settings['min_length']['value'])
+		{
+			$new_message = 'I love ' . $mybb->settings['bbname'] . '!!!';
+		}
+		// concantate it if it is too long
+		elseif(strlen($new_message) > $settings['max_length']['value'] && $settings['max_length']['value'])
+		{
+			$remainder_message = substr($new_message, $settings['max_length']['value']);
+			$new_message = substr($new_message, 0, $settings['max_length']['value']);
+
+			$the_rest = array();
+			$this_font_size = $font_size;
+
+			$bump = .9;
+
+			while(strlen($remainder_message) > 0 && $this_font_size > 6)
+			{
+				$the_rest[] = '<span style="font-size: ' . (int) $this_font_size . 'px;">' . substr($remainder_message, 0, 10) . '</span>';
+				$this_font_size = $this_font_size - $bump;
+				$bump = $bump + .02;
+				$remainder_message = substr($remainder_message, 10);
+			}
+
+			$clipped = true;
+		}
+
+		$new_message = rand_quote_asb_strip_url($new_message);
+
+		$parser_options_smilies = array(
+			"allow_smilies" => 1,
+			'allow_imgcode' => 1
+		);
+
+		$new_message = $parser->parse_message($new_message, $parser_options_smilies);
+
 		// set up the username link so that it displays correctly for the display group of the user
 		$plain_text_username = $username = htmlspecialchars_uni($user['username']);
 		$usergroup = $user['usergroup'];
@@ -171,26 +224,42 @@ function rand_quote_asb_build_template($settings, $template_var, $width)
 		$author_link = get_profile_link($user['uid']);
 		$post_link = get_post_link($rand_post['pid'], $rand_post['tid']) . '#pid' . $rand_post['pid'];
 
-		// image sizes and text variables
-		$read_more_width = (int) ($asb_inner_size / 2.5);
-
-		if($read_more_width < 40)
-		{
-			$read_more_width = 40;
-		}
-
-		if($read_more_width > 85)
-		{
-			$read_more_width = 85;
-		}
-
 		$rand_quote_text = '<span style="font-size: ' . $message_font_size . 'px;">' . $new_message . '</span>';
 
-		$rand_quote_avatar = '<img style="padding: 4px; width: ' . $avatar_size . 'px; position: relative; float: left;" src="' . ($user['avatar'] ? $user['avatar'] : 'images/default_avatar.gif') . '" alt="' . $plain_text_username . '\s avatar" title="' . $plain_text_username . '\'s avatar"/>';
+		// If the user has an avatar then display it . . .
+		if($user['avatar'] != "")
+		{
+			$avatar_filename = $user['avatar'];
+		}
+		else
+		{
+			// . . . otherwise force the default avatar.
+			$avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
+		}
+
+		$rand_quote_avatar = '<img style="padding: 4px; width: ' . $avatar_size . 'px; position: relative; top: 5px; float: left;" src="' . $avatar_filename . '" alt="' . $plain_text_username . '\s avatar" title="' . $plain_text_username . '\'s avatar"/>';
 
 		$rand_quote_author = "<a  style=\"padding-top: 10px\" href=\"{$author_link}\" title=\"{$plain_text_username}\"><span style=\"font-size: {$username_font_size}px;\">{$username}</span></a>";
 
-		$read_more = '<a href="' . $post_link . '"><img style="width: ' . $read_more_width . 'px; position: relative; float: right; padding: 8px;" src="http://www.rantcentralforums.com/images/readmore.gif" title="Click to see the entire post" alt="read more . . ." /></a>';
+		if($clipped)
+		{
+			if($settings['fade_out']['value'])
+			{
+				$rand_quote_text .= implode("", $the_rest);
+			}
+			else
+			{
+				$rand_quote_text .= ' . . .';
+			}
+
+			$read_more = '
+					<tr class="tfoot">
+						<td>
+							<div style="text-align: center;"><a href="' . $post_link . '" title="Click to see the entire post"><strong>' . $lang->adv_sidebox_read_more . '</strong></a></div>
+						</td>
+					</tr>
+			';
+		}
 
 		if(my_strlen($rand_post['subject']) > 40)
 		{
@@ -213,12 +282,12 @@ function rand_quote_asb_build_template($settings, $template_var, $width)
 }
 
 function rand_quote_asb_strip_url($message)
-{	
+{
 	$message = " ".$message;
 	$message = preg_replace("#([\>\s\(\)])(http|https|ftp|news){1}://([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "", $message);
 	$message = preg_replace("#([\>\s\(\)])(www|ftp)\.(([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "", $message);
 	$message = my_substr($message, 1);
-	
+
 	return $message;
 }
 

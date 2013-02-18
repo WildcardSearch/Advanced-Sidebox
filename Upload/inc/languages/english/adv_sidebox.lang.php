@@ -77,20 +77,22 @@ $l['adv_sidebox_num_avatars_per_row'] = "Number of Avatars Per Row";
 $l['adv_sidebox_num_avatars_per_row_description'] = "(enter number of columns in which avatars will be shown within the module, or 0 to disable avatars)";
 $l['adv_sidebox_avatar_max_rows'] = "Maximum Number of Avatar Rows";
 $l['adv_sidebox_avatar_max_rows_description'] = "(enter the maximum amount of rows that avatars may occupy, or 0 to disable avatars)";
-$l['adv_sidebox_noone_online'] = "There are no members currently online.";
+$l['adv_sidebox_noone_online'] = "There are currently no members online.";
 $l['adv_sidebox_wol_avatar_list'] = "Avatar settings for Who's Online module";
 $l['adv_sidebox_avatar'] = "Avatar";
 $l['adv_sidebox_avatar_lc'] = "avatar";
-$l['adv_sidebox_see_all_alt'] = 'see all...';
+$l['adv_sidebox_see_all_alt'] = 'See all...';
 $l['adv_sidebox_see_all_title'] = 'Click to see all online members.';
 
 // latest threads
 $l['adv_sidebox_latest_threads_lastpost'] = 'Last Post:';
 $l['adv_sidebox_latest_threads_replies'] = 'Replies:';
 $l['adv_sidebox_latest_threads_views'] = 'Views:';
-$l['adv_sidebox_latest_threads_no_threads'] = 'no threads to show';
+$l['adv_sidebox_latest_threads_no_threads'] = ' There are no threads to display.';
 $l['adv_sidebox_latest_threads'] = "Latest Threads";
 $l['adv_sidebox_gotounread'] = "Go to first unread post";
+$l['adv_sidebox_latest_threads_max'] = "maximal number of threads to display";
+$l['adv_sidebox_latest_threads_max_title'] = "Thread Limit";
 
 // pm's
 $l['adv_sidebox_pms_no_messages'] = 'Please {1} or {2} to use this functionality.';
@@ -98,10 +100,24 @@ $l['adv_sidebox_pms_login'] = 'login';
 $l['adv_sidebox_pms_register'] = 'register';
 $l['adv_sidebox_pms_user_disabled_pms'] = 'You have disabled this functionality in {1}.';
 $l['adv_sidebox_pms_usercp'] = 'control panel';
-$l['adv_sidebox_pms_disabled_by_admin'] = 'You dont have privileges to access this functionality, or it has been disabled by administrator. You may contact administrator for assistance.';
+$l['adv_sidebox_pms_disabled_by_admin'] = 'You don\'t have privileges to access this functionality, or it has been disabled by administrator. You may contact administrator for assistance.';
 
 // random quote
 $l['adv_sidebox_no_posts'] = 'There are no posts to display.';
+$l['adv_sidebox_read_more'] = 'Read More';
+$l['adv_sidebox_quote_forums_title'] = 'Forum List';
+$l['adv_sidebox_quote_forums'] = 'single fid or comma-separated fid list of forums to pull random posts from';
+$l['adv_sidebox_max_quote_length_title'] = 'Maximal Post Length';
+$l['adv_sidebox_max_quote_length'] = 'in characters';
+$l['adv_sidebox_min_quote_length_title'] = 'Minimal Post Length';
+$l['adv_sidebox_min_quote_length'] = 'in characters';
+$l['adv_sidebox_fade_out_title'] = 'Gradually Fade Out Text Over Max?';
+$l['adv_sidebox_fade_out'] = 'YES to fade NO to clip (. . .)';
+
+// staff online
+$l['adv_sidebox_no_staff'] = 'There are currently no staff members online.';
+$l['adv_sidebox_max_staff'] = 'maximal number of staff members to display';
+$l['adv_sidebox_max_staff_title'] = 'Staff Limit';
 
 /*
  * Sidebox Management
