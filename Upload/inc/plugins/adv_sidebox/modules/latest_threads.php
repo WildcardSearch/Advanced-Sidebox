@@ -18,6 +18,13 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 
 function latest_threads_asb_info()
 {
+	global $lang;
+
+	if(!$lang->adv_sidebox)
+	{
+		$lang->load('adv_sidebox');
+	}
+
 	return array
 	(
 		"name"							=>	'Latest Threads',
@@ -34,8 +41,8 @@ function latest_threads_asb_info()
 														(
 															"sid"					=> "NULL",
 															"name"				=> "latest_threads_max",
-															"title"				=> "Thread Limit",
-															"description"		=> "maximum number of threads to display",
+															"title"				=> $lang->adv_sidebox_latest_threads_max_title,
+															"description"		=> $lang->adv_sidebox_latest_threads_max,
 															"optionscode"	=> "text",
 															"value"				=> '20'
 														)

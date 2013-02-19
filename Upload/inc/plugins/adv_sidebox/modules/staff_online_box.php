@@ -20,6 +20,13 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX")) {
  */
 function staff_online_box_asb_info()
 {
+	global $lang;
+
+	if(!$lang->adv_sidebox)
+	{
+		$lang->load('adv_sidebox');
+	}
+
 	return array
 	(
 		"name"							=>	'Online Staff',
@@ -39,8 +46,8 @@ function staff_online_box_asb_info()
 															(
 																"sid"					=> "NULL",
 																"name"				=> "max_staff",
-																"title"					=> 'Maximum Staff To Show',
-																"description"		=> '',
+																"title"					=> $lang->adv_sidebox_max_staff_title,
+																"description"		=> $lang->adv_sidebox_max_staff,
 																"optionscode"	=> "text",
 																"value"				=> '5'
 															)
@@ -69,11 +76,11 @@ function staff_online_box_asb_info()
 									<table cellspacing=\"0\" cellpadding=\"{\$theme[\'tablespace\']}\" width=\"100%\">
 										<tr>
 											<td class=\"{\$bgcolor}\" width=\"30%\">
-												<a href=\"{\$staff_profile_link}\"><img src=\"{\$staff_avatar_filename}\" alt=\"{\$staff_avatar_alt}\" title=\"{\$staff_avatar_title}\" width=\"{\$staff_avatar_dimensions}\"/></a>
+												<a href=\"{\$staff_profile_link}\"><img src=\"{\$staff_avatar_filename}\" alt=\"{\$staff_avatar_alt}\" title=\"{\$staff_avatar_title}\" style=\"width:{\$staff_avatar_dimensions};\"/></a>
 											</td>
 											<td class=\"{\$bgcolor}\" width=\"70%\">
 												<a href=\"{\$staff_profile_link}\" title=\"{\$staff_link_title}\">{\$staff_username}</a><br />
-												<img src=\"{\$staff_badge_filename}\" alt=\"{\$staff_badge_alt}\" title=\"{\$staff_badge_title}\" width=\"{\$staff_badge_width}\"/>
+												{\$staff_badge}
 											</td>
 										</tr>
 									</table>
@@ -90,14 +97,19 @@ function staff_online_box_asb_build_template($settings, $template_var, $width)
 {
 	global $$template_var;
 	global $db, $mybb, $templates, $lang, $cache, $theme;
-
+	
+	if(!$lang->adv_sidebox)
+	{
+		$lang->load('adv_sidebox');
+	}
+	
 	// get our setting value
 	$max_rows = (int) $settings['max_staff']['value'];
 
 	// prepare an oops template just in case
 	$template = '
 	<tr>
-		<td class=\"trow1\">nothing to show</td>
+		<td class=\"trow1\">' . $lang->adv_sidebox_no_staff . '</td>
 	</tr>';
 
 	// if max_rows is set to 0 then show nothing
@@ -199,7 +211,7 @@ function staff_online_box_asb_build_template($settings, $template_var, $width)
 			if(!$user['avatar'])
 			{
 				// assign the default avatar
-				$user['avatar'] = 'images/default_avatar.gif';
+				$user['avatar'] = $theme['imgdir'] . '/default_avatar.gif';
 			}
 
 			// avatar properties
@@ -217,11 +229,12 @@ function staff_online_box_asb_build_template($settings, $template_var, $width)
 			if($usergroup['image'])
 			{
 				// store it (if nothing is store alt property will display group default usertitle)
-				$staff_badge_filename = $usergroup['image'];
+				$staff_badge = '<img src="' . $usergroup['image'] . '" alt="' . $usergroup['usertitle'] . '" title="' . $usergroup['usertitle'] . '" style="width:' . $staff_badge_width . ';"/>';
 			}
-
-			// badge alt and title are the same
-			$staff_badge_alt = $staff_badge_title = $usergroup['usertitle'];
+			else
+			{
+			    $staff_badge = $usergroup['usertitle'];
+			}
 
 			// give us an alternating bgcolor
 			$bgcolor = alt_trow();

@@ -63,7 +63,7 @@ function private_messages_asb_build_template($settings, $template_var)
 	if($mybb->user['uid'] == 0)
 	{
 		// guest
-		$$template_var = $lang->sprintf("<tr><td class='trow1'>{$lang->adv_sidebox_pms_no_messages}</td></tr>","<a href=\"{$mybb->settings['bburl']}/member.php?action=login\">{$lang->adv_sidebox_pms_login}</a>", "<a href=\"{$mybb->settings['bburl']}/member.php?action=register\">{$lang->adv_sidebox_pms_register}\"</a>");
+		$$template_var = $lang->sprintf("<tr><td class='trow1'>{$lang->adv_sidebox_pms_no_messages}</td></tr>","<a href=\"{$mybb->settings['bburl']}/member.php?action=login\">{$lang->adv_sidebox_pms_login}</a>", "<a href=\"{$mybb->settings['bburl']}/member.php?action=register\">{$lang->adv_sidebox_pms_register}</a>");
 		$ret_val = false;
 	}
 	else
