@@ -237,7 +237,7 @@ function rand_quote_asb_build_template($settings, $template_var, $width)
 			$avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
 		}
 
-		$rand_quote_avatar = '<img style="padding: 4px; width: ' . $avatar_size . 'px; position: relative; top: 5px; float: left;" src="' . $avatar_filename . '" alt="' . $plain_text_username . '\s avatar" title="' . $plain_text_username . '\'s avatar"/>';
+		$rand_quote_avatar = '<img style="padding: 4px; width: ' . $avatar_size . 'px; vertical-align: middle;" src="' . $avatar_filename . '" alt="' . $plain_text_username . '\s avatar" title="' . $plain_text_username . '\'s avatar"/>';
 
 		$rand_quote_author = "<a  style=\"padding-top: 10px\" href=\"{$author_link}\" title=\"{$plain_text_username}\"><span style=\"font-size: {$username_font_size}px;\">{$username}</span></a>";
 
