@@ -22,7 +22,7 @@ function welcome_box_asb_info()
 		"name"						=>	'Welcome',
 		"description"				=>	'Login for guest, info for member',
 		"wrap_content"			=>	true,
-		"version"						=>	"1",
+		"version"						=>	"1.3",
 		"templates"					=>	array
 													(
 														array(
@@ -40,7 +40,7 @@ function welcome_box_asb_info()
 														(
 															"title" => "adv_sidebox_welcome_membertext",
 															"template" => "
-							<span style=\"float: right;\"><img src=\"{\$mybb->settings[\'bburl\']}/{\$mybb->user[\'avatar\']}\" width=\"{\$avatar_width}\" alt=\"{\$mybb->user[\'username\']}\'s avatar\"/>&nbsp;</span><span class=\"smalltext\"><em>{\$lang->member_welcome_lastvisit}</em> {\$lastvisit}<br />
+							{\$user_avatar}<span class=\"smalltext\"><em>{\$lang->member_welcome_lastvisit}</em> {\$lastvisit}<br />
 							{\$lang->since_then}<br />
 							<strong>&raquo;</strong> {\$lang->new_announcements}<br />
 							<strong>&raquo;</strong> {\$lang->new_threads}<br />
@@ -75,7 +75,7 @@ function welcome_box_asb_build_template($settings, $template_var, $width)
 	// don't forget to declare your variable! will not work without this
 	global $$template_var; // <-- important!
 
-	global $db, $mybb, $templates, $lang, $lastvisit;
+	global $db, $mybb, $templates, $lang, $lastvisit, $theme, $user_avatar;
 
 	$portal_url='member.php';
 
@@ -158,8 +158,20 @@ function welcome_box_asb_build_template($settings, $template_var, $width)
 
 		$avatar_width = (int) ($width / 5);
 
-		eval("\$welcometext = \"".$templates->get("adv_sidebox_welcome_membertext")."\";");
+		// If the user has an avatar then display it . . .
+		if($mybb->user['avatar'] != "")
+		{
+			$avatar_filename = $mybb->user['avatar'];
+		}
+		else
+		{
+			// . . . otherwise force the default avatar.
+			$avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
+		}
 
+		$user_avatar = "<span style=\"float: right;\"><img src=\"{$avatar_filename}\" width=\"{$avatar_width}\" alt=\"{$mybb->user['username']}'s avatar\"/>&nbsp;</span>";
+
+		eval("\$welcometext = \"".$templates->get("adv_sidebox_welcome_membertext")."\";");
 	}
 	else
 	{
