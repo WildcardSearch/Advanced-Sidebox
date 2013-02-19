@@ -121,7 +121,8 @@ function rand_quote_asb_build_template($settings, $template_var, $width)
 		$view_only = "fid IN ({$settings['forum_id']['value']})";
 	}
 
-	$settings['min_length']['value'] = (int) $settings['min_length'];
+	$min_chars = (int) $settings['min_length']['value'];
+	$max_chars = (int) $settings['max_length']['value'];
 
 	// get forums user cannot view
 	$unviewable = get_unviewable_forums(true);
@@ -181,15 +182,15 @@ function rand_quote_asb_build_template($settings, $template_var, $width)
 		$title_font_size = (int) $font_size * .65;
 		$message_font_size = (int) $font_size;
 
-		if(strlen($parser->text_parse_message($new_message)) < $settings['min_length']['value'])
+		if(strlen($parser->text_parse_message($new_message)) < $min_chars)
 		{
 			$new_message = 'I love ' . $mybb->settings['bbname'] . '!!!';
 		}
 		// concantate it if it is too long
-		elseif(strlen($new_message) > $settings['max_length']['value'] && $settings['max_length']['value'])
+		elseif(strlen($new_message) > $max_chars && $max_chars)
 		{
-			$remainder_message = substr($new_message, $settings['max_length']['value']);
-			$new_message = substr($new_message, 0, $settings['max_length']['value']);
+			$remainder_message = substr($new_message, $max_chars);
+			$new_message = substr($new_message, 0, $max_chars);
 
 			$the_rest = array();
 			$this_font_size = $font_size;
