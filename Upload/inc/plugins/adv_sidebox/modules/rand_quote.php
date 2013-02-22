@@ -73,6 +73,15 @@ function rand_quote_asb_info()
 												"description"		=> $lang->adv_sidebox_fade_out,
 												"optionscode"	=> "yesno",
 												"value"				=> ''
+											),
+											"default_text"		=> array
+											(
+												"sid"					=> "NULL",
+												"name"				=> "default_text",
+												"title"				=> $lang->adv_sidebox_default_text,
+												"description"		=> $lang->adv_sidebox_default_text_description,
+												"optionscode"	=> "text",
+												"value"				=> ''
 											)
 										),
 		"templates"		=>	array
@@ -121,9 +130,6 @@ function rand_quote_asb_build_template($settings, $template_var, $width)
 		$view_only = "fid IN ({$settings['forum_id']['value']})";
 	}
 
-	$min_chars = (int) $settings['min_length']['value'];
-	$max_chars = (int) $settings['max_length']['value'];
-
 	// get forums user cannot view
 	$unviewable = get_unviewable_forums(true);
 	if($unviewable)
@@ -167,7 +173,7 @@ function rand_quote_asb_build_template($settings, $template_var, $width)
 
 		$asb_width = (int) $width;
 		$asb_inner_size = $asb_width * .83;
-		$avatar_size = (int) ($asb_inner_size / 7);
+		$avatar_size = (int) ($asb_inner_size / 5);
 		$font_size = $asb_width / 4.5;
 
 		if($font_size > 16)
@@ -182,15 +188,25 @@ function rand_quote_asb_build_template($settings, $template_var, $width)
 		$title_font_size = (int) $font_size * .65;
 		$message_font_size = (int) $font_size;
 
-		if(strlen($parser->text_parse_message($new_message)) < $min_chars)
+		$new_message = $parser->text_parse_message(rand_quote_asb_strip_url($new_message));
+
+		if(strlen($new_message) < $settings['min_length']['value'])
 		{
-			$new_message = 'I love ' . $mybb->settings['bbname'] . '!!!';
+			if($settings['default_text']['value'])
+			{
+				$new_message = $settings['default_text']['value'];
+			}
+			else
+			{
+				// nothing to show
+				return false;
+			}
 		}
 		// concantate it if it is too long
-		elseif(strlen($new_message) > $max_chars && $max_chars)
+		elseif(strlen($new_message) > $settings['max_length']['value'] && $settings['max_length']['value'])
 		{
-			$remainder_message = substr($new_message, $max_chars);
-			$new_message = substr($new_message, 0, $max_chars);
+			$remainder_message = substr($new_message, $settings['max_length']['value']);
+			$new_message = substr($new_message, 0, $settings['max_length']['value']);
 
 			$the_rest = array();
 			$this_font_size = $font_size;
@@ -207,8 +223,6 @@ function rand_quote_asb_build_template($settings, $template_var, $width)
 
 			$clipped = true;
 		}
-
-		$new_message = rand_quote_asb_strip_url($new_message);
 
 		$parser_options_smilies = array(
 			"allow_smilies" => 1,
@@ -240,7 +254,7 @@ function rand_quote_asb_build_template($settings, $template_var, $width)
 
 		$rand_quote_avatar = '<img style="padding: 4px; width: ' . $avatar_size . 'px; vertical-align: middle;" src="' . $avatar_filename . '" alt="' . $plain_text_username . '\s avatar" title="' . $plain_text_username . '\'s avatar"/>';
 
-		$rand_quote_author = "<a  style=\"padding-top: 10px\" href=\"{$author_link}\" title=\"{$plain_text_username}\"><span style=\"font-size: {$username_font_size}px;\">{$username}</span></a>";
+		$rand_quote_author = "<a  style=\"vertical-align: middle;\" href=\"{$author_link}\" title=\"{$plain_text_username}\"><span style=\"font-size: {$username_font_size}px;\">{$username}</span></a>";
 
 		if($clipped)
 		{
@@ -256,7 +270,7 @@ function rand_quote_asb_build_template($settings, $template_var, $width)
 			$read_more = '
 					<tr class="tfoot">
 						<td>
-							<div style="text-align: center;"><a href="' . $post_link . '" title="Click to see the entire post"><strong>' . $lang->adv_sidebox_read_more . '</strong></a></div>
+							<div style="text-align: center;"><a href="' . $post_link . '" title="Click to see the entire post"><strong>Read More</strong></a></div>
 						</td>
 					</tr>
 			';

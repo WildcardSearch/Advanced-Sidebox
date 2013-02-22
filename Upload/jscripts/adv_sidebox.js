@@ -1,5 +1,5 @@
 /*
- * This file contains handlers for the side box toggle icons
+ * This file contains handlers for the side box toggle icon scripts
  *
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
@@ -27,9 +27,8 @@ Event.observe
 	function()
 	{
 		// left show/hide icon click
-		$$("a[id='asb_hide_column_left']").invoke
+		$('asb_hide_column_left').observe
 		(
-			'observe',
 			'click',
 			function(event)
 			{
@@ -59,9 +58,8 @@ Event.observe
 		);
 
 		// right show/hide icon click
-		$$("a[id='asb_hide_column_right']").invoke
+		$('asb_hide_column_right').observe
 		(
-			'observe',
 			'click',
 			function(event)
 			{

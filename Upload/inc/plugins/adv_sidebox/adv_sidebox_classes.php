@@ -157,8 +157,8 @@ class Sidebox
 
 		// set up db array
 		$this_box = array(
-			"display_name"					=>	$db->escape_string($this->display_name),
-			"box_type"							=>	$db->escape_string($this->box_type),
+			"display_name"				=>	$db->escape_string($this->display_name),
+			"box_type"						=>	$db->escape_string($this->box_type),
 			"position"							=>	(int) $this->position,
 			"display_order"					=> 	(int) $this->display_order,
 			"wrap_content"					=>	(int) $this->wrap_content,
@@ -170,7 +170,7 @@ class Sidebox
 			"show_on_showteam"		=>	(int) $this->show_on_showteam,
 			"show_on_stats"				=>	(int) $this->show_on_stats,
 			"show_on_portal"				=>	(int) $this->show_on_portal,
-			"groups"								=>	$db->escape_string($this->groups),
+			"groups"							=>	$db->escape_string($this->groups),
 			"settings"							=>	$db->escape_string(json_encode($this->settings))
 		);
 
@@ -182,7 +182,7 @@ class Sidebox
 		else
 		{
 			// otherwise insert a new box
-			$status = $db->insert_query('sideboxes', $this_box);
+			$status = $this->id = $db->insert_query('sideboxes', $this_box);
 		}
 
 		return $status;
@@ -201,80 +201,6 @@ class Sidebox
 
 			// attempt to delete it and return the result
 			return $db->query("DELETE FROM " . TABLE_PREFIX . "sideboxes WHERE id='" . (int) $this->id . "'");
-		}
-	}
-
-	/*
-	 * build_table_row()
-	 *
-	 * can be called on any exisiting sidebox object
-	 *
-	 * @param - $this_table must be a valid object of class Table
-	 */
-	public function build_table_row($this_table)
-	{
-		global $mybb, $lang;
-
-		if(!$lang->adv_sidebox)
-		{
-			$lang->load('adv_sidebox');
-		}
-
-		// construct the table row
-		if($this_table instanceof Table)
-		{
-			// name (edit link)
-			$this_table->construct_cell('<a href="' . ADV_SIDEBOX_EDIT_URL . '&amp;mode=' . $mybb->input['mode'] . '&amp;box=' . $this->id . '">' . $this->display_name . '</a>', array("width" => '30%'));
-
-			// scripts
-			$this_table->construct_cell($this->build_script_list(), array("width" => '30%'));
-
-			// prepare group info
-			// all groups enabled?
-			if($this->groups == 'all')
-			{
-				// get that language
-				$groups = $lang->adv_sidebox_all_groups;
-			}
-			else
-			{
-				// otherwise display a list
-				if(is_array($this->groups_array))
-				{
-					foreach($this->groups_array as $group)
-					{
-						if($group == 'guests')
-						{
-							$group = '0';
-						}
-
-						if($groups != '')
-						{
-							$groups .= ',';
-						}
-
-						$groups .= $group;
-					}
-				}
-			}
-
-			// groups
-			$this_table->construct_cell($groups, array("width" => '20%'));
-
-			// options popup
-			$popup = new PopupMenu('box_' . $this->id, $lang->adv_sidebox_options);
-
-			// edit
-			$popup->add_item($lang->adv_sidebox_edit, ADV_SIDEBOX_EDIT_URL . '&amp;mode=' . $mybb->input['mode'] . '&amp;box=' . $this->id);
-
-			// delete
-			$popup->add_item($lang->adv_sidebox_delete, ADV_SIDEBOX_DEL_URL . '&amp;mode=' . $mybb->input['mode'] . '&amp;box=' . $this->id);
-
-			// popup cell
-			$this_table->construct_cell($popup->fetch(), array("width" => '20%'));
-
-			// finish row
-			$this_table->construct_row();
 		}
 	}
 
@@ -323,7 +249,7 @@ class Sidebox
 			}
 
 			$content =  '<!-- sideboxstart: adv_sidebox header and expander for side box #' . $this->id . ' -->
-			<table style="word-wrap: break-word;" border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder ' . $this->box_type . '_main_' . $this->id . '">
+			<table style="table-layout: fixed; word-wrap: break-word;" border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder ' . $this->box_type . '_main_' . $this->id . '">
 				<thead>
 					<tr>
 						<td class="thead"><div class="expcolimage"><img src="{$theme[\'imgdir\']}/' . $expcolimage . '" id="' . $this->box_type . '_' . $this->id . '_img" class="expander" alt="' . $expaltext . '" title="' . $expaltext . '" /></div><strong>' . $this->display_name . '</strong>
@@ -359,67 +285,6 @@ class Sidebox
 	public function build_template_variable()
 	{
 		return $this->box_type . '_' . $this->id;
-	}
-
-	/*
-	 * build_script_list()
-	 *
-	 * builds a comma seperated list of scripts that this sidebox will display on, 'All Scripts' if all, a single name if 1, a deactivated message if none.
-	 */
-	public function build_script_list()
-	{
-		global $settings;
-
-		$script_list = $this->get_scripts(true);
-		$plain_script_list = $this->get_scripts();
-		$new_list = array();
-
-		$count = 0;
-
-		if(is_array($script_list) && is_array($plain_script_list))
-		{
-			foreach($plain_script_list as $script)
-			{
-				$base_name = substr($script, 0, strlen($script) - 4);
-				$language_name = 'adv_sidebox_' . $base_name;
-				$setting_name = 'adv_sidebox_on_' . $base_name;
-
-				if($script = 'portal')
-				{
-					$setting_name = 'adv_sidebox_portal_replace';
-				}
-
-				if($settings[$setting_name])
-				{
-					$new_list[] = '<span title="enabled script" style="color: #32CD32;">' . $script_list[$count] . '</span>';
-				}
-				else
-				{
-					$new_list[] = '<span title="disabled script" style="color: #888;">' . $script_list[$count] . '</span>';
-				}
-
-				++$count;
-			}
-
-			// return a comma space separated list
-			$return_val = implode(", ", $new_list);
-		}
-		else
-		{
-			$return_val = $script_list;
-		}
-
-		// if there are scripts . . .
-		if($return_val)
-		{
-			// return them
-			return $return_val;
-		}
-		else
-		{
-			// otherwise the side box is deactivated so mark it
-			return '<span style="color: red;"><strong>Deactivated</strong></span>';
-		}
 	}
 
 	/*
@@ -670,18 +535,14 @@ class Sidebox
 	 *
 	 * handler for $this->position
 	 *
-	 * @param - $position is the value to store
+	 * @param - $position is the value to store (passing zero doesn't seem to work; pass 'left' instead)
 	 */
 	public function set_position($position = 0)
 	{
-		switch($position)
+		$this->position = 0;
+		if($position == 'right' || (int) $position == 1)
 		{
-			case 'right':
-			case 1:
-				$this->position = 1;
-				break;
-			default:
-				$this->position = 0;
+			$this->position = 1;
 		}
 	}
 
@@ -966,9 +827,9 @@ class Custom_type extends Sidebox_type
 		// set up the array
 		$data = array
 		(
-			"name"				=>	$db->escape_string($this->name),
-			"description"		=>	$db->escape_string($this->description),
-			"wrap_content"	=>	(int) $this->wrap_content,
+			"name"					=>	$db->escape_string($this->name),
+			"description"			=>	$db->escape_string($this->description),
+			"wrap_content"		=>	(int) $this->wrap_content,
 			"content"				=>	$db->escape_string($this->content)
 		);
 
@@ -981,7 +842,7 @@ class Custom_type extends Sidebox_type
 		else
 		{
 			// . . . otherwise attempt an insert and return success/fail
-			return $db->insert_query('custom_sideboxes', $data);
+			return $this->id = $db->insert_query('custom_sideboxes', $data);
 		}
 	}
 
@@ -1049,7 +910,7 @@ class Custom_type extends Sidebox_type
 	/*
 	 * build_template()
 	 *
-	 * builds the template variable used for this custom box
+	 * builds the content fot the template variable used for this custom box
 	 */
 	public function build_template($template_variable)
 	{
@@ -1627,7 +1488,7 @@ class Sidebox_handler
 	 *
 	 * attempts to load all side boxes, addons, custom_boxes and establish properties to be used by ASB and ASB module functions
 	 *
-	 * @param - $acp, if true, will avoid wasted execution when in outside ACP by only loading necessary side boxes and modules and/or custom boxes for that script
+	 * @param - $acp, if true, will avoid wasted execution when outside ACP by only loading necessary side boxes and modules and/or custom boxes for that script
 	 */
 	private function load($acp = false)
 	{
@@ -1674,9 +1535,7 @@ class Sidebox_handler
 	{
 		global $db;
 
-		$this->used_box_types = array();
-		$this->addons_used = array();
-		$this->sideboxes = array();
+		$this->sideboxes = $this->addons_used = $this->used_box_types = array();
 		$where = '';
 
 		// filter by script if applicable
@@ -1794,7 +1653,7 @@ class Sidebox_handler
 			{
 				if($file->isFile())
 				{
-					// skip directories, '.' '..' and non PHP files
+					// skip directories and '.' '..'
 					if($file->isDot() || $file->isDir())
 					{
 						continue;
@@ -1802,13 +1661,14 @@ class Sidebox_handler
 
 					$extension = pathinfo($file->getFilename(), PATHINFO_EXTENSION);
 
+					// only PHP files
 					if($extension == 'php')
 					{
 						// extract the base_name from the module filename
 						$filename = $file->getFilename();
 						$module = substr($filename, 0, strlen($filename) - 4);
 
-						// atempt to load the module
+						// attempt to load the module
 						$this->addons[$module] = new Addon_type($module);
 					}
 				}
@@ -1904,6 +1764,8 @@ class Sidebox_handler
 			// loop through all used types
 			foreach($this->used_box_types as $this_box => $module)
 			{
+				$result = false;
+
 				// get the template variable
 				$this_template_variable = $this->sideboxes[$this_box]->build_template_variable();
 
@@ -2121,244 +1983,169 @@ class Sidebox_handler
 	}
 
 	/*
-	 * build_peekers()
+	 * build_setting()
 	 *
-	 * automates the process of hiding inactive addon settings in the edit box page
-	 */
-	public function build_peekers($more_peekers = '')
-	{
-		// if there are addons (custom boxes can't contain settings)
-		if(is_array($this->addons))
-		{
-			// loop through them
-			foreach($this->addons as $module)
-			{
-				// if the module has settings . . .
-				if($module->has_settings)
-				{
-					$module_settings = $module->get_settings();
-
-					// if the setting seem valid . . .
-					if(is_array($module_settings))
-					{
-						// loop through them
-						foreach($module_settings as $setting)
-						{
-							// attach an event handler to only show these settings when appropriate
-							$element_name = "{$setting['name']}";
-							$element_id = "setting_{$setting['name']}";
-							$peekers .= '
-			var peeker = new Peeker
-			(
-				$("box_type_select"),
-				$("' . $element_id  . '"),
-				/' . $module->get_base_name() . '/,
-				false
-			);';
-						}
-					}
-				}
-			}
-		}
-
-		// if there were peekers to show then return content
-		if($peekers)
-		{
-			return '<script type="text/javascript" src="./jscripts/peeker.js"></script>
-	<script type="text/javascript">
-		Event.observe
-		(
-			window,
-			"load",
-			function()
-			{
-				' . $peekers . $more_peekers . '
-			}
-		);
-	</script>';
-		}
-	}
-
-	/*
-	 * build_settings()
-	 *
-	 * in the edit/add sidebox page all settings for all addon modules are created on load (but hidden until called)
+	 * creates a single setting from an associative array
 	 *
 	 * @param - $this_form is a valid object of class DefaultForm
 	 * @param - $this_form_container is a valid object of class DefaultFormContainer
-	 * @param - $this_box is an integer representing the currently loaded box (edit) or 0 if adding a new sidebox
+	 * @param - $setting is an associative array for the settings properties
+	 * @param - $sidebox is an integer representing the currently loaded box (edit) or 0 if adding a new sidebox
+	 * @param - $module is a valid Addon_type object (addon-on module)
 	 */
-	public function build_settings($this_form, $this_form_container, $this_box)
+	public function build_setting($this_form, $this_form_container, $setting, $sidebox, $module)
 	{
-		// if there are addons
-		if(is_array($this->addons))
+		// create each element with unique id and name properties
+		$options = "";
+		$type = explode("\n", $setting['optionscode']);
+		$type[0] = trim($type[0]);
+		$element_name = "{$setting['name']}";
+		$element_id = "setting_{$setting['name']}";
+
+		// editing?
+		if($sidebox)
 		{
-			// loop through them
-			foreach($this->addons as $module)
+			if($module instanceof Addon_type)
 			{
-				// if this module as settings
-				if($module->has_settings)
+				// if editing and the current box uses this module . . .
+				if($this->sideboxes[$sidebox]->get_box_type() == $module->get_base_name())
 				{
-					$module_settings = $module->get_settings();
-
-					// if the settings seem valid . . .
-					if(is_array($module_settings))
+					$sidebox_settings = $this->sideboxes[$sidebox]->get_settings();
+					// if there are settings (values mostly). . .
+					if(is_array($sidebox_settings))
 					{
-						// loop through them
-						foreach($module_settings as $setting)
+						// get the values
+						foreach($sidebox_settings as $this_box_setting)
 						{
-							// create each element with unique id and name properties
-							$options = "";
-							$type = explode("\n", $setting['optionscode']);
-							$type[0] = trim($type[0]);
-							$element_name = "{$setting['name']}";
-							$element_id = "setting_{$setting['name']}";
-
-							if($this_box)
+							// if the current setting has a stored value
+							if($this_box_setting['name'] == $setting['name'])
 							{
-								// if editing and the current box uses this module . . .
-								if($this->sideboxes[$this_box]->get_box_type() == $module->get_base_name())
-								{
-									$sidebox_settings = $this->sideboxes[$this_box]->get_settings();
-									// if there are settings (values mostly). . .
-									if(is_array($sidebox_settings))
-									{
-										// get the values
-										foreach($sidebox_settings as $this_box_setting)
-										{
-											// if the current setting has a stored value
-											if($this_box_setting['name'] == $setting['name'])
-											{
-												// store to be included in the produced HTML value property
-												$setting['value'] = $this_box_setting['value'];
-											}
-										}
-									}
-								}
-							}
-
-							// prepare labels
-							$this_label = '<strong>' . $setting['title'] . '</strong>';
-							$this_desc = '<i>' . $setting['description'] . '</i>';
-
-							// sort by type
-							if($type[0] == "text" || $type[0] == "")
-							{
-								$this_form_container->output_row($this_label, $this_desc, $this_form->generate_text_box($element_name, $setting['value'], array('id' => $element_id)), $element_name, array("id" => $element_id));
-							}
-							else if($type[0] == "textarea")
-							{
-								$this_form_container->output_row($this_label, $this_desc, $this_form->generate_text_area($element_name, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
-							}
-							else if($type[0] == "yesno")
-							{
-								$this_form_container->output_row($this_label, $this_desc, $this_form->generate_yes_no_radio($element_name, $setting['value'], true, array('id' => $element_id.'_yes', 'class' => $element_id), array('id' => $element_id.'_no', 'class' => $element_id)), $element_name, array('id' => $element_id));
-							}
-							else if($type[0] == "onoff")
-							{
-								$this_form_container->output_row($this_label, $this_desc, $this_form->generate_on_off_radio($element_name, $setting['value'], true, array('id' => $element_id.'_on', 'class' => $element_id), array('id' => $element_id.'_off', 'class' => $element_id)), $element_name, array('id' => $element_id));
-							}
-							else if($type[0] == "cpstyle")
-							{
-								$dir = @opendir(MYBB_ROOT.$config['admin_dir']."/styles");
-								while($folder = readdir($dir))
-								{
-									if($file != "." && $file != ".." && @file_exists(MYBB_ROOT.$config['admin_dir']."/styles/$folder/main.css"))
-									{
-										$folders[$folder] = ucfirst($folder);
-									}
-								}
-								closedir($dir);
-								ksort($folders);
-
-								$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $folders, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
-							}
-							else if($type[0] == "language")
-							{
-								$languages = $lang->get_languages();
-								$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
-							}
-							else if($type[0] == "adminlanguage")
-							{
-								$languages = $lang->get_languages(1);
-								$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
-							}
-							else if($type[0] == "passwordbox")
-							{
-								$this_form_container->output_row($this_label, $this_desc, $this_form->generate_password_box($element_name, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
-							}
-							else if($type[0] == "php")
-							{
-								$setting['optionscode'] = substr($setting['optionscode'], 3);
-								eval("\$setting_code = \"".$setting['optionscode']."\";");
-							}
-							else
-							{
-								for($i=0; $i < count($type); $i++)
-								{
-									$optionsexp = explode("=", $type[$i]);
-									if(!$optionsexp[1])
-									{
-										continue;
-									}
-									$title_lang = "setting_{$setting['name']}_{$optionsexp[0]}";
-									if($lang->$title_lang)
-									{
-										$optionsexp[1] = $lang->$title_lang;
-									}
-
-									if($type[0] == "select")
-									{
-										$option_list[$optionsexp[0]] = htmlspecialchars_uni($optionsexp[1]);
-									}
-									else if($type[0] == "radio")
-									{
-										if($setting['value'] == $optionsexp[0])
-										{
-											$option_list[$i] = $this_form->generate_radio_button($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
-										}
-										else
-										{
-											$option_list[$i] = $this_form->generate_radio_button($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'class' => $element_id));
-										}
-									}
-									else if($type[0] == "checkbox")
-									{
-										if($setting['value'] == $optionsexp[0])
-										{
-											$option_list[$i] = $this_form->generate_check_box($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
-										}
-										else
-										{
-											$option_list[$i] = $this_form->generate_check_box($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'class' => $element_id));
-										}
-									}
-								}
-								if($type[0] == "select")
-								{
-									$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $option_list, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
-								}
-								else
-								{
-									$setting_code = implode("<br />", $option_list);
-								}
-								$option_list = array();
-							}
-							// Do we have a custom language variable for this title or description?
-							$title_lang = "setting_".$setting['name'];
-							$desc_lang = $title_lang."_desc";
-							if($lang->$title_lang)
-							{
-								$setting['title'] = $lang->$title_lang;
-							}
-							if($lang->$desc_lang)
-							{
-								$setting['description'] = $lang->$desc_lang;
+								// store to be included in the produced HTML value property
+								$setting['value'] = $this_box_setting['value'];
 							}
 						}
 					}
 				}
 			}
+		}
+
+		// prepare labels
+		$this_label = '<strong>' . $setting['title'] . '</strong>';
+		$this_desc = '<i>' . $setting['description'] . '</i>';
+
+		// sort by type
+		if($type[0] == "text" || $type[0] == "")
+		{
+			$this_form_container->output_row($this_label, $this_desc, $this_form->generate_text_box($element_name, $setting['value'], array('id' => $element_id)), $element_name, array("id" => $element_id));
+		}
+		else if($type[0] == "textarea")
+		{
+			$this_form_container->output_row($this_label, $this_desc, $this_form->generate_text_area($element_name, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
+		}
+		else if($type[0] == "yesno")
+		{
+			$this_form_container->output_row($this_label, $this_desc, $this_form->generate_yes_no_radio($element_name, $setting['value'], true, array('id' => $element_id.'_yes', 'class' => $element_id), array('id' => $element_id.'_no', 'class' => $element_id)), $element_name, array('id' => $element_id));
+		}
+		else if($type[0] == "onoff")
+		{
+			$this_form_container->output_row($this_label, $this_desc, $this_form->generate_on_off_radio($element_name, $setting['value'], true, array('id' => $element_id.'_on', 'class' => $element_id), array('id' => $element_id.'_off', 'class' => $element_id)), $element_name, array('id' => $element_id));
+		}
+		else if($type[0] == "cpstyle")
+		{
+			$dir = @opendir(MYBB_ROOT.$config['admin_dir']."/styles");
+			while($folder = readdir($dir))
+			{
+				if($file != "." && $file != ".." && @file_exists(MYBB_ROOT.$config['admin_dir']."/styles/$folder/main.css"))
+				{
+					$folders[$folder] = ucfirst($folder);
+				}
+			}
+			closedir($dir);
+			ksort($folders);
+
+			$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $folders, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
+		}
+		else if($type[0] == "language")
+		{
+			$languages = $lang->get_languages();
+			$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
+		}
+		else if($type[0] == "adminlanguage")
+		{
+			$languages = $lang->get_languages(1);
+			$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
+		}
+		else if($type[0] == "passwordbox")
+		{
+			$this_form_container->output_row($this_label, $this_desc, $this_form->generate_password_box($element_name, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
+		}
+		else if($type[0] == "php")
+		{
+			$setting['optionscode'] = substr($setting['optionscode'], 3);
+			eval("\$setting_code = \"".$setting['optionscode']."\";");
+		}
+		else
+		{
+			for($i=0; $i < count($type); $i++)
+			{
+				$optionsexp = explode("=", $type[$i]);
+				if(!$optionsexp[1])
+				{
+					continue;
+				}
+				$title_lang = "setting_{$setting['name']}_{$optionsexp[0]}";
+				if($lang->$title_lang)
+				{
+					$optionsexp[1] = $lang->$title_lang;
+				}
+
+				if($type[0] == "select")
+				{
+					$option_list[$optionsexp[0]] = htmlspecialchars_uni($optionsexp[1]);
+				}
+				else if($type[0] == "radio")
+				{
+					if($setting['value'] == $optionsexp[0])
+					{
+						$option_list[$i] = $this_form->generate_radio_button($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
+					}
+					else
+					{
+						$option_list[$i] = $this_form->generate_radio_button($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'class' => $element_id));
+					}
+				}
+				else if($type[0] == "checkbox")
+				{
+					if($setting['value'] == $optionsexp[0])
+					{
+						$option_list[$i] = $this_form->generate_check_box($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
+					}
+					else
+					{
+						$option_list[$i] = $this_form->generate_check_box($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'class' => $element_id));
+					}
+				}
+			}
+			if($type[0] == "select")
+			{
+				$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $option_list, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
+			}
+			else
+			{
+				$setting_code = implode("<br />", $option_list);
+			}
+			$option_list = array();
+		}
+		// Do we have a custom language variable for this title or description?
+		$title_lang = "setting_".$setting['name'];
+		$desc_lang = $title_lang."_desc";
+		if($lang->$title_lang)
+		{
+			$setting['title'] = $lang->$title_lang;
+		}
+		if($lang->$desc_lang)
+		{
+			$setting['description'] = $lang->$desc_lang;
 		}
 	}
 }

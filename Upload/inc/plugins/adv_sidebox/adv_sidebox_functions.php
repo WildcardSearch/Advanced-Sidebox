@@ -91,7 +91,7 @@ function adv_sidebox_build_filter_links($filter)
 			}
 
 			// url
-			$url = ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;mode=' . $base_name;
+			$url = ADV_SIDEBOX_URL . '&amp;action=manage_sideboxes&amp;page=' . $base_name;
 
 			// language
 			$language_name = 'adv_sidebox_' . $base_name;
@@ -167,11 +167,13 @@ function adv_sidebox_strip_quotes($message)
 	$pattern = array
 	(
 		"#\[quote=([\"']|&quot;|)(.*?)(?:\\1)(.*?)(?:[\"']|&quot;)?\](.*?)\[/quote\](\r\n?|\n?)#esi",
-		"#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si"
+		"#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si",
+		"#\[\/quote\](\r\n?|\n?)#si"
 	);
 
 	$replace = array
 	(
+		"",
 		"",
 		""
 	);

@@ -113,6 +113,8 @@ $l['adv_sidebox_min_quote_length_title'] = 'Minimal Post Length';
 $l['adv_sidebox_min_quote_length'] = 'in characters';
 $l['adv_sidebox_fade_out_title'] = 'Gradually Fade Out Text Over Max?';
 $l['adv_sidebox_fade_out'] = 'YES to fade NO to clip (. . .)';
+$l['adv_sidebox_default_text'] = 'Default Text';
+$l['adv_sidebox_default_text_description'] = 'display this if the message is too short';
 
 // staff online
 $l['adv_sidebox_no_staff'] = 'There are currently no staff members online.';
@@ -184,6 +186,16 @@ $l['adv_sidebox_member'] = 'Profile';
 $l['adv_sidebox_memberlist'] = 'Member List';
 $l['adv_sidebox_showteam'] = 'Forum Team';
 $l['adv_sidebox_stats'] = 'Stats';
+
+// script abbreviations (tool tips)
+$l['adv_sidebox_abbr_index'] = 'Index';
+$l['adv_sidebox_abbr_forumdisplay'] = 'Forum';
+$l['adv_sidebox_abbr_showthread'] = 'Thread';
+$l['adv_sidebox_abbr_portal'] = 'Portal';
+$l['adv_sidebox_abbr_member'] = 'Profile';
+$l['adv_sidebox_abbr_memberlist'] = 'Mem. List';
+$l['adv_sidebox_abbr_showteam'] = 'Team';
+$l['adv_sidebox_abbr_stats'] = 'Stats';
 
 // custom titles
 $l['adv_sidebox_current_title'] = 'current title: ';

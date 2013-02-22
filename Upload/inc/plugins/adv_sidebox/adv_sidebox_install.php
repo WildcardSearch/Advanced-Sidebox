@@ -67,13 +67,13 @@ function adv_sidebox_info()
 
 	// This array returns information about the plugin, some of which was prefabricated above based on whether the plugin has been installed or not.
 	return array(
-		"name"				=> $name,
-		"description"		=> $adv_sidebox_description,
-		"website"			=> "http://wildcardsearch.github.com/Advanced-Sidebox",
+		"name"					=> $name,
+		"description"			=> $adv_sidebox_description,
+		"website"				=> "http://wildcardsearch.github.com/Advanced-Sidebox",
 		"author"				=> $author,
 		"authorsite"			=> "http://www.rantcentralforums.com",
-		"version"				=> "1.5",
-		"compatibility" 	=> "16*",
+		"version"				=> "1.6",
+		"compatibility" 		=> "16*",
 		"guid" 					=> "870e9163e2ae9b606a789d9f7d4d2462",
 	);
 }
@@ -277,11 +277,11 @@ function adv_sidebox_create_base_settings()
 	if($gid == 0)
 	{
 		$adv_sidebox_group = array(
-			"gid" 				=> "NULL",
+			"gid" 					=> "NULL",
 			"name" 				=> "adv_sidebox_settings",
-			"title" 				=> "Advanced Sidebox",
+			"title" 					=> "Advanced Sidebox",
 			"description" 		=> $lang->adv_sidebox_settingsgroup_description,
-			"disporder" 		=> "101",
+			"disporder" 			=> "101",
 			"isdefault" 			=> "no",
 		);
 		$db->insert_query("settinggroups", $adv_sidebox_group);
@@ -292,148 +292,148 @@ function adv_sidebox_create_base_settings()
 
 	$adv_sidebox_settings[] = array
 	(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_on_index",
+		"sid"						=> "NULL",
+		"name"					=> "adv_sidebox_on_index",
 		"title"					=> $lang->adv_sidebox_show_on_index,
-		"description"		=> "",
-		"optionscode"	=> "yesno",
-		"value"				=> '1',
+		"description"			=> "",
+		"optionscode"		=> "yesno",
+		"value"					=> '1',
 		"disporder"			=> '10',
-		"gid"					=> (int) $gid,
+		"gid"						=> (int) $gid,
 	);
 	$adv_sidebox_settings[] = array
 	(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_on_forumdisplay",
+		"sid"						=> "NULL",
+		"name"					=> "adv_sidebox_on_forumdisplay",
 		"title"					=> $lang->adv_sidebox_show_on_forumdisplay,
-		"description"		=> "",
-		"optionscode"	=> "yesno",
-		"value"				=> '1',
+		"description"			=> "",
+		"optionscode"		=> "yesno",
+		"value"					=> '1',
 		"disporder"			=> '20',
-		"gid"					=> (int) $gid,
+		"gid"						=> (int) $gid,
 	);
 	$adv_sidebox_settings[] = array
 	(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_on_showthread",
+		"sid"						=> "NULL",
+		"name"					=> "adv_sidebox_on_showthread",
 		"title"					=> $lang->adv_sidebox_show_on_threaddisplay,
-		"description"		=> "",
-		"optionscode"	=> "yesno",
-		"value"				=> '1',
+		"description"			=> "",
+		"optionscode"		=> "yesno",
+		"value"					=> '1',
 		"disporder"			=> '30',
-		"gid"					=> (int) $gid,
+		"gid"						=> (int) $gid,
 	);
 	$adv_sidebox_settings[] = array
 	(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_on_member",
+		"sid"						=> "NULL",
+		"name"					=> "adv_sidebox_on_member",
 		"title"					=> $lang->adv_sidebox_show_on_member,
-		"description"		=> "",
-		"optionscode"	=> "yesno",
-		"value"				=> '1',
+		"description"			=> "",
+		"optionscode"		=> "yesno",
+		"value"					=> '1',
 		"disporder"			=> '40',
-		"gid"					=> (int) $gid,
+		"gid"						=> (int) $gid,
 	);
 	$adv_sidebox_settings[] = array
 	(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_on_memberlist",
+		"sid"						=> "NULL",
+		"name"					=> "adv_sidebox_on_memberlist",
 		"title"					=> $lang->adv_sidebox_show_on_memberlist,
-		"description"		=> "",
-		"optionscode"	=> "yesno",
-		"value"				=> '1',
+		"description"			=> "",
+		"optionscode"		=> "yesno",
+		"value"					=> '1',
 		"disporder"			=> '50',
-		"gid"					=> (int) $gid,
+		"gid"						=> (int) $gid,
 	);
 	$adv_sidebox_settings[] = array
 	(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_on_showteam",
+		"sid"						=> "NULL",
+		"name"					=> "adv_sidebox_on_showteam",
 		"title"					=> $lang->adv_sidebox_show_on_showteam,
-		"description"		=> "",
-		"optionscode"	=> "yesno",
-		"value"				=> '1',
+		"description"			=> "",
+		"optionscode"		=> "yesno",
+		"value"					=> '1',
 		"disporder"			=> '60',
-		"gid"					=> (int) $gid,
+		"gid"						=> (int) $gid,
 	);
 	$adv_sidebox_settings[] = array
 	(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_on_stats",
+		"sid"						=> "NULL",
+		"name"					=> "adv_sidebox_on_stats",
 		"title"					=> $lang->adv_sidebox_show_on_stats,
-		"description"		=> "",
-		"optionscode"	=> "yesno",
-		"value"				=> '1',
+		"description"			=> "",
+		"optionscode"		=> "yesno",
+		"value"					=> '1',
 		"disporder"			=> '70',
-		"gid"					=> (int) $gid,
+		"gid"						=> (int) $gid,
 	);
 	$adv_sidebox_settings[] = array
 	(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_portal_replace",
+		"sid"						=> "NULL",
+		"name"					=> "adv_sidebox_portal_replace",
 		"title"					=> $lang->adv_sidebox_replace_portal_boxes,
-		"description"		=> "",
-		"optionscode"	=> "yesno",
-		"value"				=> '1',
+		"description"			=> "",
+		"optionscode"		=> "yesno",
+		"value"					=> '1',
 		"disporder"			=> '80',
-		"gid"					=> (int) $gid,
+		"gid"						=> (int) $gid,
 	);
 	$adv_sidebox_settings[] = array
 	(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_show_empty_boxes",
+		"sid"						=> "NULL",
+		"name"					=> "adv_sidebox_show_empty_boxes",
 		"title"					=> $lang->adv_sidebox_show_empty_boxes . ":",
-		"description"		=> $db->escape_string($lang->adv_sidebox_show_empty_boxes_desc),
-		"optionscode"	=> "yesno",
-		"value"				=> '1',
+		"description"			=> $db->escape_string($lang->adv_sidebox_show_empty_boxes_desc),
+		"optionscode"		=> "yesno",
+		"value"					=> '1',
 		"disporder"			=> '90',
-		"gid"					=> (int) $gid,
+		"gid"						=> (int) $gid,
 	);
 	$adv_sidebox_settings[] = array
 	(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_show_toggle_icons",
+		"sid"						=> "NULL",
+		"name"					=> "adv_sidebox_show_toggle_icons",
 		"title"					=> $lang->adv_sidebox_show_toggle_icons,
-		"description"		=> '',
-		"optionscode"	=> "yesno",
-		"value"				=> '0',
+		"description"			=> '',
+		"optionscode"		=> "yesno",
+		"value"					=> '0',
 		"disporder"			=> '100',
-		"gid"					=> (int) $gid,
+		"gid"						=> (int) $gid,
 	);
 	$adv_sidebox_settings[] = array
 	(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_width_left",
+		"sid"						=> "NULL",
+		"name"					=> "adv_sidebox_width_left",
 		"title"					=> $lang->adv_sidebox_width . ":",
-		"description"		=> "left",
-		"optionscode"	=> "text",
-		"value"				=> '160',
+		"description"			=> "left",
+		"optionscode"		=> "text",
+		"value"					=> '160',
 		"disporder"			=> '110',
-		"gid"					=> (int) $gid,
+		"gid"						=> (int) $gid,
 	);
 	$adv_sidebox_settings[] = array
 	(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_width_right",
+		"sid"						=> "NULL",
+		"name"					=> "adv_sidebox_width_right",
 		"title"					=> $lang->adv_sidebox_width . ":",
-		"description"		=> "right",
-		"optionscode"	=> "text",
-		"value"				=> '160',
+		"description"			=> "right",
+		"optionscode"		=> "text",
+		"value"					=> '160',
 		"disporder"			=> '120',
-		"gid"					=> (int) $gid,
+		"gid"						=> (int) $gid,
 	);
 
 	$update_themes_link = "<ul><li><a href=\"" . ADV_SIDEBOX_URL . "&amp;action=update_theme_select\" title=\"\">{$lang->adv_sidebox_theme_exclude_select_update_link}</a><br />{$lang->adv_sidebox_theme_exclude_select_update_description}</li></ul>";
 
 	$adv_sidebox_settings[] = array(
-		"sid"					=> "NULL",
-		"name"				=> "adv_sidebox_exclude_theme",
+		"sid"						=> "NULL",
+		"name"					=> "adv_sidebox_exclude_theme",
 		"title"					=> $lang->adv_sidebox_theme_exclude_list . ":",
-		"description"		=> $db->escape_string($lang->adv_sidebox_theme_exclude_list_description . $update_themes_link),
-		"optionscode"	=> $db->escape_string(build_theme_exclude_select()),
-		"value"				=> '',
-		"disporder"		=> '130',
-		"gid"					=> (int) $gid,
+		"description"			=> $db->escape_string($lang->adv_sidebox_theme_exclude_list_description . $update_themes_link),
+		"optionscode"		=> $db->escape_string(build_theme_exclude_select()),
+		"value"					=> '',
+		"disporder"			=> '130',
+		"gid"						=> (int) $gid,
 	);
 
 	// loop through all the settings
@@ -522,6 +522,11 @@ function adv_sidebox_unset_cache_version()
     return true;
 }
 
+/*
+ * adv_sidebox_do_db_changes()
+ *
+ * makes all DB changes
+ */
 function adv_sidebox_do_db_changes()
 {
 	global $db;
@@ -533,77 +538,62 @@ function adv_sidebox_do_db_changes()
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD id id INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY");
 		}
-
 		if(!$db->field_exists('display_order', 'sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD display_order INT(10) NOT NULL");
 		}
-
 		if(!$db->field_exists('box_type', 'sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD box_type VARCHAR(25) NOT NULL");
 		}
-
 		if(!$db->field_exists('display_name', 'sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD display_name VARCHAR(32) NOT NULL");
 		}
-
 		if(!$db->field_exists('position', 'sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD position INT(2)");
 		}
-
 		if(!$db->field_exists('show_on_index', 'sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD show_on_index INT(2) DEFAULT 1");
 		}
-
 		if(!$db->field_exists('show_on_forumdisplay', 'sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD show_on_forumdisplay INT(2) DEFAULT 1");
 		}
-
 		if(!$db->field_exists('show_on_showthread', 'sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD show_on_showthread INT(2) DEFAULT 1");
 		}
-
 		if(!$db->field_exists('show_on_member', 'sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD show_on_member INT(2) DEFAULT 1");
 		}
-
 		if(!$db->field_exists('show_on_memberlist', 'sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD show_on_memberlist INT(2) DEFAULT 1");
 		}
-
 		if(!$db->field_exists('show_on_showteam', 'sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD show_on_showteam INT(2) DEFAULT 1");
 		}
-
 		if(!$db->field_exists('show_on_stats', 'sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD show_on_stats INT(2) DEFAULT 1");
 		}
-
 		if(!$db->field_exists('show_on_portal', 'sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD show_on_portal INT(2) DEFAULT 1");
 		}
-
 		if(!$db->field_exists('groups', 'sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD groups TEXT");
 		}
-
 		if(!$db->field_exists('settings', 'sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD settings TEXT");
 		}
-
 		if(!$db->field_exists('wrap_content', 'sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."sideboxes ADD wrap_content INT(2)");
@@ -639,31 +629,22 @@ function adv_sidebox_do_db_changes()
 	// create the table if it doesn't already exist.
 	if($db->table_exists('custom_sideboxes'))
 	{
-		// . . . and make sure it has the only added field
 		if(!$db->field_exists('id', 'custom_sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."custom_sideboxes ADD id INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY");
 		}
-
-		// . . . and make sure it has the only added field
 		if(!$db->field_exists('name', 'custom_sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."custom_sideboxes ADD name VARCHAR(32) NOT NULL");
 		}
-
-		// . . . and make sure it has the only added field
 		if(!$db->field_exists('description', 'custom_sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."custom_sideboxes ADD description VARCHAR(128) NOT NULL");
 		}
-
-		// . . . and make sure it has the only added field
 		if(!$db->field_exists('wrap_content', 'custom_sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."custom_sideboxes ADD wrap_content INT(2) DEFAULT 0");
 		}
-
-		// . . . and make sure it has the only added field
 		if(!$db->field_exists('content', 'custom_sideboxes'))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."custom_sideboxes ADD content TEXT");
@@ -692,6 +673,11 @@ function adv_sidebox_do_db_changes()
 	}
 }
 
+/*
+ * adv_sidebox_undo_db_changes()
+ *
+ * undo all DB changes
+ */
 function adv_sidebox_undo_db_changes()
 {
 	global $db;

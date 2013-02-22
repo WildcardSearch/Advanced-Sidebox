@@ -156,10 +156,8 @@ function adv_sidebox_options()
         $db->update_query("users", $update_array, "uid = '" . $user['uid'] . "'");
     }
 
-	// get the users setting and display the checkbox accordingly (checked/unchecked)
-	$query = $db->simple_select("users", "show_sidebox", "uid = '{$user['uid']}' AND show_sidebox='1'", array("order_dir" => 'DESC'));
-
-	if($db->num_rows($query) > 0)
+	// don't be silly and waste a query :p (thanks Destroy666)
+	if($mybb->user['show_sidebox'] > 0)
 	{
 		// checked
 		$checked = 'checked="checked" ';

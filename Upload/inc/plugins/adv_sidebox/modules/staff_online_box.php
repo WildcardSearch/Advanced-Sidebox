@@ -27,11 +27,11 @@ function staff_online_box_asb_info()
 		$lang->load('adv_sidebox');
 	}
 
-	return array
+ 	return array
 	(
 		"name"							=>	'Online Staff',
 		"description"					=>	'Display online staff members list',
-		"version"							=>	"1",
+		"version"							=>	"1.4.3",
 		"wrap_content"				=>	true,
 		"discarded_settings"		=>	array
 														(
@@ -45,9 +45,9 @@ function staff_online_box_asb_info()
 															"max_staff" => array
 															(
 																"sid"					=> "NULL",
-																"name"				=> "max_staff",
-																"title"					=> $lang->adv_sidebox_max_staff_title,
-																"description"		=> $lang->adv_sidebox_max_staff,
+																"name"				=> $lang->adv_sidebox_max_staff_title,
+																"title"				=> $lang->adv_sidebox_max_staff,
+																"description"		=> '',
 																"optionscode"	=> "text",
 																"value"				=> '5'
 															)
@@ -74,12 +74,16 @@ function staff_online_box_asb_info()
 							<tr>
 								<td class=\"{\$bgcolor}\">
 									<table cellspacing=\"0\" cellpadding=\"{\$theme[\'tablespace\']}\" width=\"100%\">
-										<tr>
-											<td class=\"{\$bgcolor}\" width=\"30%\">
-												<a href=\"{\$staff_profile_link}\"><img src=\"{\$staff_avatar_filename}\" alt=\"{\$staff_avatar_alt}\" title=\"{\$staff_avatar_title}\" style=\"width:{\$staff_avatar_dimensions};\"/></a>
+										<tr rowspan=\"2\">
+											<td style=\"text-align: center;\" rowspan=\"2\"class=\"{\$bgcolor}\" width=\"30%\">
+												<a href=\"{\$staff_profile_link}\"><img src=\"{\$staff_avatar_filename}\" alt=\"{\$staff_avatar_alt}\" title=\"{\$staff_avatar_title}\" width=\"{\$staff_avatar_dimensions}\"/></a>
 											</td>
-											<td class=\"{\$bgcolor}\" width=\"70%\">
-												<a href=\"{\$staff_profile_link}\" title=\"{\$staff_link_title}\">{\$staff_username}</a><br />
+											<td style=\"text-align: center;\" class=\"{\$bgcolor}\" width=\"70%\">
+												<a href=\"{\$staff_profile_link}\" title=\"{\$staff_link_title}\">{\$staff_username}</a>
+											</td>
+										</tr>
+										<tr>
+											<td style=\"text-align: center;\" rowspan=\"1\">
 												{\$staff_badge}
 											</td>
 										</tr>
@@ -97,19 +101,14 @@ function staff_online_box_asb_build_template($settings, $template_var, $width)
 {
 	global $$template_var;
 	global $db, $mybb, $templates, $lang, $cache, $theme;
-	
-	if(!$lang->adv_sidebox)
-	{
-		$lang->load('adv_sidebox');
-	}
-	
+
 	// get our setting value
 	$max_rows = (int) $settings['max_staff']['value'];
 
 	// prepare an oops template just in case
 	$template = '
 	<tr>
-		<td class=\"trow1\">' . $lang->adv_sidebox_no_staff . '</td>
+		<td class=\"trow1\">There are no staff members currently online.</td>
 	</tr>';
 
 	// if max_rows is set to 0 then show nothing
@@ -207,16 +206,19 @@ function staff_online_box_asb_build_template($settings, $template_var, $width)
 			// alt and title for image are the same
 			$staff_avatar_alt = $staff_avatar_title = $user['username'] . '\'s avatar';
 
-			// if the user does not have an avatar . . .
-			if(!$user['avatar'])
+			// If the user has an avatar then display it . . .
+			if($user['avatar'] != "")
 			{
-				// assign the default avatar
-				$user['avatar'] = $theme['imgdir'] . '/default_avatar.gif';
+				$staff_avatar_filename = $user['avatar'];
+			}
+			else
+			{
+				// . . . otherwise force the default avatar.
+				$staff_avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
 			}
 
 			// avatar properties
-			$staff_avatar_filename = $user['avatar'];
-			$staff_avatar_dimensions = (int) ($width / 5);
+			$staff_avatar_dimensions = '100%';
 
 			// user name link properties
 			$staff_link_title = $user['username'];
@@ -229,12 +231,17 @@ function staff_online_box_asb_build_template($settings, $template_var, $width)
 			if($usergroup['image'])
 			{
 				// store it (if nothing is store alt property will display group default usertitle)
-				$staff_badge = '<img src="' . $usergroup['image'] . '" alt="' . $usergroup['usertitle'] . '" title="' . $usergroup['usertitle'] . '" style="width:' . $staff_badge_width . ';"/>';
+				$staff_badge_filename = $usergroup['image'];
+
+				$staff_badge = "<img src=\"{$staff_badge_filename}\" alt=\"{$staff_badge_alt}\" title=\"{$staff_badge_title}\" width=\"{$staff_badge_width}\"/>";
 			}
 			else
 			{
-			    $staff_badge = $usergroup['usertitle'];
+				$staff_badge = "{$staff_badge_alt}";
 			}
+
+			// badge alt and title are the same
+			$staff_badge_alt = $staff_badge_title = $usergroup['usertitle'];
 
 			// give us an alternating bgcolor
 			$bgcolor = alt_trow();
