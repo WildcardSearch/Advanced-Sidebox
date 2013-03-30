@@ -1,4 +1,4 @@
-## Advanced-Sidebox 1.6
+## Advanced-Sidebox 1.6.1
 
 <p align="center">
   <img title="Advanced Sidebox Logo" alt="Advanced Sidebox Logo" src="https://github.com/WildcardSearch/Advanced-Sidebox/wiki/asb_logo_320.png" />
@@ -25,9 +25,5 @@ This plugin seeks to give the admin more options when adding side boxes to the f
 * Now supports CodePress
 * Newly redesigned Online Staff module
 * Context-sensitive help for ACP pages
-
-## Latest upate
-
-02-11-2013 - 1.5 released adding four new scripts and a completely redesigned template handler
 
 [Full Change Log](https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Change-Log)

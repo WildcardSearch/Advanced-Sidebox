@@ -10,8 +10,9 @@
  */
 
 // this file may not be executed from outside of script
-if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX")) {
-	die("You need MyBB and Advanced Sidebox plugin installed and properly initialised to use this.");
+if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
+{
+	die("You need MyBB and Advanced Sidebox installed and properly initialized to use this script.");
 }
 
 /*
@@ -45,9 +46,9 @@ function staff_online_box_asb_info()
 															"max_staff" => array
 															(
 																"sid"					=> "NULL",
-																"name"				=> $lang->adv_sidebox_max_staff_title,
-																"title"				=> $lang->adv_sidebox_max_staff,
-																"description"		=> '',
+																"name"				=> "max_staff",
+																"title"				=> $lang->adv_sidebox_max_staff_title,
+																"description"		=> $lang->adv_sidebox_max_staff_descr,
 																"optionscode"	=> "text",
 																"value"				=> '5'
 															)
@@ -115,7 +116,7 @@ function staff_online_box_asb_build_template($settings, $template_var, $width)
 	if(!$max_rows)
 	{
 		eval("\$" . $template_var . " = \"" . $template . "\";");
-		return;
+		return false;
 	}
 
 	// store our users and groups here
@@ -138,7 +139,7 @@ function staff_online_box_asb_build_template($settings, $template_var, $width)
 	{
 		// there is nothing to show
 		eval("\$" . $template_var . " = \"" . $template . "\";");
-		return;
+		return false;
 	}
 
 	// set the time based on ACP settings
@@ -227,6 +228,9 @@ function staff_online_box_asb_build_template($settings, $template_var, $width)
 			// link (for avatar and user name)
 			$staff_profile_link = get_profile_link($user['uid']);
 
+			// badge alt and title are the same
+			$staff_badge_alt = $staff_badge_title = $usergroup['usertitle'];
+
 			// if the user's group has a badge image . . .
 			if($usergroup['image'])
 			{
@@ -239,9 +243,6 @@ function staff_online_box_asb_build_template($settings, $template_var, $width)
 			{
 				$staff_badge = "{$staff_badge_alt}";
 			}
-
-			// badge alt and title are the same
-			$staff_badge_alt = $staff_badge_title = $usergroup['usertitle'];
 
 			// give us an alternating bgcolor
 			$bgcolor = alt_trow();

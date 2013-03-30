@@ -412,7 +412,7 @@ function adv_sidebox_sidebox_xmlhttp()
 				$current_order = $adv_sidebox->sideboxes[$id]->get_display_order();
 				$original_pos = $adv_sidebox->sideboxes[$id]->get_position();
 
-				// if the order has edited
+				// if the order has been edited
 				if($current_order != $this_order)
 				{
 					// handle it
@@ -848,7 +848,7 @@ function adv_sidebox_admin_edit()
 	else
 	{
 		// box title
-		$form_container->output_row('', '', $form->generate_text_box('box_title') . '<br />' . $current_title, 'box_title', array("id" => 'box_title'));
+		$form_container->output_row('', '', $form->generate_text_box('box_title') . '<br />' . $current_title . $form->generate_hidden_field('display_order', $this_sidebox->get_display_order()), 'box_title', array("id" => 'box_title'));
 	}
 
 	// hidden forms to pass info to post
@@ -1507,7 +1507,7 @@ function build_theme_exclude_select()
 	// Create an option for each theme and insert code to unserialize each option and 'remember' settings
 	while($this_theme = $db->fetch_array($query))
 	{
-		$theme_select .= '<option value=\"' . $this_theme['tid'] . '\"" . (is_array(unserialize($setting[\'value\'])) ? ($setting[\'value\'] != "" && in_array("' . $this_theme['tid'] . '", unserialize($setting[\'value\'])) ? "selected=\"selected\"":""):"") . ">' . $this_theme['name'] . '</option>';
+		$theme_select .= '<option value=\"' . $this_theme['tid'] . '\"" . (is_array(unserialize($setting[\'value\'])) ? ($setting[\'value\'] != "" && in_array("' . $this_theme['tid'] . '", unserialize($setting[\'value\'])) ? "selected=\"selected\"":""):"") . ">' . addcslashes($this_theme['name'], '"') . '</option>';
 
 		++$theme_count;
 	}

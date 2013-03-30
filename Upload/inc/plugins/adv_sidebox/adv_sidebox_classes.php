@@ -1455,6 +1455,7 @@ class Sidebox_handler
 
 	private $script;
 	public $script_base_name;
+
 	public $all_scripts;
 
 	private $users_groups;

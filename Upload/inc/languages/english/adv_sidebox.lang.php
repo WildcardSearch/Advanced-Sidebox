@@ -118,7 +118,7 @@ $l['adv_sidebox_default_text_description'] = 'display this if the message is too
 
 // staff online
 $l['adv_sidebox_no_staff'] = 'There are currently no staff members online.';
-$l['adv_sidebox_max_staff'] = 'maximal number of staff members to display';
+$l['adv_sidebox_max_staff_descr'] = 'maximal number of staff members to display';
 $l['adv_sidebox_max_staff_title'] = 'Staff Limit';
 
 /*

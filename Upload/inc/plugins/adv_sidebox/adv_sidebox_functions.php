@@ -100,12 +100,12 @@ function adv_sidebox_build_filter_links($filter)
 			if($filter == $script)
 			{
 				// no link
-				$all_links .= "<span class=\"filter_link_active\" title=\"{$lang->$language_name}\"/>{$lang->$language_name}</span>";
+				$all_links .= "<li class=\"filter_link active\" title=\"{$lang->$language_name}\"/>{$lang->$language_name}</li>";
 			}
 			else
 			{
 				// link
-				$all_links .= "<span onclick=\"document.location = '{$url}';\" class=\"filter_link_inactive\" title=\"{$lang->$language_name}\"/><a href=\"{$url}\" title=\"{$lang->$language_name}\"/>{$lang->$language_name}</a></span>";
+				$all_links .= "<li onclick=\"document.location = '{$url}';\" class=\"filter_link inactive\" title=\"{$lang->$language_name}\"/><a href=\"{$url}\" title=\"{$lang->$language_name}\"/>{$lang->$language_name}</a></li>";
 			}
 		}
 	}
@@ -114,44 +114,40 @@ function adv_sidebox_build_filter_links($filter)
 	if($filter)
 	{
 		// if so then all scripts is a link
-		$all_scripts = '<span class="filter_link_inactive" onclick="document.location = \'' . ADV_SIDEBOX_URL . '\';" title="' . $lang->adv_sidebox_all . '"/><a href="' . ADV_SIDEBOX_URL . '" title="' . $lang->adv_sidebox_all . '"/>' . $lang->adv_sidebox_all . '</a></span>';
+		$all_scripts = '<li class="filter_link inactive" onclick="document.location = \'' . ADV_SIDEBOX_URL . '\';" title="' . $lang->adv_sidebox_all . '"/><a href="' . ADV_SIDEBOX_URL . '" title="' . $lang->adv_sidebox_all . '"/>' . $lang->adv_sidebox_all . '</a></li>';
 	}
 	else
 	{
 		// no link
-		$all_scripts = '<span class="filter_link_active" title="' . $lang->adv_sidebox_all . '"/>' . $lang->adv_sidebox_all . '</span>';
+		$all_scripts = '<li class="filter_link active" title="' . $lang->adv_sidebox_all . '"/>' . $lang->adv_sidebox_all . '</li>';
 	}
 
 	// put it all together
 	return '
 <style type="text/css">
-	.filter_link_inactive
+	.filter_link
+	{
+		border: 2px solid #85B1EE;
+		color: #000;
+		padding: 5px;
+		margin: 5px;
+		display: inline;
+	}
+	.inactive
 	{
 		background: #9DC2F2;
-		border: 2px solid #85B1EE;
-		color: #000;
-		padding: 5px;
-		margin: 10px;
-		position: relative;
-		top: 5px;
 	}
-	.filter_link_active
+	.active
 	{
 		background: #F2F2F2;
-		border: 2px solid #85B1EE;
-		color: #000;
-		padding: 5px;
-		margin: 10px;
-		position: relative;
-		top: 5px;
 	}
-	.filter_link_inactive:hover, .filter_link_inactive:hover a
+	.filter_link:hover, .filter_link:hover a
 	{
 		background: #02426c;
 		color: #F2F2F2;
 		text-decoration: none;
 	}
-</style>' . $all_scripts . $all_links;
+</style><ul>' . $all_scripts . $all_links . '</ul>';
 }
 
 /*
