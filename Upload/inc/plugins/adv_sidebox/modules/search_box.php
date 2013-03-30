@@ -22,7 +22,7 @@ function search_box_asb_info()
 		"name"						=>	'Search',
 		"description"				=>	'Simple options, a keyword textbox and a go button',
 		"wrap_content"			=>	true,
-		"version"						=>	"1",
+		"version"						=>	"1.1",
 		"templates"					=>	array
 													(
 														array
@@ -47,7 +47,7 @@ function search_box_asb_info()
 								<input type=\"radio\" class=\"radio\" name=\"showresults\" value=\"threads\" checked=\"checked\" />
 								<label for=\"showresults\">Threads</label><br /><br />
 								<label for=\"keywords\"><strong>Keywords</strong></label><br />
-								<input type=\"text\" class=\"textbox\" name=\"keywords\" value=\"\" />
+								<input style=\"width: 95%\" type=\"text\" class=\"textbox\" name=\"keywords\" value=\"\"/>
 								{\$gobutton}
 							</form><br />
 							<span class=\"smalltext\">

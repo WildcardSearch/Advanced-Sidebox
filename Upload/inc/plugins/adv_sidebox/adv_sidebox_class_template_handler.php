@@ -125,6 +125,11 @@ abstract class Template_handlers implements Template_handler
 		</td>
 		<!-- end: adv_sidebox left column -->';
 		}
+		else
+		{
+			$this->left_content = '<a style="display: none;" id="asb_hide_column_left" href="javascript:void()"></a>';
+		}
+
 		if($right_insert)
 		{
 			$this->right_content = '
@@ -136,6 +141,10 @@ abstract class Template_handlers implements Template_handler
 		</td>
 		' . $toggle_right . '
 		<!-- end: adv_sidebox right column -->';
+		}
+		else
+		{
+			$this->right_content = '<a style="display: none;" id="asb_hide_column_right" href="javascript:void()"></a>';
 		}
 	}
 
