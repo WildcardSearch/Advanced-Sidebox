@@ -100,12 +100,12 @@ function adv_sidebox_build_filter_links($filter)
 			if($filter == $script)
 			{
 				// no link
-				$all_links .= "<li class=\"filter_link active\" title=\"{$lang->$language_name}\"/>{$lang->$language_name}</li>";
+				$all_links .= "<td class=\"filter_link active\" title=\"{$lang->$language_name}\"/>{$lang->$language_name}</td>";
 			}
 			else
 			{
 				// link
-				$all_links .= "<li onclick=\"document.location = '{$url}';\" class=\"filter_link inactive\" title=\"{$lang->$language_name}\"/><a href=\"{$url}\" title=\"{$lang->$language_name}\"/>{$lang->$language_name}</a></li>";
+				$all_links .= "<td onclick=\"document.location = '{$url}';\" class=\"filter_link inactive\" title=\"{$lang->$language_name}\"/><a href=\"{$url}\" title=\"{$lang->$language_name}\"/>{$lang->$language_name}</a></td>";
 			}
 		}
 	}
@@ -114,40 +114,45 @@ function adv_sidebox_build_filter_links($filter)
 	if($filter)
 	{
 		// if so then all scripts is a link
-		$all_scripts = '<li class="filter_link inactive" onclick="document.location = \'' . ADV_SIDEBOX_URL . '\';" title="' . $lang->adv_sidebox_all . '"/><a href="' . ADV_SIDEBOX_URL . '" title="' . $lang->adv_sidebox_all . '"/>' . $lang->adv_sidebox_all . '</a></li>';
+		$all_scripts = '<td class="filter_link inactive" onclick="document.location = \'' . ADV_SIDEBOX_URL . '\';" title="' . $lang->adv_sidebox_all . '"/><a href="' . ADV_SIDEBOX_URL . '" title="' . $lang->adv_sidebox_all . '"/>' . $lang->adv_sidebox_all . '</a></td>';
 	}
 	else
 	{
 		// no link
-		$all_scripts = '<li class="filter_link active" title="' . $lang->adv_sidebox_all . '"/>' . $lang->adv_sidebox_all . '</li>';
+		$all_scripts = '<td class="filter_link active" title="' . $lang->adv_sidebox_all . '"/>' . $lang->adv_sidebox_all . '</td>';
 	}
 
 	// put it all together
 	return '
 <style type="text/css">
-	.filter_link
-	{
+	.filter_link {
 		border: 2px solid #85B1EE;
 		color: #000;
 		padding: 5px;
-		margin: 5px;
-		display: inline;
+		width: 8%;
+		text-align: center;
 	}
-	.inactive
-	{
+
+	.inactive {
 		background: #9DC2F2;
 	}
-	.active
-	{
+
+	.active	{
 		background: #F2F2F2;
 	}
-	.filter_link:hover, .filter_link:hover a
-	{
+
+	.filter_link:hover, .filter_link:hover a	{
 		background: #02426c;
 		color: #F2F2F2;
 		text-decoration: none;
+		cursor: pointer;
 	}
-</style><ul>' . $all_scripts . $all_links . '</ul>';
+
+	#link_bank {
+		width: 100%;
+		border-collapse: collapse;
+	}
+</style><table id="link_bank"><tr>' . $all_scripts . $all_links . '</tr></table><br />';
 }
 
 /*

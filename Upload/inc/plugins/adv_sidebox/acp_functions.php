@@ -1427,14 +1427,90 @@ function adv_sidebox_serialize()
  */
 function adv_sidebox_output_header()
 {
-    global $page, $lang;
+    global $mybb, $admin_session, $lang, $plugins, $lang, $page;
 
 	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}
 
-    $page->output_header($lang->adv_sidebox_name);
+    $plugins->run_hooks("admin_page_output_header");
+
+	$title = $lang->adv_sidebox_name;
+
+	$rtl = "";
+	if($lang->settings['rtl'] == 1)
+	{
+		$rtl = " dir=\"rtl\"";
+	}
+
+	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+	echo "<html xmlns=\"http://www.w3.org/1999/xhtml\"{$rtl}>\n";
+	echo "<head profile=\"http://gmpg.org/xfn/1\">\n";
+	echo "	<title>".$title."</title>\n";
+	echo "	<meta name=\"author\" content=\"MyBB Group\" />\n";
+	echo "	<meta name=\"copyright\" content=\"Copyright ".COPY_YEAR." MyBB Group.\" />\n";
+	echo "	<link rel=\"stylesheet\" href=\"styles/".$page->style."/main.css\" type=\"text/css\" />\n";
+
+	// Load stylesheet for this module if it has one
+	if(file_exists(MYBB_ADMIN_DIR."styles/{$page->style}/{$page->active_module}.css"))
+	{
+		echo "	<link rel=\"stylesheet\" href=\"styles/{$page->style}/{$page->active_module}.css\" type=\"text/css\" />\n";
+	}
+
+	echo "	<script type=\"text/javascript\" src=\"https://ajax.googleapis.com/ajax/libs/prototype/1.7.0.0/prototype.js\"></script>\n";
+	echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js\"></script>\n";
+	echo "	<script type=\"text/javascript\" src=\"../jscripts/popup_menu.js\"></script>\n";
+	echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
+	echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
+
+	// Stop JS elements showing while page is loading (JS supported browsers only)
+	echo "  <style type=\"text/css\">.popup_button { display: none; } </style>\n";
+	echo "  <script type=\"text/javascript\">\n".
+			"//<![CDATA[\n".
+			"	document.write('<style type=\"text/css\">.popup_button { display: inline; } .popup_menu { display: none; }<\/style>');\n".
+			"//]]>\n".
+			"</script>\n";
+
+	echo "	<script type=\"text/javascript\">
+//<![CDATA[
+var loading_text = '{$lang->loading_text}';
+var cookieDomain = '{$mybb->settings['cookiedomain']}';
+var cookiePath = '{$mybb->settings['cookiepath']}';
+var cookiePrefix = '{$mybb->settings['cookieprefix']}';
+var imagepath = '../images';
+//]]>
+</script>\n";
+	echo $page->extra_header;
+	echo "</head>\n";
+	echo "<body>\n";
+	echo "<div id=\"container\">\n";
+	echo "	<div id=\"logo\"><h1><span class=\"invisible\">{$lang->mybb_admin_cp}</span></h1></div>\n";
+	echo "	<div id=\"welcome\"><span class=\"logged_in_as\">{$lang->logged_in_as} <a href=\"index.php?module=user-users&amp;action=edit&amp;uid={$mybb->user['uid']}\" class=\"username\">{$mybb->user['username']}</a></span> | <a href=\"{$mybb->settings['bburl']}\" target=\"_blank\" class=\"forum\">{$lang->view_board}</a> | <a href=\"index.php?action=logout&amp;my_post_key={$mybb->post_code}\" class=\"logout\">{$lang->logout}</a></div>\n";
+	echo $page->_build_menu();
+	echo "	<div id=\"page\">\n";
+	echo "		<div id=\"left_menu\">\n";
+	echo $page->submenu;
+	echo $page->sidebar;
+	echo "		</div>\n";
+	echo "		<div id=\"content\">\n";
+	echo "			<div class=\"breadcrumb\">\n";
+	echo $page->_generate_breadcrumb();
+	echo "			</div>\n";
+	echo "           <div id=\"inner\">\n";
+		if(isset($admin_session['data']['flash_message']) && $admin_session['data']['flash_message'])
+	{
+		$message = $admin_session['data']['flash_message']['message'];
+		$type = $admin_session['data']['flash_message']['type'];
+		echo "<div id=\"flash_message\" class=\"{$type}\">\n";
+		echo "{$message}\n";
+		echo "</div>\n";
+		update_admin_session('flash_message', '');
+	}
+	if($page->show_post_verify_error == true)
+	{
+		$page->output_error($lang->invalid_post_verify_key);
+	}
 }
 
 /*
@@ -1578,7 +1654,7 @@ function adv_sidebox_build_footer_menu($page_key = '')
 	switch($page_key)
 	{
 		case "manage_sideboxes":
-			$filter_links = adv_sidebox_build_filter_links($mybb->input['page']) . '<br /><br /><br />';
+			$filter_links = adv_sidebox_build_filter_links($mybb->input['page']);
 			break;
 		case "edit_box":
 			$settings_link = '';
