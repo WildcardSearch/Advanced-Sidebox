@@ -21,10 +21,22 @@ function statistics_asb_info()
 {
 	return array
 	(
-		"name"						=>	'Statistics',
-		"description"				=>	'Forum statistics and figures',
-		"wrap_content"			=>	true,
-		"version"						=>	"1",
+		"name"							=>	'Statistics',
+		"description"					=>	'Forum statistics and figures',
+		"wrap_content"				=>	true,
+		"version"						=>	"1.1",
+		"settings"						=>	array
+													(
+														"format_username"	=>	array
+														(
+															"sid"					=> "NULL",
+															"name"				=> "format_username",
+															"title"				=> "Format last username?",
+															"description"		=> "(may use another query)",
+															"optionscode"	=> "yesno",
+															"value"				=> '0'
+														)
+													),
 		"templates"					=>	array
 													(
 														array
@@ -60,11 +72,11 @@ function statistics_asb_build_template($settings, $template_var)
 	global $mybb, $cache, $templates, $lang;
 
 	// Load global and custom language phrases
-	if (!$lang->portal)
+	if(!$lang->portal)
 	{
 		$lang->load('portal');
 	}
-	if (!$lang->adv_sidebox)
+	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}
@@ -81,8 +93,18 @@ function statistics_asb_build_template($settings, $template_var)
 	}
 	else
 	{
-		$newestmember = build_profile_link($statistics['lastusername'], $statistics['lastuid']);
+		if($settings['format_username']['value'])
+		{
+			$last_user = get_user($statistics['lastuid']);
+			$last_username = format_name($last_user['username'], $last_user['usergroup'], $last_user['displaygroup']);
+		}
+		else
+		{
+			$last_username = $statistics['lastusername'];
+		}
 	}
+	$newestmember = build_profile_link($last_username, $statistics['lastuid']);
+
 	eval("\$" . $template_var . " = \"" . $templates->get("adv_sidebox_statistics") . "\";");
 	return true;
 }

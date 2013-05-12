@@ -127,7 +127,7 @@ abstract class Template_handlers implements Template_handler
 		}
 		else
 		{
-			$this->left_content = '<a style="display: none;" id="asb_hide_column_left" href="javascript:void()"></a>';
+			$this->left_content = '<td><a style="display: none;" id="asb_hide_column_left" href="javascript:void()"></a></td>';
 		}
 
 		if($right_insert)
@@ -144,7 +144,7 @@ abstract class Template_handlers implements Template_handler
 		}
 		else
 		{
-			$this->right_content = '<a style="display: none;" id="asb_hide_column_right" href="javascript:void()"></a>';
+			$this->right_content = '<td><a style="display: none;" id="asb_hide_column_right" href="javascript:void()"></a></td>';
 		}
 	}
 
@@ -236,6 +236,7 @@ class Portal_template_handler extends Template_handlers
 	<head>
 		<title>" . '{$mybb->settings[\'bbname\']}' . "</title>
 		" . '{$headerinclude}' . "
+		<script type=\"text/javascript\" src=\"jscripts/adv_sidebox.js\"></script>
 	</head>
 	<body>
 		" . '{$header}' . "

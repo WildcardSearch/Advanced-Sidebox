@@ -958,7 +958,15 @@ class Custom_type extends Sidebox_type
 			$this_table->construct_cell('<a href="' . ADV_SIDEBOX_CUSTOM_URL . '&amp;mode=edit_box&amp;box=' . $this->id . '" title="' . $lang->adv_sidebox_edit . '">' . $this->name . '</a>', array("width" => '30%'));
 
 			// description
-			$this_table->construct_cell($this->description, array("width" => '60%'));
+			if($this->description)
+			{
+				$description = $this->description;
+			}
+			else
+			{
+				$description = '<em>no description</em>';
+			}
+			$this_table->construct_cell($description, array("width" => '60%'));
 
 			// options popup
 			$popup = new PopupMenu('box_' . $this->id, $lang->adv_sidebox_options);

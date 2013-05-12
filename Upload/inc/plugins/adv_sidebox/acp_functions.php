@@ -1179,6 +1179,11 @@ function adv_sidebox_admin_custom_boxes()
 			// saving?
 			if($mybb->input['save_box_submit'] == 'Save')
 			{
+				if(!$mybb->input['box_name'] || !$mybb->input['box_content'])
+				{
+					flash_message($lang->adv_sidebox_custom_box_save_failure_no_content, "error");
+					admin_redirect(ADV_SIDEBOX_CUSTOM_URL);
+				}
 				$this_custom = new Custom_type((int) $mybb->input['box']);
 
 				// get the info

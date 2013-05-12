@@ -271,6 +271,7 @@ $l['adv_sidebox_add_custom_box_edit_desc'] = 'create new box templates and custo
 // messages
 $l['adv_sidebox_custom_box_save_success'] = 'The new custom box type was saved successfully';
 $l['adv_sidebox_custom_box_save_failure'] = 'The new custom box type could not be saved successfully';
+$l['adv_sidebox_custom_box_save_failure_no_content'] = 'The new custom box type could not be saved successfully because one or more required inputs were blank';
 $l['adv_sidebox_add_custom_box_delete_success'] = 'The custom box type was deleted successfully';
 $l['adv_sidebox_add_custom_box_delete_failure'] = 'The new custom box type could not be deleted successfully';
 $l['adv_sidebox_custom_import_no_file'] = 'You must select a valid XML file.';

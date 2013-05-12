@@ -28,7 +28,7 @@ function whosonline_asb_info()
 	(
 		"name"							=>	'Who\'s Online',
 		"description"					=>	'Currently online members\' avatars',
-		"version"							=>	"1",
+		"version"							=>	"1.1.5",
 		"wrap_content"				=>	true,
 		"discarded_settings"		=>	array
 														(
@@ -71,10 +71,10 @@ function whosonline_asb_info()
 																"template" => "
 						<tr>
 							<td class=\"trow1\">
-								<span class=\"smalltext\">{\$lang->online_users}<br /><strong>&raquo;</strong> {\$lang->online_counts}</span>
+								<span class=\"smalltext\">{\$lang->online_users} [<a href=\"online.php\" title=\"Who\s Online\">Complete List</a>]<br /><strong>&raquo;</strong> {\$lang->online_counts}</span>
 							</td>
 						</tr>
-						<tr style=\"{\$adv_sidebox_hide}\">
+						<tr>
 							<td class=\"trow2\">{\$onlinemembers}</td>
 						</tr>
 																",
@@ -102,7 +102,7 @@ function whosonline_asb_build_template($settings, $template_var, $width)
 	{
 		$lang->load('portal');
 	}
-	if (!$lang->adv_sidebox)
+	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
 	}
@@ -117,16 +117,6 @@ function whosonline_asb_build_template($settings, $template_var, $width)
 	$avatar_count = 0;
 	$enough_already = false;
 
-	// user attempts to hide avatars from box by setting columns to 0 ?
-	$adv_sidebox_hide = "";
-	if ($rowlength < 1 || $rowlength > 100 || $max_rows < 1 || $max_rows > 100) {
-		// lets provide our script some valid number to avoid errors
-		// because we will must go through loop to count visitors anyway
-		$rowlength = 1;
-		$max_rows = 1;
-		// we will hide part of box with avatars if user dont want them
-		$adv_sidebox_hide = "display: none";
-	}
 	// Scale the avatars based on the width of the sideboxes in Admin CP
 	$avatar_height = $avatar_width = (int) ($width * .83) / $rowlength;
 	$avatar_margin = (int) ($avatar_width *.02);
@@ -145,8 +135,7 @@ function whosonline_asb_build_template($settings, $template_var, $width)
 
 	while($user = $db->fetch_array($query))
 	{
-
-		// Create a key to test if this user is a search bot.
+		// create a key to test if this user is a search bot.
 		$botkey = my_strtolower(str_replace("bot=", '', $user['sid']));
 
 		if($user['uid'] == "0")
@@ -195,13 +184,13 @@ function whosonline_asb_build_template($settings, $template_var, $width)
 				$user_avatar = '<img style="' . $avatar_style . '" src="' . $avatar_filename . '" alt="' . $lang->adv_sidebox_avatar . '" title="' . $user['username'] . '\'s ' . $lang->adv_sidebox_avatar_lc . '" width="' . $avatar_width . 'px" height="' . $avatar_width . 'px"/>';
 
 				// If we reach the end of the row, insert a <br />
-				if (($membercount - (($row - 1) * $rowlength)) == $rowlength)
+				if(($membercount - (($row - 1) * $rowlength)) == $rowlength)
 				{
 					$user_avatar .= "<br />";
-					$row = $row + 1;
+					++$row;
 				}
 
-				if(($user['invisible'] == 1 && ($mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])) || $user['invisible'] != 1)
+				if((($user['invisible'] == 1 && ($mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])) || $user['invisible'] != 1) && $user['usergroup'] != 7)
 				{
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = get_profile_link($user['uid']);
@@ -226,6 +215,10 @@ function whosonline_asb_build_template($settings, $template_var, $width)
 
 						++$avatar_count;
 					}
+				}
+				else
+				{
+					--$membercount;
 				}
 			}
 		}

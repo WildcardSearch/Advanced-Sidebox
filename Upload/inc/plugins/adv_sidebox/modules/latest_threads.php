@@ -152,9 +152,10 @@ function latest_threads_asb_build_template($settings, $template_var)
 
 	// Query for the latest forum discussions
 	$query = $db->query("
-		SELECT t.*, u.username
+		SELECT t.*, u.username, lp.usergroup, lp.displaygroup
 		FROM " . TABLE_PREFIX . "threads t
 		LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid=t.uid)
+		LEFT JOIN " . TABLE_PREFIX . "users lp ON (lp.uid=t.lastposteruid)
 		WHERE 1=1 $unviewwhere AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 		ORDER BY t.lastpost DESC
 		LIMIT 0, " . (int) $settings['latest_threads_max']['value']
@@ -201,7 +202,8 @@ function latest_threads_asb_build_template($settings, $template_var)
 			}
 			else
 			{
-				$lastposterlink = build_profile_link($thread['lastposter'], $thread['lastposteruid']);
+				$last_poster_name = format_name($thread['lastposter'], $thread['usergroup'], $thread['displaygroup']);
+				$lastposterlink = build_profile_link($last_poster_name, $thread['lastposteruid']);
 			}
 
 			if(my_strlen($thread['subject']) > $maxtitlelen)
