@@ -22,6 +22,8 @@
 
 // register as MyBB
 define('IN_MYBB', 1);
+define("NO_ONLINE", 1);
+define('THIS_SCRIPT', 'adv_sidebox_xmlhttp.php');
 require_once "../../../global.php";
 
 // leaving it open to add more functionality later
