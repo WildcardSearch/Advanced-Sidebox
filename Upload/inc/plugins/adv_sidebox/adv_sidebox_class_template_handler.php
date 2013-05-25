@@ -36,6 +36,7 @@ interface Template_handler
 abstract class Template_handlers implements Template_handler
 {
 	protected $template_name = '';
+	protected $extra_scripts = '';
 
 	protected $find_top = '';
 	protected  $find_bottom = '';
@@ -62,13 +63,14 @@ abstract class Template_handlers implements Template_handler
 	 * 						$width_left is the width (specified in ACP) for left coumns
 	 * 						$width_right is blah blah blah but right instead
 	 */
-	public function __construct($left_insert, $right_insert, $width_left, $width_right)
+	public function __construct($left_insert, $right_insert, $width_left, $width_right, $extra_scripts = '')
 	{
 		global $mybb;
 
 		// store width upon construct (mostly here for custom implementations like portal)
 		$this->width_left = $width_left;
 		$this->width_right = $width_right;
+		$this->extra_scripts = $extra_scripts;
 
 		// if admin wants to show the toggle icons . . .
 		if($mybb->settings['adv_sidebox_show_toggle_icons'])
@@ -104,10 +106,10 @@ abstract class Template_handlers implements Template_handler
 
 			// produce the links
 			$toggle_left = '
-			<td valign="top"><a id="asb_hide_column_left" href="javascript:void()"><img id="asb_left_close" src="inc/plugins/adv_sidebox/images/left_arrow.png" title="hide sideboxes" alt="<"' . $close_style_left . '/><img id="asb_left_open" src="inc/plugins/adv_sidebox/images/right_arrow.png" title="show sideboxes" alt=">"' . $open_style_left . '/></a></td>
+			<td valign="top"><a id="asb_hide_column_left" href="javascript:void()"><img id="asb_left_close" src="inc/plugins/adv_sidebox/images/left_arrow.png" title="hide sideboxes" alt="&lt;"' . $close_style_left . '/><img id="asb_left_open" src="inc/plugins/adv_sidebox/images/right_arrow.png" title="show sideboxes" alt="&gt;"' . $open_style_left . '/></a></td>
 			';
 			$toggle_right = '
-			<td valign="top"><a id="asb_hide_column_right" href="javascript:void()"><img id="asb_right_close" src="inc/plugins/adv_sidebox/images/right_arrow.png" title="hide sideboxes" alt=">"' . $close_style_right . '/><img id="asb_right_open" src="inc/plugins/adv_sidebox/images/left_arrow.png" title="show sideboxes" alt="<"' . $open_style_right . '/></a></td>
+			<td valign="top"><a id="asb_hide_column_right" href="javascript:void()"><img id="asb_right_close" src="inc/plugins/adv_sidebox/images/right_arrow.png" title="hide sideboxes" alt="&gt;"' . $close_style_right . '/><img id="asb_right_open" src="inc/plugins/adv_sidebox/images/left_arrow.png" title="show sideboxes" alt="&lt;"' . $open_style_right . '/></a></td>
 			';
 		}
 
@@ -158,7 +160,7 @@ abstract class Template_handlers implements Template_handler
 	 * 						$width_left is the width (specified in ACP) for left coumns
 	 * 						$width_right is blah blah blah but right instead
 	 */
-	public static function get_template_handler($left_insert, $right_insert, $width_left, $width_right)
+	public static function get_template_handler($left_insert, $right_insert, $width_left, $width_right, $extra_scripts = '')
 	{
 		// remove the extension and add the suffix
 		$script = substr(THIS_SCRIPT, 0, -4) . '_template_handler';
@@ -167,7 +169,7 @@ abstract class Template_handlers implements Template_handler
 		if(class_exists($script))
 		{
 			// create and return it
-			return new $script($left_insert, $right_insert, $width_left, $width_right);
+			return new $script($left_insert, $right_insert, $width_left, $width_right, $extra_scripts);
 		}
 	}
 
@@ -178,7 +180,7 @@ abstract class Template_handlers implements Template_handler
 	 */
 	public function make_edits()
 	{
-		global $templates, $mybb;
+		global $templates, $mybb, $headerinclude;
 
 		// replace everything on the page?
 		if($this->replace_all == true)
@@ -197,14 +199,19 @@ abstract class Template_handlers implements Template_handler
 			if($mybb->settings['adv_sidebox_show_toggle_icons'])
 			{
 				// we will need this js
-				$toggle_script = '<script type="text/javascript" src="jscripts/adv_sidebox.js"></script>';
+				$headerinclude .= '<script type="text/javascript" src="jscripts/adv_sidebox.js"></script>';
+			}
+			
+			if($this->extra_scripts)
+			{
+				$headerinclude .= $this->extra_scripts;
 			}
 
 			// if there are columns stored
 			if($this->insert_top || $this->insert_bottom)
 			{
 				// make the edits
-				$templates->cache[$this->template_name] = str_replace($this->find_top, $toggle_script . $this->find_top . $this->insert_top, $templates->cache[$this->template_name]);
+				$templates->cache[$this->template_name] = str_replace($this->find_top, $this->find_top . $this->insert_top, $templates->cache[$this->template_name]);
 				$templates->cache[$this->template_name] = str_replace($this->find_bottom, $this->insert_bottom . $this->find_bottom, $templates->cache[$this->template_name]);
 			}
 		}
@@ -237,6 +244,7 @@ class Portal_template_handler extends Template_handlers
 		<title>" . '{$mybb->settings[\'bbname\']}' . "</title>
 		" . '{$headerinclude}' . "
 		<script type=\"text/javascript\" src=\"jscripts/adv_sidebox.js\"></script>
+		{$this->extra_scripts}
 	</head>
 	<body>
 		" . '{$header}' . "

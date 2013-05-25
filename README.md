@@ -1,4 +1,4 @@
-## Advanced-Sidebox 1.6.3
+## Advanced-Sidebox 1.7
 
 <p align="center">
   <img title="Advanced Sidebox Logo" alt="Advanced Sidebox Logo" src="https://github.com/WildcardSearch/Advanced-Sidebox/wiki/asb_logo_320.png" />
@@ -14,6 +14,7 @@ This plugin seeks to give the admin more options when adding side boxes to the f
 
 ## Features
 
+* AJAX Refresh now integrated into the core and five of the core modules (latest threads, PMs, random quotes, staff online and who's online avatar lists)!
 * New Improved Drag and Drop Interface!
 * Admin can control many settings for where and how side boxes display
 * Eight scripts available! (Index, Forum, Thread, Member Profiles, Member List, Forum Team, Statistics and Portal)

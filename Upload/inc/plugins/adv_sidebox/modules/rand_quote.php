@@ -2,9 +2,7 @@
 /*
  * Random Quotes
  *
- * This module is experimental and hasn't been officially released yet.
- *
- * Two required functions handle the sidebox in ACP and in when being displayed.
+ * This module is now part of the core but can still be removed through the interface like any other module.
 */
 
 // Include a check for Advanced Sidebox
@@ -14,7 +12,9 @@ if(!defined("IN_MYBB") || !defined("ADV_SIDEBOX"))
 }
 
 /*
- * This function is required. It is used by acp_functions to add and describe your new sidebox.
+ * rand_quote_asb_info()
+ *
+ * gives the handler all the info it needs to handle the side box module and track its version and upgrades status
  */
 function rand_quote_asb_info()
 {
@@ -27,69 +27,74 @@ function rand_quote_asb_info()
 
 	return array
 	(
-		"name"					=>	'Random Quotes',
-		"description"			=>	'Displays random quotes with a link and avatar',
-		"wrap_content"		=>	true,
-		"version"					=>	"1.3",
-		"discarded_templates"	=>	array
-													(
-														"rand_quote_sidebox_left",
-														"rand_quote_sidebox_right"
-													),
-		"settings"		=>	array
-										(
-											"forum_id"		=> array
-											(
-												"sid"					=> "NULL",
-												"name"				=> "forum_id",
-												"title"				=> $lang->adv_sidebox_quote_forums_title,
-												"description"		=> $lang->adv_sidebox_quote_forums,
-												"optionscode"	=> "text",
-												"value"				=> ''
-											),
-											"min_length"		=> array
-											(
-												"sid"					=> "NULL",
-												"name"				=> "min_length",
-												"title"				=> $lang->adv_sidebox_min_quote_length_title,
-												"description"		=> $lang->adv_sidebox_min_quote_length,
-												"optionscode"	=> "text",
-												"value"				=> '20'
-											),
-											"max_length"		=> array
-											(
-												"sid"					=> "NULL",
-												"name"				=> "max_length",
-												"title"				=> $lang->adv_sidebox_max_quote_length_title,
-												"description"		=> $lang->adv_sidebox_max_quote_length,
-												"optionscode"	=> "text",
-												"value"				=> '160'
-											),
-											"fade_out"		=> array
-											(
-												"sid"					=> "NULL",
-												"name"				=> "fade_out",
-												"title"				=> $lang->adv_sidebox_fade_out_title,
-												"description"		=> $lang->adv_sidebox_fade_out,
-												"optionscode"	=> "yesno",
-												"value"				=> ''
-											),
-											"default_text"		=> array
-											(
-												"sid"					=> "NULL",
-												"name"				=> "default_text",
-												"title"				=> $lang->adv_sidebox_default_text,
-												"description"		=> $lang->adv_sidebox_default_text_description,
-												"optionscode"	=> "text",
-												"value"				=> ''
-											)
-										),
-		"templates"		=>	array
-										(
-											array
-											(
-												"title" => "rand_quote_sidebox",
-												"template" => "
+		"name"							=>	'Random Quotes',
+		"description"					=>	'Displays random quotes with a link and avatar',
+		"wrap_content"				=>	true,
+		"xmlhttp"						=>	true,
+		"version"						=>	"1.4",
+		"settings" => array
+			(
+				"forum_id"		=> array
+				(
+					"sid"					=> "NULL",
+					"name"				=> "forum_id",
+					"title"				=> $lang->adv_sidebox_quote_forums_title,
+					"description"		=> $lang->adv_sidebox_quote_forums,
+					"optionscode"	=> "text",
+					"value"				=> ''
+				),
+				"min_length"		=> array
+				(
+					"sid"					=> "NULL",
+					"name"				=> "min_length",
+					"title"				=> $lang->adv_sidebox_min_quote_length_title,
+					"description"		=> $lang->adv_sidebox_min_quote_length,
+					"optionscode"	=> "text",
+					"value"				=> '20'
+				),
+				"max_length"		=> array
+				(
+					"sid"					=> "NULL",
+					"name"				=> "max_length",
+					"title"				=> $lang->adv_sidebox_max_quote_length_title,
+					"description"		=> $lang->adv_sidebox_max_quote_length,
+					"optionscode"	=> "text",
+					"value"				=> '160'
+				),
+				"fade_out"		=> array
+				(
+					"sid"					=> "NULL",
+					"name"				=> "fade_out",
+					"title"				=> $lang->adv_sidebox_fade_out_title,
+					"description"		=> $lang->adv_sidebox_fade_out,
+					"optionscode"	=> "yesno",
+					"value"				=> '0'
+				),
+				"default_text"		=> array
+				(
+					"sid"					=> "NULL",
+					"name"				=> "default_text",
+					"title"				=> $lang->adv_sidebox_default_text,
+					"description"		=> $lang->adv_sidebox_default_text_description,
+					"optionscode"	=> "text",
+					"value"				=> ''
+				),
+				"xmlhttp_on" => array
+				(
+					"sid"					=> "NULL",
+					"name"				=> "xmlhttp_on",
+					"title"				=> $lang->adv_sidebox_xmlhttp_on_title,
+					"description"		=> $lang->adv_sidebox_xmlhttp_on_description,
+					"optionscode"	=> "text",
+					"value"				=> '0'
+				)
+			),
+		"templates" => array
+			(
+				array
+				(
+					"title" => "rand_quote_sidebox",
+					"template" => "
 
 					<tr class=\"tcat\">
 						<td>
@@ -107,17 +112,74 @@ function rand_quote_asb_info()
 						</td>
 					</tr>
 					{\$read_more}
-												",
-												"sid" => -1
-											)
-										)
+					",
+					"sid" => -1
+				)
+			)
 	);
 }
 
+/*
+ * rand_quote_asb_build_template()
+ *
+ * @param - (array) $settings
+					passed from core, side box settings
+ * @param - (string) $template_var
+					the encoded unique name of the side box requested for
+ * @param - (int) $width
+					the width of the column the calling side box is positioned in
+ */
 function rand_quote_asb_build_template($settings, $template_var, $width)
 {
 	// don't forget to declare your variable! will not work without this
 	global $$template_var; // <-- important!
+
+	$this_quote = rand_quote_asb_get_quote($settings, $width);
+
+	if($this_quote)
+	{
+		$$template_var = $this_quote;
+		return true;
+	}
+	else
+	{
+		// show the table only if there are posts
+		$$template_var = '<tr><td class="trow1">' . $lang->adv_sidebox_no_posts . '</td></tr>';
+		return false;
+	}
+}
+
+/*
+ * rand_quote_asb_xmlhttp()
+ *
+ * @param - (int) $dateline
+					UNIX timestamp
+ * @param - (array) $settings
+					array of sidebox settings
+ * @param - (int) $width
+					width of column side box lives in
+ */
+function rand_quote_asb_xmlhttp($dateline, $settings, $width)
+{
+	// get a quote and return it
+	$this_quote = rand_quote_asb_get_quote($settings, $width);
+	if($this_quote)
+	{
+		return $this_quote;
+	}
+	return 'nochange';
+}
+
+/*
+ * rand_quote_asb_get_quote()
+ *
+ * @param - (array) $settings
+					passed from adv_sidebox_xmlhttp.php, the requesting side box's settings array
+ * @param - (int) $width
+					the width of the column
+ */
+function rand_quote_asb_get_quote($settings, $width)
+{
 	global $db, $mybb, $templates, $lang, $theme;
 
 	if(!$lang->adv_sidebox)
@@ -252,7 +314,7 @@ function rand_quote_asb_build_template($settings, $template_var, $width)
 			$avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
 		}
 
-		$rand_quote_avatar = '<img style="padding: 4px; width: ' . $avatar_size . 'px; vertical-align: middle;" src="' . $avatar_filename . '" alt="' . $plain_text_username . '\s avatar" title="' . $plain_text_username . '\'s avatar"/>';
+		$rand_quote_avatar = '<img style="padding: 4px; width: 15%; vertical-align: middle;" src="' . $avatar_filename . '" alt="' . $plain_text_username . '\s avatar" title="' . $plain_text_username . '\'s avatar"/>';
 
 		$rand_quote_author = "<a  style=\"vertical-align: middle;\" href=\"{$author_link}\" title=\"{$plain_text_username}\"><span style=\"font-size: {$username_font_size}px;\">{$username}</span></a>";
 
@@ -286,16 +348,21 @@ function rand_quote_asb_build_template($settings, $template_var, $width)
 		$thread_title_link = '<strong><a href="' . $post_link . '" title="' . $rand_post['subject'] . '"/><span style="font-size: ' . $title_font_size . 'px;">' . $rand_post['subject'] . '</span></a></strong>';
 
 		// eval the template
-		eval("\$" . $template_var . " = \"" . $templates->get("rand_quote_sidebox") . "\";");
-		return true;
+		eval("\$this_quote = \"" . $templates->get("rand_quote_sidebox") . "\";");
+		return $this_quote;
 	}
 	else
 	{
-		eval("\$" . $template_var . " = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_no_posts . "</td></tr>\";");
 		return false;
 	}
 }
 
+/*
+ * rand_quote_asb_strip_url()
+ *
+ * @param - $message
+					the text to cleanse
+ */
 function rand_quote_asb_strip_url($message)
 {
 	$message = " ".$message;

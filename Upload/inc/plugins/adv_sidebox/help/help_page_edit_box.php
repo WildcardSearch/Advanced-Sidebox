@@ -30,7 +30,6 @@ $help_content = <<<EOF
 			<p>To add a new side box, you must set up certain properties to control how the box functions and where and to whom it will be displayed.</p>
 			<p>
 				<ul>
-					<li><strong>Type</strong> - select from a list of all available side box types.<br /><br />Side boxes can be produced through add-on modules or custom static boxes that you create/import. Select a type for your box here.</li><br />
 					<li><strong>Use Custom Title</strong> - each box type has a default title, but you don't have to use it. Turn this switch on to see the next field.<br /><br />
 						<ul>
 							<li><strong>Custom Title</strong> - <em>above must be on for this input field to appear</em> - type your desired title into the input box. If you've already set a custom title and are just editing, leave this field blank to keep your current custom title.<br /><br />If you haven't entered a custom title and this is a new box, even if the above option is on, the default title will be used.</li><br />

@@ -19,27 +19,28 @@ function welcome_box_asb_info()
 {
 	return array
 	(
-		"name"						=>	'Welcome',
-		"description"				=>	'Login for guest, info for member',
-		"wrap_content"			=>	true,
-		"version"						=>	"1.3",
-		"templates"					=>	array
-													(
-														array(
-															"title" => "adv_sidebox_welcome",
-															"template" =>
+		"name" => 'Welcome',
+		"description" => 'Login for guest, info for member',
+		"wrap_content" => true,
+		"version" => "1.3",
+		"templates" => array
+			(
+				array
+				(
+					"title" => "adv_sidebox_welcome",
+					"template" =>
 					"<tr>
 						<td class=\"trow1\">
 							{\$welcometext}
 						</td>
 					</tr>
-															",
-															"sid" => -1
-														),
-														array
-														(
-															"title" => "adv_sidebox_welcome_membertext",
-															"template" => "
+					",
+					"sid" => -1
+				),
+				array
+				(
+					"title" => "adv_sidebox_welcome_membertext",
+					"template" => "
 							{\$user_avatar}<span class=\"smalltext\"><em>{\$lang->member_welcome_lastvisit}</em> {\$lastvisit}<br />
 							{\$lang->since_then}<br />
 							<strong>&raquo;</strong> {\$lang->new_announcements}<br />
@@ -47,13 +48,13 @@ function welcome_box_asb_info()
 							<strong>&raquo;</strong> {\$lang->new_posts}<br /><br />
 							<a href=\"{\$mybb->settings[\'bburl\']}/search.php?action=getnew\">{\$lang->view_new}</a><br /><a href=\"{\$mybb->settings[\'bburl\']}/search.php?action=getdaily\">{\$lang->view_todays}</a>
 							</span>
-														",
-															"sid" => -1
-														),
-														array
-														(
-															"title" => "adv_sidebox_welcome_guesttext",
-															"template" => "
+					",
+						"sid" => -1
+				),
+				array
+				(
+					"title" => "adv_sidebox_welcome_guesttext",
+					"template" => "
 							<span class=\"smalltext\">{\$lang->guest_welcome_registration}</span><br />
 							<br />
 							<form method=\"post\" action=\"{\$mybb->settings[\'bburl\']}/member.php\"><input type=\"hidden\" name=\"action\" value=\"do_login\" />
@@ -63,10 +64,10 @@ function welcome_box_asb_info()
 								<label title=\"{\$lang->remember_me_desc}\"><input type=\"checkbox\" class=\"checkbox\" name=\"remember\" value=\"yes\" /> {\$lang->remember_me}</label><br /><br />
 								<br /><input type=\"submit\" class=\"button\" name=\"loginsubmit\" value=\"{\$lang->login}\" />
 							</form>
-															",
-															"sid" => -1
-														)
-													)
+					",
+					"sid" => -1
+				)
+			)
 	);
 }
 

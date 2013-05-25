@@ -137,7 +137,7 @@ class Sidebox
 				$this->settings = json_decode($data['settings'], true);
 
 				// if they seem legit
-				if(is_array($this->settings))
+				if(is_array($this->settings) && !empty($this->settings))
 				{
 					// set a marker
 					$this->has_settings = true;
@@ -249,7 +249,7 @@ class Sidebox
 			}
 
 			$content =  '<!-- sideboxstart: adv_sidebox header and expander for side box #' . $this->id . ' -->
-			<table style="table-layout: fixed; word-wrap: break-word;" border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder ' . $this->box_type . '_main_' . $this->id . '">
+			<table name="' . $this->id . '_' . $this->box_type . '_' . TIME_NOW . '" id="' . $this->box_type . '_main_' . $this->id . '" style="table-layout: fixed; word-wrap: break-word;" border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder ' . $this->box_type . '_main_' . $this->id . '">
 				<thead>
 					<tr>
 						<td class="thead"><div class="expcolimage"><img src="{$theme[\'imgdir\']}/' . $expcolimage . '" id="' . $this->box_type . '_' . $this->id . '_img" class="expander" alt="' . $expaltext . '" title="' . $expaltext . '" /></div><strong>' . $this->display_name . '</strong>
@@ -1045,6 +1045,7 @@ class Addon_type extends Sidebox_type
 	public $has_settings;
 
 	private $templates;
+	public $xmlhttp;
 
 	private $is_installed = false;
 	private $is_upgraded = false;
@@ -1112,6 +1113,11 @@ class Addon_type extends Sidebox_type
 
 				$this->templates = $this_info['templates'];
 				$this->discarded_templates = $this_info['discarded_templates'];
+
+				if($this_info['xmlhttp'])
+				{
+					$this->xmlhttp = true;
+				}
 
 				// version control
 				$this->version = $this_info['version'];
@@ -1376,6 +1382,48 @@ class Addon_type extends Sidebox_type
 	}
 
 	/*
+	 * get_xmlhttp_script()
+	 *
+	 * @param - (int) $rate
+						the AJAX refresh rate in seconds
+	 * @param - (string) $elem_id
+						the HTML ID for the side box's main table
+	 */
+	public function get_xmlhttp_script($rate, $elem_id)
+	{
+		// valid info?
+		if($this->xmlhttp && $rate)
+		{
+			// build a periodical executer with the supllied refresh rate; on each execution launch an Ajax Request and if anything besides 'nochange' is returned then replace the contents of this sidebox with the returned HTML and update the HTML NAME property of the side box's main table to indicate the time of the last update
+			return <<<EOF
+			new PeriodicalExecuter
+				(
+					function(pe)
+					{
+						new Ajax.Request
+							(
+								'inc/plugins/adv_sidebox/adv_sidebox_xmlhttp.php?action=do_module&box_type={$this->base_name}&dateline=' + $('{$elem_id}').readAttribute('name'),
+								{
+									onSuccess: function(response)
+									{
+										if(response.responseText && response.responseText != 'nochange')
+										{
+											$('{$elem_id}').down('tbody').innerHTML = response.responseText;
+											var table_elem_id = $('{$elem_id}').id;
+											var table_info_array = table_elem_id.split("_");
+											var table_id = table_info_array[table_info_array.length - 1];
+											$('{$elem_id}').setAttribute('name', table_id +  '_{$this->base_name}_' + Math.floor((new Date).getTime()/1000));
+										}
+									}
+								}
+							);
+					}, {$rate}
+				);
+EOF;
+		}
+	}
+
+	/*
 	 * build_template()
 	 *
 	 * runs template building code for the current module referenced by this object
@@ -1395,6 +1443,35 @@ class Addon_type extends Sidebox_type
 			if(function_exists($build_template_function))
 			{
 				return $build_template_function($settings, $template_variable, $width);
+			}
+		}
+	}
+
+	/*
+	 * function do_xmlhttp()
+	 *
+	 * @param - (int) $dateline
+						UNIX timestamp representing the last time the side box was updated
+	 * @param - (array) $settings
+						the individual side box settings
+	 * @param - (int) $width
+						the width of the column in which the produced side box will reside
+	 */
+	public function do_xmlhttp($dateline, $settings, $width)
+	{
+		// convenient, huh?
+		$module = $this->base_name;
+
+		// if the file is intact . . .
+		if(file_exists(ADV_SIDEBOX_MODULES_DIR . "/" . $module . ".php"))
+		{
+			// run the module's xmlhttp method
+			require_once ADV_SIDEBOX_MODULES_DIR . "/" . $module . ".php";
+			$do_xmlhttp_function = $this->base_name . '_asb_xmlhttp';
+
+			if(function_exists($do_xmlhttp_function))
+			{
+				return $do_xmlhttp_function($dateline, $settings, $width);
 			}
 		}
 	}
@@ -1836,6 +1913,61 @@ class Sidebox_handler
 					}
 				}
 			}
+		}
+	}
+
+	/*
+	 * function get_scripts()
+	 *
+	 * if any side boxes are using AJAX refresh then build scripts for them and attach them to the onload event of the window
+	 */
+	public function get_scripts()
+	{
+		// don't waste execution if there are no boxes
+		if($this->boxes_to_show && is_array($this->used_box_types))
+		{
+			$these_scripts = '';
+
+			// loop through all used types
+			foreach($this->used_box_types as $this_box => $module)
+			{
+				// is this module valid AND using AJAX?
+				if($this->addons[$module]->valid && $this->addons[$module]->xmlhttp)
+				{
+					// does it have settings? (if not then we assume AJAX refresh is OFF
+					if($this->sideboxes[$this_box]->has_settings)
+					{
+						// get the settings
+						$these_settings = $this->sideboxes[$this_box]->get_settings();
+
+						// again, default here is off if anything goes wrong
+						if(isset($these_settings) && is_array($these_settings) && is_array($these_settings['xmlhttp_on']) && $these_settings['xmlhttp_on']['value'])
+						{
+							// if all is good build and add the PeriodicalExecuter
+							$these_scripts .= $this->addons[$module]->get_xmlhttp_script($these_settings['xmlhttp_on']['value'], $module . '_main_' . $this_box);
+						}
+					}
+				}
+			}
+
+			// if any of the boxes needed scripts then add them to onload
+			if($these_scripts)
+			{
+				return <<<EOF
+<script type="text/javascript">
+Event.observe
+	(
+		window,
+		'load',
+		function()
+		{
+			{$these_scripts}
+		}
+	);
+</script>
+EOF;
+			}
+			return;
 		}
 	}
 

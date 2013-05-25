@@ -30,48 +30,44 @@ function staff_online_box_asb_info()
 
  	return array
 	(
-		"name"							=>	'Online Staff',
-		"description"					=>	'Display online staff members list',
-		"version"							=>	"1.4.3",
-		"wrap_content"				=>	true,
-		"discarded_settings"		=>	array
-														(
-															"adv_sidebox_staff_online_bydetail",
-															"adv_sidebox_staff_online_avatarsize",
-															"adv_sidebox_staff_online_bytype",
-															"adv_sidebox_staff_online_hideinfo"
-														),
-		"settings"						=>	array
-														(
-															"max_staff" => array
-															(
-																"sid"					=> "NULL",
-																"name"				=> "max_staff",
-																"title"				=> $lang->adv_sidebox_max_staff_title,
-																"description"		=> $lang->adv_sidebox_max_staff_descr,
-																"optionscode"	=> "text",
-																"value"				=> '5'
-															)
-														),
-		"discarded_templates"	=>	array
-														(
-															"adv_sidebox_staff_online_left",
-															"adv_sidebox_staff_online_right",
-															"adv_sidebox_staff_online_bit_left",
-															"adv_sidebox_staff_online_bit_right"
-														),
-		"templates"					=>	array
-														(
-															array
-															(
-																			"title" 			=> "adv_sidebox_staff_online",
-																			"template"		=> "{\$online_staff}",
-																					"sid"		=> -1
-															),
-															array
-															(
-																			"title" 			=> "adv_sidebox_staff_online_bit",
-																			"template"		=> "
+		"name" => 'Online Staff',
+		"description" => 'Display online staff members list',
+		"version" => "1.4.3",
+		"wrap_content" => true,
+		"xmlhttp" => true,
+		"settings" => array
+			(
+				"max_staff" => array
+				(
+					"sid"					=> "NULL",
+					"name"				=> "max_staff",
+					"title"				=> $lang->adv_sidebox_max_staff_title,
+					"description"		=> $lang->adv_sidebox_max_staff_descr,
+					"optionscode"	=> "text",
+					"value"				=> '5'
+				),
+				"xmlhttp_on" => array
+				(
+					"sid"					=> "NULL",
+					"name"				=> "xmlhttp_on",
+					"title"				=> $lang->adv_sidebox_xmlhttp_on_title,
+					"description"		=> $lang->adv_sidebox_xmlhttp_on_description,
+					"optionscode"	=> "text",
+					"value"				=> '0'
+				)
+			),
+		"templates" => array
+			(
+				array
+				(
+					"title" 			=> "adv_sidebox_staff_online",
+					"template"		=> "{\$online_staff}",
+							"sid"		=> -1
+				),
+				array
+				(
+					"title" 			=> "adv_sidebox_staff_online_bit",
+					"template"		=> "
 							<tr>
 								<td class=\"{\$bgcolor}\">
 									<table cellspacing=\"0\" cellpadding=\"{\$theme[\'tablespace\']}\" width=\"100%\">
@@ -91,31 +87,61 @@ function staff_online_box_asb_info()
 									</table>
 								</td>
 							</tr>
-																					",
-																					"sid"		=> -1
-															)
-														)
+					",
+					"sid"		=> -1
+			)
+		)
 	);
 }
 
 function staff_online_box_asb_build_template($settings, $template_var, $width)
 {
 	global $$template_var;
+	global $lang;
+
+	if(!$lang->adv_sidebox)
+	{
+		$lang->load('adv_sidebox');
+	}
+
+	$all_online_staff = staff_online_box_asb_get_online_staff($settings, $width);
+
+	if($all_online_staff)
+	{
+		$$template_var = $all_online_staff;
+		return true;
+	}
+	else
+	{
+		$template_var = '
+	<tr>
+		<td class=\"trow1\">There are no staff members currently online.</td>
+	</tr>';
+		return false;
+	}
+}
+
+function staff_online_box_asb_xmlhttp($dateline, $settings, $width)
+{
+	$all_online_staff = staff_online_box_asb_get_online_staff($settings, $width);
+
+	if($all_online_staff)
+	{
+		return $all_online_staff;
+	}
+	return 'nochange';
+}
+
+function staff_online_box_asb_get_online_staff($settings, $width)
+{
 	global $db, $mybb, $templates, $lang, $cache, $theme;
 
 	// get our setting value
 	$max_rows = (int) $settings['max_staff']['value'];
 
-	// prepare an oops template just in case
-	$template = '
-	<tr>
-		<td class=\"trow1\">There are no staff members currently online.</td>
-	</tr>';
-
 	// if max_rows is set to 0 then show nothing
 	if(!$max_rows)
 	{
-		eval("\$" . $template_var . " = \"" . $template . "\";");
 		return false;
 	}
 
@@ -138,7 +164,6 @@ function staff_online_box_asb_build_template($settings, $template_var, $width)
 	if(!$groups_in)
 	{
 		// there is nothing to show
-		eval("\$" . $template_var . " = \"" . $template . "\";");
 		return false;
 	}
 
@@ -147,11 +172,17 @@ function staff_online_box_asb_build_template($settings, $template_var, $width)
 
 	// get all the users that are in staff groups that have been online within the allowed cutoff time
 	$query = $db->query("
-		SELECT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup, u.avatar
-		FROM " . TABLE_PREFIX . "sessions s
-		LEFT JOIN " . TABLE_PREFIX . "users u ON (s.uid=u.uid)
-		WHERE (displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in))) AND s.time > '$timesearch'
-		ORDER BY u.username ASC, s.time DESC
+		SELECT
+			s.sid, s.ip, s.uid, s.time, s.location,
+			u.username, u.invisible, u.usergroup, u.displaygroup, u.avatar
+		FROM
+			" . TABLE_PREFIX . "sessions s
+		LEFT JOIN
+			" . TABLE_PREFIX . "users u ON (s.uid=u.uid)
+		WHERE
+			(displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in))) AND s.time > '$timesearch'
+		ORDER BY
+			u.username ASC, s.time DESC
 	");
 
 	// loop through our users
@@ -259,13 +290,12 @@ function staff_online_box_asb_build_template($settings, $template_var, $width)
 	if($online_staff)
 	{
 		// show them
-		eval("\$" . $template_var . " = \"" . $templates->get("adv_sidebox_staff_online") . "\";");
-		return true;
+		eval("\$all_online_staff = \"" . $templates->get("adv_sidebox_staff_online") . "\";");
+		return $all_online_staff;
 	}
 	else
 	{
 		// otherwise apologize profusely
-		eval("\$" . $template_var . " = \"" . $template . "\";");
 		return false;
 	}
 }

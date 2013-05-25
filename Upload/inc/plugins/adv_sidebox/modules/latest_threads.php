@@ -29,36 +29,42 @@ function latest_threads_asb_info()
 	(
 		"name"							=>	'Latest Threads',
 		"description"					=>	'Lists the latest forum threads',
-		"version"							=>	"1",
+		"version"						=>	"1.0.3",
 		"wrap_content"				=>	true,
-		"discarded_settings"	=>	array
-													(
-														"adv_sidebox_latest_threads_max"
-													),
-		"settings"						=>	array
-													(
-														"latest_threads_max"		=> array
-														(
-															"sid"					=> "NULL",
-															"name"				=> "latest_threads_max",
-															"title"				=> $lang->adv_sidebox_latest_threads_max_title,
-															"description"		=> $lang->adv_sidebox_latest_threads_max,
-															"optionscode"	=> "text",
-															"value"				=> '20'
-														)
-													),
-		"templates"					=>	array
-													(
-														array
-														(
-															"title" 			=> "adv_sidebox_latest_threads",
-															"template" 	=> "{\$threadlist}",
-															"sid"				=>	-1
-														),
-														array
-														(
-															"title" => "adv_sidebox_latest_threads_thread",
-															"template" => "
+		"xmlhttp"						=>	true,
+		"settings" => array
+			(
+				"latest_threads_max"		=> array
+				(
+					"sid"					=> "NULL",
+					"name"				=> "latest_threads_max",
+					"title"				=> $lang->adv_sidebox_latest_threads_max_title,
+					"description"		=> $lang->adv_sidebox_latest_threads_max,
+					"optionscode"	=> "text",
+					"value"				=> '20'
+				),
+				"xmlhttp_on" => array
+				(
+					"sid"					=> "NULL",
+					"name"				=> "xmlhttp_on",
+					"title"				=> $lang->adv_sidebox_xmlhttp_on_title,
+					"description"		=> $lang->adv_sidebox_xmlhttp_on_description,
+					"optionscode"	=> "text",
+					"value"				=> '0'
+				)
+			),
+		"templates" => array
+			(
+				array
+				(
+					"title" 			=> "adv_sidebox_latest_threads",
+					"template" 	=> "{\$threadlist}",
+					"sid"				=>	-1
+				),
+				array
+				(
+					"title" => "adv_sidebox_latest_threads_thread",
+					"template" => "
 					<tr>
 						<td class=\"{\$altbg}\">
 							{\$gotounread}<a href=\"{\$mybb->settings[\'bburl\']}/{\$thread[\'threadlink\']}\" title=\"{\$thread[\'subject\']}\"><strong>{\$thread[\'subject\']}</strong></a>
@@ -70,25 +76,88 @@ function latest_threads_asb_info()
 							</span>
 						</td>
 					</tr>
-															",
-															"sid"				=>	-1
-														),
-														array
-														(
-															"title" => "adv_sidebox_latest_threads_gotounread",
-															"template" => "<a href=\"{\$thread[\'newpostlink\']}\"><img src=\"{\$theme[\'imgdir\']}/jump.gif\" alt=\"{\$lang->adv_sidebox_gotounread}\" title=\"{\$lang->adv_sidebox_gotounread}\" /></a>",
-															"sid"				=>	-1
-														)
-													)
+				",
+				"sid"				=>	-1
+			),
+			array
+			(
+				"title" => "adv_sidebox_latest_threads_gotounread",
+				"template" => "<a href=\"{\$thread[\'newpostlink\']}\"><img src=\"{\$theme[\'imgdir\']}/jump.gif\" alt=\"{\$lang->adv_sidebox_gotounread}\" title=\"{\$lang->adv_sidebox_gotounread}\" /></a>",
+				"sid"				=>	-1
+			)
+		)
 	);
 }
 
+
+/*
+ * latest_threads_asb_build_template()
+ *
+ * @param - (array) $settings
+					individual sidebox settings applied to the module
+ * @param - (string) $template_var
+					encoded unique side box template variable name
+ */
 function latest_threads_asb_build_template($settings, $template_var)
 {
-	global $$template_var;
+	global $$template_var, $lang;
+
+	// get the threads (or at least attempt to)
+	$all_threads = latest_threads_get_threadlist($settings);
+
+	if($all_threads)
+	{
+		// if there are threads, show them
+		$$template_var = $all_threads;
+		return true;
+	}
+	else
+	{
+		// if not, show nothing
+		$$template_var = '<tr><td class="trow1">' . $lang->adv_sidebox_latest_threads_no_threads . '</td></tr>';
+		return false;
+	}
+}
+
+
+/*
+ * latest_threads_asb_xmlhttp()
+ *
+ * @param - (int) $dateline
+					UNIX datestamp
+ * @param - (array) $settings
+					individual side box settings passed to the module
+ */
+function latest_threads_asb_xmlhttp($dateline, $settings)
+{
+	global $db;
+
+	// do a quick check to make sure we don't waste execution
+	$query = $db->simple_select('posts', '*', "dateline > {$dateline}");
+
+	if($db->num_rows($query) > 0)
+	{
+		$all_threads = latest_threads_get_threadlist($settings);
+
+		if($all_threads)
+		{
+			return $all_threads;
+		}
+	}
+	return 'nochange';
+}
+
+/*
+ * latest_threads_get_threadlist()
+ *
+ * @param - (array) $settings
+					individual side box settings passed to the module
+ */
+function latest_threads_get_threadlist($settings)
+{
 	global $db, $mybb, $templates, $lang, $cache, $threadlist, $gotounread, $theme;
 
-	// Load custom language phrases
+	// load custom language phrases
 	if(!$lang->adv_sidebox)
 	{
 		$lang->load('adv_sidebox');
@@ -101,32 +170,38 @@ function latest_threads_asb_build_template($settings, $template_var)
 		$unviewwhere = "AND fid NOT IN ($unviewable)";
 	}
 
-	// Read some values we will be using
-	$forumcache = $cache->read("forums");
-
 	$threads = array();
 
 	if($mybb->user['uid'] == 0)
 	{
-		// Build a forum cache.
-		$query = $db->query("
-			SELECT fid
-			FROM ".TABLE_PREFIX."forums
-			WHERE active != 0
-			ORDER BY pid, disporder
+		$query = $db->query
+		("
+			SELECT
+				fid
+			FROM
+				" . TABLE_PREFIX . "forums
+			WHERE
+				active != 0
+			ORDER BY
+				pid, disporder
 		");
 
 		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
 	}
 	else
 	{
-		// Build a forum cache.
-		$query = $db->query("
-			SELECT f.fid, fr.dateline AS lastread
-			FROM ".TABLE_PREFIX."forums f
-			LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
-			WHERE f.active != 0
-			ORDER BY pid, disporder
+		$query = $db->query
+		("
+			SELECT
+				f.fid, fr.dateline AS lastread
+			FROM
+				" . TABLE_PREFIX . "forums f
+			LEFT JOIN
+				" . TABLE_PREFIX . "forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
+			WHERE
+				f.active != 0
+			ORDER BY
+				pid, disporder
 		");
 	}
 
@@ -149,16 +224,26 @@ function latest_threads_asb_build_template($settings, $template_var)
 	$altbg = alt_trow();
 	$maxtitlelen = 48;
 	$threadlist = '';
+	$firstid = ' id="latest_threads_firstrow"';
 
 	// Query for the latest forum discussions
-	$query = $db->query("
-		SELECT t.*, u.username, lp.usergroup, lp.displaygroup
-		FROM " . TABLE_PREFIX . "threads t
-		LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid=t.uid)
-		LEFT JOIN " . TABLE_PREFIX . "users lp ON (lp.uid=t.lastposteruid)
-		WHERE 1=1 $unviewwhere AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
-		ORDER BY t.lastpost DESC
-		LIMIT 0, " . (int) $settings['latest_threads_max']['value']
+	$query = $db->query
+	("
+		SELECT
+			t.*, u.username,
+			lp.usergroup, lp.displaygroup
+		FROM
+			" . TABLE_PREFIX . "threads t
+		LEFT JOIN
+			" . TABLE_PREFIX . "users u ON (u.uid=t.uid)
+		LEFT JOIN
+			" . TABLE_PREFIX . "users lp ON (lp.uid=t.lastposteruid)
+		WHERE
+			1=1 $unviewwhere AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
+		ORDER BY
+			t.lastpost DESC
+		LIMIT
+			0, " . (int) $settings['latest_threads_max']['value']
 	);
 
 	if($db->num_rows($query) > 0)
@@ -186,7 +271,7 @@ function latest_threads_asb_build_template($settings, $template_var)
 		{
 			$forumpermissions[$thread['fid']] = forum_permissions($thread['fid']);
 
-			// Make sure we can view this thread
+			// make sure we can view this thread
 			if($forumpermissions[$thread['fid']]['canview'] == 0 || $forumpermissions[$thread['fid']]['canviewthreads'] == 0 || $forumpermissions[$thread['fid']]['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
 			{
 				continue;
@@ -195,7 +280,7 @@ function latest_threads_asb_build_template($settings, $template_var)
 			$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
 			$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
 
-			// Don't link to guest's profiles (they have no profile).
+			// don't link to guest's profiles (they have no profile).
 			if($thread['lastposteruid'] == 0)
 			{
 				$lastposterlink = $thread['lastposter'];
@@ -268,15 +353,12 @@ function latest_threads_asb_build_template($settings, $template_var)
 		if($threadlist)
 		{
 			// Show the table only if there are threads
-			eval("\$" . $template_var . " = \"" . $templates->get("adv_sidebox_latest_threads") . "\";");
-			return true;
+			eval("\$all_threads = \"" . $templates->get("adv_sidebox_latest_threads") . "\";");
+			return $all_threads;
 		}
 	}
 	else
 	{
-		// Show the table only if there are threads
-		eval("\$" . $template_var . " = \"<tr><td class=\\\"trow1\\\">" . $lang->adv_sidebox_latest_threads_no_threads . "</td></tr>\";");
-
 		// no content
 		return false;
 	}

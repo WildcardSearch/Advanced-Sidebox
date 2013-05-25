@@ -72,6 +72,10 @@ $l['adv_sidebox_pm_box'] = "PM Box";
 $l['adv_sidebox_search_box'] = "Search Box";
 $l['adv_sidebox_stats_box'] = "Board Statistics";
 
+// default settings
+$l['adv_sidebox_xmlhttp_on_title'] = "AJAX Update?";
+$l['adv_sidebox_xmlhttp_on_description'] = "time (in seconds) between updates (0 to disable AJAX)";
+
 // WOL
 $l['adv_sidebox_num_avatars_per_row'] = "Number of Avatars Per Row";
 $l['adv_sidebox_num_avatars_per_row_description'] = "(enter number of columns in which avatars will be shown within the module, or 0 to disable avatars)";

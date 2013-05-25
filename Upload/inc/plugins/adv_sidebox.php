@@ -79,13 +79,16 @@ function adv_sidebox_start()
 	 */
 	$adv_sidebox->build_all_templates();
 
+	// if any of the side boxes are using AJAX refresh then we want to be sure to get that into the headerinclude (happens in the template handler)
+	$AJAX_scripts = $adv_sidebox->get_scripts();
+
 	// load the template handler class definitions
 	require_once MYBB_ROOT . 'inc/plugins/adv_sidebox/adv_sidebox_class_template_handler.php';
 
 	/*
 	 * attempt to load a handler using a static method to select the correct class based on THIS_SCRIPT constant
 	 */
-	$template_handler = Template_handlers::get_template_handler($adv_sidebox->left_boxes, $adv_sidebox->right_boxes, (int) $mybb->settings['adv_sidebox_width_left'], (int) $mybb->settings['adv_sidebox_width_right']);
+	$template_handler = Template_handlers::get_template_handler($adv_sidebox->left_boxes, $adv_sidebox->right_boxes, (int) $mybb->settings['adv_sidebox_width_left'], (int) $mybb->settings['adv_sidebox_width_right'], $AJAX_scripts);
 
 	// if we have a valid template handler object
 	if($template_handler instanceof Template_handler)

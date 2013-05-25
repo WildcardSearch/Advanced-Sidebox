@@ -19,16 +19,16 @@ function search_box_asb_info()
 {
 	return array
 	(
-		"name"						=>	'Search',
-		"description"				=>	'Simple options, a keyword textbox and a go button',
-		"wrap_content"			=>	true,
-		"version"						=>	"1.1",
-		"templates"					=>	array
-													(
-														array
-														(
-															"title" => "adv_sidebox_search",
-															"template" => "
+		"name" => 'Search',
+		"description" => 'Simple options, a keyword textbox and a go button',
+		"wrap_content" => true,
+		"version" =>	"1.1",
+		"templates" =>	array
+			(
+				array
+				(
+					"title" => "adv_sidebox_search",
+					"template" => "
 					<tr>
 						<td class=\"trow1\">
 							<form method=\"post\" action=\"{\$mybb->settings[\'bburl\']}/search.php\">
@@ -55,10 +55,10 @@ function search_box_asb_info()
 							</span>
 						</td>
 					</tr>
-															",
-															"sid" => -1
-														)
-													)
+					",
+					"sid" => -1
+				)
+			)
 	);
 }
 
@@ -67,7 +67,7 @@ function search_box_asb_build_template($settings, $template_var)
 	// don't forget to declare your variable! will not work without this
 	global $$template_var; // <-- important!
 
-	global $db, $mybb, $templates, $lang, $gobutton;
+	global $mybb, $templates, $lang, $gobutton;
 
 	// Load global and custom language phrases
 	if(!$lang->portal)

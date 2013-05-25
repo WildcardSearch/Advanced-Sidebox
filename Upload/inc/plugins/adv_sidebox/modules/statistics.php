@@ -21,28 +21,28 @@ function statistics_asb_info()
 {
 	return array
 	(
-		"name"							=>	'Statistics',
-		"description"					=>	'Forum statistics and figures',
-		"wrap_content"				=>	true,
-		"version"						=>	"1.1",
-		"settings"						=>	array
-													(
-														"format_username"	=>	array
-														(
-															"sid"					=> "NULL",
-															"name"				=> "format_username",
-															"title"				=> "Format last username?",
-															"description"		=> "(may use another query)",
-															"optionscode"	=> "yesno",
-															"value"				=> '0'
-														)
-													),
-		"templates"					=>	array
-													(
-														array
-														(
-															        "title" => "adv_sidebox_statistics",
-																	"template" => "
+		"name" => 'Statistics',
+		"description" => 'Forum statistics and figures',
+		"wrap_content" => true,
+		"version" => "1.1",
+		"settings" => array
+			(
+				"format_username"	=>	array
+				(
+					"sid"					=> "NULL",
+					"name"				=> "format_username",
+					"title"				=> "Format last username?",
+					"description"		=> "(may use another query)",
+					"optionscode"	=> "yesno",
+					"value"				=> '0'
+				)
+			),
+		"templates" => array
+			(
+				array
+				(
+					"title" => "adv_sidebox_statistics",
+					"template" => "
 					<tr>
 						<td class=\"trow1\">
 							<span class=\"smalltext\">
@@ -54,10 +54,10 @@ function statistics_asb_info()
 							</span>
 						</td>
 					</tr>
-																	",
-																	"sid" => -1
-														)
-													)
+					",
+					"sid" => -1
+				)
+			)
 	);
 }
 

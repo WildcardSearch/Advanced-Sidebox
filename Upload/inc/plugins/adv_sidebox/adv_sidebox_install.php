@@ -56,7 +56,13 @@ function adv_sidebox_info()
 		<tr>
 			<td>{$lang->adv_sidebox_description1}<br/><br/>{$lang->adv_sidebox_description2}{$extra_links}
 			</td>
-			<td><img style=\"position: relative; float: right;\" src=\"{$mybb->settings['bburl']}/inc/plugins/adv_sidebox/images/asb_logo_80.png\" alt=\"{$lang->adv_sidebox_logo}\" title=\"{$lang->adv_sidebox_logo}\"/>
+			<td style=\"text-align: center;\"><img style=\"\" src=\"{$mybb->settings['bburl']}/inc/plugins/adv_sidebox/images/asb_logo_80.png\" alt=\"{$lang->adv_sidebox_logo}\" title=\"{$lang->adv_sidebox_logo}\"/><br /><br />
+			<form action=\"https://www.paypal.com/cgi-bin/webscr\" method=\"post\" target=\"_top\">
+				<input type=\"hidden\" name=\"cmd\" value=\"_s-xclick\">
+				<input type=\"hidden\" name=\"hosted_button_id\" value=\"VA5RFLBUC4XM4\">
+				<input style=\"\" type=\"image\" src=\"https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif\" border=\"0\" name=\"submit\" alt=\"PayPal - The safer, easier way to pay online!\">
+				<img alt=\"\" border=\"0\" src=\"https://www.paypalobjects.com/en_US/i/scr/pixel.gif\" width=\"1\" height=\"1\">
+			</form>
 			</td>
 		</tr>
 	</tbody>
@@ -72,7 +78,7 @@ function adv_sidebox_info()
 		"website"				=> "http://wildcardsearch.github.com/Advanced-Sidebox",
 		"author"				=> $author,
 		"authorsite"			=> "http://www.rantcentralforums.com",
-		"version"				=> "1.6.3",
+		"version"				=> "1.7",
 		"compatibility" 		=> "16*",
 		"guid" 					=> "870e9163e2ae9b606a789d9f7d4d2462",
 	);
