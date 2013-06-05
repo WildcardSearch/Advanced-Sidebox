@@ -49,7 +49,7 @@ Event.observe
 				else
 				{
 					// otherwise we are showing
-					$('asb_left_column_id').style.display = 'block';
+					$('asb_left_column_id').style.display = '';
 					$('asb_left_close').style.display = 'inline';
 					$('asb_left_open').style.display = 'none';
 					Cookie.unset("asb_hide_left");
@@ -78,7 +78,7 @@ Event.observe
 				else
 				{
 					// showing
-					$('asb_right_column_id').style.display = 'block';
+					$('asb_right_column_id').style.display = '';
 					$('asb_right_close').style.display = 'inline';
 					$('asb_right_open').style.display = 'none';
 					Cookie.unset("asb_hide_right");
