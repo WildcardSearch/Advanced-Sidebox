@@ -256,25 +256,17 @@ function adv_sidebox_admin_main()
 
 	$page->add_breadcrumb_item($lang->adv_sidebox_name);
 
-	// establish the sortable columns
+	// set up the page header
 	$page->extra_header .= <<<EOF
-	<script language="JavaScript">
+	<script type="text/javascript">
 			columns = ['left_column','right_column', 'trash_column'];
 	</script>
+	<link rel="stylesheet" type="text/css" href="styles/adv_sidebox_acp.css" media="screen" />
+	<script src="../jscripts/scriptaculous.js?load=effects,dragdrop,controls" type="text/javascript"></script>
+	<script src="jscripts/imodal.js" type="text/javascript"></script>
+	<link rel="stylesheet" type="text/css" href="styles/default/imodal.css"/>
+	<script src="jscripts/adv_sidebox_acp.js" type="text/javascript"></script>
 EOF;
-
-	// custom CSS
-	$page->extra_header .= '<link rel="stylesheet" type="text/css" href="' . $mybb->settings['bburl'] . '/inc/plugins/adv_sidebox/adv_sidebox_acp.css" media="screen" />';
-
-	// scriptaculous drag and drop and effects
-	$page->extra_header .= "<script src=\"../jscripts/scriptaculous.js?load=effects,dragdrop,controls\" type=\"text/javascript\"></script>\n";
-
-	// modal forms
-	$page->extra_header .=  "<script src=\"jscripts/imodal.js\" type=\"text/javascript\"></script>\n";
-	$page->extra_header .=  "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles/default/imodal.css\" />\n";
-
-	// custom JS
-	$page->extra_header .=  "<script src=\"/jscripts/adv_sidebox_acp.js\" type=\"text/javascript\"></script>\n";
 
 	adv_sidebox_output_header();
 	adv_sidebox_output_tabs('adv_sidebox');
@@ -685,7 +677,7 @@ function adv_sidebox_admin_edit()
 		$page->add_breadcrumb_item($lang->adv_sidebox_add_a_sidebox);
 
 		// add a little CSS
-		$page->extra_header .= '<link rel="stylesheet" type="text/css" href="' . $mybb->settings['bburl'] . '/inc/plugins/adv_sidebox/adv_sidebox_acp.css" media="screen" />';
+		$page->extra_header .= '<link rel="stylesheet" type="text/css" href="styles/adv_sidebox_acp.css" media="screen" />';
 		adv_sidebox_output_header();
 		$form = new Form('index.php?module=config-adv_sidebox&action=edit_box&box=' . $this_sidebox->get_id() . '&addon=' . $module, "post", "modal_form");
 	}
@@ -943,7 +935,7 @@ function adv_sidebox_admin_edit()
 
 	if($do_settings)
 	{
-		echo "</div><div id=\"tab_settings\">\n";
+		echo "</div><div id=\"tab_settings\" style=\"max-height: 400px; overflow: auto;\">\n";
 
 		$form_container = new FormContainer("Custom Module Settings");
 

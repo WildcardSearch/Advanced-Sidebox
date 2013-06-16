@@ -98,6 +98,14 @@ $l['adv_sidebox_gotounread'] = "Go to first unread post";
 $l['adv_sidebox_latest_threads_max'] = "maximal number of threads to display";
 $l['adv_sidebox_latest_threads_max_title'] = "Thread Limit";
 
+//  recent posts
+$l['adv_sidebox_recent_posts_max_title'] = "Post Limit";
+$l['adv_sidebox_recent_posts_max_description'] = "maximal number of posts to display";
+$l['adv_sidebox_recent_posts_max_length_title'] = 'Maxium Post Length';
+$l['adv_sidebox_recent_posts_max_length_description'] = 'maximum length of excerpt to show in characters';
+
+$l['adv_sidebox_recent_posts_no_posts'] = 'There are no posts to display.';
+
 // pm's
 $l['adv_sidebox_pms_no_messages'] = 'Please {1} or {2} to use this functionality.';
 $l['adv_sidebox_pms_login'] = 'login';

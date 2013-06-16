@@ -30,7 +30,7 @@ define("ADV_SIDEBOX", true);
 // used by all module routines
 define("ADV_SIDEBOX_MODULES_DIR", MYBB_ROOT. "inc/plugins/adv_sidebox/modules");
 
-// Load the install/admin routines only if in ACP.
+// load the install/admin routines only if in ACP.
 if(defined("IN_ADMINCP"))
 {
     require_once MYBB_ROOT . "inc/plugins/adv_sidebox/acp_functions.php";

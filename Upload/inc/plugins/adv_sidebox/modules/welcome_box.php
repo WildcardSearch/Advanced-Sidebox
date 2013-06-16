@@ -22,7 +22,7 @@ function welcome_box_asb_info()
 		"name" => 'Welcome',
 		"description" => 'Login for guest, info for member',
 		"wrap_content" => true,
-		"version" => "1.3",
+		"version" => "1.3.1",
 		"templates" => array
 			(
 				array
@@ -59,10 +59,10 @@ function welcome_box_asb_info()
 							<br />
 							<form method=\"post\" action=\"{\$mybb->settings[\'bburl\']}/member.php\"><input type=\"hidden\" name=\"action\" value=\"do_login\" />
 								<input type=\"hidden\" name=\"url\" value=\"{\$portal_url}\" />
-								{\$username}<br />&nbsp;&nbsp;<input type=\"text\" class=\"textbox\" name=\"username\" value=\"\" /><br /><br />
-								{\$lang->password}<br />&nbsp;&nbsp;<input type=\"password\" class=\"textbox\" name=\"password\" value=\"\" /><br /><br />
+								{\$username}<br />&nbsp;&nbsp;<input style=\"width: 95%\" type=\"text\" class=\"textbox\" name=\"username\" value=\"\" /><br /><br />
+								{\$lang->password}<br />&nbsp;&nbsp;<input style=\"width: 95%\" type=\"password\" class=\"textbox\" name=\"password\" value=\"\" /><br /><br />
 								<label title=\"{\$lang->remember_me_desc}\"><input type=\"checkbox\" class=\"checkbox\" name=\"remember\" value=\"yes\" /> {\$lang->remember_me}</label><br /><br />
-								<br /><input type=\"submit\" class=\"button\" name=\"loginsubmit\" value=\"{\$lang->login}\" />
+								<input type=\"submit\" class=\"button\" name=\"loginsubmit\" value=\"{\$lang->login}\" />
 							</form>
 					",
 					"sid" => -1

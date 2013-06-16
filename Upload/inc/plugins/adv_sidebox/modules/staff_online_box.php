@@ -113,9 +113,9 @@ function staff_online_box_asb_build_template($settings, $template_var, $width)
 	}
 	else
 	{
-		$template_var = '
+		$$template_var = '
 	<tr>
-		<td class=\"trow1\">There are no staff members currently online.</td>
+		<td class="trow1">There are no staff members currently online.</td>
 	</tr>';
 		return false;
 	}

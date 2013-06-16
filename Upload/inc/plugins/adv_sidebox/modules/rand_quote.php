@@ -31,7 +31,7 @@ function rand_quote_asb_info()
 		"description"					=>	'Displays random quotes with a link and avatar',
 		"wrap_content"				=>	true,
 		"xmlhttp"						=>	true,
-		"version"						=>	"1.4",
+		"version"						=>	"1.4.1",
 		"settings" => array
 			(
 				"forum_id"		=> array
@@ -96,18 +96,18 @@ function rand_quote_asb_info()
 					"title" => "rand_quote_sidebox",
 					"template" => "
 
-					<tr class=\"tcat\">
-						<td>
+					<tr>
+						<td class=\"tcat\">
 							{\$thread_title_link}
 						</td>
 					</tr>
-					<tr class=\"trow1\">
-						<td>
+					<tr>
+						<td class=\"trow1\">
 							{\$rand_quote_avatar}&nbsp;{\$rand_quote_author}
 						</td>
 					</tr>
-					<tr class=\"trow2\">
-						<td>
+					<tr>
+						<td class=\"trow2\">
 							{\$rand_quote_text}
 						</td>
 					</tr>
@@ -250,7 +250,7 @@ function rand_quote_asb_get_quote($settings, $width)
 		$title_font_size = (int) $font_size * .65;
 		$message_font_size = (int) $font_size;
 
-		$new_message = $parser->text_parse_message(rand_quote_asb_strip_url($new_message));
+		$new_message = $parser->text_parse_message(adv_sidebox_strip_url($new_message));
 
 		if(strlen($new_message) < $settings['min_length']['value'])
 		{
@@ -343,6 +343,11 @@ function rand_quote_asb_get_quote($settings, $width)
 			$rand_post['subject'] = my_substr($rand_post['subject'], 0, 40) . " . . .";
 		}
 
+		if(substr(strtolower($rand_post['subject']), 0, 3) == 're:')
+		{
+			$rand_post['subject'] = substr($rand_post['subject'], 3);
+		}
+
 		$rand_post['subject'] = htmlspecialchars_uni($parser->parse_badwords($rand_post['subject']));
 
 		$thread_title_link = '<strong><a href="' . $post_link . '" title="' . $rand_post['subject'] . '"/><span style="font-size: ' . $title_font_size . 'px;">' . $rand_post['subject'] . '</span></a></strong>';
@@ -355,22 +360,6 @@ function rand_quote_asb_get_quote($settings, $width)
 	{
 		return false;
 	}
-}
-
-/*
- * rand_quote_asb_strip_url()
- *
- * @param - $message
-					the text to cleanse
- */
-function rand_quote_asb_strip_url($message)
-{
-	$message = " ".$message;
-	$message = preg_replace("#([\>\s\(\)])(http|https|ftp|news){1}://([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "", $message);
-	$message = preg_replace("#([\>\s\(\)])(www|ftp)\.(([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "", $message);
-	$message = my_substr($message, 1);
-
-	return $message;
 }
 
 ?>

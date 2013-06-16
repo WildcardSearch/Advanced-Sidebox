@@ -201,4 +201,20 @@ function adv_sidebox_strip_quotes($message)
 	return $message;
 }
 
+/*
+ * adv_sidebox_strip_url()
+ *
+ * @param - $message
+					the text to cleanse
+ */
+function adv_sidebox_strip_url($message)
+{
+	$message = " " . $message;
+	$message = preg_replace("#([\>\s\(\)])(http|https|ftp|news){1}://([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "", $message);
+	$message = preg_replace("#([\>\s\(\)])(www|ftp)\.(([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "", $message);
+	$message = my_substr($message, 1);
+
+	return $message;
+}
+
 ?>

@@ -1,4 +1,4 @@
-## Advanced-Sidebox 1.7
+## Advanced-Sidebox 1.7.1
 
 <p align="center">
   <img title="Advanced Sidebox Logo" alt="Advanced Sidebox Logo" src="https://github.com/WildcardSearch/Advanced-Sidebox/wiki/asb_logo_320.png" />
@@ -14,6 +14,7 @@ This plugin seeks to give the admin more options when adding side boxes to the f
 
 ## Features
 
+* New add-on module added to the core: Recent Posts (AJAX Ready)
 * AJAX Refresh now integrated into the core and five of the core modules (latest threads, PMs, random quotes, staff online and who's online avatar lists)!
 * New Improved Drag and Drop Interface!
 * Admin can control many settings for where and how side boxes display
@@ -26,5 +27,3 @@ This plugin seeks to give the admin more options when adding side boxes to the f
 * Now supports CodePress
 * Newly redesigned Online Staff module
 * Context-sensitive help for ACP pages
-
-[Full Change Log](https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Change-Log)
