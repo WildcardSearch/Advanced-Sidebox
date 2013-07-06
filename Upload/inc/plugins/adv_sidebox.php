@@ -35,9 +35,11 @@ if(defined("IN_ADMINCP"))
 {
     require_once MYBB_ROOT . "inc/plugins/adv_sidebox/acp_functions.php";
 }
-
-// only add the necessary hooks
-adv_sidebox_add_forum_hooks();
+else
+{
+	// only add the necessary hooks and templates
+	adv_sidebox_initialize();
+}
 
 /*
  * adv_sidebox_start()
@@ -101,7 +103,7 @@ function adv_sidebox_start()
 /*
  * add only the appropriate hooks
  */
-function adv_sidebox_add_forum_hooks()
+function adv_sidebox_initialize()
 {
 	global $settings, $plugins;
 
@@ -109,6 +111,7 @@ function adv_sidebox_add_forum_hooks()
 	$base_name = substr(THIS_SCRIPT, 0, strlen(THIS_SCRIPT) - 4);
 	$hook_name = $base_name . '_start';
 	$setting_name = 'adv_sidebox_on_' . $base_name;
+	$where = "show_on_{$base_name}='1'";
 
 	// exceptions
 	switch(THIS_SCRIPT)
@@ -124,8 +127,44 @@ function adv_sidebox_add_forum_hooks()
 	// if the setting for this script is set to yes . . .
 	if($settings[$setting_name])
 	{
+		global $db;
+
 		// add the hook
 		$plugins->add_hook($hook_name, "adv_sidebox_start");
+
+		$query = $db->simple_select('sideboxes', 'box_type', $where);
+		if($db->num_rows($query) > 0)
+		{
+			$template_list = '';
+			while($module_name = $db->fetch_field($query, 'box_type'))
+			{
+				if(file_exists(ADV_SIDEBOX_MODULES_DIR . "/{$module_name}.php"))
+				{
+					require_once ADV_SIDEBOX_MODULES_DIR . "/{$module_name}.php";
+
+					$info_function = "{$module_name}_asb_info";
+					if(function_exists($info_function))
+					{
+						$info = $info_function();
+
+						if(isset($info['templates']) && is_array($info['templates']) && !empty($info['templates']))
+						{
+							foreach($info['templates'] as $template_array)
+							{
+								$template_list .= ",{$template_array['title']}";
+							}
+						}
+					}
+				}
+			}
+
+			if($template_list)
+			{
+				global $templatelist;
+
+				$templatelist .= $template_list;
+			}
+		}
 	}
 
 	// Hooks for the User CP routine.

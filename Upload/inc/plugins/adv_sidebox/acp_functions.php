@@ -1414,7 +1414,11 @@ function adv_sidebox_serialize()
 {
     global $mybb;
 
-    $mybb->input['upsetting']['adv_sidebox_exclude_theme'] = serialize($mybb->input['upsetting']['adv_sidebox_exclude_theme']);
+    // only serialize our setting if it is being saved (thanks to Tanweth for helping me find this)
+	if(isset($mybb->input['upsetting']['adv_sidebox_exclude_theme']))
+	{
+		$mybb->input['upsetting']['adv_sidebox_exclude_theme'] = serialize($mybb->input['upsetting']['adv_sidebox_exclude_theme']);
+	}
 }
 
 /*

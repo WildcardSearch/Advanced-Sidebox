@@ -330,8 +330,8 @@ function rand_quote_asb_get_quote($settings, $width)
 			}
 
 			$read_more = '
-					<tr class="tfoot">
-						<td>
+					<tr>
+						<td class="tfoot">
 							<div style="text-align: center;"><a href="' . $post_link . '" title="Click to see the entire post"><strong>Read More</strong></a></div>
 						</td>
 					</tr>
@@ -350,7 +350,7 @@ function rand_quote_asb_get_quote($settings, $width)
 
 		$rand_post['subject'] = htmlspecialchars_uni($parser->parse_badwords($rand_post['subject']));
 
-		$thread_title_link = '<strong><a href="' . $post_link . '" title="' . $rand_post['subject'] . '"/><span style="font-size: ' . $title_font_size . 'px;">' . $rand_post['subject'] . '</span></a></strong>';
+		$thread_title_link = '<strong><a href="' . $post_link . '" title="' . $rand_post['subject'] . '"><span style="font-size: ' . $title_font_size . 'px;">' . $rand_post['subject'] . '</span></a></strong>';
 
 		// eval the template
 		eval("\$this_quote = \"" . $templates->get("rand_quote_sidebox") . "\";");

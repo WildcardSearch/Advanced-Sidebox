@@ -113,10 +113,11 @@ function staff_online_box_asb_build_template($settings, $template_var, $width)
 	}
 	else
 	{
-		$$template_var = '
+		$$template_var = <<<EOF
 	<tr>
-		<td class="trow1">There are no staff members currently online.</td>
-	</tr>';
+		<td class="trow1">{$lang->adv_sidebox_no_staff_online}</td>
+	</tr>
+EOF;
 		return false;
 	}
 }

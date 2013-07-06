@@ -20,7 +20,7 @@
  * along with this program.  If not, see http://www.gnu.org/licenses
  */
 
- /*
+/*
  * adv_sidebox_do_checks()
  *
  * avoid wasted execution by determining when and if code is necessary

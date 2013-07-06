@@ -78,7 +78,7 @@ function adv_sidebox_info()
 		"website"				=> "http://wildcardsearch.github.com/Advanced-Sidebox",
 		"author"				=> $author,
 		"authorsite"			=> "http://www.rantcentralforums.com",
-		"version"				=> "1.7.1",
+		"version"				=> "1.7.2",
 		"compatibility" 		=> "16*",
 		"guid" 					=> "870e9163e2ae9b606a789d9f7d4d2462",
 	);
@@ -124,7 +124,7 @@ function adv_sidebox_install()
 function adv_sidebox_activate()
 {
 	// get the last cached version
-	$old_version = adv_sidebox_get_cache_version() ;
+	$old_version = adv_sidebox_get_cache_version();
 
 	// if the upgrade script exists
 	if(file_exists(MYBB_ROOT . '/inc/plugins/adv_sidebox/adv_sidebox_upgrade.php'))
