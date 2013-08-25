@@ -269,7 +269,7 @@ EOF;
 						$enough_already = true;
 
 						// . . . and insert link to the WOL full list
-						$onlinemembers .= '<a href="' . $mybb->settings['bburl'] . '/online.php" title="' . $lang->adv_sidebox_see_all_title . '"><img style="' . $avatar_style . '" src="images/see_all.gif" alt="' . $lang->adv_sidebox_see_all_alt . '" title="' . adv_sidebox_see_all_alt . '" width="' . $avatar_width . 'px"/></a>';
+						$onlinemembers .= '<a href="' . $mybb->settings['bburl'] . '/online.php" title="' . $lang->adv_sidebox_see_all_title . '"><img style="' . $avatar_style . '" src="inc/plugins/adv_sidebox/images/see_all.gif" alt="' . $lang->adv_sidebox_see_all_alt . '" title="' . $lang->adv_sidebox_see_all_alt . '" width="' . $avatar_width . 'px"/></a>';
 					}
 				}
 				// . . . otherwise, add this avy to the list
