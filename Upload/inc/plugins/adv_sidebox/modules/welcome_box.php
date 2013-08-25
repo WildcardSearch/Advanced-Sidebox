@@ -193,7 +193,7 @@ function welcome_box_asb_build_template($settings, $template_var, $width)
 				$username = $lang->username;
 				break;
 		}
-		eval("\$welcometext = \"" . $templates->get("portal_welcome_guesttext") . "\";");
+		eval("\$welcometext = \"" . $templates->get("adv_sidebox_welcome_guesttext") . "\";");
 	}
 
 	$lang->welcome = $lang->sprintf($lang->welcome, $mybb->user['username']);
