@@ -14,7 +14,6 @@ Event.observe
 	{
 		// only show replace all options when selected
 		new Peeker($$(".replace_all"), $("replace_content"), /1/, true);
-		//new Peeker($$(".replace_all"), $("replace_template"), /1/, true);
 
 		// hide search & replace inputs when replacing
 		new Peeker($$(".replace_all"), $("header_search"), /0/, true);
@@ -26,8 +25,7 @@ Event.observe
 		new Peeker($$(".eval"), $("footer_search"), /0/, true);
 		new Peeker($$(".eval"), $("replace_all"), /0/, true);
 		new Peeker($$(".eval"), $("replace_content"), /0/, true);
-		//new Peeker($$(".eval"), $("replace_template"), /0/, true);	
-		
+
 		if($('replace_all_yes').checked)
 		{
 			$("header_search").hide();
@@ -36,9 +34,8 @@ Event.observe
 		else
 		{
 			$("replace_content").hide();
-			$("replace_template").hide();
 		}
-		
+
 		if($('eval_yes').checked)
 		{
 			$("header_search").hide();
@@ -46,9 +43,8 @@ Event.observe
 			$("template_row").hide();
 			$("replace_all").hide();
 			$("replace_content").hide();
-			$("replace_template").hide();
 		}
-		
+
 		// watch the 'detected' selectors and send the chosen
 		// item to the appropriate text box
 		asb_observe_inputs();
