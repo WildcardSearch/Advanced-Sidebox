@@ -39,6 +39,7 @@ function asb_start()
 		$asb['scripts'][$filename]['sideboxes'][1] = (array) $asb['scripts']['global']['sideboxes'][1] + (array) $asb['scripts'][$filename]['sideboxes'][1];
 		$asb['scripts'][$filename]['template_vars'] = array_merge((array) $asb['scripts']['global']['template_vars'], (array) $asb['scripts'][$filename]['template_vars']);
 		$asb['scripts'][$filename]['templates'] = array_merge((array) $asb['scripts']['global']['templates'], (array) $asb['scripts'][$filename]['templates']);
+		$asb['scripts'][$filename]['extra_scripts'] .= $asb['scripts']['global']['extra_scripts'];
 	}
 
 	// no boxes, get out
@@ -160,15 +161,14 @@ function asb_initialize()
 	{
 		$asb['scripts'][$filename]['sideboxes'][0] = (array) $asb['scripts']['global']['sideboxes'][0] + (array) $asb['scripts'][$filename]['sideboxes'][0];
 		$asb['scripts'][$filename]['sideboxes'][1] = (array) $asb['scripts']['global']['sideboxes'][1] + (array) $asb['scripts'][$filename]['sideboxes'][1];
-		$asb['scripts'][$filename]['template_vars'] = array_merge((array) $asb['scripts']['global']['template_vars'], (array) $asb['scripts'][$filename]['template_vars']);
 		$asb['scripts'][$filename]['templates'] = array_merge((array) $asb['scripts']['global']['templates'], (array) $asb['scripts'][$filename]['templates']);
 	}
 
 	// anything to show for this script?
 	if(is_array($asb['scripts'][$filename]['sideboxes']) && !empty($asb['scripts'][$filename]['sideboxes']))
 	{
-		// then add the hook
-		$plugins->add_hook($asb['scripts'][$filename]['hook'], 'asb_start');
+		// then add the hook . . . one priority lower than Page Manager ;-) we need to run first
+		$plugins->add_hook($asb['scripts'][$filename]['hook'], 'asb_start', 9);
 
 		// cache any script-specific templates (read: templates used by add-ons used in the script)
 		$template_list = '';

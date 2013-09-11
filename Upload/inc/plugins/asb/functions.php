@@ -145,7 +145,7 @@ function asb_build_cache(&$asb)
 							$settings = $sidebox->get('settings');
 
 							// again, default here is off if anything goes wrong
-							if(is_array($settings['xmlhttp_on']) && $settings['xmlhttp_on']['value'])
+							if($settings['xmlhttp_on']['value'])
 							{
 								// if all is good build and add the PeriodicalExecuter
 								$asb['scripts'][$filename]['extra_scripts'] .= "\n" . $addons[$module]->get_xmlhttp_script($settings['xmlhttp_on']['value'], $module . '_main_' . $id);
@@ -309,7 +309,7 @@ function asb_build_sidebox_content($this_box)
 
 		// element info
 		$sidebox['name'] = "{$id}_{$box_type}_" . TIME_NOW;
-		$sidebox['class'] = $sidebox_id = "{$box_type}_main_{$id}";
+		$sidebox['class'] = $sidebox['id'] = "{$box_type}_main_{$id}";
 		$sidebox['expcolimage_id'] = "{$box_type}_{$id}_img";
 		$sidebox['title'] = $title;
 		$sidebox['expdisplay_id'] = "{$box_type}_{$id}_e";
