@@ -94,7 +94,7 @@ EOF;
 	(
 		"name"					=> $name,
 		"description"			=> $asb_description,
-		"website"				=> "http://wildcardsearch.github.com/Advanced-Sidebox",
+		"website"				=> "https://github.com/WildcardSearch/Advanced-Sidebox",
 		"author"				=> $author,
 		"authorsite"			=> "http://www.rantcentralforums.com",
 		"version"				=> "2.0",
