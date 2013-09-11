@@ -1,4 +1,4 @@
-## Advanced-Sidebox 1.7.3
+## Advanced-Sidebox 2.0
 
 <p align="center">
   <img title="Advanced Sidebox Logo" alt="Advanced Sidebox Logo" src="https://github.com/WildcardSearch/Advanced-Sidebox/wiki/asb_logo_320.png" />
@@ -10,6 +10,7 @@ This plug-in seeks to give the admin more options when adding side boxes to the 
 
 ## Features
 
+* Now add and edit script definitions to further customize ASB! Also now compatible with Page Manager scripts.
 * New add-on module added to the core: Recent Posts (AJAX Ready)
 * AJAX Refresh now integrated into the core and five of the core modules (latest threads, PMs, random quotes, staff on-line and who's on-line avatar lists)!
 * New Improved Drag and Drop Interface!
