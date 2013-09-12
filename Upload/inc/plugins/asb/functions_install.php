@@ -49,7 +49,7 @@ function asb_create_script_info($return = false)
 			"filename" => 'showthread.php',
 			"template_name" => 'showthread',
 			"hook" => 'showthread_start',
-			"find_top" => '{$header}',
+			"find_top" => '{$ratethread}',
 			"find_bottom" => '{$footer}',
 			"active" => 1
 		),
