@@ -290,7 +290,7 @@ EOF;
 
 							// . . . and insert link to the WOL full list
 							$onlinemembers .= <<<EOF
-<a href="{$mybb->settings['bburl']}/online.php" title="{$lang->asb_wol_see_all_title}"><img style="{$avatar_style}" src="images/see_all.gif" alt="{$lang->asb_wol_see_all_alt}" title="{$lang->asb_wol_see_all_title}" width="{$avatar_width}px"/></a>
+<a href="{$mybb->settings['bburl']}/online.php" title="{$lang->asb_wol_see_all_title}"><img style="{$avatar_style}" src="{$mybb->settings['bburl']}/inc/plugins/asb/images/see_all.gif" alt="{$lang->asb_wol_see_all_alt}" title="{$lang->asb_wol_see_all_title}" width="{$avatar_width}px"/></a>
 EOF;
 						}
 					}
