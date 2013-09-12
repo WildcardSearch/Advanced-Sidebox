@@ -213,6 +213,39 @@ function asb_build_script_filename($this_script = '')
 }
 
 /*
+ * asb_get_this_script(&$asb)
+ *
+ * get the correct cached script info using the script parameters
+ */
+function asb_get_this_script(&$asb)
+{
+	global $mybb;
+
+	if(is_array($asb['scripts'][THIS_SCRIPT]) && !empty($asb['scripts'][THIS_SCRIPT]))
+	{
+		$return_array = $asb['scripts'][THIS_SCRIPT];
+		if(isset($mybb->input['action']) && trim($mybb->input['action']))
+		{
+			if(is_array($asb['scripts'][THIS_SCRIPT . "&action={$mybb->input['action']}"]) && !empty($asb['scripts'][THIS_SCRIPT . "&action={$mybb->input['action']}"]))
+			{
+				$return_array = $asb['scripts'][THIS_SCRIPT . "&action={$mybb->input['action']}"];
+			}
+		}
+		else if(isset($mybb->input['page']) && trim($mybb->input['page']))
+		{
+			if(is_array($asb['scripts'][THIS_SCRIPT . "&page={$mybb->input['page']}"]) && !empty($asb['scripts'][THIS_SCRIPT . "&page={$mybb->input['page']}"]))
+			{
+				$return_array = $asb['scripts'][THIS_SCRIPT . "&page={$mybb->input['page']}"];
+			}
+		}
+	}
+
+	// merge any globally visible (script-wise) side boxes with this script
+	$return_array['template_vars'] = array_merge((array) $asb['scripts']['global']['template_vars'], (array) $return_array['template_vars']);
+	return $return_array;
+}
+
+/*
  * asb_check_user_permissions($good_groups)
  *
  * standard check of all user groups against an allowable list

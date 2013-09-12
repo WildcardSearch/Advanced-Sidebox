@@ -164,12 +164,12 @@ EOF;
 
 		// load the cache and attempt to store this script's info
 		$asb = asb_get_cache();
-		$filename = asb_build_script_filename();
+		$this_script = asb_get_this_script($asb);
 
 		// do we have a valid script?
-		if(is_array($asb['scripts'][$filename]) && !empty($asb['scripts'][$filename]))
+		if(is_array($this_script) && !empty($this_script))
 		{
-			foreach($asb['scripts'][$filename] as $key => $val)
+			foreach($this_script as $key => $val)
 			{
 				if(property_exists($this, $key) && isset($val) && $val)
 				{
