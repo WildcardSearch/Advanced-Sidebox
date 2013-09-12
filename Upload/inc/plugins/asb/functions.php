@@ -127,7 +127,7 @@ function asb_build_cache(&$asb)
 					{
 						// store the module name and all the template vars used
 						$asb['scripts'][$filename]['sideboxes'][$pos][$id] = $module;
-						$asb['scripts'][$filename]['template_vars'][] = "{$module}_{$id}";
+						$asb['scripts'][$filename]['template_vars'][$id] = "{$module}_{$id}";
 
 						// if there are any templates get their names so we can cache them
 						$templates = $addons[$module]->get('templates');
@@ -148,7 +148,7 @@ function asb_build_cache(&$asb)
 							if($settings['xmlhttp_on']['value'])
 							{
 								// if all is good build and add the PeriodicalExecuter
-								$asb['scripts'][$filename]['extra_scripts'] .= "\n" . $addons[$module]->get_xmlhttp_script($settings['xmlhttp_on']['value'], $module . '_main_' . $id);
+								$asb['scripts'][$filename]['extra_scripts'][$module] = $addons[$module]->get_xmlhttp_script($settings['xmlhttp_on']['value'], $module . '_main_' . $id);
 							}
 						}
 					}
@@ -217,31 +217,43 @@ function asb_build_script_filename($this_script = '')
  *
  * get the correct cached script info using the script parameters
  */
-function asb_get_this_script(&$asb)
+function asb_get_this_script(&$asb, $get_all = false)
 {
 	global $mybb;
 
 	if(is_array($asb['scripts'][THIS_SCRIPT]) && !empty($asb['scripts'][THIS_SCRIPT]))
 	{
 		$return_array = $asb['scripts'][THIS_SCRIPT];
-		if(isset($mybb->input['action']) && trim($mybb->input['action']))
+	}
+	elseif(isset($mybb->input['action']) && trim($mybb->input['action']))
+	{
+		if(isset($mybb->input['action']) && trim($mybb->input['action']) && is_array($asb['scripts'][THIS_SCRIPT . "&action={$mybb->input['action']}"]) && !empty($asb['scripts'][THIS_SCRIPT . "&action={$mybb->input['action']}"]))
 		{
-			if(is_array($asb['scripts'][THIS_SCRIPT . "&action={$mybb->input['action']}"]) && !empty($asb['scripts'][THIS_SCRIPT . "&action={$mybb->input['action']}"]))
-			{
-				$return_array = $asb['scripts'][THIS_SCRIPT . "&action={$mybb->input['action']}"];
-			}
+			$return_array = $asb['scripts'][THIS_SCRIPT . "&action={$mybb->input['action']}"];
 		}
-		else if(isset($mybb->input['page']) && trim($mybb->input['page']))
+	}
+	elseif(isset($mybb->input['page']) && trim($mybb->input['page']))
+	{
+		if(is_array($asb['scripts'][THIS_SCRIPT . "&page={$mybb->input['page']}"]) && !empty($asb['scripts'][THIS_SCRIPT . "&page={$mybb->input['page']}"]))
 		{
-			if(is_array($asb['scripts'][THIS_SCRIPT . "&page={$mybb->input['page']}"]) && !empty($asb['scripts'][THIS_SCRIPT . "&page={$mybb->input['page']}"]))
-			{
-				$return_array = $asb['scripts'][THIS_SCRIPT . "&page={$mybb->input['page']}"];
-			}
+			$return_array = $asb['scripts'][THIS_SCRIPT . "&page={$mybb->input['page']}"];
 		}
+	}
+	else
+	{
+		return;
 	}
 
 	// merge any globally visible (script-wise) side boxes with this script
 	$return_array['template_vars'] = array_merge((array) $asb['scripts']['global']['template_vars'], (array) $return_array['template_vars']);
+	$return_array['extra_scripts'] = (array) $asb['scripts']['global']['extra_scripts'] + (array) $return_array['extra_scripts'];
+
+	if($get_all)
+	{
+		$return_array['sideboxes'][0] = (array) $asb['scripts']['global']['sideboxes'][0] + (array) $return_array['sideboxes'][0];
+		$return_array['sideboxes'][1] = (array) $asb['scripts']['global']['sideboxes'][1] + (array) $return_array['sideboxes'][1];
+		$return_array['templates'] = array_merge((array) $asb['scripts']['global']['templates'], (array) $return_array['templates']);
+	}
 	return $return_array;
 }
 

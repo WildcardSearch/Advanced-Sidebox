@@ -420,8 +420,16 @@ class Addon_type extends ExternalModule
 		{
 			new Ajax.Request
 				(
-					'inc/plugins/asb/xmlhttp.php?action=do_module&box_type={$this->base_name}&dateline=' + $('{$elem_id}').readAttribute('name'),
+					'inc/plugins/asb/xmlhttp.php',
 					{
+						parameters:
+						{
+							action: 'do_module',
+							box_type: '{$this->base_name}',
+							dateline: $('{$elem_id}').readAttribute('name'),
+							width_left: asb_width_left,
+							width_right: asb_width_right
+						},
 						onSuccess: function(response)
 						{
 							if(response.responseText && response.responseText != 'nochange')

@@ -40,11 +40,11 @@ if($mybb->input['action'] == 'do_module')
 			// send the correct width for the column where the side box is
 			if($sidebox->get('position'))
 			{
-				$width = (int) $mybb->settings['asb_width_right'];
+				$width = (int) $mybb->input['width_right'];
 			}
 			else
 			{
-				$width = (int) $mybb->settings['asb_width_left'];
+				$width = (int) $mybb->input['width_left'];
 			}
 
 			// then call the module's AJAX method and echo its return value

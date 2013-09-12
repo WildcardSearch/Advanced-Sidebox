@@ -170,7 +170,7 @@ EOF;
  */
 function asb_latest_threads_xmlhttp($args)
 {
-	foreach(array('settings', 'dateline') as $key)
+	foreach(array('settings', 'dateline', 'width') as $key)
 	{
 		$$key = $args[$key];
 	}
@@ -181,7 +181,7 @@ function asb_latest_threads_xmlhttp($args)
 
 	if($db->num_rows($query) > 0)
 	{
-		$all_threads = latest_threads_get_threadlist($settings);
+		$all_threads = latest_threads_get_threadlist($settings, $width);
 
 		if($all_threads)
 		{

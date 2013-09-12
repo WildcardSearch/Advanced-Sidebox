@@ -30,20 +30,10 @@ function asb_start()
 	}
 
 	$asb = asb_get_cache();
-	$filename = asb_build_script_filename();
-
-	// merge any globally visible (script-wise) side boxes with this script
-	if(is_array($asb['scripts']['global']) && !empty($asb['scripts']['global']))
-	{
-		$asb['scripts'][$filename]['sideboxes'][0] = (array) $asb['scripts']['global']['sideboxes'][0] + (array) $asb['scripts'][$filename]['sideboxes'][0];
-		$asb['scripts'][$filename]['sideboxes'][1] = (array) $asb['scripts']['global']['sideboxes'][1] + (array) $asb['scripts'][$filename]['sideboxes'][1];
-		$asb['scripts'][$filename]['template_vars'] = array_merge((array) $asb['scripts']['global']['template_vars'], (array) $asb['scripts'][$filename]['template_vars']);
-		$asb['scripts'][$filename]['templates'] = array_merge((array) $asb['scripts']['global']['templates'], (array) $asb['scripts'][$filename]['templates']);
-		$asb['scripts'][$filename]['extra_scripts'] .= $asb['scripts']['global']['extra_scripts'];
-	}
+	$this_script = asb_get_this_script($asb, true);
 
 	// no boxes, get out
-	if(!empty($asb['scripts'][$filename]['sideboxes'][0]) || !empty($asb['scripts'][$filename]['sideboxes'][1]))
+	if(!empty($this_script['sideboxes'][0]) || !empty($this_script['sideboxes'][1]))
 	{
 		$width = $boxes = array
 			(
@@ -55,14 +45,14 @@ function asb_start()
 		// aren't made to work any smaller and tbh 800 is kind of arbitrary :s
 		foreach(array("left" => 0, "right" => 1) as $key => $pos)
 		{
-			$width[$pos] = (int) max("120", min("800", $asb['scripts'][$filename]["width_{$key}"]));
+			$width[$pos] = (int) max("120", min("800", $this_script["width_{$key}"]));
 		}
 
 		// functions for add-on modules
 		require_once MYBB_ROOT . 'inc/plugins/asb/functions_addon.php';
 
 		// loop through all the boxes for the script
-		foreach($asb['scripts'][$filename]['sideboxes'] as $pos => $sideboxes)
+		foreach($this_script['sideboxes'] as $pos => $sideboxes)
 		{
 			// does this column have boxes?
 			if(is_array($sideboxes) && !empty($sideboxes))
@@ -138,7 +128,7 @@ function asb_start()
 		// load the template handler class definitions
 		require_once MYBB_ROOT . 'inc/plugins/asb/classes/template_handler.php';
 
-		$template_handler = new TemplateHandler($boxes[0], $boxes[1], $width[0], $width[1], $asb['scripts'][$filename]['extra_scripts'], $asb['scripts'][$filename]['template_vars']);
+		$template_handler = new TemplateHandler($boxes[0], $boxes[1], $width[0], $width[1], $this_script['extra_scripts'], $this_script['template_vars']);
 
 		// edit the templates (or eval() if any scripts require it)
 		$template_handler->make_edits();
@@ -154,27 +144,19 @@ function asb_initialize()
 
 	// get the cache
 	$asb = asb_get_cache();
-	$filename = asb_build_script_filename();
-
-	// merge in the global script side boxes (if any)
-	if(is_array($asb['scripts']['global']) && !empty($asb['scripts']['global']))
-	{
-		$asb['scripts'][$filename]['sideboxes'][0] = (array) $asb['scripts']['global']['sideboxes'][0] + (array) $asb['scripts'][$filename]['sideboxes'][0];
-		$asb['scripts'][$filename]['sideboxes'][1] = (array) $asb['scripts']['global']['sideboxes'][1] + (array) $asb['scripts'][$filename]['sideboxes'][1];
-		$asb['scripts'][$filename]['templates'] = array_merge((array) $asb['scripts']['global']['templates'], (array) $asb['scripts'][$filename]['templates']);
-	}
+	$this_script = asb_get_this_script($asb, true);
 
 	// anything to show for this script?
-	if(is_array($asb['scripts'][$filename]['sideboxes']) && !empty($asb['scripts'][$filename]['sideboxes']))
+	if(is_array($this_script['sideboxes']) && !empty($this_script['sideboxes']))
 	{
 		// then add the hook . . . one priority lower than Page Manager ;-) we need to run first
-		$plugins->add_hook($asb['scripts'][$filename]['hook'], 'asb_start', 9);
+		$plugins->add_hook($this_script['hook'], 'asb_start', 9);
 
 		// cache any script-specific templates (read: templates used by add-ons used in the script)
 		$template_list = '';
-		if(is_array($asb['scripts'][$filename]['templates']) && !empty($asb['scripts'][$filename]['templates']))
+		if(is_array($this_script['templates']) && !empty($this_script['templates']))
 		{
-			$template_list = ',' . implode(',', $asb['scripts'][$filename]['templates']);
+			$template_list = ',' . implode(',', $this_script['templates']);
 		}
 
 		// add the extra templates (if any) to our base stack

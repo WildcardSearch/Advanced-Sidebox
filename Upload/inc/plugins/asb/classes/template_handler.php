@@ -107,7 +107,7 @@ class TemplateHandler
 					$close_style = '';
 					$open_style = 'display: none; ';
 				}
-				
+
 				// produce the link
 				$open_image = $toggle_info[$key]['open']['img'];
 				$close_image = $toggle_info[$key]['close']['img'];
@@ -116,7 +116,7 @@ class TemplateHandler
 				$column_id = "asb_hide_column_{$key}";
 				$closed_id = "asb_{$key}_close";
 				$open_id = "asb_{$key}_open";
-				
+
 				eval("\$toggles[\$key] = \"" . $templates->get('asb_toggle_icon') . "\";");
 			}
 		}
@@ -141,7 +141,7 @@ class TemplateHandler
 				$toggle_left = $toggle_right = '';
 				$toggle_name = "toggle_{$key}";
 				$$toggle_name = $toggles[$key];
-				
+
 				// finally set $this->POSITION_content for ::make_edits()
 				$this->$prop_name = <<<EOF
 
@@ -207,17 +207,20 @@ EOF;
 			$headerinclude .= '<script type="text/javascript" src="jscripts/asb.js"></script>';
 		}
 
-		if($this->extra_scripts)
+		if(is_array($this->extra_scripts) && !empty($this->extra_scripts))
 		{
+			$extra_scripts = "\n" . implode("\n", $this->extra_scripts);
 			$headerinclude .= <<<EOF
 <script type="text/javascript">
+var asb_width_left = {$this->width_left};
+var asb_width_right = {$this->width_right};
 Event.observe
 (
 	window,
 	'load',
 	function()
 	{
-{$this->extra_scripts}
+{$extra_scripts}
 	}
 );
 </script>
