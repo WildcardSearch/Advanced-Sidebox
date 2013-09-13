@@ -176,7 +176,7 @@ EOF;
  */
 function asb_rand_quote_xmlhttp($args)
 {
-	foreach(array('settings', 'dateline') as $key)
+	foreach(array('settings', 'dateline', 'width') as $key)
 	{
 		$$key = $args[$key];
 	}
