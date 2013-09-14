@@ -209,20 +209,22 @@ EOF;
 
 		if(is_array($this->extra_scripts) && !empty($this->extra_scripts))
 		{
-			$extra_scripts = "\n" . implode("\n", $this->extra_scripts);
+			$sep = '';
+			foreach($this->extra_scripts as $addon => $info)
+			{
+				// build the JS objects to pass to the custom object builder
+				$extra_scripts .= <<<EOF
+{$sep}{ addon: '{$addon}', id: {$info['id']}, position: {$info['position']}, rate: {$info['rate']} }
+EOF;
+				$sep = ", ";
+			}
 			$headerinclude .= <<<EOF
+
+<script type="text/javascript" src="jscripts/asb_xmlhttp.js"></script>
 <script type="text/javascript">
-var asb_width_left = {$this->width_left};
-var asb_width_right = {$this->width_right};
-Event.observe
-(
-	window,
-	'load',
-	function()
-	{
-{$extra_scripts}
-	}
-);
+<!--
+	Event.observe(window, 'load', function() { asb_build_updaters([ {$extra_scripts} ], {$this->width_left}, {$this->width_right}); } );
+// -->
 </script>
 EOF;
 		}
@@ -271,27 +273,6 @@ EOF;
 
 					if($find_bottom_pos !== false)
 					{
-						$breakdown = array
-							(
-								"full_length" => strlen($templates->cache[$this->template_name]),
-								"page_length" => strlen($templates->cache[$this->template_name]) - $find_bottom_pos,
-								"find_top" => $this->find_top,
-								"find_top_pos" => $find_top_pos,
-								"find_bottom," => $this->find_bottom,
-								"find_bottom_pos" => $find_bottom_pos,
-								"FIRST" => substr($templates->cache[$this->template_name], 0, $find_top_pos + strlen($this->find_top)),
-								"SECOND" => $this->insert_top,
-								"THIRD" => substr($templates->cache[$this->template_name], $find_top_pos + strlen($this->find_top), $find_bottom_pos - ($find_top_pos + strlen($this->find_top))),
-								"FOURTH" => $this->insert_bottom,
-								"FIFTH" => substr($templates->cache[$this->template_name], $find_bottom_pos)
-							);
-
-						//$debug = true;
-						if($debug)
-						{
-							die(var_dump($breakdown));
-						}
-
 						/*
 						 * split the template in 3 parts and splice our columns in after 1 and before 3
 						 * it is important that we function this way so we can work with the

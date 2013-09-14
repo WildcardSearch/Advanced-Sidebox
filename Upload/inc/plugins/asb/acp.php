@@ -169,7 +169,9 @@ EOF;
 	// set up the page header
 	$page->extra_header .= <<<EOF
 <script type="text/javascript">
+		<!--
 			columns = ['left_column', 'right_column', 'trash_column'];
+		// -->
 		</script>
 		<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
 		<script src="../jscripts/scriptaculous.js?load=effects,dragdrop,controls" type="text/javascript"></script>
@@ -217,7 +219,7 @@ EOF;
 		</table>
 	</div>
 	<script type="text/javascript">
-		// <![CDATA[
+	<!--
 		build_sortable('left_column');
 		build_sortable('right_column');
 		build_sortable('trash_column');
@@ -246,8 +248,8 @@ EOF;
 		);
 
 {$module_script}
-		// ]]>
-	 </script>
+	// -->
+	</script>
 EOF;
 	// and display it
 	echo($markup);
@@ -958,7 +960,9 @@ function asb_admin_custom_boxes()
 	<link type="text/css" href="./jscripts/codepress/languages/codepress-mybb.css" rel="stylesheet" id="cp-lang-style"/>
 	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
 	<script type="text/javascript">
-		CodePress.language='mybb';
+	<!--
+		CodePress.language = 'mybb';
+	// -->
 	</script>'
 EOF;
 		}
@@ -1028,6 +1032,7 @@ EOF;
 		{
 			echo <<<EOF
 		<script type="text/javascript">
+		<!--
 			Event.observe
 			(
 				'edit_box',
@@ -1043,6 +1048,7 @@ EOF;
 					}
 				}
 			);
+		// -->
 		</script>
 EOF;
 
@@ -1306,7 +1312,9 @@ function asb_admin_manage_scripts()
 	<link type="text/css" href="./jscripts/codepress/languages/codepress-mybb.css" rel="stylesheet" id="cp-lang-style"/>
 	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
 	<script type="text/javascript">
-		CodePress.language='mybb';
+	<!--
+		CodePress.language = 'mybb';
+	// -->
 	</script>'
 EOF;
 		}
@@ -1314,7 +1322,9 @@ EOF;
 		$page->extra_header .= <<<EOF
 	<script type="text/javascript" src="./jscripts/peeker.js"></script>
 	<script type="text/javascript">
+	<!--
 		var edit_script = '{$filename}';
+	// -->
 	</script>
 	<script type="text/javascript" src="jscripts/asb_scripts.js"></script>
 EOF;
@@ -1365,6 +1375,7 @@ EOF;
 		{
 			echo <<<EOF
 		<script type="text/javascript">
+		<!--
 			Event.observe
 			(
 				'edit_script',
@@ -1410,6 +1421,7 @@ EOF;
 					}
 				}
 			);
+		// -->
 		</script>
 EOF;
 		}

@@ -147,8 +147,10 @@ function asb_build_cache(&$asb)
 							// again, default here is off if anything goes wrong
 							if($settings['xmlhttp_on']['value'])
 							{
-								// if all is good build and add the PeriodicalExecuter
-								$asb['scripts'][$filename]['extra_scripts'][$module] = $addons[$module]->get_xmlhttp_script($settings['xmlhttp_on']['value'], $module . '_main_' . $id);
+								// if all is good add the script building info
+								$asb['scripts'][$filename]['extra_scripts'][$module]['position'] = $pos;
+								$asb['scripts'][$filename]['extra_scripts'][$module]['id'] = $id;
+								$asb['scripts'][$filename]['extra_scripts'][$module]['rate'] = $settings['xmlhttp_on']['value'];
 							}
 						}
 					}

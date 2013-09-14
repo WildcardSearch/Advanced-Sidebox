@@ -165,10 +165,15 @@ function asb_initialize()
 	}
 
 	// hooks for the User CP routine.
-	if(THIS_SCRIPT == 'usercp.php')
+	switch(THIS_SCRIPT)
 	{
-		$plugins->add_hook("usercp_options_end", "asb_usercp_options_end");
-		$plugins->add_hook("usercp_do_options_end", "asb_usercp_options_end");
+		case 'usercp.php':
+			$plugins->add_hook("usercp_options_end", "asb_usercp_options_end");
+			$plugins->add_hook("usercp_do_options_end", "asb_usercp_options_end");
+			break;
+		case 'xmlhttp.php':
+			$plugins->add_hook("xmlhttp", "asb_xmlhttp");
+			break;
 	}
 }
 
@@ -219,6 +224,35 @@ EOF;
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="showredirect"
 EOF;
     $templates->cache['usercp_options'] = str_replace($find, $usercp_option, $templates->cache['usercp_options']);
+}
+
+/*
+ * asb_xmlhttp()
+ *
+ * handle the AJAX refresh for side box modules (replacing asb/xmlhttp.php)
+ */
+function asb_xmlhttp()
+{
+	global $mybb;
+
+	if($mybb->input['action'] == 'asb')
+	{
+		// get the ASB core stuff
+		require_once MYBB_ROOT . 'inc/plugins/asb/functions_addon.php';
+		require_once MYBB_ROOT . 'inc/plugins/asb/classes/xmlhttp.php';
+
+		// attempt to load the module and side box requested
+		$module = new Addon_type($mybb->input['addon']);
+		$sidebox = new Sidebox($mybb->input['id']);
+
+		// we need both objects to continue
+		if($module instanceof Addon_type && $module->is_valid() && $sidebox instanceof Sidebox && $sidebox->is_valid())
+		{
+			// then call the module's AJAX method and echo its return value
+			echo($module->do_xmlhttp($mybb->input['dateline'], $sidebox->get('settings'), $mybb->input['width']));
+		}
+		exit;
+	}
 }
 
 ?>
