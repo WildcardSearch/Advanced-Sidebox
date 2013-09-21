@@ -87,7 +87,6 @@ div.draggable {
 	font-weight: bold;
 	padding: 5px;
 	text-shadow: 3px 3px 3px #285326;
-	z-index: 1;
 }
 
 .column {
@@ -172,7 +171,6 @@ div.draggable {
 	position: absolute;
 	top: 1.5em;
 	left: -235px;
-	z-index: 99;
 	margin-left: 0;
 	width: 235px;
 }
@@ -183,6 +181,7 @@ div.draggable {
 
 .custom {
 	padding: 0.5em 0.8em 0.8em 2em;
+	z-index: 99;
 }
 
 * html a:hover {
