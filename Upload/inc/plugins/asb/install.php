@@ -26,25 +26,28 @@ function asb_info()
 		$lang->load('asb');
 	}
 
-	if(file_exists(MYBB_ROOT . 'inc/plugins/adv_sidebox.php'))
-	{
-		$remove_link = <<<EOF
-
-	<li>
-		<span style="color: red;">{$lang->asb_remove_old_files_desc}</span><br /><a href="{$mybb->settings['bburl']}/inc/plugins/asb/cleanup.php" title="{$lang->asb_remove_old_files}">{$lang->asb_remove_old_files}</a>
-	</li>
-EOF;
-	}
-	
 	$settings_link = asb_build_settings_link();
 	if($settings_link)
 	{
+		if(file_exists(MYBB_ROOT . 'inc/plugins/adv_sidebox/acp_functions.php'))
+		{
+			$remove_link = <<<EOF
+
+		<li>
+			<span style="color: red;">{$lang->asb_remove_old_files_desc}</span><br /><a href="{$mybb->settings['bburl']}/inc/plugins/asb/cleanup.php" title="{$lang->asb_remove_old_files}">{$lang->asb_remove_old_files}</a>
+		</li>
+EOF;
+		}
+
+		$settings_link = <<<EOF
+	<li style=\"list-style-image: url(styles/default/images/icons/custom.gif)>
+		{$settings_link}
+	</li>
+EOF;
 		$url = ASB_URL;
 		$extra_links = <<<EOF
 <ul>
-	<li>
-		{$settings_link}
-	</li>
+	{$settings_link}
 	<li>
 		<a href="{$url}" title="{$lang->asb_manage_sideboxes}">{$lang->asb_manage_sideboxes}</a>
 	</li>{$remove_link}
@@ -133,6 +136,8 @@ function asb_install()
 	$installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
 	$installer->install();
 	asb_create_script_info();
+
+	@unlink(MYBB_ROOT . 'inc/plugins/adv_sidebox.php');
 }
 
 /*
