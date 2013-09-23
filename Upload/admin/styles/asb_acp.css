@@ -95,18 +95,18 @@ div.draggable {
 }
 
 .column.hover {
-	background: #f4f4f4 url(../../inc/plugins/adv_sidebox/images/column_bg.png);
+	background: #f4f4f4 url(../../inc/plugins/asb/images/column_bg.png);
 	border: 3px dashed #333;
 }
 
 .trashcan {
 	width: 99%;
-	background: #f4f4f4 url(../../inc/plugins/adv_sidebox/images/trashcan_bg.png) no-repeat center;
+	background: #f4f4f4 url(../../inc/plugins/asb/images/trashcan_bg.png) no-repeat center;
 	min-height: 80px;
 }
 
 .forum_column {
-	background: #f4f4f4 url(../../inc/plugins/adv_sidebox/images/column_bg.png);
+	background: #f4f4f4 url(../../inc/plugins/asb/images/column_bg.png);
 	width: 225px;
 	min-height: 300px;
 }
