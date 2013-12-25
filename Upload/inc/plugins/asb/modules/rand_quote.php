@@ -33,24 +33,42 @@ function asb_rand_quote_info()
 		"description" => $lang->asb_random_quotes_desc,
 		"wrap_content" => true,
 		"xmlhttp" => true,
-		"version" => "1.4.3",
+		"version" => "1.5",
 		"settings" => array
 		(
-			"forum_id" => array
+			"forum_show_list" => array
 			(
 				"sid" => "NULL",
-				"name" => "forum_id",
-				"title" => $lang->asb_random_quotes_forums_title,
-				"description" => $lang->asb_random_quotes_forums_desc,
+				"name" => "forum_show_list",
+				"title" => $lang->asb_forum_show_list_title,
+				"description" => $lang->asb_forum_show_list_desc,
 				"optionscode" => "text",
 				"value" => ''
 			),
-			"thread_id" => array
+			"forum_hide_list" => array
 			(
 				"sid" => "NULL",
-				"name" => "thread_id",
-				"title" => $lang->asb_thread_id_title,
-				"description" => $lang->asb_thread_id_desc,
+				"name" => "forum_hide_list",
+				"title" => $lang->asb_forum_hide_list_title,
+				"description" => $lang->asb_forum_hide_list_desc,
+				"optionscode" => "text",
+				"value" => ''
+			),
+			"thread_show_list" => array
+			(
+				"sid" => "NULL",
+				"name" => "thread_show_list",
+				"title" => $lang->asb_thread_show_list_title,
+				"description" => $lang->asb_thread_show_list_desc,
+				"optionscode" => "text",
+				"value" => ''
+			),
+			"thread_hide_list" => array
+			(
+				"sid" => "NULL",
+				"name" => "thread_hide_list",
+				"title" => $lang->asb_thread_hide_list_title,
+				"description" => $lang->asb_thread_hide_list_desc,
 				"optionscode" => "text",
 				"value" => ''
 			),
@@ -207,27 +225,21 @@ function asb_rand_quote_get_quote($settings, $width)
 		$lang->load('asb_addon');
 	}
 
-	// build the where statement
-	$where = array();
-	if((int) $settings['thread_id']['value'] > 0)
-	{
-		$where['view_only'] = "tid IN ({$settings['thread_id']['value']})";
-	}
-	else if((int) $settings['forum_id']['value'] > 0)
-	{
-		$where['view_only'] = "fid IN ({$settings['forum_id']['value']})";
-	}
 	// get forums user cannot view
 	$unviewable = get_unviewable_forums(true);
 	if($unviewable)
 	{
-		$where['unview'] = "fid NOT IN ($unviewable)";
+		$unviewwhere = " AND p.fid NOT IN ({$unviewable})";
 	}
-	$where = implode(' AND ', $where);
-	if(strlen($where) == 0)
-	{
-		$where = '1=1';
-	}
+
+	// build the exclude conditions
+	$show['fids'] = asb_build_id_list($settings['forum_show_list']['value'], 'p.fid');
+	$show['tids'] = asb_build_id_list($settings['thread_show_list']['value'], 'p.tid');
+	$hide['fids'] = asb_build_id_list($settings['forum_hide_list']['value'], 'p.fid');
+	$hide['tids'] = asb_build_id_list($settings['thread_hide_list']['value'], 'p.tid');
+	$where['show'] = asb_build_SQL_where($show, ' OR ');
+	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
+	$query_where = $unviewwhere . asb_build_SQL_where($where, ' AND ', ' AND ');
 
 	// get a random post
 	$query_string = 
@@ -239,7 +251,7 @@ FROM " .
 LEFT JOIN " .
 	TABLE_PREFIX . "users u ON (u.uid=p.uid)
 WHERE 
-	{$where}
+	p.visible='1'{$query_where}
 ORDER BY
 	RAND()
 LIMIT 1;";
