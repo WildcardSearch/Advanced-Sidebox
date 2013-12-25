@@ -26,7 +26,7 @@ function asb_recent_posts_info()
 	(
 		"title" => $lang->asb_recent_posts,
 		"description" => $lang->asb_recent_posts_desc,
-		"version" => "1.3",
+		"version" => "1.3.1",
 		"wrap_content" => true,
 		"xmlhttp" => true,
 		"settings" => array
@@ -349,7 +349,7 @@ function recent_posts_get_postlist($settings)
 			// we just need the text and smilies (we'll parse them after we check length)
 			$parser_options = array("allow_smilies" => 1);
 			$pattern = "|[[\/\!]*?[^\[\]]*?]|si";
-			$post_excerpt = str_replace('<br />', '', asb_strip_url(preg_replace($pattern, '$1', $post['message'])));
+			$post_excerpt = strip_tags(str_replace('<br />', '', asb_strip_url(preg_replace($pattern, '$1', $post['message']))));
 			
 			if(strlen($post_excerpt) > $settings['max_length']['value'])
 			{
