@@ -107,6 +107,16 @@ $settings = array
 				"value"					=> '1',
 				"disporder"			=> '30'
 			),
+			"asb_allow_user_disable" => array
+			(
+				"sid"						=> "NULL",
+				"name"					=> "asb_allow_user_disable",
+				"title"					=> $lang->asb_allow_user_disable,
+				"description"			=> '',
+				"optionscode"		=> "yesno",
+				"value"					=> '1',
+				"disporder"			=> '40'
+			),
 			"asb_exclude_theme" => array
 			(
 				"sid"						=> "NULL",
@@ -115,7 +125,7 @@ $settings = array
 				"description"			=> $db->escape_string($lang->asb_theme_exclude_list_description . $update_themes_link),
 				"optionscode"		=> $db->escape_string(asb_build_theme_exclude_select()),
 				"value"					=> '',
-				"disporder"			=> '40'
+				"disporder"			=> '50'
 			)
 		)
 	)

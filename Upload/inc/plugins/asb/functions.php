@@ -28,7 +28,7 @@ function asb_do_checks()
 	 * if the current user is not a guest and has disabled the side
 	 * box display in UCP then do not display the side boxes
 	 */
-	if($mybb->user['uid'] != 0 && $mybb->user['show_sidebox'] == 0)
+	if($mybb->settings['asb_allow_user_disable'] && $mybb->user['uid'] != 0 && $mybb->user['show_sidebox'] == 0)
 	{
 		return false;
 	}

@@ -26,6 +26,7 @@ $l['asb_settingsgroup_description'] = "control where and how the sideboxes displ
 $l['asb_show_empty_boxes'] = "Show Sideboxes With No Content?";
 $l['asb_show_toggle_icons'] = "Show Column Visibility Toggle Icons?";
 $l['asb_show_expanders'] = "Show Expand/Collapse Icons?";
+$l['asb_allow_user_disable'] = "Allow Users To Disable Side Boxes?";
 $l['asb_show_empty_boxes_desc'] = "select YES to show the box (with custom explanation text) or NO to hide any side boxes that doesn't have proper content";
 
 $l['asb_width_left'] = "Left Width";
