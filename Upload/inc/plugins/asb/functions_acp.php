@@ -623,7 +623,7 @@ function asb_build_filter_selector($filter)
 	global $lang, $html, $all_scripts;
 
 	// if there are active scripts . . .
-	if(is_array($asb->all_scripts))
+	if(is_array($all_scripts))
 	{
 		$options = array_merge(array("" => 'no filter'), $all_scripts);
 		$form = new Form($html->url(), 'post', 'script_filter', 0, 'script_filter');

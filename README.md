@@ -1,4 +1,6 @@
-## Advanced-Sidebox 2.0.1
+## Advanced-Sidebox 2.0.2 stable
+
+USE THIS REPO TO GET THE LATEST BUG FIXES BEFORE THEY ARE OFFICIALLY RELEASED
 
 <p align="center">
   <img title="Advanced Sidebox Logo" alt="Advanced Sidebox Logo" src="https://github.com/WildcardSearch/Advanced-Sidebox/wiki/asb_logo_320.png" />
