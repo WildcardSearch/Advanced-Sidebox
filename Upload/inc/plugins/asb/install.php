@@ -149,6 +149,22 @@ function asb_activate()
 {
 	// get the last cached version
 	require_once MYBB_ROOT . 'inc/plugins/asb/functions_install.php';
+
+	// if we just upgraded . . .
+	$old_version = asb_get_cache_version();
+	$info = asb_info();
+	if(version_compare($old_version, $info['version'], '<'))
+	{
+		global $lang;
+		if(!$lang->asb)
+		{
+			$lang->load('asb');
+		}
+
+		require_once MYBB_ROOT . 'inc/plugins/asb/classes/installer.php';
+		$installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
+		$installer->install();
+	}
 	asb_set_cache_version();
 
 	// change the permissions to on by default

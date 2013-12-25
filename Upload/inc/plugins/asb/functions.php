@@ -337,30 +337,39 @@ function asb_build_sidebox_content($this_box)
 	// if we are building header and expander . . .
 	if($wrap_content)
 	{
-		global $templates, $theme, $collapsed;
-
-		// check if this side box is either expanded or collapsed and hide it as necessary.
-		$expdisplay = '';
-		$collapsed_name = "{$box_type}_{$id}_c";
-		if(isset($collapsed[$collapsed_name]) && $collapsed[$collapsed_name] == "display: show;")
-		{
-			$expcolimage = "collapse_collapsed.gif";
-			$expdisplay = "display: none;";
-			$expaltext = "[+]";
-		}
-		else
-		{
-			$expcolimage = "collapse.gif";
-			$expaltext = "[-]";
-		}
+		global $mybb, $templates, $theme, $collapsed;
 
 		// element info
+		$sidebox['expcolimage_id'] = "{$box_type}_{$id}_img";
+		$sidebox['expdisplay_id'] = "{$box_type}_{$id}_e";
 		$sidebox['name'] = "{$id}_{$box_type}_" . TIME_NOW;
 		$sidebox['class'] = $sidebox['id'] = "{$box_type}_main_{$id}";
-		$sidebox['expcolimage_id'] = "{$box_type}_{$id}_img";
 		$sidebox['title'] = $title;
-		$sidebox['expdisplay_id'] = "{$box_type}_{$id}_e";
 		$sidebox['content'] = $content;
+
+		if($mybb->settings['asb_show_expanders'])
+		{
+			// check if this side box is either expanded or collapsed and hide it as necessary.
+			$expdisplay = '';
+			$collapsed_name = "{$box_type}_{$id}_c";
+			if(isset($collapsed[$collapsed_name]) && $collapsed[$collapsed_name] == "display: show;")
+			{
+				$expcolimage = "collapse_collapsed.gif";
+				$expdisplay = "display: none;";
+				$expaltext = "[+]";
+			}
+			else
+			{
+				$expcolimage = "collapse.gif";
+				$expaltext = "[-]";
+			}
+			$expander = <<<EOF
+
+						<div class="expcolimage">
+							<img src="{$theme['imgdir']}/{$expcolimage}" id="{$sidebox['expcolimage_id']}" class="expander" alt="{$expaltext}" title="{$expaltext}"/>
+						</div>
+EOF;
+		}
 		eval("\$content = \"" . $templates->get('asb_wrapped_sidebox') . "\";");
 	}
 
