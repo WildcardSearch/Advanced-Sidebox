@@ -26,19 +26,55 @@ function asb_latest_threads_info()
 	(
 		"title" => $lang->asb_latest_threads,
 		"description" => $lang->asb_latest_threads_desc,
-		"version" => "1.0.5",
+		"version" => "1.1",
 		"wrap_content" => true,
 		"xmlhttp" => true,
 		"settings" => array
 		(
-			"latest_threads_max" => array
+			"max_threads" => array
 			(
 				"sid" => "NULL",
-				"name" => "latest_threads_max",
+				"name" => "max_threads",
 				"title" => $lang->asb_max_threads_title,
 				"description" => $lang->asb_max_threads_desc,
 				"optionscode" => "text",
 				"value" => '20'
+			),
+			"forum_show_list" => array
+			(
+				"sid" => "NULL",
+				"name" => "forum_show_list",
+				"title" => $lang->asb_forum_show_list_title,
+				"description" => $lang->asb_forum_show_list_desc,
+				"optionscode" => "text",
+				"value" => ''
+			),
+			"forum_hide_list" => array
+			(
+				"sid" => "NULL",
+				"name" => "forum_hide_list",
+				"title" => $lang->asb_forum_hide_list_title,
+				"description" => $lang->asb_forum_hide_list_desc,
+				"optionscode" => "text",
+				"value" => ''
+			),
+			"thread_show_list" => array
+			(
+				"sid" => "NULL",
+				"name" => "thread_show_list",
+				"title" => $lang->asb_thread_show_list_title,
+				"description" => $lang->asb_thread_show_list_desc,
+				"optionscode" => "text",
+				"value" => ''
+			),
+			"thread_hide_list" => array
+			(
+				"sid" => "NULL",
+				"name" => "thread_hide_list",
+				"title" => $lang->asb_thread_hide_list_title,
+				"description" => $lang->asb_thread_hide_list_desc,
+				"optionscode" => "text",
+				"value" => ''
 			),
 			"last_poster_avatar" => array
 			(
@@ -206,15 +242,6 @@ function latest_threads_get_threadlist($settings, $width)
 		$lang->load('asb_addon');
 	}
 
-	// get forums user cannot view
-	$unviewable = get_unviewable_forums(true);
-	if($unviewable)
-	{
-		$unviewwhere = " AND fid NOT IN ({$unviewable})";
-	}
-
-	$threads = array();
-
 	if($mybb->user['uid'] == 0)
 	{
 		$query = $db->query
@@ -264,6 +291,22 @@ function latest_threads_get_threadlist($settings, $width)
 	require_once MYBB_ROOT."inc/class_parser.php";
 	$parser = new postParser;
 
+	// get forums user cannot view
+	$unviewable = get_unviewable_forums(true);
+	if($unviewable)
+	{
+		$unviewwhere = " AND t.fid NOT IN ({$unviewable})";
+	}
+
+	// build the exclude conditions
+	$show['fids'] = asb_build_id_list($settings['forum_show_list']['value'], 't.fid');
+	$show['tids'] = asb_build_id_list($settings['thread_show_list']['value'], 't.tid');
+	$hide['fids'] = asb_build_id_list($settings['forum_hide_list']['value'], 't.fid');
+	$hide['tids'] = asb_build_id_list($settings['thread_hide_list']['value'], 't.tid');
+	$where['show'] = asb_build_SQL_where($show, ' OR ');
+	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
+	$query_where = $unviewwhere . asb_build_SQL_where($where, ' AND ', ' AND ');
+
 	$altbg = alt_trow();
 	$maxtitlelen = 48;
 	$threadlist = '';
@@ -279,11 +322,11 @@ function latest_threads_get_threadlist($settings, $width)
 		LEFT JOIN " .
 			TABLE_PREFIX . "users u ON (u.uid=t.lastposteruid)
 		WHERE
-			t.visible='1' AND t.closed NOT LIKE 'moved|%'{$unviewwhere}
+			t.visible='1' AND t.closed NOT LIKE 'moved|%'{$query_where}
 		ORDER BY
 			t.lastpost DESC
 		LIMIT
-			0, " . (int) $settings['latest_threads_max']['value']
+			0, " . (int) $settings['max_threads']['value']
 	);
 
 	if($db->num_rows($query) > 0)

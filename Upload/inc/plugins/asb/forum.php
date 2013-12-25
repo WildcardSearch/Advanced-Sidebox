@@ -140,7 +140,7 @@ function asb_start()
  */
 function asb_initialize()
 {
-	global $plugins;
+	global $mybb, $plugins;
 
 	// get the cache
 	$asb = asb_get_cache();
@@ -168,8 +168,11 @@ function asb_initialize()
 	switch(THIS_SCRIPT)
 	{
 		case 'usercp.php':
-			$plugins->add_hook("usercp_options_end", "asb_usercp_options_end");
-			$plugins->add_hook("usercp_do_options_end", "asb_usercp_options_end");
+			if($mybb->settings['asb_allow_user_disable'])
+			{
+				$plugins->add_hook("usercp_options_end", "asb_usercp_options_end");
+				$plugins->add_hook("usercp_do_options_end", "asb_usercp_options_end");
+			}
 			break;
 		case 'xmlhttp.php':
 			$plugins->add_hook("xmlhttp", "asb_xmlhttp");

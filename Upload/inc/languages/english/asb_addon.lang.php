@@ -13,6 +13,18 @@ $l['asb_addon'] = "Add-on";
 $l['asb_xmlhttp_on_title'] = "AJAX Update?";
 $l['asb_xmlhttp_on_description'] = "time (in seconds) between updates (0 to disable AJAX)";
 
+$l['asb_forum_show_list_title'] = 'Forum Show List';
+$l['asb_forum_show_list_desc'] = '(optional) add a forum id or a comma-separated list of fids to be draws threads from [can be amended by Thread Show List and Thread Hide List]';
+
+$l['asb_forum_hide_list_title'] = 'Forum Hide List';
+$l['asb_forum_hide_list_desc'] = '(optional) add a forum id or a comma-separated list of fids to be <strong>excluded/hidden</strong> [can be amended by Thread Show List and Thread Hide List]';
+
+$l['asb_thread_show_list_title'] = 'Thread Show List';
+$l['asb_thread_show_list_desc'] = '(optional) add a thread id or a comma-separated list of tids to draw posts from [If Forum Show List or Forum Hide List are in use, this settings will not override, but can amend]';
+
+$l['asb_thread_hide_list_title'] = 'Thread Hide List';
+$l['asb_thread_hide_list_desc'] = '(optional) add a thread id or a comma-separated list of tids to be <strong>excluded/hidden</strong> [If Forum Show List or Forum Hide List are in use, this settings <strong>will override and amend</strong>]';
+
 // examples
 $l['asb_example1_title'] = "[Example 1] Simplest Box";
 $l['asb_example1_desc'] = "As simple as it gets. This box illustrates the easiest way to create an add-on module";

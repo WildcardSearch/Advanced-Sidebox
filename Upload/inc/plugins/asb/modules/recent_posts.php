@@ -26,7 +26,7 @@ function asb_recent_posts_info()
 	(
 		"title" => $lang->asb_recent_posts,
 		"description" => $lang->asb_recent_posts_desc,
-		"version" => "1.2.2",
+		"version" => "1.3.1",
 		"wrap_content" => true,
 		"xmlhttp" => true,
 		"settings" => array
@@ -48,6 +48,42 @@ function asb_recent_posts_info()
 				"description" => $lang->asb_recent_posts_max_length_description,
 				"optionscode" => "text",
 				"value" => '20'
+			),
+			"forum_show_list" => array
+			(
+				"sid" => "NULL",
+				"name" => "forum_show_list",
+				"title" => $lang->asb_forum_show_list_title,
+				"description" => $lang->asb_forum_show_list_desc,
+				"optionscode" => "text",
+				"value" => ''
+			),
+			"forum_hide_list" => array
+			(
+				"sid" => "NULL",
+				"name" => "forum_hide_list",
+				"title" => $lang->asb_forum_hide_list_title,
+				"description" => $lang->asb_forum_hide_list_desc,
+				"optionscode" => "text",
+				"value" => ''
+			),
+			"thread_show_list" => array
+			(
+				"sid" => "NULL",
+				"name" => "thread_show_list",
+				"title" => $lang->asb_thread_show_list_title,
+				"description" => $lang->asb_thread_show_list_desc,
+				"optionscode" => "text",
+				"value" => ''
+			),
+			"thread_hide_list" => array
+			(
+				"sid" => "NULL",
+				"name" => "thread_hide_list",
+				"title" => $lang->asb_thread_hide_list_title,
+				"description" => $lang->asb_thread_hide_list_desc,
+				"optionscode" => "text",
+				"value" => ''
 			),
 			"xmlhttp_on" => array
 			(
@@ -172,22 +208,17 @@ function recent_posts_get_postlist($settings)
 	$unviewable = get_unviewable_forums(true);
 	if($unviewable)
 	{
-		$unviewwhere = "AND p.fid NOT IN ($unviewable)";
+		$unviewwhere = " AND p.fid NOT IN ($unviewable)";
 	}
 
-	// Build a post parser
-	require_once MYBB_ROOT."inc/class_parser.php";
-	$parser = new postParser;
-
-	$parser_options = array(
-		'allow_html' => 1,
-		'allow_mycode' => 1,
-		'allow_imgcode' => 1,
-		'allow_smilies' => 0,
-		'allow_videocode' => 1,
-		'filter_badwords' => 1,
-		'me_username' => $user['username']
-	);
+	// build the exclude conditions
+	$show['fids'] = asb_build_id_list($settings['forum_show_list']['value'], 'p.fid');
+	$show['tids'] = asb_build_id_list($settings['thread_show_list']['value'], 'p.tid');
+	$hide['fids'] = asb_build_id_list($settings['forum_hide_list']['value'], 'p.fid');
+	$hide['tids'] = asb_build_id_list($settings['thread_hide_list']['value'], 'p.tid');
+	$where['show'] = asb_build_SQL_where($show, ' OR ');
+	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
+	$query_where = $unviewwhere . asb_build_SQL_where($where, ' AND ', ' AND ');
 
 	$altbg = alt_trow();
 	$maxtitlelen = 48;
@@ -204,7 +235,7 @@ function recent_posts_get_postlist($settings)
 		LEFT JOIN
 			" . TABLE_PREFIX . "users u ON (u.uid=p.uid)
 		WHERE
-			1=1 {$unviewwhere} AND p.visible='1'
+			p.visible='1'{$query_where}
 		ORDER BY
 			p.dateline DESC
 		LIMIT
@@ -213,6 +244,20 @@ function recent_posts_get_postlist($settings)
 
 	if($db->num_rows($query) > 0)
 	{
+		// Build a post parser
+		require_once MYBB_ROOT."inc/class_parser.php";
+		$parser = new postParser;
+
+		$parser_options = array(
+			'allow_html' => 1,
+			'allow_mycode' => 1,
+			'allow_imgcode' => 1,
+			'allow_smilies' => 0,
+			'allow_videocode' => 1,
+			'filter_badwords' => 1,
+			'me_username' => $user['username']
+		);
+
 		$post_cache = array();
 
 		while($post = $db->fetch_array($query))
@@ -304,7 +349,7 @@ function recent_posts_get_postlist($settings)
 			// we just need the text and smilies (we'll parse them after we check length)
 			$parser_options = array("allow_smilies" => 1);
 			$pattern = "|[[\/\!]*?[^\[\]]*?]|si";
-			$post_excerpt = str_replace('<br />', '', asb_strip_url(preg_replace($pattern, '$1', $post['message'])));
+			$post_excerpt = strip_tags(str_replace('<br />', '', asb_strip_url(preg_replace($pattern, '$1', $post['message']))));
 			
 			if(strlen($post_excerpt) > $settings['max_length']['value'])
 			{

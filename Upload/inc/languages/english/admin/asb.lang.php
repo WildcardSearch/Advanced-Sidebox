@@ -23,16 +23,10 @@ $l['asb_remove_old_files_desc'] = "Components of an older version were found!";
 // settings and descriptions
 $l['asb_plugin_settings'] = "Plugin Settings";
 $l['asb_settingsgroup_description'] = "control where and how the sideboxes display";
-$l['asb_show_on_index'] = "Show On Index";
-$l['asb_show_on_forumdisplay'] = "Show On Forum Display";
-$l['asb_show_on_threaddisplay'] = "Show On Thread Display";
-$l['asb_show_on_member'] = "Show On Member Profiles";
-$l['asb_show_on_memberlist'] = "Show On The Member List";
-$l['asb_show_on_showteam'] = "Show On The Forum Team Page";
-$l['asb_show_on_stats'] = "Show On Statistics Page";
-$l['asb_show_on_portal'] = "Replace Portal Boxes";
 $l['asb_show_empty_boxes'] = "Show Sideboxes With No Content?";
 $l['asb_show_toggle_icons'] = "Show Column Visibility Toggle Icons?";
+$l['asb_show_expanders'] = "Show Expand/Collapse Icons?";
+$l['asb_allow_user_disable'] = "Allow Users To Disable Side Boxes?";
 $l['asb_show_empty_boxes_desc'] = "select YES to show the box (with custom explanation text) or NO to hide any side boxes that doesn't have proper content";
 
 $l['asb_width_left'] = "Left Width";

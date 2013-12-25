@@ -707,11 +707,11 @@ EOF;
 
 	if($do_settings)
 	{
+		echo "</div>\n<div id=\"tab_settings\">\n";
 		if($mybb->input['ajax'] == 1)
 		{
-			$settings_style = " style=\"max-height: 400px; overflow: auto;\"";
+			echo "<div style=\"max-height: 400px; overflow: auto; clear: both;\">\n";
 		}
-		echo "</div><div id=\"tab_settings\"{$settings_style}>\n";
 
 		$form_container = new FormContainer($lang->asb_modal_tab_settings_desc);
 
@@ -733,6 +733,7 @@ EOF;
 			}
 		}
 		$form_container->end();
+		echo "</div>\n";
 	}
 
 	// AJAX gets a little different wrap-up

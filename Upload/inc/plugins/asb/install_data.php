@@ -97,6 +97,26 @@ $settings = array
 				"value"					=> '0',
 				"disporder"			=> '20'
 			),
+			"asb_show_expanders" => array
+			(
+				"sid"						=> "NULL",
+				"name"					=> "asb_show_expanders",
+				"title"					=> $lang->asb_show_expanders,
+				"description"			=> '',
+				"optionscode"		=> "yesno",
+				"value"					=> '1',
+				"disporder"			=> '30'
+			),
+			"asb_allow_user_disable" => array
+			(
+				"sid"						=> "NULL",
+				"name"					=> "asb_allow_user_disable",
+				"title"					=> $lang->asb_allow_user_disable,
+				"description"			=> '',
+				"optionscode"		=> "yesno",
+				"value"					=> '1',
+				"disporder"			=> '40'
+			),
 			"asb_exclude_theme" => array
 			(
 				"sid"						=> "NULL",
@@ -105,7 +125,7 @@ $settings = array
 				"description"			=> $db->escape_string($lang->asb_theme_exclude_list_description . $update_themes_link),
 				"optionscode"		=> $db->escape_string(asb_build_theme_exclude_select()),
 				"value"					=> '',
-				"disporder"			=> '30'
+				"disporder"			=> '50'
 			)
 		)
 	)
@@ -138,10 +158,7 @@ EOF
 		<table name="{\$sidebox['name']}" id="{\$sidebox['id']}" style="table-layout: fixed; word-wrap: break-word;" border="0" cellspacing="{\$theme['borderwidth']}" cellpadding="{\$theme['tablespace']}" class="tborder {\$sidebox['class']}">
 			<thead>
 				<tr>
-					<td class="thead">
-						<div class="expcolimage">
-							<img src="{\$theme['imgdir']}/{\$expcolimage}" id="{\$sidebox['expcolimage_id']}" class="expander" alt="{\$expaltext}" title="{\$expaltext}"/>
-						</div>
+					<td class="thead">{\$expander}
 						<strong>{\$sidebox['title']}</strong>
 					</td>
 				</tr>
