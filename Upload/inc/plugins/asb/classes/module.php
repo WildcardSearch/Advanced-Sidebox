@@ -150,6 +150,7 @@ class Addon_type extends ExternalModule
 		// input is necessary
 		if($module && parent::load($module))
 		{
+			$this->has_settings = !empty($this->settings);
 			$this->old_version = $this->get_cache_version();
 
 			// if this module needs to be upgraded . . .
@@ -161,11 +162,8 @@ class Addon_type extends ExternalModule
 			else
 			{
 				// otherwise mark upgrade status
-				$this->is_installed = true;
-				$this->is_upgraded = true;
+				$this->is_upgraded = $this->is_installed = true;
 			}
-
-			$this->has_settings = !empty($this->settings);
 			return true;
 		}
 		return false;
@@ -227,32 +225,29 @@ class Addon_type extends ExternalModule
 		global $db;
 
 		// installed?
-		if($this->is_installed)
+		if(!$this->is_installed)
 		{
-			$this->unset_cache_version();
+			return true;
+		}
 
-			// if there are templates . . .
-			if(is_array($this->templates))
+		$this->unset_cache_version();
+
+		// if there are templates . . .
+		if(is_array($this->templates))
+		{
+			// remove them all
+			foreach($this->templates as $template)
 			{
-				// remove them all
-				foreach($this->templates as $template)
-				{
-					$status = $db->delete_query('templates', "title='{$template['title']}'");
-				}
+				$db->delete_query('templates', "title='{$template['title']}'");
+			}
 
-				if(!$status)
-				{
-					$error = true;
-				}
-
-				// unless specifically asked not to, delete any boxes that use this module
-				if($cleanup)
-				{
-					$this->remove_children();
-				}
+			// unless specifically asked not to, delete any boxes that use this module
+			if($cleanup)
+			{
+				$this->remove_children();
 			}
 		}
-		return $error;
+		return true;
 	}
 
 	/*
@@ -266,53 +261,35 @@ class Addon_type extends ExternalModule
 		global $db;
 
 		// don't waste time if everything is in order
-		if(!$this->is_upgraded)
+		if($this->is_upgraded)
 		{
-			$this->unset_cache_version();
-
-			// if there are settings left over from a previous installation . . .
-			if(is_array($this->discarded_settings))
-			{
-				// delete them all
-				foreach($this->discarded_settings as $setting)
-				{
-					$status = $db->delete_query('settings', "name='{$setting}'");
-				}
-
-				if(!$status)
-				{
-					$error = true;
-				}
-			}
-
-			// if any templates were dropped in this version
-			if(is_array($this->discarded_templates))
-			{
-				// delete them
-				foreach($this->discarded_templates as $template)
-				{
-					$status = $db->delete_query('templates', "title='{$template}'");
-
-					if(!$status)
-					{
-						$error = true;
-					}
-				}
-			}
-
-			/*
-			 * install the updated module
-			 *
-			 * $cleanup = false directs the install method not to uninstall the module as normal
-			 */
-			$this->install(false);
-
-			// update the version cache and the upgrade is complete
-			$this->is_upgraded = $this->set_cache_version();
-			$this->is_installed = true;
-
-			return $error;
+			return;
 		}
+
+		// if any templates were dropped in this version
+		if(is_array($this->discarded_templates))
+		{
+			// delete them
+			foreach($this->discarded_templates as $template)
+			{
+				$db->delete_query('templates', "title='{$template}'");
+			}
+		}
+
+		/*
+		 * install the updated module
+		 *
+		 * $cleanup = false directs the install method not to uninstall the module as normal
+		 */
+		$this->install(false);
+		if($this->has_settings)
+		{
+			$this->update_children();
+		}
+
+		// update the version cache and the upgrade is complete
+		$this->is_upgraded = $this->set_cache_version();
+		$this->is_installed = true;
 	}
 
 	/*
@@ -344,6 +321,73 @@ class Addon_type extends ExternalModule
 		// delete all boxes of this type in use
 		$module = $db->escape_string(strtolower($this->base_name));
 		$db->delete_query('asb_sideboxes', "LOWER(box_type)='{$module}'");
+	}
+
+	/*
+	 * update_children()
+	 *
+	 * update settings for side boxes of this type
+	 */
+	protected function update_children()
+	{
+		global $db;
+
+		// get all boxes of this type in use
+		$module = $db->escape_string(strtolower($this->base_name));
+		$query = $db->simple_select('asb_sideboxes', '*', "LOWER(box_type)='{$module}'");
+		if($db->num_rows($query) == 0)
+		{
+			// this module has no children so we are done
+			return;
+		}
+
+		// loop through all the children
+		while($data = $db->fetch_array($query))
+		{
+			// create a new Sidebox object from the data
+			$sidebox = new Sidebox($data);
+
+			if(!$sidebox->is_valid())
+			{
+				// something went wrong and this box has no ID
+				// if we continue, we'll be creating a side box when we save
+				// so . . . don't ;)
+				continue;
+			}
+
+			// retrieve the settings
+			$sidebox_settings = $sidebox->get('settings');
+
+			// unset any removed settings
+			foreach($sidebox_settings as $name => $setting)
+			{
+				if(!isset($this->settings[$name]))
+				{
+					unset($sidebox_settings[$name]);
+				}
+			}
+
+			// update all the settings
+			foreach($this->settings as $name => $setting)
+			{
+				if(!isset($sidebox_settings[$name]))
+				{
+					// new setting-- default value
+					$sidebox_settings[$name] = $this->settings[$name];
+				}
+				else
+				{
+					// existing setting-- preserve value
+					$value = $sidebox_settings[$name]['value'];
+					$sidebox_settings[$name] = $setting;
+					$sidebox_settings[$name]['value'] = $value;
+				}
+			}
+
+			// save the side box
+			$sidebox->set('settings', $sidebox_settings);
+			$sidebox->save();
+		}
 	}
 
 	/*
@@ -397,56 +441,6 @@ class Addon_type extends ExternalModule
 		}
 		$cache->update('asb', $asb);
 		return true;
-	}
-
-	/*
-	 * get_xmlhttp_script()
-	 *
-	 * @param - (int) $rate
-						the AJAX refresh rate in seconds
-	 * @param - (string) $elem_id
-						the HTML ID for the side box's main table
-	 */
-	public function get_xmlhttp_script($rate, $elem_id)
-	{
-		// valid info?
-		if($this->xmlhttp && $rate)
-		{
-			// build a periodical executer with the supplied refresh rate; on each execution launch an Ajax Request and if anything besides 'nochange' is returned then replace the contents of this side box with the returned HTML and update the HTML name property of the side box's main table to indicate the time of the last update
-			return <<<EOF
-	new PeriodicalExecuter
-	(
-		function(pe)
-		{
-			new Ajax.Request
-				(
-					'inc/plugins/asb/xmlhttp.php',
-					{
-						parameters:
-						{
-							action: 'do_module',
-							box_type: '{$this->base_name}',
-							dateline: $('{$elem_id}').readAttribute('name'),
-							width_left: asb_width_left,
-							width_right: asb_width_right
-						},
-						onSuccess: function(response)
-						{
-							if(response.responseText && response.responseText != 'nochange')
-							{
-								$('{$elem_id}').down('tbody').innerHTML = response.responseText;
-								var table_elem_id = $('{$elem_id}').id;
-								var table_info_array = table_elem_id.split("_");
-								var table_id = table_info_array[table_info_array.length - 1];
-								$('{$elem_id}').setAttribute('name', table_id +  '_{$this->base_name}_' + Math.floor((new Date).getTime()/1000));
-							}
-						}
-					}
-				);
-		}, {$rate}
-	);
-EOF;
-		}
 	}
 
 	/*
