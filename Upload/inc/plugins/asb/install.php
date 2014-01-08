@@ -26,6 +26,7 @@ function asb_info()
 		$lang->load('asb');
 	}
 
+	$extra_links = "<br />";
 	$settings_link = asb_build_settings_link();
 	if($settings_link)
 	{
@@ -40,7 +41,7 @@ EOF;
 		}
 
 		$settings_link = <<<EOF
-	<li style=\"list-style-image: url(styles/default/images/icons/custom.gif)>
+	<li style="list-style-image: url(styles/default/images/icons/custom.gif)">
 		{$settings_link}
 	</li>
 EOF;
@@ -56,10 +57,6 @@ EOF;
 	</li>
 </ul>
 EOF;
-	}
-	else
-	{
-		$extra_links = "<br />";
 	}
 
 	$button_pic = $mybb->settings['bburl'] . '/inc/plugins/asb/images/donate.gif';
@@ -100,7 +97,7 @@ EOF;
 		"website"				=> "https://github.com/WildcardSearch/Advanced-Sidebox",
 		"author"				=> $author,
 		"authorsite"			=> "http://www.rantcentralforums.com",
-		"version"				=> "2.0.1",
+		"version"				=> "2.0.2",
 		"compatibility" 		=> "16*",
 		"guid" 					=> "870e9163e2ae9b606a789d9f7d4d2462",
 	);

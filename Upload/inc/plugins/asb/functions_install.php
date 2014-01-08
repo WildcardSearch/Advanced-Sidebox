@@ -151,11 +151,10 @@ function asb_build_theme_exclude_select()
 {
 	global $db;
 
-	// Theme exclude list select box
-	// Get all the themes that are not MasterStyles
+	// get all the themes that are not MasterStyles
 	$query = $db->simple_select("themes", "tid, name", "NOT pid='0'");
 
-	// Create a theme counter so our box is tidy
+	// create a theme counter so our box is tidy
 	$theme_count = 0;
 
 	if($db->num_rows($query) > 0)

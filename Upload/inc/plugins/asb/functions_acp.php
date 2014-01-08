@@ -278,12 +278,12 @@ function asb_build_permissions_table($id)
 		global $db, $lang, $all_scripts;
 
 		$sidebox = new Sidebox($id);
-		
+
 		if(!$sidebox->is_valid())
 		{
 			return;
 		}
-		
+
 		// prepare options for which groups
 		$options = array('Guests');
 		$groups = array();
@@ -469,7 +469,7 @@ EOF;
 /*
  * asb_cache_has_changed()
  *
- *
+ * set the flag so the cache is rebuilt new run
  */
 function asb_cache_has_changed()
 {
@@ -573,40 +573,38 @@ function asb_detect_script_info($filename)
  */
 function asb_legacy_custom_import($tree)
 {
-	if(is_array($tree['adv_sidebox']['custom_sidebox']) && !empty($tree['adv_sidebox']['custom_sidebox']))
+	global $lang;
+
+	if(!is_array($tree['adv_sidebox']['custom_sidebox']) || empty($tree['adv_sidebox']['custom_sidebox']))
 	{
-		global $lang;
+		return $lang->asb_custom_import_file_corrupted;
+	}
 
-		foreach($tree['adv_sidebox']['custom_sidebox'] as $property => $value)
+	foreach($tree['adv_sidebox']['custom_sidebox'] as $property => $value)
+	{
+		if($property == 'tag' || $property == 'value')
 		{
-			if($property == 'tag' || $property == 'value')
-			{
-				continue;
-			}
-			$input_array[$property] = $value['value'];
+			continue;
 		}
+		$input_array[$property] = $value['value'];
+	}
 
-		if($input_array['content'] && $input_array['checksum'] && my_strtolower(md5(base64_decode($input_array['content']))) == my_strtolower($input_array['checksum']))
-		{
-			$input_array['content'] = trim(base64_decode($input_array['content']));
-			$input_array['title'] = $input_array['name'];
-			return $input_array;
-		}
-		else
-		{
-			if($input_array['content'])
-			{
-				$error = $lang->asb_custom_import_file_corrupted;
-			}
-			else
-			{
-				$error = $lang->asb_custom_import_file_empty;
-			}
-		}
+	if($input_array['content'] && $input_array['checksum'] && my_strtolower(md5(base64_decode($input_array['content']))) == my_strtolower($input_array['checksum']))
+	{
+		$input_array['content'] = trim(base64_decode($input_array['content']));
+		$input_array['title'] = $input_array['name'];
+		return $input_array;
 	}
 	else
 	{
-		$error = $lang->asb_custom_import_file_corrupted;
+		if($input_array['content'])
+		{
+			$error = $lang->asb_custom_import_file_corrupted;
+		}
+		else
+		{
+			$error = $lang->asb_custom_import_file_empty;
+		}
 	}
 	return $error;
 }
@@ -620,17 +618,20 @@ function asb_legacy_custom_import($tree)
  */
 function asb_build_filter_selector($filter)
 {
-	global $lang, $html, $all_scripts;
+	global $all_scripts;
 
 	// if there are active scripts . . .
-	if(is_array($asb->all_scripts))
+	if(!is_array($all_scripts) || empty($all_scripts))
 	{
-		$options = array_merge(array("" => 'no filter'), $all_scripts);
-		$form = new Form($html->url(), 'post', 'script_filter', 0, 'script_filter');
-		echo($form->generate_select_box('page', $options, $filter));
-		echo($form->generate_submit_button('Filter', array('name' => 'filter')));
-		return $form->end();
+		return;
 	}
+
+	global $lang, $html;
+	$options = array_merge(array("" => 'no filter'), $all_scripts);
+	$form = new Form($html->url(), 'post', 'script_filter', 0, 'script_filter');
+	echo($form->generate_select_box('page', $options, $filter));
+	echo($form->generate_submit_button('Filter', array('name' => 'filter')));
+	return $form->end();
 }
 
 /*

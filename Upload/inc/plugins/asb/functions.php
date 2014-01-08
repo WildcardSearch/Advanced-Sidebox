@@ -76,6 +76,10 @@ function asb_build_cache(&$asb)
 	// fresh start
 	$asb['custom'] = $asb['sideboxes'] = $asb['scripts'] = $asb['all_scripts'] = array();
 
+	// update the run time and changed flag before we even start
+	$asb['last_run'] = TIME_NOW;
+	$asb['has_changed'] = false;
+
 	// all the general side box related objects
 	require_once MYBB_ROOT . 'inc/plugins/asb/classes/forum.php';
 
@@ -83,94 +87,94 @@ function asb_build_cache(&$asb)
 	$all_scripts = asb_get_all_scripts();
 
 	// no scripts, no work to do
-	if(is_array($all_scripts) && !empty($all_scripts))
+	if(!is_array($all_scripts) || empty($all_scripts))
 	{
-		// store the script definitions and a master list
-		foreach($all_scripts as $filename => $script)
+		return;
+	}
+
+	// store the script definitions and a master list
+	foreach($all_scripts as $filename => $script)
+	{
+		$asb['scripts'][$filename] = $script;
+	}
+	$asb['all_scripts'] = array_keys($all_scripts);
+
+	// load all detected modules
+	$addons = asb_get_all_modules();
+
+	// get any custom boxes
+	$custom = asb_get_all_custom();
+
+	// get any sideboxes
+	$sideboxes = asb_get_all_sideboxes();
+
+	if(!is_array($sideboxes) || empty($sideboxes))
+	{
+		return;
+	}
+
+	foreach($sideboxes as $sidebox)
+	{
+		// build basic data
+		$scripts = $sidebox->get('scripts');
+		$id = (int) $sidebox->get('id');
+		$pos = $sidebox->get('position') ? 1 : 0;
+		$asb['sideboxes'][$id] = $sidebox->get('data');
+		$module = $sidebox->get('box_type');
+
+		// no scripts == all scripts
+		if(empty($scripts))
 		{
-			$asb['scripts'][$filename] = $script;
+			// add this side box to the 'global' set (to be merged with the current script when applicable)
+			$scripts = array('global');
 		}
-		$asb['all_scripts'] = array_keys($all_scripts);
 
-		// load all detected modules
-		$addons = asb_get_all_modules();
-
-		// get any custom boxes
-		$custom = asb_get_all_custom();
-
-		// get any sideboxes
-		$sideboxes = asb_get_all_sideboxes();
-
-		if(is_array($sideboxes) && !empty($sideboxes))
+		// for each script in which the side box is used, add a pointer and if it is a custom box, cache its contents
+		foreach($scripts as $filename)
 		{
-			foreach($sideboxes as $sidebox)
+			// side box from a module?
+			if(isset($addons[$module]) && $addons[$module] instanceof Addon_type)
 			{
-				// build basic data
-				$scripts = $sidebox->get('scripts');
-				$id = (int) $sidebox->get('id');
-				$pos = $sidebox->get('position') ? 1 : 0;
-				$asb['sideboxes'][$id] = $sidebox->get('data');
-				$module = $sidebox->get('box_type');
+				// store the module name and all the template vars used
+				$asb['scripts'][$filename]['sideboxes'][$pos][$id] = $module;
+				$asb['scripts'][$filename]['template_vars'][$id] = "{$module}_{$id}";
 
-				// no scripts == all scripts
-				if(empty($scripts))
+				// if there are any templates get their names so we can cache them
+				$templates = $addons[$module]->get('templates');
+				if(is_array($templates) && !empty($templates))
 				{
-					// add this side box to the 'global' set (to be merged with the current script when applicable)
-					$scripts = array('global');
+					foreach($templates as $template)
+					{
+						$asb['scripts'][$filename]['templates'][] = $template['title'];
+					}
 				}
 
-				// for each script in which the side box is used, add a pointer and if it is a custom box, cache its contents
-				foreach($scripts as $filename)
+				// AJAX?
+				if($addons[$module]->xmlhttp && $sidebox->has_settings)
 				{
-					// side box from a module?
-					if(isset($addons[$module]) && $addons[$module] instanceof Addon_type)
+					$settings = $sidebox->get('settings');
+
+					// again, default here is off if anything goes wrong
+					if($settings['xmlhttp_on']['value'])
 					{
-						// store the module name and all the template vars used
-						$asb['scripts'][$filename]['sideboxes'][$pos][$id] = $module;
-						$asb['scripts'][$filename]['template_vars'][$id] = "{$module}_{$id}";
-
-						// if there are any templates get their names so we can cache them
-						$templates = $addons[$module]->get('templates');
-						if(is_array($templates) && !empty($templates))
-						{
-							foreach($templates as $template)
-							{
-								$asb['scripts'][$filename]['templates'][] = $template['title'];
-							}
-						}
-
-						// AJAX?
-						if($addons[$module]->xmlhttp && $sidebox->has_settings)
-						{
-							$settings = $sidebox->get('settings');
-
-							// again, default here is off if anything goes wrong
-							if($settings['xmlhttp_on']['value'])
-							{
-								// if all is good add the script building info
-								$asb['scripts'][$filename]['extra_scripts'][$module]['position'] = $pos;
-								$asb['scripts'][$filename]['extra_scripts'][$module]['id'] = $id;
-								$asb['scripts'][$filename]['extra_scripts'][$module]['rate'] = $settings['xmlhttp_on']['value'];
-							}
-						}
-					}
-					// side box from a custom box?
-					else if(isset($custom[$module]) && $custom[$module] instanceof Custom_type)
-					{
-						// store the pointer
-						$asb['scripts'][$filename]['sideboxes'][$pos][$id] = $module;
-
-						// and cache the contents
-						$asb['custom'][$module] = $custom[$module]->get('data');
+						// if all is good add the script building info
+						$asb['scripts'][$filename]['extra_scripts'][$module]['position'] = $pos;
+						$asb['scripts'][$filename]['extra_scripts'][$module]['id'] = $id;
+						$asb['scripts'][$filename]['extra_scripts'][$module]['rate'] = $settings['xmlhttp_on']['value'];
 					}
 				}
 			}
+			// side box from a custom box?
+			else if(isset($custom[$module]) && $custom[$module] instanceof Custom_type)
+			{
+				// store the pointer
+				$asb['scripts'][$filename]['sideboxes'][$pos][$id] = $module;
+
+				// and cache the contents
+				$asb['custom'][$module] = $custom[$module]->get('data');
+			}
 		}
 	}
-
-	// update the run time and changed flag before finishing
-	$asb['last_run'] = TIME_NOW;
-	$asb['has_changed'] = false;
 }
 
 /*
@@ -190,26 +194,28 @@ function asb_build_script_filename($this_script = '')
 	{
 		global $mybb;
 		$this_script = array
-			(
-				"filename" => THIS_SCRIPT,
-				"action" => $mybb->input['action'],
-				"page" => $mybb->input['page']
-			);
+		(
+			"filename" => THIS_SCRIPT,
+			"action" => $mybb->input['action'],
+			"page" => $mybb->input['page']
+		);
 	}
 
 	// if there is something to work with . . .
-	if(trim($this_script['filename']))
+	if(!trim($this_script['filename']))
 	{
-		// build each piece
-		$filename = trim($this_script['filename']);
-		if(trim($this_script['action']))
-		{
-			$filename .= '&action=' . trim($this_script['action']);
-		}
-		if(trim($this_script['page']))
-		{
-			$filename .= '&page=' . trim($this_script['page']);
-		}
+		return;
+	}
+
+	// build each piece
+	$filename = trim($this_script['filename']);
+	if(trim($this_script['action']))
+	{
+		$filename .= '&action=' . trim($this_script['action']);
+	}
+	if(trim($this_script['page']))
+	{
+		$filename .= '&page=' . trim($this_script['page']);
 	}
 	return $filename;
 }
@@ -377,10 +383,12 @@ EOF;
 	if($content)
 	{
 		// give it up
-		return '
-		<!-- start side box #' . $id . ' - box type ' . $box_type . ' -->
-		' . $content . '
-		<!-- end side box #' . $id . ' - box type ' . $box_type . ' -->';
+		return <<<EOF
+
+		<!-- start side box #{$id} - box type {$box_type} -->
+		{$content}
+		<!-- end side box #{$id} - box type {$box_type} -->
+EOF;
 	}
 
 	// otherwise return failure

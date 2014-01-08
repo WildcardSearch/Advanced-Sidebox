@@ -279,8 +279,8 @@ $l['asb_custom_import_file_error'] = 'Error: {1}';
 $l['asb_custom_import_file_upload_error'] = 'There was a problem with the file upload.';
 $l['asb_custom_import_file_empty'] = 'This file contains no usable information. It may be corrupted.';
 $l['asb_custom_import_file_corrupted'] = 'This file may be corrupted.';
-$l['asb_custom_import_save_fail'] = 'Could not save the imported info in the database.';
 $l['asb_custom_import_save_success'] = 'The box was successfully imported';
+$l['asb_custom_import_fail_generic'] = 'Content import unsuccessful';
 $l['asb_custom_export_error'] = 'An error occurred when attempting to export this sidebox: side box does not exist';
 $l['asb_custom_del_warning'] = 'Delete this custom box permanently?\n\nThis cannot be undone!';
 
