@@ -362,7 +362,10 @@ function asb_admin_edit_box()
 		else
 		{
 			// did this box come from a custom static box?
-			$test = new Custom_type($module);
+			$variable_array = explode('_', $module);
+			$custom_id = $variable_array[count($variable_array) - 1];
+
+			$test = new Custom_type($custom_id);
 			if($test->is_valid())
 			{
 				// then use its wrap_content property
