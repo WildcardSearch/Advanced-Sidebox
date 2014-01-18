@@ -273,7 +273,7 @@ function asb_admin_edit_box()
 	if($mybb->request_method == 'post')
 	{
 		// start with a new box
-		$this_sidebox = new Sidebox();
+		$sidebox = new Sidebox();
 
 		// position
 		$pos_key = 'box_position';
@@ -284,7 +284,7 @@ function asb_admin_edit_box()
 			$pos_key = 'pos';
 		}
 		$position = (int) $mybb->input[$pos_key];
-		$this_sidebox->set('position', $position);
+		$sidebox->set('position', $position);
 
 		// display order
 		if(!isset($mybb->input['display_order']) || (int) $mybb->input['display_order'] == 0)
@@ -298,7 +298,7 @@ function asb_admin_edit_box()
 			// or back off if they entered a value
 			$display_order = (int) $mybb->input['display_order'];
 		}
-		$this_sidebox->set('display_order', $display_order);
+		$sidebox->set('display_order', $display_order);
 
 		// if we are handling an AJAX request
 		if($mybb->input['ajax'] == 1)
@@ -323,21 +323,21 @@ function asb_admin_edit_box()
 		}
 
 		// store them
-		$this_sidebox->set('scripts', $script_list);
-		$this_sidebox->set('groups', $group_list);
+		$sidebox->set('scripts', $script_list);
+		$sidebox->set('groups', $group_list);
 
 		// box type
 		$module = trim($mybb->input['addon']);
-		$this_sidebox->set('box_type', $module);
+		$sidebox->set('box_type', $module);
 
 		// id
-		$this_sidebox->set('id', $mybb->input['id']);
+		$sidebox->set('id', $mybb->input['id']);
 
 		// is this side box created by an add-on module?
 		$test = new Addon_type($module);
 		if($test->is_valid())
 		{
-			$this_sidebox->set('wrap_content', $test->get('wrap_content'));
+			$sidebox->set('wrap_content', $test->get('wrap_content'));
 			$addon_settings = $test->get('settings');
 
 			// if the parent module has settings . . .
@@ -356,7 +356,7 @@ function asb_admin_edit_box()
 						$settings[$setting['name']] = $setting;
 					}
 				}
-				$this_sidebox->set('settings', $settings);
+				$sidebox->set('settings', $settings);
 			}
 		}
 		else
@@ -369,12 +369,12 @@ function asb_admin_edit_box()
 			if($test->is_valid())
 			{
 				// then use its wrap_content property
-				$this_sidebox->set('wrap_content', $test->get('wrap_content'));
+				$sidebox->set('wrap_content', $test->get('wrap_content'));
 			}
 			else
 			{
 				// otherwise wrap the box
-				$this_sidebox->set('wrap_content', true);
+				$sidebox->set('wrap_content', true);
 			}
 		}
 
@@ -382,7 +382,7 @@ function asb_admin_edit_box()
 		if(isset($mybb->input['box_title']) && $mybb->input['box_title'])
 		{
 			// use it
-			$this_sidebox->set('title', $mybb->input['box_title']);
+			$sidebox->set('title', $mybb->input['box_title']);
 		}
 		else
 		{
@@ -390,24 +390,24 @@ function asb_admin_edit_box()
 			if(isset($mybb->input['current_title']) && $mybb->input['current_title'])
 			{
 				// if it exists, use it
-				$this_sidebox->set('title', $mybb->input['current_title']);
+				$sidebox->set('title', $mybb->input['current_title']);
 			}
 			else
 			{
 				// otherwise use the default title
-				$this_sidebox->set('title', $box_types[$this_sidebox->get('box_type')]);
+				$sidebox->set('title', $box_types[$sidebox->get('box_type')]);
 			}
 		}
 
 		// save the side box
-		$status = $this_sidebox->save();
+		$status = $sidebox->save();
 		asb_cache_has_changed();
 
 		// AJAX?
 		if($mybb->input['ajax'] == 1)
 		{
 			// get some info
-			$id = (int) $this_sidebox->get('id');
+			$id = (int) $sidebox->get('id');
 			$column_id = 'left_column';
 			if($position)
 			{
@@ -419,7 +419,7 @@ function asb_admin_edit_box()
 			if((int) $mybb->input['id'] == 0)
 			{
 				// then escape the title
-				$box_title = addcslashes($this_sidebox->get('title'), "'");
+				$box_title = addcslashes($sidebox->get('title'), "'");
 
 				// and create the new <div> representation of the side box (title only it will be filled in later by the updater)
 				$build_script = <<<EOF
@@ -445,17 +445,79 @@ EOF;
 	}
 
 	// attempt to load the specified box
-	$this_sidebox = new Sidebox((int) $mybb->input['id']);
-	$box_id = (int) $this_sidebox->get('id');
+	$sidebox = new Sidebox((int) $mybb->input['id']);
+	$box_id = (int) $sidebox->get('id');
 	$module = $mybb->input['addon'];
 	$pos = (int) $mybb->input['pos'];
 	$is_custom = $is_module = false;
 	$custom_title = 0;
 
-	$page_title = $lang->asb_add_a_sidebox;
-	if($box_id)
+	$parent = new Addon_type($module);
+	if(!$parent->is_valid())
+	{
+		// did this box come from a custom static box?
+		$variable_array = explode('_', $module);
+		$custom_id = $variable_array[count($variable_array) - 1];
+
+		$parent = new Custom_type($custom_id);
+
+		if($parent->is_valid())
+		{
+			$is_custom = true;
+		}
+		else
+		{
+			flash_message('Bad module!');
+			admin_redirect($html());
+		}
+	}
+	else
+	{
+		$is_module = true;
+	}
+
+	// if $sidebox exists it will have a non-zero id property . . .
+	if($box_id == 0)
+	{
+		// if it doesn't then this is a new box, check the page view filter to try to predict which script the user will want
+		if(isset($mybb->input['page']) && $mybb->input['page'])
+		{
+			// start them out with the script they are viewing for Which Scripts
+			$selected_scripts[] = $mybb->input['page'];
+		}
+		else
+		{
+			// if page isn't set at all then just start out with all scripts
+			$selected_scripts = 'all_scripts';
+		}
+
+		$custom_title = 0;
+		$current_title = '';
+	}
+	else
 	{
 		$page_title = $lang->asb_edit_a_sidebox;
+
+		// . . . otherwise we are editing so pull the actual info from the side box
+		$selected_scripts = $sidebox->get('scripts');
+		if(empty($selected_scripts))
+		{
+			$selected_scripts = 'all_scripts';
+		}
+		elseif(isset($selected_scripts[0]) && strlen($selected_scripts[0]) == 0)
+		{
+			$script_warning = <<<EOF
+<span style="color: red;">{$lang->asb_all_scripts_deactivated}</span><br />
+EOF;
+		}
+
+		// check the name of the add-on/custom against the display name of the sidebox, if they differ . . .
+		if($sidebox->get('title') != $parent->get('title'))
+		{
+			// then this box has a custom title
+			$custom_title = 1;
+		}
+		$module = $sidebox->get('box_type');
 	}
 
 	// AJAX?
@@ -485,95 +547,6 @@ EOF;
 		$form = new Form($html->url(array("action" => 'edit_box', "id" => $box_id, "addon" => $module)), "post", "modal_form");
 	}
 
-	// if $this_sidebox exists it will have a non-zero id property . . .
-	if($box_id == 0)
-	{
-		// if it doesn't then this is a new box, check the page view filter to try to predict which script the user will want
-		if(isset($mybb->input['page']) && $mybb->input['page'])
-		{
-			// start them out with the script they are viewing for Which Scripts
-			$selected_scripts[] = $mybb->input['page'];
-		}
-		else
-		{
-			// if page isn't set at all then just start out with all scripts
-			$selected_scripts = 'all_scripts';
-		}
-
-		$custom_title = 0;
-		$current_title = '';
-
-		$test = new Addon_type($module);
-
-		if(!$test->is_valid())
-		{
-			$test = new Custom_type($module);
-
-			if($test->is_valid())
-			{
-				$is_custom = true;
-			}
-		}
-		else
-		{
-			$is_module = true;
-		}
-	}
-	else
-	{
-		// . . . otherwise we are editing so pull the actual info from the side box
-		$selected_scripts = $this_sidebox->get('scripts');
-		if(empty($selected_scripts))
-		{
-			$selected_scripts = 'all_scripts';
-		}
-		elseif(isset($selected_scripts[0]) && strlen($selected_scripts[0]) == 0)
-		{
-			$script_warning = <<<EOF
-<span style="color: red;">{$lang->asb_all_scripts_deactivated}</span><br />
-EOF;
-		}
-
-		$module = $this_sidebox->get('box_type');
-
-		$test = new Addon_type($module);
-
-		// is this side box from an add-on?
-		if($test->is_valid() == true)
-		{
-			$is_module = true;
-
-			// check the name of the add-on against the display name of the sidebox, if they differ . . .
-			if($this_sidebox->get('title') != $test->get('title'))
-			{
-				// then this box has a custom title
-				$custom_title = 1;
-			}
-		}
-		// is this side box from a custom static box?
-		else
-		{
-			$test = new Custom_type($module);
-
-			if($test->is_valid())
-			{
-				$is_custom = true;
-
-				// if so, then is the title different than the original?
-				if($this_sidebox->get('title') != $test->get('title'))
-				{
-					// custom title
-					$custom_title = 1;
-				}
-			}
-			else
-			{
-				// default title
-				$custom_title = 0;
-			}
-		}
-	}
-
 	$tabs = array
 	(
 		"general" => $lang->asb_modal_tab_general,
@@ -584,13 +557,10 @@ EOF;
 
 	// we only need a 'Settings' tab if the current module type has settings
 	$do_settings = true;
-	if(!$this_sidebox->has_settings)
+	if(!$sidebox->has_settings && !$parent->has_settings)
 	{
-		if($is_module && !$test->has_settings)
-		{
-			unset($tabs["settings"]);
-			$do_settings = false;
-		}
+		unset($tabs["settings"]);
+		$do_settings = false;
 	}
 	reset($tabs);
 
@@ -605,7 +575,7 @@ EOF;
 	if($custom_title == 1)
 	{
 		// alter the descrption
-		$current_title = '<br /><em>' . $lang->asb_current_title . '</em><br /><br /><strong>' . $this_sidebox->get('title') . '</strong><br />' . $lang->asb_current_title_info;
+		$current_title = '<br /><em>' . $lang->asb_current_title . '</em><br /><br /><strong>' . $sidebox->get('title') . '</strong><br />' . $lang->asb_current_title_info;
 	}
 	else
 	{
@@ -616,7 +586,7 @@ EOF;
 	// current editing text
 	if($is_module || $is_custom)
 	{
-		$currently_editing = '"' . $test->get('title') . '"';
+		$currently_editing = '"' . $parent->get('title') . '"';
 	}
 
 	$box_action = $lang->asb_creating;
@@ -634,19 +604,19 @@ EOF;
 		$form_container->output_row($lang->asb_custom_title, $current_title, $form->generate_text_box('box_title'), 'box_title', array("id" => 'box_title'));
 
 		// position
-		$form_container->output_row($lang->asb_position, '', $form->generate_radio_button('box_position', 0, $lang->asb_position_left, array("checked" => ($this_sidebox->get('position') == 0))) . '&nbsp;&nbsp;' . $form->generate_radio_button('box_position', 1, $lang->asb_position_right, array("checked" => ($this_sidebox->get('position') != 0))));
+		$form_container->output_row($lang->asb_position, '', $form->generate_radio_button('box_position', 0, $lang->asb_position_left, array("checked" => ($sidebox->get('position') == 0))) . '&nbsp;&nbsp;' . $form->generate_radio_button('box_position', 1, $lang->asb_position_right, array("checked" => ($sidebox->get('position') != 0))));
 
 		// display order
-		$form_container->output_row($lang->asb_display_order, '', $form->generate_text_box('display_order', $this_sidebox->get('display_order')));
+		$form_container->output_row($lang->asb_display_order, '', $form->generate_text_box('display_order', $sidebox->get('display_order')));
 	}
 	else
 	{
 		// box title
-		$form_container->output_row('', '', $form->generate_text_box('box_title') . '<br />' . $current_title . $form->generate_hidden_field('display_order', $this_sidebox->get('display_order')), 'box_title', array("id" => 'box_title'));
+		$form_container->output_row('', '', $form->generate_text_box('box_title') . '<br />' . $current_title . $form->generate_hidden_field('display_order', $sidebox->get('display_order')), 'box_title', array("id" => 'box_title'));
 	}
 
 	// hidden forms to pass info to post
-	$form_container->output_row('', '', $form->generate_hidden_field('current_title', $this_sidebox->get('title')) . $form->generate_hidden_field('pos', $pos));
+	$form_container->output_row('', '', $form->generate_hidden_field('current_title', $sidebox->get('title')) . $form->generate_hidden_field('pos', $pos));
 	$form_container->end();
 
 	echo "\n</div>\n<div id=\"tab_permissions\">\n";
@@ -667,7 +637,7 @@ EOF;
 	}
 
 	// do we have groups stored?
-	$groups = $this_sidebox->get('groups');
+	$groups = $sidebox->get('groups');
 	if(empty($groups))
 	{
 		$groups = 'all';
@@ -728,11 +698,11 @@ EOF;
 
 		if($box_id)
 		{
-			$sidebox_settings = $this_sidebox->get('settings');
+			$sidebox_settings = $sidebox->get('settings');
 		}
 		elseif($is_module)
 		{
-			$sidebox_settings = $test->get('settings');
+			$sidebox_settings = $parent->get('settings');
 		}
 
 		if(is_array($sidebox_settings))
