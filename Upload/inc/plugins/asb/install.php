@@ -97,7 +97,7 @@ EOF;
 		"website"				=> "https://github.com/WildcardSearch/Advanced-Sidebox",
 		"author"				=> $author,
 		"authorsite"			=> "http://www.rantcentralforums.com",
-		"version"				=> "2.0.2",
+		"version"				=> "2.0.3",
 		"compatibility" 		=> "16*",
 		"guid" 					=> "870e9163e2ae9b606a789d9f7d4d2462",
 	);
@@ -119,7 +119,7 @@ function asb_is_installed()
  */
 function asb_install()
 {
-	global $db, $mybb, $lang;
+	global $lang;
 
 	if(!$lang->asb)
 	{
@@ -128,8 +128,10 @@ function asb_install()
 
 	// settings tables, templates, groups and setting groups
 	require_once MYBB_ROOT . 'inc/plugins/asb/functions_install.php';
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/installer.php';
-
+	if(!class_exists('WildcardPluginInstaller'))
+	{
+		require_once MYBB_ROOT . 'inc/plugins/asb/classes/installer.php';
+	}
 	$installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
 	$installer->install();
 	asb_create_script_info();
@@ -158,8 +160,11 @@ function asb_activate()
 			$lang->load('asb');
 		}
 
-		require_once MYBB_ROOT . 'inc/plugins/asb/classes/installer.php';
-		$installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
+		if(!class_exists('WildcardPluginInstaller'))
+        {
+            require_once MYBB_ROOT . 'inc/plugins/asb/classes/installer.php';
+        }
+        $installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
 		$installer->install();
 	}
 	asb_set_cache_version();
@@ -202,8 +207,10 @@ function asb_uninstall()
 	}
 
 	require_once MYBB_ROOT . 'inc/plugins/asb/functions_install.php';
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/installer.php';
-
+	if(!class_exists('WildcardPluginInstaller'))
+	{
+		require_once MYBB_ROOT . 'inc/plugins/asb/classes/installer.php';
+	}
 	$installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
 	$installer->uninstall();
 
