@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * this is an example of the an Advanced Sidebox add-on using a simple text setting to control content
  */
@@ -13,6 +13,11 @@ if(!defined("IN_MYBB") || !defined("IN_ASB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+/*
+ * asb_example3_info()
+ *
+ * provide info to ASB about the addon
+ */
 function asb_example3_info()
 {
 	global $lang;
@@ -22,16 +27,13 @@ function asb_example3_info()
 		$lang->load('asb_addon');
 	}
 
-	return array
-	(
+	return array(
 		"title" => $lang->asb_example3_title,
 		"description" => $lang->asb_example3_desc,
-		"wrap_content"	=> true,
+		"wrap_content" => true,
 		"version" => "1",
-		"settings" =>	array
-		(
-			"example3_setting" => array
-			(
+		"settings" => array(
+			"example3_setting" => array(
 				"sid" => "NULL",
 				"name" => "example3_setting",
 				"title" => $lang->asb_example3_setting_anouncement_text,
@@ -43,12 +45,16 @@ function asb_example3_info()
 	);
 }
 
+/*
+ * asb_example3_build_template()
+ *
+ * handles display of children of this addon at page load
+ *
+ * @param - $args - (array) the specific information from the child box
+ */
 function asb_example3_build_template($args)
 {
-	foreach(array('settings', 'template_var') as $key)
-	{
-		$$key = $args[$key];
-	}
+	extract($args);
 
 	global $$template_var, $lang;
 

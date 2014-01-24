@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * this file contains the functions used in ACP and depends upon html_generator.php
  */
@@ -10,7 +10,7 @@
 /*
  * asb_build_help_link()
  *
- * produces a link to a particular page in the plug-in help system (with icon) specified by topic
+ * produces a link to a particular page in the plugin help system (with icon) specified by topic
  *
  * @param - $topic is the intended page's topic keyword
  */
@@ -24,21 +24,21 @@ function asb_build_help_link($topic = '')
 	}
 
 	$help_url = $html->url(array("topic" => $topic), "{$mybb->settings['bburl']}/inc/plugins/asb/help/index.php");
-	$help_link = $html->link($help_url, $lang->asb_help, array("style" => 'font-weight: bold;', "icon" => "{$mybb->settings['bburl']}/images/toplinks/help.gif", "title" => $lang->asb_help, "onclick" => "window.open('{$help_url}', 'mywindowtitle', 'width=840, height=520, scrollbars=yes'); return false;"), array("alt" => '?', "title" => $lang->asb_help, "style" => 'margin-bottom: -3px;'));
+	$help_link = $html->link($help_url, $lang->asb_help, array("style" => 'font-weight: bold;', "icon" => "{$mybb->settings['bburl']}/inc/plugins/asb/images/help.gif", "title" => $lang->asb_help, "onclick" => "window.open('{$help_url}', 'mywindowtitle', 'width=840, height=520, scrollbars=yes'); return false;"), array("alt" => '?', "title" => $lang->asb_help, "style" => 'margin-bottom: -3px;'));
 	return $help_link;
 }
 
 /*
  * asb_build_settings_menu_link()
  *
- * produces a link to the plug-in settings with icon
+ * produces a link to the plugin settings with icon
  */
 function asb_build_settings_menu_link()
 {
-	global $lang, $html;
+	global $mybb, $lang, $html;
 
 	$settings_url = asb_build_settings_url(asb_get_settingsgroup());
-	$settings_link = $html->link($settings_url, $lang->asb_plugin_settings, array("icon" => 'styles/default/images/icons/custom.gif', "style" => 'font-weight: bold;', "title" => $lang->asb_plugin_settings), array("alt" => 'S', "style" => 'margin-bottom: -3px;'));
+	$settings_link = $html->link($settings_url, $lang->asb_plugin_settings, array("icon" => "{$mybb->settings['bburl']}/inc/plugins/asb/images/settings.gif", "style" => 'font-weight: bold;', "title" => $lang->asb_plugin_settings), array("alt" => 'S', "style" => 'margin-bottom: -3px;'));
 	return $settings_link;
 }
 
@@ -172,44 +172,40 @@ function asb_output_tabs($current)
 	global $page, $lang, $mybb, $html;
 
 	// set up tabs
-	$sub_tabs['asb'] = array
-	(
+	$sub_tabs['asb'] = array(
 		'title' 				=> $lang->asb_manage_sideboxes,
 		'link' 					=> $html->url(),
 		'description' 		=> $lang->asb_manage_sideboxes_desc
 	);
-	$sub_tabs['asb_custom'] = array
-	(
+
+	$sub_tabs['asb_custom'] = array(
 		'title'					=> $lang->asb_custom_boxes,
 		'link'					=> $html->url(array("action" => 'custom_boxes')),
 		'description'		=> $lang->asb_custom_boxes_desc
 	);
+
 	if(in_array($current, array('asb_add_custom', 'asb_custom')))
 	{
-		$sub_tabs['asb_add_custom'] = array
-		(
+		$sub_tabs['asb_add_custom'] = array(
 			'title'					=> $lang->asb_add_custom,
 			'link'					=> $html->url(array("action" => 'custom_boxes', "mode" => 'edit')),
 			'description'		=> $lang->asb_add_custom_desc
 		);
 	}
-	$sub_tabs['asb_scripts'] = array
-	(
+	$sub_tabs['asb_scripts'] = array(
 		'title'					=> $lang->asb_manage_scripts,
 		'link'					=> $html->url(array("action" => 'manage_scripts')),
 		'description'		=> $lang->asb_manage_scripts_desc
 	);
 	if(in_array($current, array('asb_edit_script', 'asb_scripts')))
 	{
-		$sub_tabs['asb_edit_script'] = array
-		(
+		$sub_tabs['asb_edit_script'] = array(
 			'title'					=> $lang->asb_edit_script,
 			'link'					=> $html->url(array("action" => 'manage_scripts', "mode" => 'edit')),
 			'description'		=> $lang->asb_edit_script_desc
 		);
 	}
-	$sub_tabs['asb_modules'] = array
-	(
+	$sub_tabs['asb_modules'] = array(
 		'title'					=> $lang->asb_manage_modules,
 		'link'					=> $html->url(array("action" => 'manage_modules')),
 		'description'		=> $lang->asb_manage_modules_desc
@@ -247,11 +243,8 @@ function asb_build_footer_menu($page_key = '')
 	$help_link = '&nbsp;' . asb_build_help_link($page_key);
 	$settings_link = '&nbsp;' . asb_build_settings_menu_link();
 
-	switch($page_key)
-	{
-		case "manage_sideboxes":
-			$filter_links = asb_build_filter_selector($mybb->input['page']);
-			break;
+	if ($page_key == 'manage_sideboxes') {
+		$filter_links = asb_build_filter_selector($mybb->input['page']);
 	}
 
 	return <<<EOF
@@ -273,143 +266,147 @@ EOF;
  */
 function asb_build_permissions_table($id)
 {
-	if($id)
+	if(!$id)
 	{
-		global $db, $lang, $all_scripts;
+		return false;
+	}
 
-		$sidebox = new Sidebox($id);
+	global $db, $lang, $all_scripts;
 
-		if(!$sidebox->is_valid())
+	$sidebox = new Sidebox($id);
+
+	if(!$sidebox->is_valid())
+	{
+		return false;
+	}
+
+	// prepare options for which groups
+	$options = array('Guests');
+	$groups = array();
+
+	// look for all groups except Super Admins
+	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'gid'));
+	while($usergroup = $db->fetch_array($query))
+	{
+		// store the titles by group id
+		$options[(int)$usergroup['gid']] = $usergroup['title'];
+	}
+
+	$groups = $sidebox->get('groups');
+	$scripts = $sidebox->get('scripts');
+
+	if(empty($scripts))
+	{
+		if(empty($groups))
 		{
-			return;
+			return $lang->asb_globally_visible;
 		}
-
-		// prepare options for which groups
-		$options = array('Guests');
-		$groups = array();
-
-		// look for all groups except Super Admins
-		$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'gid'));
-		while($usergroup = $db->fetch_array($query))
-		{
-			// store the titles by group id
-			$options[(int)$usergroup['gid']] = $usergroup['title'];
-		}
-
-		$groups = $sidebox->get('groups');
-		$scripts = $sidebox->get('scripts');
-
-		if(empty($scripts))
-		{
-			if(empty($groups))
-			{
-				return $lang->asb_globally_visible;
-			}
-			elseif(isset($groups[0]) && strlen($groups[0]) == 0)
-			{
-				return $lang->asb_all_scripts_deactivated;
-			}
-			else
-			{
-				$scripts = $all_scripts;
-			}
-		}
-		elseif(isset($scripts[0]) && strlen($scripts[0]) == 0)
+		elseif(isset($groups[0]) && strlen($groups[0]) == 0)
 		{
 			return $lang->asb_all_scripts_deactivated;
 		}
-
-		if(is_array($all_scripts))
+		else
 		{
-			$all_group_count = count($options);
-			$info = <<<EOF
+			$scripts = $all_scripts;
+		}
+	}
+	elseif(isset($scripts[0]) && strlen($scripts[0]) == 0)
+	{
+		return $lang->asb_all_scripts_deactivated;
+	}
+
+	if(!is_array($all_scripts) || empty($all_scripts))
+	{
+		return false;
+	}
+
+	$all_group_count = count($options);
+	$info = <<<EOF
 
 <table width="100%" class="box_info">
-	<tr>
-		<td class="group_header"><strong>{$lang->asb_visibility}</strong></td>
+<tr>
+<td class="group_header"><strong>{$lang->asb_visibility}</strong></td>
 
 EOF;
 
-			foreach($options as $gid => $title)
-			{
-				$info .= <<<EOF
-		<td title="{$title}" class="group_header">{$gid}</td>
+	foreach($options as $gid => $title)
+	{
+		$info .= <<<EOF
+<td title="{$title}" class="group_header">{$gid}</td>
 
 EOF;
-			}
+	}
 
-			$info .= '	</tr>
+	$info .= '	</tr>
 ';
 
-			foreach($all_scripts as $script => $script_title)
+	foreach($all_scripts as $script => $script_title)
+	{
+		$script_title_full = '';
+		if(strlen($script_title) > 8)
+		{
+			$script_title_full = $script_title;
+			$script_title = substr($script_title, 0, 8) . '. . .';
+		}
+		$info .= <<<EOF
+<tr>
+<td class="script_header" title="{$script_title_full}">{$script_title}</td>
+
+EOF;
+		if(empty($scripts) || array_key_exists($script, $scripts) || in_array($script, $scripts))
+		{
+			if(empty($groups))
 			{
-				$script_title_full = '';
-				if(strlen($script_title) > 8)
+				$x = 1;
+				while($x <= $all_group_count)
 				{
-					$script_title_full = $script_title;
-					$script_title = substr($script_title, 0, 8) . '. . .';
+					$info .= <<<EOF
+<td class="info_cell on"></td>
+
+EOF;
+					++$x;
 				}
-				$info .= <<<EOF
-	<tr>
-		<td class="script_header" title="{$script_title_full}">{$script_title}</td>
-
-EOF;
-				if(empty($scripts) || array_key_exists($script, $scripts) || in_array($script, $scripts))
+			}
+			else
+			{
+				foreach($options as $gid => $title)
 				{
-					if(empty($groups))
+					if(in_array($gid, $groups))
 					{
-						$x = 1;
-						while($x <= $all_group_count)
-						{
-							$info .= <<<EOF
-		<td class="info_cell on"></td>
+						$info .= <<<EOF
+<td class="info_cell on"></td>
 
 EOF;
-							++$x;
-						}
 					}
 					else
 					{
-						foreach($options as $gid => $title)
-						{
-							if(in_array($gid, $groups))
-							{
-								$info .= <<<EOF
-	<td class="info_cell on"></td>
-
-EOF;
-							}
-							else
-							{
-								$info .= <<<EOF
-	<td class="info_cell off"></td>
-
-EOF;
-							}
-						}
-					}
-				}
-				else
-				{
-					$x = 1;
-					while($x <= $all_group_count)
-					{
 						$info .= <<<EOF
-		<td class="info_cell off"></td>
+<td class="info_cell off"></td>
 
 EOF;
-						++$x;
 					}
 				}
-
-				$info .= '	</tr>
-';
 			}
-
-			$info .= '</table>';
 		}
-		return $info;
+		else
+		{
+			$x = 1;
+			while($x <= $all_group_count)
+			{
+				$info .= <<<EOF
+<td class="info_cell off"></td>
+
+EOF;
+				++$x;
+			}
+		}
+
+		$info .= '	</tr>
+';
 	}
+
+	$info .= '</table>';
+	return $info;
 }
 
 /*
@@ -421,49 +418,51 @@ EOF;
  */
 function asb_build_sidebox_info($sidebox, $wrap = true, $ajax = false)
 {
+	// must be a valid object
+	if($sidebox instanceof Sidebox == false)
+	{
+		return false;
+	}
+
 	global $html, $scripts, $all_scripts, $lang;
 
-	// must be a valid object
-	if($sidebox instanceof Sidebox)
-	{
-		$title = $sidebox->get('title');
-		$id = $sidebox->get('id');
-		$pos = $sidebox->get('position');
-		$module = $sidebox->get('box_type');
+	$title = $sidebox->get('title');
+	$id = $sidebox->get('id');
+	$pos = $sidebox->get('position');
+	$module = $sidebox->get('box_type');
 
-		// visibility table
-		$visibility = '<span class="custom info">' . asb_build_permissions_table($id) . '</span>';
+	// visibility table
+	$visibility = '<span class="custom info">' . asb_build_permissions_table($id) . '</span>';
 
-		// edit link
-		$edit_link = $html->url(array("action" => 'edit_box', "id" => $id, "addon" => $module, "pos" => $pos));
-		$edit_icon = <<<EOF
+	// edit link
+	$edit_link = $html->url(array("action" => 'edit_box', "id" => $id, "addon" => $module, "pos" => $pos));
+	$edit_icon = <<<EOF
 <a href="{$edit_link}" class="info_icon" id="edit_sidebox_{$id}" title="{$lang->asb_edit}"><img src="../inc/plugins/asb/images/edit.png" height="18" width="18" alt="{$lang->asb_edit}"/></a>
 EOF;
 
-		// delete link (only used if JS is disabled)
-		if(!$ajax)
-		{
-			$delete_link = $html->url(array("action" => 'delete_box', "id" => $id));
-			$delete_icon = "<a href=\"{$delete_link}\" class=\"del_icon\" title=\"{$lang->asb_delete}\"><img src=\"../inc/plugins/asb/images/delete.png\" height=\"18\" width=\"18\" alt=\"{$lang->asb_delete}\"/></a>";
-		}
+	// delete link (only used if JS is disabled)
+	if(!$ajax)
+	{
+		$delete_link = $html->url(array("action" => 'delete_box', "id" => $id));
+		$delete_icon = "<a href=\"{$delete_link}\" class=\"del_icon\" title=\"{$lang->asb_delete}\"><img src=\"../inc/plugins/asb/images/delete.png\" height=\"18\" width=\"18\" alt=\"{$lang->asb_delete}\"/></a>";
+	}
 
-		// the content
-		$box = <<<EOF
+	// the content
+	$box = <<<EOF
 <span class="tooltip"><img class="info_icon" src="../inc/plugins/asb/images/visibility.png" alt="Information" height="18" width="18"/>{$visibility}</span>{$edit_icon}{$delete_icon}{$title}
 EOF;
 
-		// the <div> (if applicable)
-		if($wrap)
-		{
-			$box = <<<EOF
+	// the <div> (if applicable)
+	if($wrap)
+	{
+		$box = <<<EOF
 <div id="sidebox_{$id}" class="sidebox">{$box}</div>
 
 EOF;
-		}
-
-		// return the content (which will either be stored in a string and displayed by asb_main() or will be stored directly in the <div> when called from AJAX
-		return $box;
 	}
+
+	// return the content (which will either be stored in a string and displayed by asb_main() or will be stored directly in the <div> when called from AJAX
+	return $box;
 }
 
 /*
@@ -509,22 +508,18 @@ function asb_detect_script_info($filename)
 	}
 
 	// build the object info
-	$info = array
-	(
-		"hook" => array
-		(
+	$info = array(
+		"hook" => array(
 			"pattern" => "#\\\$plugins->run_hooks\([\"|'|&quot;]([\w|_]*)[\"|'|&quot;](.*?)\)#i",
 			"filter" => '_do_',
 			"plural" => $lang->asb_hooks
 		),
-		"template" => array
-		(
+		"template" => array(
 			"pattern" => "#\\\$templates->get\([\"|'|&quot;]([\w|_]*)[\"|'|&quot;](.*?)\)#i",
 			"filter" => '',
 			"plural" => $lang->asb_templates
 		),
-		"action" => array
-		(
+		"action" => array(
 			"pattern" => "#\\\$mybb->input\[[\"|'|&quot;]action[\"|'|&quot;]\] == [\"|'|&quot;]([\w|_]*)[\"|'|&quot;]#i",
 			"filter" => '',
 			"plural" => $lang->asb_actions
@@ -595,16 +590,11 @@ function asb_legacy_custom_import($tree)
 		$input_array['title'] = $input_array['name'];
 		return $input_array;
 	}
-	else
+
+	$error = $lang->asb_custom_import_file_empty;
+	if($input_array['content'])
 	{
-		if($input_array['content'])
-		{
-			$error = $lang->asb_custom_import_file_corrupted;
-		}
-		else
-		{
-			$error = $lang->asb_custom_import_file_empty;
-		}
+		$error = $lang->asb_custom_import_file_corrupted;
 	}
 	return $error;
 }

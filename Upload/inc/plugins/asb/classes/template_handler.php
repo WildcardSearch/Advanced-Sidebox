@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * this file contains class definitions for the template handling and editing system
  */
@@ -76,15 +76,12 @@ class TemplateHandler
 		// if admin wants to show the toggle icons . . .
 		if($mybb->settings['asb_show_toggle_icons'])
 		{
-			$toggle_info['left'] = array
-			(
-				"close" => array
-				(
+			$toggle_info['left'] = array(
+				"close" => array(
 					"img" => 'inc/plugins/asb/images/left_arrow.png',
 					"alt" => '&lt;'
 				),
-				"open" => array
-				(
+				"open" => array(
 					"img" => 'inc/plugins/asb/images/right_arrow.png',
 					"alt" => '&gt;'
 				)
@@ -210,11 +207,12 @@ EOF;
 		if(is_array($this->extra_scripts) && !empty($this->extra_scripts))
 		{
 			$sep = '';
+			$dateline = TIME_NOW;
 			foreach($this->extra_scripts as $addon => $info)
 			{
 				// build the JS objects to pass to the custom object builder
 				$extra_scripts .= <<<EOF
-{$sep}{ addon: '{$addon}', id: {$info['id']}, position: {$info['position']}, rate: {$info['rate']} }
+{$sep}{ addon: '{$addon}', id: {$info['id']}, position: {$info['position']}, rate: {$info['rate']}, dateline: {$dateline} }
 EOF;
 				$sep = ", ";
 			}

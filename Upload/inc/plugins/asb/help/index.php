@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * this file contains a custom help document delivery system for ASB
  */
@@ -15,19 +15,18 @@ global $page_title, $links_array;
 EOF;
 
 // our link bank
-$links_array = array
-(
-	"main"							=>	'Main Page',
-	"install"							=>	'Install & Upgrade',
+$links_array = array(
+	"main" => 'Main Page',
+	"install" => 'Install & Upgrade',
 	"manage_sideboxes"	=>	'Sideboxes',
-	"edit_box"						=>	'Add and Edit Sideboxes',
-	"custom"						=>	'Custom Boxes',
-	"edit_custom"				=>	'Edit Custom Boxes',
-	"export_custom"			=>	'Export Custom Boxes',
-	"import_custom"			=>	'Import Custom Boxes',
-	"manage_scripts"			=>	'Manage Scripts',
-	"edit_scripts"				=>	'Edit Script Definitions',
-	"addons"						=>	'Add-on Modules'
+	"edit_box" => 'Add and Edit Sideboxes',
+	"custom" => 'Custom Boxes',
+	"edit_custom" => 'Edit Custom Boxes',
+	"export_custom" => 'Export Custom Boxes',
+	"import_custom" => 'Import Custom Boxes',
+	"manage_scripts" => 'Manage Scripts',
+	"edit_scripts" => 'Edit Script Definitions',
+	"addons" => 'Add-on Modules'
 );
 
 // if we have a topic . . .
@@ -78,7 +77,6 @@ function asb_help_get_contents($current = '')
 	{
 		// if so require ir
 		require_once $filename;
-
 		return $help_content;
 	}
 
@@ -151,52 +149,53 @@ function asb_help_build_page_link($links, $caption = '')
 	$all_links = '';
 
 	// if we have links . . .
-	if($links)
+	if(!$links)
 	{
-		// array?
-		if(is_array($links))
-		{
-			// loop through each topic key
-			foreach($links as $topic)
-			{
-				// adding to the list?
-				if($all_links)
-				{
-					// comma separator
-					$separator = '<strong>,</strong>&nbsp;';
-				}
-				else
-				{
-					// first link
-					$separator = '&nbsp;';
-				}
+		return false;
+	}
 
-				// produce the HTML
-				$all_links .= "{$separator}<a href=\"?topic={$topic}\" title=\"" . $links_array[$topic] . "\">" . $links_array[$topic] . "</a>";
-			}
-		}
-		else
+	if(is_array($links))
+	{
+		// loop through each topic key
+		foreach($links as $topic)
 		{
-			// no array, just one link
-			$all_links = "&nbsp;<a href=\"?topic={$links}\" title=\"" . $links_array[$links] . "\">" . $links_array[$links] . "</a>";
+			// adding to the list?
+			if($all_links)
+			{
+				// comma separator
+				$separator = '<strong>,</strong>&nbsp;';
+			}
+			else
+			{
+				// first link
+				$separator = '&nbsp;';
+			}
+
+			// produce the HTML
+			$all_links .= "{$separator}<a href=\"?topic={$topic}\" title=\"" . $links_array[$topic] . "\">" . $links_array[$topic] . "</a>";
 		}
+	}
+	else
+	{
+		// no array, just one link
+		$all_links = "&nbsp;<a href=\"?topic={$links}\" title=\"" . $links_array[$links] . "\">" . $links_array[$links] . "</a>";
 	}
 
 	// links to show?
-	if($all_links)
+	if(!$all_links)
 	{
-		// is there a caption?
-		if($caption)
-		{
-
-			// if so use it
-			return "<strong>{$caption}</strong>{$all_links}";
-		}
-		// if not just return the link(s)
-		return $all_links;
+		// no links
+		return false;
 	}
-	// no links
-	return false;
+
+	// is there a caption?
+	if($caption)
+	{
+		// if so use it
+		return "<strong>{$caption}</strong>{$all_links}";
+	}
+	// if not just return the link(s)
+	return $all_links;
 }
 
 ?>

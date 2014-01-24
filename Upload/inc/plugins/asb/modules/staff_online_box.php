@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * ASB default module
  */
@@ -14,8 +14,9 @@ if(!defined("IN_MYBB") || !defined("IN_ASB"))
 }
 
 /*
- * Advanced Sidebox module - staff on-line
- * module info
+ * asb_staff_online_box_info()
+ *
+ * provide info to ASB about the addon
  */
 function asb_staff_online_box_info()
 {
@@ -26,17 +27,14 @@ function asb_staff_online_box_info()
 		$lang->load('asb_addon');
 	}
 
- 	return array
-	(
+ 	return array(
 		"title" => $lang->asb_staff_online,
 		"description" => $lang->asb_staff_online_desc,
 		"version" => "1.4.4",
 		"wrap_content" => true,
 		"xmlhttp" => true,
-		"settings" => array
-		(
-			"max_staff" => array
-			(
+		"settings" => array(
+			"max_staff" => array(
 				"sid" => "NULL",
 				"name" => "max_staff",
 				"title" => $lang->asb_staff_online_max_staff_title,
@@ -44,8 +42,7 @@ function asb_staff_online_box_info()
 				"optionscode" => "text",
 				"value" => '5'
 			),
-			"xmlhttp_on" => array
-			(
+			"xmlhttp_on" => array(
 				"sid" => "NULL",
 				"name" => "xmlhttp_on",
 				"title" => $lang->asb_xmlhttp_on_title,
@@ -54,16 +51,11 @@ function asb_staff_online_box_info()
 				"value" => '0'
 			)
 		),
-		"templates" => array
-		(
-			array
-			(
-				"title" => "asb_staff_online",
-				"template" => "{\$online_staff}",
-				"sid" => -1
-			),
-			array
-			(
+		"discarded_templates" => array(
+			'asb_staff_online',
+		),
+		"templates" => array(
+			array(
 				"title" => "asb_staff_online_bit",
 				"template" => <<<EOF
 				<tr>
@@ -86,21 +78,22 @@ function asb_staff_online_box_info()
 					</td>
 				</tr>
 EOF
-				,
-				"sid" => -1
 			)
 		)
 	);
 }
 
+/*
+ * asb_staff_online_box_build_template()
+ *
+ * handles display of children of this addon at page load
+ *
+ * @param - $args - (array) the specific information from the child box
+ */
 function asb_staff_online_box_build_template($args)
 {
-	foreach(array('settings', 'template_var', 'width') as $key)
-	{
-		$$key = $args[$key];
-	}
-	global $$template_var;
-	global $lang;
+	extract($args);
+	global $$template_var, $lang;
 
 	if(!$lang->asb_addon)
 	{
@@ -125,12 +118,16 @@ EOF;
 	}
 }
 
+/*
+ * asb_staff_online_box_xmlhttp()
+ *
+ * handles display of children of this addon via AJAX
+ *
+ * @param - $args - (array) the specific information from the child box
+ */
 function asb_staff_online_box_xmlhttp($args)
 {
-	foreach(array('settings', 'dateline', 'width') as $key)
-	{
-		$$key = $args[$key];
-	}
+	extract($args);
 	$all_online_staff = asb_staff_online_box_get_online_staff($settings, $width);
 
 	if($all_online_staff)
@@ -140,6 +137,14 @@ function asb_staff_online_box_xmlhttp($args)
 	return 'nochange';
 }
 
+/*
+ * asb_staff_online_box_get_online_staff()
+ *
+ * get staff members currently online
+ *
+ * @param - $settings (array) individual side box settings passed to the module
+ * @param - $width - (int) the width of the column in which the child is positioned
+ */
 function asb_staff_online_box_get_online_staff($settings, $width)
 {
 	global $db, $mybb, $templates, $lang, $cache, $theme;
@@ -193,7 +198,7 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 		LEFT JOIN
 			" . TABLE_PREFIX . "users u ON (s.uid=u.uid)
 		WHERE
-			(displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in))) AND s.time > '$timesearch'
+			(displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in))) AND s.time > '{$timesearch}'
 		ORDER BY
 			u.username ASC, s.time DESC
 	");
@@ -249,17 +254,13 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 
 			// prepare the info
 			// alt and title for image are the same
-			$staff_avatar_alt = $staff_avatar_title = $user['username'] . '\'s avatar';
+			$staff_avatar_alt = $staff_avatar_title = $user['username'] . '\'s profile';
 
-			// If the user has an avatar then display it . . .
+			// if the user has an avatar then display it, otherwise force the default avatar.
+			$staff_avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
 			if($user['avatar'] != "")
 			{
 				$staff_avatar_filename = $user['avatar'];
-			}
-			else
-			{
-				// . . . otherwise force the default avatar.
-				$staff_avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
 			}
 
 			// avatar properties
@@ -276,6 +277,7 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 			$staff_badge_alt = $staff_badge_title = $usergroup['usertitle'];
 
 			// if the user's group has a badge image . . .
+			$staff_badge = "{$staff_badge_alt}";
 			if($usergroup['image'])
 			{
 				// store it (if nothing is store alt property will display group default usertitle)
@@ -284,10 +286,6 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 				$staff_badge = <<<EOF
 <img src="{$staff_badge_filename}" alt="{$staff_badge_alt}" title="{$staff_badge_title}" width="{$staff_badge_width}"/>
 EOF;
-			}
-			else
-			{
-				$staff_badge = "{$staff_badge_alt}";
 			}
 
 			// give us an alternating bgcolor
@@ -305,8 +303,7 @@ EOF;
 	if($online_staff)
 	{
 		// show them
-		eval("\$all_online_staff = \"" . $templates->get("asb_staff_online") . "\";");
-		return $all_online_staff;
+		return $online_staff;
 	}
 	else
 	{

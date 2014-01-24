@@ -9,7 +9,7 @@
 class HTMLGenerator
 {
 	/*
-	 * default URL for links, can be set in __construct() by the plug-in ACP
+	 * default URL for links, can be set in __construct() by the plugin ACP
 	 * page but can be changed in-line if needed
 	 */
 	public $base_url = 'index.php';
@@ -18,8 +18,7 @@ class HTMLGenerator
 	 * allowed $_GET/$mybb->input variable names, add custom keys in
 	 * __construct() or in-line
 	 */
-	public $allowed_url_keys = array
-	(
+	public $allowed_url_keys = array(
 		'module',
 		'action',
 		'mode',
@@ -30,8 +29,7 @@ class HTMLGenerator
 		'my_post_key'
 	);
 
-	public $allowed_img_properties = array
-	(
+	public $allowed_img_properties = array(
 		'id',
 		'name',
 		'title',
@@ -41,8 +39,7 @@ class HTMLGenerator
 		'onclick'
 	);
 
-	public $allowed_link_properties = array
-	(
+	public $allowed_link_properties = array(
 		'id',
 		'name',
 		'title',
@@ -187,19 +184,21 @@ EOF;
 	 */
 	protected function build_property_list($options = array(), $allowed = array())
 	{
-		if(is_array($options) && is_array($allowed))
+		if(!is_array($options) || !is_array($allowed))
 		{
-			foreach($allowed as $key)
-			{
-				if(isset($options[$key]) && $options[$key])
-				{
-					$property_list .= <<<EOF
- {$key}="{$options[$key]}"
-EOF;
-				}
-			}
-			return $property_list;
+			return false;
 		}
+
+		foreach($allowed as $key)
+		{
+			if(isset($options[$key]) && $options[$key])
+			{
+				$property_list .= <<<EOF
+{$key}="{$options[$key]}"
+EOF;
+			}
+		}
+		return $property_list;
 	}
 }
 

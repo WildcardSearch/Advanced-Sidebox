@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * ASB default module
  */
@@ -13,6 +13,11 @@ if(!defined("IN_MYBB") || !defined("IN_ASB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+/*
+ * asb_private_messages_info()
+ *
+ * provide info to ASB about the addon
+ */
 function asb_private_messages_info()
 {
 	global $lang;
@@ -22,17 +27,14 @@ function asb_private_messages_info()
 		$lang->load('asb_addon');
 	}
 
-	return array
-	(
+	return array(
 		"title" => $lang->asb_private_messages,
 		"description" => $lang->asb_private_messages_desc,
 		"wrap_content" => true,
 		"xmlhttp" => true,
 		"version" => "1.1",
-		"settings" => array
-		(
-			"xmlhttp_on" => array
-			(
+		"settings" => array(
+			"xmlhttp_on" => array(
 				"sid"					=> "NULL",
 				"name"				=> "xmlhttp_on",
 				"title"				=> $lang->asb_xmlhttp_on_title,
@@ -41,10 +43,8 @@ function asb_private_messages_info()
 				"value"				=> '0'
 			)
 		),
-		"templates" =>	array
-		(
-			array
-			(
+		"templates" => array(
+			array(
 				"title" => "asb_pms",
 				"template" => <<<EOF
 				<tr>
@@ -55,19 +55,21 @@ function asb_private_messages_info()
 					</td>
 				</tr>
 EOF
-				,
-				"sid" => -1
 			)
 		)
 	);
 }
 
+/*
+ * asb_private_messages_build_template()
+ *
+ * handles display of children of this addon at page load
+ *
+ * @param - $args - (array) the specific information from the child box
+ */
 function asb_private_messages_build_template($args)
 {
-	foreach(array('settings', 'template_var') as $key)
-	{
-		$$key = $args[$key];
-	}
+	extract($args);
 	global $$template_var, $lang; // <-- important!
 
 	if(!$lang->asb_addon)
@@ -94,12 +96,16 @@ EOF;
 	}
 }
 
+/*
+ * asb_private_messages_xmlhttp()
+ *
+ * handles display of children of this addon via AJAX
+ *
+ * @param - $args - (array) the specific information from the child box
+ */
 function asb_private_messages_xmlhttp($args)
 {
-	foreach(array('settings', 'dateline') as $key)
-	{
-		$$key = $args[$key];
-	}
+	extract($args);
 	global $db, $mybb;
 
 	$query = $db->simple_select('privatemessages', '*', "dateline > {$dateline} AND toid='{$mybb->user['uid']}'");
@@ -116,6 +122,11 @@ function asb_private_messages_xmlhttp($args)
 	return 'nochange';
 }
 
+/*
+ * asb_private_messages_get_messages()
+ *
+ * get the user's private messages
+ */
 function asb_private_messages_get_messages()
 {
 	global $db, $mybb, $templates, $lang;
@@ -158,7 +169,6 @@ function asb_private_messages_get_messages()
 			$pmessages = '';
 		}
 	}
-
 	return $pmessages;
 }
 

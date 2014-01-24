@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * ASB default module
  */
@@ -13,6 +13,11 @@ if(!defined("IN_MYBB") || !defined("IN_ASB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+/*
+ * asb_recent_posts_info()
+ *
+ * provide info to ASB about the addon
+ */
 function asb_recent_posts_info()
 {
 	global $lang;
@@ -22,17 +27,14 @@ function asb_recent_posts_info()
 		$lang->load('asb_addon');
 	}
 
-	return array
-	(
+	return array(
 		"title" => $lang->asb_recent_posts,
 		"description" => $lang->asb_recent_posts_desc,
 		"version" => "1.3.1",
 		"wrap_content" => true,
 		"xmlhttp" => true,
-		"settings" => array
-		(
-			"max_posts" => array
-			(
+		"settings" => array(
+			"max_posts" => array(
 				"sid" => "NULL",
 				"name" => "max_posts",
 				"title" => $lang->asb_recent_posts_max_title,
@@ -40,8 +42,7 @@ function asb_recent_posts_info()
 				"optionscode" => "text",
 				"value" => '5'
 			),
-			"max_length" => array
-			(
+			"max_length" => array(
 				"sid" => "NULL",
 				"name" => "max_length",
 				"title" => $lang->asb_recent_posts_max_length_title,
@@ -49,8 +50,7 @@ function asb_recent_posts_info()
 				"optionscode" => "text",
 				"value" => '20'
 			),
-			"forum_show_list" => array
-			(
+			"forum_show_list" => array(
 				"sid" => "NULL",
 				"name" => "forum_show_list",
 				"title" => $lang->asb_forum_show_list_title,
@@ -58,8 +58,7 @@ function asb_recent_posts_info()
 				"optionscode" => "text",
 				"value" => ''
 			),
-			"forum_hide_list" => array
-			(
+			"forum_hide_list" => array(
 				"sid" => "NULL",
 				"name" => "forum_hide_list",
 				"title" => $lang->asb_forum_hide_list_title,
@@ -67,8 +66,7 @@ function asb_recent_posts_info()
 				"optionscode" => "text",
 				"value" => ''
 			),
-			"thread_show_list" => array
-			(
+			"thread_show_list" => array(
 				"sid" => "NULL",
 				"name" => "thread_show_list",
 				"title" => $lang->asb_thread_show_list_title,
@@ -76,8 +74,7 @@ function asb_recent_posts_info()
 				"optionscode" => "text",
 				"value" => ''
 			),
-			"thread_hide_list" => array
-			(
+			"thread_hide_list" => array(
 				"sid" => "NULL",
 				"name" => "thread_hide_list",
 				"title" => $lang->asb_thread_hide_list_title,
@@ -85,8 +82,7 @@ function asb_recent_posts_info()
 				"optionscode" => "text",
 				"value" => ''
 			),
-			"xmlhttp_on" => array
-			(
+			"xmlhttp_on" => array(
 				"sid" => "NULL",
 				"name" => "xmlhttp_on",
 				"title" => $lang->asb_xmlhttp_on_title,
@@ -95,10 +91,8 @@ function asb_recent_posts_info()
 				"value" => '0'
 			)
 		),
-		"templates" => array
-		(
-			array
-			(
+		"templates" => array(
+			array(
 				"title" => "asb_recent_posts_post",
 				"template" => <<<EOF
 				<tr>
@@ -111,7 +105,6 @@ function asb_recent_posts_info()
 				</tr>
 EOF
 				,
-				"sid" =>	-1
 			)
 		)
 	);
@@ -120,17 +113,13 @@ EOF
 /*
  * asb_recent_posts_build_template()
  *
- * @param - (array) $settings
-					individual side box settings applied to the module
- * @param - (string) $template_var
-					encoded unique side box template variable name
+ * handles display of children of this addon at page load
+ *
+ * @param - $args - (array) the specific information from the child box
  */
 function asb_recent_posts_build_template($args)
 {
-	foreach(array('settings', 'template_var') as $key)
-	{
-		$$key = $args[$key];
-	}
+	extract($args);
 	global $$template_var, $lang;
 
 	if(!$lang->asb_addon)
@@ -160,39 +149,38 @@ EOF;
 /*
  * asb_recent_posts_xmlhttp()
  *
- * @param - (int) $dateline
-					UNIX datestamp
- * @param - (array) $settings
-					individual side box settings passed to the module
+ * handles display of children of this addon via AJAX
+ *
+ * @param - $args - (array) the specific information from the child box
  */
 function asb_recent_posts_xmlhttp($args)
 {
-	foreach(array('settings', 'dateline') as $key)
-	{
-		$$key = $args[$key];
-	}
+	extract($args);
 	global $db;
 
 	// do a quick check to make sure we don't waste execution
 	$query = $db->simple_select('posts', '*', "dateline > {$dateline}");
 
-	if($db->num_rows($query) > 0)
+	if($db->num_rows($query) == 0)
 	{
-		$all_posts = recent_posts_get_postlist($settings);
-
-		if($all_posts)
-		{
-			return $all_posts;
-		}
+		return 'nochange';
 	}
-	return 'nochange';
+
+	$all_posts = recent_posts_get_postlist($settings);
+
+	if(!$all_posts)
+	{
+		return 'nochange';
+	}
+	return $all_posts;
 }
 
 /*
  * recent_posts_get_postlist()
  *
- * @param - (array) $settings
-					individual side box settings passed to the module
+ * get random quotes
+ *
+ * @param - $settings (array) individual side box settings passed to the module
  */
 function recent_posts_get_postlist($settings)
 {
@@ -225,8 +213,7 @@ function recent_posts_get_postlist($settings)
 	$postlist = '';
 
 	// Query for the latest forum discussions
-	$query = $db->query
-	("
+	$query = $db->query("
 		SELECT
 			p.tid, p.pid, p.message, p.fid, p.dateline, p.subject,
 			u.username, u.uid, u.displaygroup, u.usergroup

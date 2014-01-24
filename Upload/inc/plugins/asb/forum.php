@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * the forum-side routines start here
  */
@@ -38,17 +38,16 @@ function asb_start()
 		return;
 	}
 
-	$width = $boxes = array
-		(
-			0 => '',
-			1 => ''
-		);
+	$width = $boxes = array(
+		0 => '',
+		1 => ''
+	);
 
 	// make sure this script's width is within range 120-800 (120 because the templates
 	// aren't made to work any smaller and tbh 800 is kind of arbitrary :s
 	foreach(array("left" => 0, "right" => 1) as $key => $pos)
 	{
-		$width[$pos] = (int) max("120", min("800", $this_script["width_{$key}"]));
+		$width[$pos] = (int) max(120, min(800, $this_script["width_{$key}"]));
 	}
 
 	// does this column have boxes?
@@ -112,7 +111,7 @@ function asb_start()
 				$result = $module->build_template($settings, $template_var, $width[$pos]);
 			}
 			// if it doesn't verify as an add-on, try it as a custom box
-			else if(isset($asb['custom'][$module_name]) && is_array($asb['custom'][$module_name]))
+			elseif(isset($asb['custom'][$module_name]) && is_array($asb['custom'][$module_name]))
 			{
 				$custom = new Custom_type($asb['custom'][$module_name]);
 
@@ -156,42 +155,43 @@ function asb_initialize()
 {
 	global $mybb, $plugins;
 
+	// hooks for the User CP routine.
+	switch (THIS_SCRIPT) {
+	case 'usercp.php':
+		if($mybb->settings['asb_allow_user_disable'])
+		{
+			$plugins->add_hook("usercp_options_end", "asb_usercp_options_end");
+			$plugins->add_hook("usercp_do_options_end", "asb_usercp_options_end");
+		}
+		break;
+	case 'xmlhttp.php':
+		$plugins->add_hook("xmlhttp", "asb_xmlhttp");
+		break;
+	}
+
 	// get the cache
 	$asb = asb_get_cache();
 	$this_script = asb_get_this_script($asb, true);
 
 	// anything to show for this script?
-	if(is_array($this_script['sideboxes']) && !empty($this_script['sideboxes']))
+	if(!is_array($this_script['sideboxes']) || empty($this_script['sideboxes']))
 	{
-		// then add the hook . . . one priority lower than Page Manager ;-) we need to run first
-		$plugins->add_hook($this_script['hook'], 'asb_start', 9);
-
-		// cache any script-specific templates (read: templates used by add-ons used in the script)
-		$template_list = '';
-		if(is_array($this_script['templates']) && !empty($this_script['templates']))
-		{
-			$template_list = ',' . implode(',', $this_script['templates']);
-		}
-
-		// add the extra templates (if any) to our base stack
-		global $templatelist;
-		$templatelist .= ',asb_begin,asb_end,asb_sidebox_column,asb_wrapped_sidebox,asb_toggle_icon,asb_content_pad' . $template_list;
+		return;
 	}
 
-	// hooks for the User CP routine.
-	switch(THIS_SCRIPT)
+	// then add the hook . . . one priority lower than Page Manager ;-) we need to run first
+	$plugins->add_hook($this_script['hook'], 'asb_start', 9);
+
+	// cache any script-specific templates (read: templates used by add-ons used in the script)
+	$template_list = '';
+	if(is_array($this_script['templates']) && !empty($this_script['templates']))
 	{
-		case 'usercp.php':
-			if($mybb->settings['asb_allow_user_disable'])
-			{
-				$plugins->add_hook("usercp_options_end", "asb_usercp_options_end");
-				$plugins->add_hook("usercp_do_options_end", "asb_usercp_options_end");
-			}
-			break;
-		case 'xmlhttp.php':
-			$plugins->add_hook("xmlhttp", "asb_xmlhttp");
-			break;
+		$template_list = ',' . implode(',', $this_script['templates']);
 	}
+
+	// add the extra templates (if any) to our base stack
+	global $templatelist;
+	$templatelist .= ',asb_begin,asb_end,asb_sidebox_column,asb_wrapped_sidebox,asb_toggle_icon,asb_content_pad,asb_expander' . $template_list;
 }
 
 /*
@@ -266,7 +266,7 @@ function asb_xmlhttp()
 	$sidebox = new Sidebox($mybb->input['id']);
 
 	// we need both objects to continue
-	if($module instanceof Addon_type && $module->is_valid() && $sidebox instanceof Sidebox && $sidebox->is_valid())
+	if($module->is_valid() && $sidebox->is_valid())
 	{
 		// then call the module's AJAX method and echo its return value
 		echo($module->do_xmlhttp($mybb->input['dateline'], $sidebox->get('settings'), $mybb->input['width']));

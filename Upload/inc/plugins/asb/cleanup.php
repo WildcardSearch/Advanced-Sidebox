@@ -1,5 +1,9 @@
 <?php
 /*
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Copyright 2013 WildcardSearch
+ * http://www.rantcentralforums.com
+ *
  * this file removes any existing files from ASB 1.0
  */
 
@@ -7,8 +11,7 @@ define('IN_MYBB', 1);
 require_once '../../../global.php';
 global $config;
 
-$removed_files = array
-(
+$removed_files = array(
 	'inc/languages/english/adv_sidebox.lang.php',
 	'inc/plugins/adv_sidebox.php',
 	'jscripts/adv_sidebox.js',
@@ -17,8 +20,7 @@ $removed_files = array
 	'inc/plugins/asb/cleanup.php'
 );
 
-$removed_folders = array
-(
+$removed_folders = array(
 	'inc/plugins/adv_sidebox'
 );
 

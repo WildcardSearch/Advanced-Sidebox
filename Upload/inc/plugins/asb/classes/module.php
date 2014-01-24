@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * this file contains an object wrapper for external PHP modules
  */
@@ -127,18 +127,8 @@ class Addon_type extends ExternalModule
 	protected $discarded_settings = array();
 	protected $discarded_templates = array();
 	protected $wrap_content = false;
-
-	/*
-	 * __construct()
-	 *
-	 * called upon creation. loads module if possible and attempts to validate
-	 */
-	public function __construct($module)
-	{
-		$this->path = ASB_MODULES_DIR;
-		$this->prefix = 'asb';
-		parent::__construct($module);
-	}
+	protected $prefix = 'asb';
+	protected $path = ASB_MODULES_DIR;
 
 	/*
 	 * load()
@@ -148,13 +138,13 @@ class Addon_type extends ExternalModule
 	public function load($module)
 	{
 		// input is necessary
-		if($module && parent::load($module))
+		if(parent::load($module))
 		{
 			$this->has_settings = !empty($this->settings);
 			$this->old_version = $this->get_cache_version();
 
 			// if this module needs to be upgraded . . .
-			if(version_compare($this->old_version, $this->version, '<'))
+			if(version_compare($this->old_version, $this->version, '<') && !defined('IN_ASB_UNINSTALL'))
 			{
 				// get-r-done
 				$this->upgrade();
@@ -174,7 +164,7 @@ class Addon_type extends ExternalModule
 	 *
 	 * install templates if they exist to allow the add-on module to function correctly
 	 */
-	protected function install($cleanup = true)
+	public function install($cleanup = true)
 	{
 		global $db;
 
@@ -188,25 +178,26 @@ class Addon_type extends ExternalModule
 		// if there are templates . . .
 		if(is_array($this->templates))
 		{
-			// loop through them
+			$insert_array = array();
 			foreach($this->templates as $template)
 			{
-				$query = $db->simple_select('templates', '*', "title='{$template['title']}'");
+				$template['sid'] = -2;
+				$query = $db->simple_select('templates', '*', "title='{$template['title']}' AND sid IN('-2', '-1')");
 
 				// if it exists, update
-				if($db->num_rows($query) == 1)
+				if($db->num_rows($query) > 0)
 				{
-					$status = $db->update_query("templates", $template, "title='{$template['title']}'");
+					$db->update_query("templates", $template, "title='{$template['title']}' AND sid IN('-2', '-1')");
 				}
 				else
 				{
 					// if not, create a new template
-					$status = $db->insert_query("templates", $template);
+					$insert_array[] = $template;
 				}
 
-				if(!$status)
+				if(!empty($insert_array))
 				{
-					$error = true;
+					$db->insert_query_multiple("templates", $insert_array);
 				}
 			}
 		}
@@ -236,9 +227,16 @@ class Addon_type extends ExternalModule
 		if(is_array($this->templates))
 		{
 			// remove them all
+			$delete_list = $sep = '';
 			foreach($this->templates as $template)
 			{
-				$db->delete_query('templates', "title='{$template['title']}'");
+				$delete_list .= "{$sep}'{$template['title']}'";
+				$sep = ',';
+			}
+
+			if($delete_list)
+			{
+				$db->delete_query('templates', "title IN({$delete_list})");
 			}
 
 			// unless specifically asked not to, delete any boxes that use this module
@@ -270,9 +268,16 @@ class Addon_type extends ExternalModule
 		if(is_array($this->discarded_templates))
 		{
 			// delete them
+			$delete_list = $sep = '';
 			foreach($this->discarded_templates as $template)
 			{
-				$db->delete_query('templates', "title='{$template}'");
+				$delete_list .= "{$sep}'{$template['title']}'";
+				$sep = ',';
+			}
+
+			if($delete_list)
+			{
+				$db->delete_query('templates', "title IN({$delete_list})");
 			}
 		}
 
@@ -460,12 +465,11 @@ class Addon_type extends ExternalModule
 	/*
 	 * function do_xmlhttp()
 	 *
-	 * @param - (int) $dateline
-						UNIX timestamp representing the last time the side box was updated
-	 * @param - (array) $settings
-						the individual side box settings
-	 * @param - (int) $width
-						the width of the column in which the produced side box will reside
+	 * @param - $dateline (int) UNIX timestamp representing the last time
+	 * the side box was updated
+	 * @param - $settings (array) the individual side box settings
+	 * @param - $width (int) the width of the column in which the produced
+	 * side box will reside
 	 */
 	public function do_xmlhttp($dateline, $settings, $width)
 	{

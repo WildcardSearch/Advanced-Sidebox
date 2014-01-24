@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * ASB default module
  */
@@ -16,7 +16,7 @@ if(!defined("IN_MYBB") || !defined("IN_ASB"))
 /*
  * asb_whosonline_info()
  *
- * used by the core to identify and process the module
+ * provide info to ASB about the addon
  */
 function asb_whosonline_info()
 {
@@ -27,66 +27,61 @@ function asb_whosonline_info()
 		$lang->load('asb_addon');
 	}
 
-	return array
-	(
+	return array(
 		"title" => $lang->asb_wol,
 		"description" => $lang->asb_wol_desc,
-		"version" => "1.4",
+		"version" => "1.4.1",
 		"wrap_content" => true,
 		"xmlhttp" => true,
-		"discarded_settings" => array
-		(
-			"asb_avatar_per_row",
-			"asb_avatar_max_rows"
-		),
-		"settings" =>	array
-		(
-			"show_avatars" => array
-			(
-				"sid" => "NULL",
-				"name" => "show_avatars",
+		"settings" =>	array(
+			"show_avatars" => array(
+				"sid" => 'NULL',
+				"name" => 'show_avatars',
 				"title" => $lang->asb_show_avatars_title,
 				"description" => $lang->asb_show_avatars_desc,
-				"optionscode" => "yesno",
+				"optionscode" => 'yesno',
 				"value" => '1'
 			),
-			"asb_avatar_per_row" => array
-			(
-				"sid" => "NULL",
-				"name" => "asb_avatar_per_row",
+			"asb_avatar_per_row" => array(
+				"sid" => 'NULL',
+				"name" => 'asb_avatar_per_row',
 				"title" => $lang->asb_wol_num_avatars_per_row_title,
 				"description" => $lang->asb_wol_num_avatars_per_row_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => '4'
 			),
-			"asb_avatar_max_rows" => array
-			(
-				"sid" => "NULL",
-				"name" => "asb_avatar_max_rows",
+			"asb_avatar_max_rows" => array(
+				"sid" => 'NULL',
+				"name" => 'asb_avatar_max_rows',
 				"title" => $lang->asb_wol_avatar_max_rows_title,
 				"description" => $lang->asb_wol_avatar_max_rows_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => '3'
 			),
-			"xmlhttp_on" => array
-			(
-				"sid" => "NULL",
-				"name" => "xmlhttp_on",
+			"asb_avatar_maintain_aspect" => array(
+				"sid" => 'NULL',
+				"name" => 'asb_avatar_maintain_aspect',
+				"title" => $lang->asb_wol_avatar_maintain_aspect_title,
+				"description" => $lang->asb_wol_avatar_maintain_aspect_desc,
+				"optionscode" => 'yesno',
+				"value" => '0'
+			),
+			"xmlhttp_on" => array(
+				"sid" => 'NULL',
+				"name" => 'xmlhttp_on',
 				"title" => $lang->asb_xmlhttp_on_title,
 				"description" => $lang->asb_xmlhttp_on_description,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => '0'
 			)
 		),
-		"templates" =>	array
-		(
-			array
-			(
-				"title" => "asb_whosonline",
+		"templates" => array(
+			array(
+				"title" => 'asb_whosonline',
 				"template" => <<<EOF
 				<tr>
 					<td class="trow1">
-						<span class="smalltext">{\$lang->asb_wol_online_users} [<a href="online.php" title="Who\'s On-line">Complete List</a>]<br /><strong>&raquo;</strong> {\$lang->asb_wol_online_counts}</span>
+						<span class="smalltext">{\$lang->asb_wol_online_users} [<a href="online.php" title="Who\'s Online">Complete List</a>]<br /><strong>&raquo;</strong> {\$lang->asb_wol_online_counts}</span>
 					</td>
 				</tr>
 				<tr>
@@ -99,47 +94,33 @@ function asb_whosonline_info()
 					</td>
 				</tr>
 EOF
-				,
-				"sid" => -1
 			),
-			array
-			(
-				"title" => "asb_whosonline_memberbit_name",
+			array(
+				"title" => 'asb_whosonline_memberbit_name',
 				"template" => <<<EOF
 {\$sep}<a href="{\$mybb->settings[\'bburl\']}/{\$user[\'profilelink\']}">{\$user[\'username\']}</a>
 EOF
-				,
-				"sid" => -1
 			),
-			array
-			(
-				"title" => "asb_whosonline_memberbit_avatar",
+			array(
+				"title" => 'asb_whosonline_memberbit_avatar',
 				"template" => <<<EOF
 <td><a href="{\$mybb->settings[\'bburl\']}/{\$user[\'profilelink\']}">{\$user_avatar}</a></td>
 EOF
-				,
-				"sid" => -1
 			)
 		)
 	);
 }
 
 /*
- * asb_whosonline_build_template($settings, $template_var, $width)
+ * asb_whosonline_build_template()
  *
- * @param - $settings
-					contains admin settings for the side box (defined above)
- * @param - $template_var
-					contains the template variable name that is globally linked to this side box
- * @param - $width
-					the width of the column in which this side box will display
+ * handles display of children of this addon at page load
+ *
+ * @param - $args - (array) the specific information from the child box
  */
 function asb_whosonline_build_template($args)
 {
-	foreach(array('settings', 'template_var', 'width') as $key)
-	{
-		$$key = $args[$key];
-	}
+	extract($args);
 	global $$template_var, $lang;
 
 	if(!$lang->asb_addon)
@@ -147,10 +128,10 @@ function asb_whosonline_build_template($args)
 		$lang->load('asb_addon');
 	}
 
-	// get the on-line members
+	// get the online members
 	$all_onlinemembers = asb_whosonline_get_online_members($settings, $width);
 
-	// if there are members on-line . . .
+	// if there are members online . . .
 	if($all_onlinemembers)
 	{
 		// set out template variable to the returned member list and return true
@@ -168,16 +149,15 @@ EOF;
 }
 
 /*
- * asb_whosonline_xmlhttp($dateline, $settings, $width)
+ * asb_whosonline_xmlhttp()
  *
+ * handles display of children of this addon via AJAX
  *
+ * @param - $args - (array) the specific information from the child box
  */
 function asb_whosonline_xmlhttp($args)
 {
-	foreach(array('settings', 'dateline', 'width') as $key)
-	{
-		$$key = $args[$key];
-	}
+	extract($args);
 	$all_onlinemembers = asb_whosonline_get_online_members($settings, $width);
 
 	if($all_onlinemembers)
@@ -187,6 +167,14 @@ function asb_whosonline_xmlhttp($args)
 	return 'nochange';
 }
 
+/*
+ * asb_whosonline_get_online_members()
+ *
+ * get the members currently online
+ *
+ * @param - $settings (array) individual side box settings passed to the module
+ * @param - $width - (int) the width of the column in which the child is positioned
+ */
 function asb_whosonline_get_online_members($settings, $width)
 {
 	global $db, $mybb, $templates, $lang, $cache, $theme;
@@ -275,8 +263,14 @@ function asb_whosonline_get_online_members($settings, $width)
 						$avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
 					}
 
+					$avatar_height_style = " min-height: {$avatar_height}px; max-height: {$avatar_height}px;";
+					if($settings['asb_avatar_maintain_aspect']['value'])
+					{
+						$avatar_height_style = '';
+					}
+
 					$user_avatar = <<<EOF
-<img style="width: 100%; min-width: {$avatar_width}px; max-width: {$avatar_width}px; min-height: {$avatar_height}px; max-height: {$avatar_height}px;" src="{$avatar_filename}" alt="{$lang->asb_wol_avatar}" title="{$user['username']}'s {$lang->asb_wol_avatar_lc}"/>
+<img style="width: 100%; min-width: {$avatar_width}px; max-width: {$avatar_width}px;{$avatar_height_style}" src="{$avatar_filename}" alt="{$lang->asb_wol_avatar}" title="{$user['username']}'s {$lang->asb_wol_profile}"/>
 EOF;
 
 					// if this is the last allowable avatar (conforming to ACP settings)

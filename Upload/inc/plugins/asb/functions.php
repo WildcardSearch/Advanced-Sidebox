@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * functions for the forum-side
  */
@@ -169,6 +169,7 @@ function asb_build_cache(&$asb)
 			{
 				// store the pointer
 				$asb['scripts'][$filename]['sideboxes'][$pos][$id] = $module;
+				$asb['scripts'][$filename]['template_vars'][$id] = "{$module}_{$id}";
 
 				// and cache the contents
 				$asb['custom'][$module] = $custom[$module]->get('data');
@@ -193,8 +194,7 @@ function asb_build_script_filename($this_script = '')
 	if(!is_array($this_script) || empty($this_script))
 	{
 		global $mybb;
-		$this_script = array
-		(
+		$this_script = array(
 			"filename" => THIS_SCRIPT,
 			"action" => $mybb->input['action'],
 			"page" => $mybb->input['page']
@@ -369,12 +369,7 @@ function asb_build_sidebox_content($this_box)
 				$expcolimage = "collapse.gif";
 				$expaltext = "[-]";
 			}
-			$expander = <<<EOF
-
-						<div class="expcolimage">
-							<img src="{$theme['imgdir']}/{$expcolimage}" id="{$sidebox['expcolimage_id']}" class="expander" alt="{$expaltext}" title="{$expaltext}"/>
-						</div>
-EOF;
+			eval("\$expander = \"" . $templates->get('asb_expander') . "\";");
 		}
 		eval("\$content = \"" . $templates->get('asb_wrapped_sidebox') . "\";");
 	}
@@ -407,27 +402,25 @@ function asb_get_all_modules()
 	// load all detected modules
 	foreach(new DirectoryIterator(ASB_MODULES_DIR) as $file)
 	{
-		if($file->isFile())
+		if(!$file->isFile() || $file->isDot() || $file->isDir())
 		{
-			// skip directories and '.' '..'
-			if($file->isDot() || $file->isDir())
-			{
-				continue;
-			}
-
-			$extension = pathinfo($file->getFilename(), PATHINFO_EXTENSION);
-
-			// only PHP files
-			if($extension == 'php')
-			{
-				// extract the base_name from the module file name
-				$filename = $file->getFilename();
-				$module = substr($filename, 0, strlen($filename) - 4);
-
-				// attempt to load the module
-				$return_array[$module] = new Addon_type($module);
-			}
+			continue;
 		}
+
+		$extension = pathinfo($file->getFilename(), PATHINFO_EXTENSION);
+
+		// only PHP files
+		if($extension != 'php')
+		{
+			continue;
+		}
+
+		// extract the base_name from the module file name
+		$filename = $file->getFilename();
+		$module = substr($filename, 0, strlen($filename) - 4);
+
+		// attempt to load the module
+		$return_array[$module] = new Addon_type($module);
 	}
 	return $return_array;
 }
@@ -514,6 +507,11 @@ function asb_get_all_scripts()
 	return $return_array;
 }
 
+/*
+ * asb_compile_box_types()
+ *
+ * get a list of all the current addons and alphabetize them by title
+ */
 function asb_compile_box_types()
 {
 	// get all the box types and their titles
