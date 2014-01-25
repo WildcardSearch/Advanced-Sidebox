@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * this file contains an object wrapper for individual custom boxes
  */
@@ -14,23 +14,36 @@ class Custom_type extends PortableObject
 	protected $title;
 	protected $description;
 	protected $wrap_content = false;
+	protected $table_name = 'asb_custom_sideboxes';
 
-	public function __construct($data)
+	/*
+	 * __construct()
+	 *
+	 * called upon creation
+	 *
+	 * @param - $data - (mixed) an associative array corresponding to both the class specs
+	 * and the database table specs or a database table row ID
+	 */
+	public function __construct($data = '')
 	{
-		$this->table_name = 'asb_custom_sideboxes';
 		$this->no_store[] = 'base_name';
 		parent::__construct($data);
 	}
 
+	/*
+	 * load()
+	 *
+	 * attempts to load the side box's data from the db, or if given no data create a blank object
+	 *
+	 * @param - $data can be an array fetched from the db or
+	 * a valid ID # (__construct will feed 0 if no data is given)
+	 */
 	public function load($data)
 	{
-		if($data)
+		if(parent::load($data))
 		{
-			if(parent::load($data))
-			{
-				$this->base_name = 'asb_custom_' . $this->id;
-				return true;
-			}
+			$this->base_name = 'asb_custom_' . $this->id;
+			return true;
 		}
 		return false;
 	}
@@ -44,16 +57,12 @@ class Custom_type extends PortableObject
 	 */
 	public function remove($no_cleanup = false)
 	{
-		// don't waste time on bad info
-		if($this->id)
+		// unless specifically requested otherwise clean up
+		if(!$no_cleanup)
 		{
-			// unless specifically requested otherwise clean up
-			if(!$no_cleanup)
-			{
-				$this->remove_children();
-			}
-			return parent::remove();
+			$this->remove_children();
 		}
+		return parent::remove();
 	}
 
 	/*

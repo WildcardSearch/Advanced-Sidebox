@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * this file contains an object wrapper for script definitons
  */
@@ -51,16 +51,7 @@ class ScriptInfo extends PortableObject
 	protected $eval = false;
 	protected $active = false;
 
-	/*
-	 * function __construct()
-	 *
-	 * @param - $data - (mixed) an integer ID or an associative array of script data
-	 */
-	public function __construct($data = '')
-	{
-		$this->table_name = 'asb_script_info';
-		parent::__construct($data);
-	}
+	protected $table_name = 'asb_script_info';
 }
 
 ?>

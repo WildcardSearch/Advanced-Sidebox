@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * ASB default module
  */
@@ -13,6 +13,11 @@ if(!defined("IN_MYBB") || !defined("IN_ASB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+/*
+ * asb_search_box_info()
+ *
+ * provide info to ASB about the addon
+ */
 function asb_search_box_info()
 {
 	global $lang;
@@ -22,16 +27,13 @@ function asb_search_box_info()
 		$lang->load('asb_addon');
 	}
 
-	return array
-	(
+	return array(
 		"title" => $lang->asb_search,
 		"description" => $lang->asb_search_desc,
 		"wrap_content" => true,
 		"version" => "1.2.1",
-		"templates" =>	array
-		(
-			array
-			(
+		"templates" => array(
+			array(
 				"title" => "asb_search",
 				"template" => <<<EOF
 				<tr>
@@ -61,21 +63,22 @@ function asb_search_box_info()
 					</td>
 				</tr>
 EOF
-				,
-				"sid" => -1
 			)
 		)
 	);
 }
 
+/*
+ * asb_search_box_build_template()
+ *
+ * handles display of children of this addon at page load
+ *
+ * @param - $args - (array) the specific information from the child box
+ */
 function asb_search_box_build_template($args)
 {
-	foreach(array('settings', 'template_var') as $key)
-	{
-		$$key = $args[$key];
-	}
-	// don't forget to declare your variable! will not work without this
-	global $$template_var; // <-- important!
+	extract($args);
+	global $$template_var;
 
 	global $mybb, $templates, $lang, $gobutton;
 

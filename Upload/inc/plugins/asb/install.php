@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * This file contains the install functions for acp.php
  */
@@ -13,9 +13,10 @@ if(!defined("IN_MYBB") || !defined("IN_ASB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-/* asb_info()
+/*
+ * asb_info()
  *
- * Information about the plug-in used by MyBB for display as well as to connect with updates
+ * Information about the plugin used by MyBB for display as well as to connect with updates
  */
 function asb_info()
 {
@@ -41,7 +42,7 @@ EOF;
 		}
 
 		$settings_link = <<<EOF
-	<li style="list-style-image: url(styles/default/images/icons/custom.gif)">
+	<li style="list-style-image: url(../inc/plugins/asb/images/settings.gif)">
 		{$settings_link}
 	</li>
 EOF;
@@ -49,10 +50,10 @@ EOF;
 		$extra_links = <<<EOF
 <ul>
 	{$settings_link}
-	<li>
+	<li style="list-style-image: url(../inc/plugins/asb/images/manage.gif)">
 		<a href="{$url}" title="{$lang->asb_manage_sideboxes}">{$lang->asb_manage_sideboxes}</a>
 	</li>{$remove_link}
-	<li>
+	<li style="list-style-image: url(../inc/plugins/asb/images/help.gif)">
 		<a href="javascript:void()" onclick="window.open('{$mybb->settings['bburl']}/inc/plugins/asb/help/index.php?topic=install', 'mywindowtitle', 'width=840, height=520, scrollbars=yes')" title="{$lang->asb_help}">{$lang->asb_help}</a>
 	</li>
 </ul>
@@ -89,23 +90,23 @@ EOF;
 </a></small></i><a href="http://www.rantcentralforums.com" title="Rant Central"><span style="font-family: Courier New; font-weight: bold; font-size: 1.2em; color: #0e7109;">Wildcard</span></a><i><small><a>
 EOF;
 
-	// This array returns information about the plug-in, some of which was prefabricated above based on whether the plugin has been installed or not.
-	return array
-	(
+	// This array returns information about the plugin, some of which was prefabricated above based on whether the plugin has been installed or not.
+	return array(
 		"name"					=> $name,
 		"description"			=> $asb_description,
 		"website"				=> "https://github.com/WildcardSearch/Advanced-Sidebox",
 		"author"				=> $author,
 		"authorsite"			=> "http://www.rantcentralforums.com",
-		"version"				=> "2.0.3",
+		"version"				=> "2.0.4",
 		"compatibility" 		=> "16*",
 		"guid" 					=> "870e9163e2ae9b606a789d9f7d4d2462",
 	);
 }
 
-/* asb_is_installed()
+/*
+ * asb_is_installed()
  *
- * Checks to see if the plug-in's settings group is installed. If so then assume the plug-in is installed.
+ * Checks to see if the plugin's settings group is installed. If so then assume the plugin is installed.
  */
 function asb_is_installed()
 {
@@ -113,9 +114,10 @@ function asb_is_installed()
 	return asb_get_settingsgroup();
 }
 
-/* asb_install()
+/*
+ * asb_install()
  *
- * Add tables, a column to the mybb_users table (show_sidebox), install the plug-in setting group (asb_settings), settings, a template (asb_wrapped_sidebox), check for existing modules and install any detected.
+ * Add tables, a column to the mybb_users table (show_sidebox), install the plugin setting group (asb_settings), settings, a template (asb_wrapped_sidebox), check for existing modules and install any detected.
  */
 function asb_install()
 {
@@ -134,6 +136,14 @@ function asb_install()
 	}
 	$installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
 	$installer->install();
+
+	require_once MYBB_ROOT . 'inc/plugins/asb/classes/module.php';
+	$addons = asb_get_all_modules();
+	foreach($addons as $addon)
+	{
+		$addon->install();
+	}
+
 	asb_create_script_info();
 
 	@unlink(MYBB_ROOT . 'inc/plugins/adv_sidebox.php');
@@ -184,15 +194,21 @@ function asb_deactivate()
 	change_admin_permission('config', 'asb', -1);
 }
 
-/* asb_uninstall()
+/*
+ * asb_uninstall()
  *
- * DROP the table added to the DB and the column previously added to the mybb_users table (show_sidebox), delete the plug-in settings, templates and style sheets.
+ * DROP the table added to the DB and the column previously added to the mybb_users table (show_sidebox), delete the plugin settings, templates and style sheets.
  */
 function asb_uninstall()
 {
+	if(!defined('IN_ASB_UNINSTALL'))
+	{
+		define('IN_ASB_UNINSTALL', true);
+	}
+
 	global $mybb;
 
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/forum.php';
+	require_once MYBB_ROOT . 'inc/plugins/asb/classes/module.php';
 	// remove the modules first
 	$addons = asb_get_all_modules();
 
@@ -225,7 +241,7 @@ function asb_uninstall()
 /*
  * asb_get_settingsgroup()
  *
- * retrieves the plug-in's settings group gid if it exists
+ * retrieves the plugin's settings group gid if it exists
  * attempts to cache repeat calls
  */
 function asb_get_settingsgroup()
@@ -252,7 +268,7 @@ function asb_get_settingsgroup()
 /*
  * asb_build_settings_url()
  *
- * builds the url to modify plug-in settings if given valid info
+ * builds the url to modify plugin settings if given valid info
  *
  * @param - $gid is an integer representing a valid settings group id
  */
@@ -267,7 +283,7 @@ function asb_build_settings_url($gid)
 /*
  * asb_build_settings_link()
  *
- * builds a link to modify plug-in settings if it exists
+ * builds a link to modify plugin settings if it exists
  */
 function asb_build_settings_link()
 {

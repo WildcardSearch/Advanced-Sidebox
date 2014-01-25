@@ -1,10 +1,10 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
- * this file contains the ACP functionality and depends upon install.php for plug-in info and installation routines
+ * this file contains the ACP functionality and depends upon install.php for plugin info and installation routines
  */
 
 // disallow direct access to this file for security reasons
@@ -220,9 +220,15 @@ EOF;
 	</div>
 	<script type="text/javascript">
 	<!--
+		// set up our columns
 		build_sortable('left_column');
 		build_sortable('right_column');
 		build_sortable('trash_column');
+
+		/* stop the edit link from taking admin to a new page
+		 * we will popup a modal instead (this allows a fallback for
+		 * noscript)
+		 */
 		$$("a[id^='edit_sidebox_']").invoke
 		(
 			'observe',
@@ -232,6 +238,8 @@ EOF;
 				Event.stop(event);
 			}
 		);
+
+		// remove the delete icon as we have the trash column
 		$$('.del_icon').each
 		(
 			function(e)
@@ -239,6 +247,10 @@ EOF;
 				e.remove();
 			}
 		);
+
+		/* replace all the links with their titles
+		 * (we don't need them we have drag and drop)
+		 */
 		$$('.add_box_link').each
 		(
 			function(e)
@@ -379,7 +391,7 @@ function asb_admin_edit_box()
 		}
 
 		// if the text field isn't empty . . .
-		if(isset($mybb->input['box_title']) && $mybb->input['box_title'])
+		if($mybb->input['box_title'])
 		{
 			// use it
 			$sidebox->set('title', $mybb->input['box_title']);
@@ -387,7 +399,7 @@ function asb_admin_edit_box()
 		else
 		{
 			// otherwise, check the hidden field (original title)
-			if(isset($mybb->input['current_title']) && $mybb->input['current_title'])
+			if($mybb->input['current_title'])
 			{
 				// if it exists, use it
 				$sidebox->set('title', $mybb->input['current_title']);
@@ -400,7 +412,7 @@ function asb_admin_edit_box()
 		}
 
 		// save the side box
-		$status = $sidebox->save();
+		$sidebox->save();
 		asb_cache_has_changed();
 
 		// AJAX?
@@ -421,7 +433,10 @@ function asb_admin_edit_box()
 				// then escape the title
 				$box_title = addcslashes($sidebox->get('title'), "'");
 
-				// and create the new <div> representation of the side box (title only it will be filled in later by the updater)
+				/*
+				 * create the new <div> representation of the side box
+				 * (title only it will be filled in later by the updater)
+				 */
 				$build_script = <<<EOF
 $('{$column_id}').highlight(); var new_box=document.createElement('div'); new_box.innerHTML='{$box_title}'; new_box.id='sidebox_{$id}'; new_box.setAttribute('class','sidebox'); new_box.style.position='relative'; $('{$column_id}').appendChild(new_box); build_sortable('{$column_id}'); build_droppable('{$column_id}');
 EOF;
@@ -468,7 +483,7 @@ EOF;
 		else
 		{
 			flash_message('Bad module!');
-			admin_redirect($html());
+			admin_redirect($html->url());
 		}
 	}
 	else
@@ -547,8 +562,7 @@ EOF;
 		$form = new Form($html->url(array("action" => 'edit_box', "id" => $box_id, "addon" => $module)), "post", "modal_form");
 	}
 
-	$tabs = array
-	(
+	$tabs = array(
 		"general" => $lang->asb_modal_tab_general,
 		"permissions" => $lang->asb_modal_tab_permissions,
 		"pages" => $lang->asb_modal_tab_pages,
@@ -948,6 +962,10 @@ EOF;
 			$this_box->set('wrap_content', true);
 		}
 
+		$page->extra_header .= <<<EOF
+	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
+EOF;
+
 		$page->add_breadcrumb_item($lang->asb_custom_boxes, $html->url(array("action" => 'custom_boxes')));
 		$page->add_breadcrumb_item($lang->asb_add_custom);
 		$page->output_header("{$lang->asb_name} - {$action}");
@@ -989,21 +1007,14 @@ EOF;
 			echo <<<EOF
 		<script type="text/javascript">
 		<!--
-			Event.observe
-			(
-				'edit_box',
-				'submit',
-				function()
-				{
-					if($('box_content_cp'))
-					{
-						var area = $('box_content_cp');
-						area.id = 'box_content';
-						area.value = box_content.getCode();
-						area.disabled = false;
-					}
+			Event.observe('edit_box', 'submit', function() {
+				if ($('box_content_cp')) {
+					var area = $('box_content_cp');
+					area.id = 'box_content';
+					area.value = box_content.getCode();
+					area.disabled = false;
 				}
-			);
+			});
 		// -->
 		</script>
 EOF;
@@ -1012,6 +1023,10 @@ EOF;
 			asb_output_footer('edit_custom');
 		}
 	}
+
+	$page->extra_header .= <<<EOF
+	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
+EOF;
 
 	$page->add_breadcrumb_item($lang->asb_custom_boxes);
 	$page->output_header("{$lang->asb_name} - {$lang->asb_custom_boxes}");
@@ -1189,12 +1204,9 @@ function asb_admin_manage_scripts()
 		if(!$this_script->export())
 		{
 			flash_message($lang->asb_script_export_fail, 'error');
+			admin_redirect($html->url(array("action" => 'manage_scripts')));
 		}
-		else
-		{
-			flash_message($lang->asb_script_export_success, 'success');
-		}
-		admin_redirect($html->url(array("action" => 'manage_scripts')));
+		exit;
 	}
 	elseif(($mybb->input['mode'] == 'activate' || $mybb->input['mode'] == 'deactivate') && $mybb->input['id'])
 	{
@@ -1215,8 +1227,7 @@ function asb_admin_manage_scripts()
 		admin_redirect($html->url(array("action" => 'manage_scripts')));
 	}
 
-	$data = array
-	(
+	$data = array(
 		"active" => 'false',
 		"find_top" => '{$header}',
 		"find_bottom" => '{$footer}',
@@ -1230,7 +1241,7 @@ function asb_admin_manage_scripts()
 	{
 		$this_script = new ScriptInfo((int) $mybb->input['id']);
 
-		$detected_show = " style=\"display: none;\"";
+		$detected_show = ' style="display: none;"';
 		$button_text = $lang->asb_add;
 		$filename = '';
 
@@ -1270,7 +1281,9 @@ EOF;
 	// -->
 	</script>
 	<script type="text/javascript" src="jscripts/asb_scripts.js"></script>
+	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
 EOF;
+
 		$page->add_breadcrumb_item($lang->asb_manage_scripts, $html->url(array("action" => 'manage_scripts')));
 		$page->add_breadcrumb_item($lang->asb_edit_script);
 		$page->output_header("{$lang->asb} - {$lang->asb_manage_scripts} - {$action}");
@@ -1318,35 +1331,28 @@ EOF;
 			echo <<<EOF
 		<script type="text/javascript">
 		<!--
-			Event.observe
-			(
-				'edit_script',
-				'submit',
-				function()
-				{
-					if($('find_top_cp'))
-					{
-						var area = $('find_top_cp');
-						area.id = 'find_top';
-						area.value = find_top.getCode();
-						area.disabled = false;
-					}
-					if($('find_bottom_cp'))
-					{
-						var area = $('find_bottom_cp');
-						area.id = 'find_bottom';
-						area.value = find_bottom.getCode();
-						area.disabled = false;
-					}
-					if($('replacement_cp'))
-					{
-						var area = $('replacement_cp');
-						area.id = 'replacement';
-						area.value = replacement.getCode();
-						area.disabled = false;
-					}
+			Event.observe('edit_script', 'submit', function() {
+				if ($('find_top_cp')) {
+					var area = $('find_top_cp');
+					area.id = 'find_top';
+					area.value = find_top.getCode();
+					area.disabled = false;
 				}
-			);
+
+				if ($('find_bottom_cp')) {
+					var area = $('find_bottom_cp');
+					area.id = 'find_bottom';
+					area.value = find_bottom.getCode();
+					area.disabled = false;
+				}
+
+				if ($('replacement_cp')) {
+					var area = $('replacement_cp');
+					area.id = 'replacement';
+					area.value = replacement.getCode();
+					area.disabled = false;
+				}
+			});
 		// -->
 		</script>
 EOF;
@@ -1357,6 +1363,10 @@ EOF;
 	}
 	else
 	{
+		$page->extra_header .= <<<EOF
+	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
+EOF;
+
 		$page->add_breadcrumb_item($lang->asb_manage_scripts);
 		$page->output_header("{$lang->asb_name} - {$lang->asb_manage_scripts}");
 		asb_output_tabs('asb_scripts');
@@ -1393,8 +1403,8 @@ EOF;
 				$table->construct_cell($data['filename']);
 				$table->construct_cell($data['action'] ? $data['action'] : $none);
 				$table->construct_cell($data['page'] ? $data['page'] : $none);
-				$table->construct_cell($data['template_name']);
-				$table->construct_cell($data['hook']);
+				$table->construct_cell($data['template_name'] ? $data['template_name'] : $none);
+				$table->construct_cell($data['hook'] ? $data['hook'] : $none);
 				$table->construct_cell($data['active'] ? $deactivate_link : $activate_link);
 
 				// options popup
@@ -1443,6 +1453,10 @@ function asb_admin_manage_modules()
 {
 	global $lang, $mybb, $db, $page, $html;
 
+	$page->extra_header .= <<<EOF
+	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
+EOF;
+
 	$page->add_breadcrumb_item($lang->asb, $html->url());
 	$page->add_breadcrumb_item($lang->asb_manage_modules);
 
@@ -1464,7 +1478,7 @@ function asb_admin_manage_modules()
 			$data = $this_module->get(array('title', 'description', 'base_name'));
 
 			// title
-			$table->construct_cell($data['title']);
+			$table->construct_cell("<strong>{$data['title']}</strong>");
 
 			// description
 			$table->construct_cell($data['description']);
@@ -1596,25 +1610,16 @@ function asb_admin_xmlhttp()
 		// we have to reaffirm our observance of the edit link when it is added/updated
 		$script = <<<EOF
 <script type="text/javascript">
-Event.observe
-(
-'edit_sidebox_{$id}',
-'click',
-function(event)
-{
+Event.observe('edit_sidebox_{$id}', 'click', function(event) {
 	// stop the link from redirecting the user-- set up this way so that if JS is disabled the user goes to a standard form rather than a modal edit form
 	Event.stop(event);
 
 	// create the modal edit box dialogue
-	new MyModal
-	(
-		{
-			type: 'ajax',
-			url: this.readAttribute('href') + '&ajax=1'
-		}
-	);
-}
-);
+	new MyModal({
+		type: 'ajax',
+		url: this.readAttribute('href') + '&ajax=1'
+	});
+});
 </script>
 EOF;
 		// this HTML output will be directly stored in the side box's representative <div>
@@ -1665,7 +1670,7 @@ function asb_admin_delete_box()
  */
 function asb_admin_delete_addon()
 {
-	global $mybb, $html;
+	global $mybb, $html, $lang;
 
 	// info goof?
 	if(!isset($mybb->input['addon']) || strlen(trim($mybb->input['addon'])) == 0)
@@ -1777,8 +1782,8 @@ function asb_admin_config_menu(&$sub_menu)
 	{
 		$lang->load('asb');
 	}
-	$asb_menuitem = array
-	(
+
+	$asb_menuitem = array(
 		'id' 		=> 'asb',
 		'title' 	=> $lang->asb,
 		'link' 		=> ASB_URL
@@ -1794,7 +1799,8 @@ function asb_admin_config_menu(&$sub_menu)
  *
  * Add an entry to admin permissions list
  *
- * @param - &$admin_permissions is the array of permission types we are adding an element to
+ * @param - &$admin_permissions is the array of permission types
+ * we are adding an element to
  */
 $plugins->add_hook('admin_config_permissions', 'asb_admin_config_permissions');
 function asb_admin_config_permissions(&$admin_permissions)

@@ -1,13 +1,12 @@
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * this file contains style information for the ASB help system
  */
 
-body
-{
+body {
 	background: #85B1EE;
 	color: #333;
 }
@@ -16,8 +15,7 @@ body
  * content
  */
 
-.help_content
-{
+.help_content {
 	background: #F9F9F9;
 	color: #333;
 	margin: 5px;
@@ -26,42 +24,36 @@ body
 	box-shadow: 5px 5px 5px #0c1172;
 }
 
-.help_content h1
-{
+.help_content h1 {
 	font-size: 1.5em;
 	margin-bottom: 0px;
 	padding-bottom: 0px;
 }
 
-.help_content h2
-{
+.help_content h2 {
 	font-size: .8em;
 	font-style: italic;
 	margin-top: 0px;
 	padding-top: 0px;
 }
 
-.info
-{
+.info {
 	color: #0db504;
 	font-weight: bold;
 }
 
-.warning
-{
+.warning {
 	color: #bb3333;
 	font-weight: bold;
 	font-style: italic;
 }
 
-code
-{
+code {
 	font-weight: bold;
 	color: #0000CD;
 }
 
-.code_box
-{
+.code_box {
 	border: 1px solid;
 	background: #ddd;
 	margin: 10px;
@@ -74,22 +66,20 @@ code
  * content links
  */
 
-.help_content a:link
-{
+.help_content a:link {
 	text-decoration: none;
 	font-weight: bold;
 	color: #0000cd;
 }
 
-.help_content a:visited
-{
+.help_content a:visited {
 	text-decoration: none;
 	font-weight: bold;
 	color: #0000bc;
 }
 
-.help_content a:active, .help_content a:hover
-{
+.help_content a:active,
+.help_content a:hover {
 	text-decoration: underline;
 	font-weight: bold;
 	color: #2222ef;
@@ -99,8 +89,7 @@ code
  * menu
  */
 
-.menu
-{
+.menu {
 	position: relative;
 	top: 5px;
 	box-shadow: 5px 5px 5px #0c1172;
@@ -110,33 +99,28 @@ code
 	color: #0000EF;
 }
 
-.menu a:link
-{
+.menu a:link {
 	text-decoration: none;
 	color: #0000EF;
 }
 
-.menu a:visited
-{
+.menu a:visited {
 	text-decoration: none;
 	color: #0000CD;
 }
 
-.menu a:hover, .menu a:active
-{
+.menu a:hover, .menu a:active {
 	text-decoration: none;
 	color: #0000ab;
 }
 
-.inactive_link:hover
-{
+.inactive_link:hover {
 	background: #eee;
 	border: 2px solid #2222CD;
 	cursor: pointer;
 }
 
-.inactive_link
-{
+.inactive_link {
 	background: #ddd;
 	border: 2px solid #0000CD;
 	cursor: pointer;

@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * ASB default module
  */
@@ -13,6 +13,11 @@ if(!defined("IN_MYBB") || !defined("IN_ASB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+/*
+ * asb_welcome_box_info()
+ *
+ * provide info to ASB about the addon
+ */
 function asb_welcome_box_info()
 {
 	global $lang;
@@ -22,16 +27,13 @@ function asb_welcome_box_info()
 		$lang->load('asb_addon');
 	}
 
- 	return array
-	(
+ 	return array(
 		"title" => $lang->asb_welcome,
 		"description" => $lang->asb_welcome_desc,
 		"wrap_content" => true,
 		"version" => "1.3.1",
-		"templates" => array
-		(
-			array
-			(
+		"templates" => array(
+			array(
 				"title" => "asb_welcome",
 				"template" => <<<EOF
 				<tr>
@@ -40,11 +42,8 @@ function asb_welcome_box_info()
 					</td>
 				</tr>
 EOF
-				,
-				"sid" => -1
 			),
-			array
-			(
+			array(
 				"title" => "asb_welcome_membertext",
 				"template" => <<<EOF
 				{\$user_avatar}<span class="smalltext"><em>{\$lang->asb_welcome_member_welcome_lastvisit}:</em> {\$lastvisit}<br />
@@ -55,11 +54,8 @@ EOF
 				<a href="{\$mybb->settings[\'bburl\']}/search.php?action=getnew">{\$lang->asb_welcome_view_new}</a><br /><a href="{\$mybb->settings[\'bburl\']}/search.php?action=getdaily">{\$lang->asb_welcome_view_todays}</a>
 				</span>
 EOF
-				,
-				"sid" => -1
 			),
-			array
-			(
+			array(
 				"title" => "asb_welcome_guesttext",
 				"template" => <<<EOF
 				<span class="smalltext">{\$lang->asb_welcome_guest_welcome_registration}</span><br />
@@ -72,22 +68,22 @@ EOF
 					<input type="submit" class="button" name="loginsubmit" value="{\$lang->login}"/>
 				</form>
 EOF
-				,
-				"sid" => -1
 			)
 		)
 	);
 }
 
+/*
+ * asb_welcome_box_build_template()
+ *
+ * handles display of children of this addon at page load
+ *
+ * @param - $args - (array) the specific information from the child box
+ */
 function asb_welcome_box_build_template($args)
 {
-	foreach(array('settings', 'template_var', 'width') as $key)
-	{
-		$$key = $args[$key];
-	}
-	global $$template_var; // <-- important!
-
-	global $db, $mybb, $templates, $lang, $lastvisit, $theme, $user_avatar;
+	extract($args);
+	global $$template_var, $db, $mybb, $templates, $lang, $lastvisit, $theme, $user_avatar;
 
 	// Load global and custom language phrases
 	if(!$lang->asb_addon)
@@ -164,19 +160,15 @@ function asb_welcome_box_build_template($args)
 
 		$avatar_width = (int) ($width / 5);
 
-		// If the user has an avatar then display it . . .
+		// if the user has an avatar then display it, otherwise force the default avatar.
+		$avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
 		if($mybb->user['avatar'] != "")
 		{
 			$avatar_filename = $mybb->user['avatar'];
 		}
-		else
-		{
-			// . . . otherwise force the default avatar.
-			$avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
-		}
 
 		$user_avatar = <<<EOF
-<span style="float: right;"><img src="{$avatar_filename}" width="{$avatar_width}" alt="{$mybb->user['username']}'s avatar"/>&nbsp;</span>
+<span style="float: right;"><img src="{$avatar_filename}" width="{$avatar_width}" alt="{$mybb->user['username']}'s profile"/>&nbsp;</span>
 EOF;
 
 		eval("\$welcometext = \"" . $templates->get("asb_welcome_membertext") . "\";");
@@ -185,20 +177,19 @@ EOF;
 	{
 		$lang->asb_welcome_guest_welcome_registration = $lang->sprintf($lang->asb_welcome_guest_welcome_registration, $mybb->settings['bburl'] . '/member.php?action=register');
 		$mybb->user['username'] = $lang->guest;
-		switch($mybb->settings['username_method'])
-		{
-			case 0:
-				$username = $lang->username;
-				break;
-			case 1:
-				$username = $lang->username1;
-				break;
-			case 2:
-				$username = $lang->username2;
-				break;
-			default:
-				$username = $lang->username;
-				break;
+		switch ($mybb->settings['username_method']) {
+		case 0:
+			$username = $lang->username;
+			break;
+		case 1:
+			$username = $lang->username1;
+			break;
+		case 2:
+			$username = $lang->username2;
+			break;
+		default:
+			$username = $lang->username;
+			break;
 		}
 		eval("\$welcometext = \"" . $templates->get("asb_welcome_guesttext") . "\";");
 	}

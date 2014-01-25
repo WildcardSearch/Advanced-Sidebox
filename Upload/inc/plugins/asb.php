@@ -1,10 +1,10 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
- * the main plug-in file; splits forum and ACP scripts to decrease footprint
+ * the main plugin file; splits forum and ACP scripts to decrease footprint
  */
 
 // disallow direct access to this file for security reasons
@@ -17,7 +17,7 @@ if(!defined("IN_MYBB"))
 define("IN_ASB", true);
 define("ASB_MODULES_DIR", MYBB_ROOT. "inc/plugins/asb/modules");
 
-// some basic functions use everywhere
+// some basic functions used everywhere
 require_once MYBB_ROOT . 'inc/plugins/asb/functions.php';
 
 // load the install/admin routines only if in ACP.

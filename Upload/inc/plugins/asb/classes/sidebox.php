@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * this file contains an object wrapper for individual side boxes
  */
@@ -22,23 +22,21 @@ class Sidebox extends StorableObject
 	protected $settings = array();
 	public $has_settings = false;
 
+	protected $table_name = 'asb_sideboxes';
+
 	/*
-	 * __construct() called upon creation
+	 * __construct()
 	 *
-	 * @param - $data can be an array fetched from db,
-	 * 						a valid ID # or
-	 *						left blank to create a new side box
+	 * called upon creation
+	 *
+	 * @param - $data - (mixed) an associative array corresponding to both the class specs
+	 * and the database table specs or a database table row ID
 	 */
-	function __construct($data = 0)
+	function __construct($data = '')
 	{
-		$this->table_name = 'asb_sideboxes';
 		$this->no_store[] = 'groups_array';
 		$this->no_store[] = 'has_settings';
-
-		if($data)
-		{
-			parent::__construct($data);
-		}
+		parent::__construct($data);
 	}
 
 	/*
@@ -47,7 +45,7 @@ class Sidebox extends StorableObject
 	 * attempts to load the side box's data from the db, or if given no data create a blank object
 	 *
 	 * @param - $data can be an array fetched from the db or
-	 *						a valid ID # (__construct will feed 0 if no data is given)
+	 * a valid ID # (__construct will feed 0 if no data is given)
 	 */
 	public function load($data)
 	{

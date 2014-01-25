@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * this is an example of the simplest version of an ASB add-on
  */
@@ -13,6 +13,11 @@ if(!defined("IN_MYBB") || !defined("IN_ASB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+/*
+ * asb_example_info()
+ *
+ * provide info to ASB about the addon
+ */
 function asb_example_info()
 {
 	global $lang;
@@ -22,22 +27,24 @@ function asb_example_info()
 		$lang->load('asb_addon');
 	}
 
-	return array
-	(
-		"title"				=>	$lang->asb_example1_title,
-		"description"		=>	$lang->asb_example1_desc,
-		"wrap_content"	=>	true,
-		"version"			=>	"1"
+	return array	(
+		"title" => $lang->asb_example1_title,
+		"description" => $lang->asb_example1_desc,
+		"wrap_content" => true,
+		"version" => "1"
 	);
 }
 
-// this function is called when it is time to display your box
+/*
+ * asb_example_build_template()
+ *
+ * handles display of children of this addon at page load
+ *
+ * @param - $args - (array) the specific information from the child box
+ */
 function asb_example_build_template($args)
 {
-	foreach(array('settings', 'template_var') as $key)
-	{
-		$$key = $args[$key];
-	}
+	extract($args);
 
 	/*
 	 * using variable variables (thanks Euan T.) we declare the template variable as global here and eval() its contents.

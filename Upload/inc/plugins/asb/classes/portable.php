@@ -37,61 +37,65 @@ abstract class PortableObject extends StorableObject implements PortableObjectIn
 	 */
 	public function export($options = '')
 	{
-		if($this->table_name && $this->id)
+		if(!$this->table_name || !$this->id)
 		{
-			$row = $this->build_row();
-			$id = (int) $this->id;
+			return false;
+		}
 
-			if($row)
+		$row = $this->build_row();
+		$id = (int) $this->id;
+
+		if(!$row)
+		{
+			return false;
+		}
+
+		$name = $this->get_clean_identifier();
+		$default_values = array
+			(
+				"charset" => 'UTF-8',
+				"version" => '2.0',
+				"website" => 'http://www.rantcentralforums.com',
+				"filename" => "{$this->table_name}_{$name}-backup.xml"
+			);
+
+		// try to get MyBB default charset
+		global $lang;
+		if(isset($lang->settings['charset']))
+		{
+			$default_values['charset'] = $lang->settings['charset'];
+		}
+
+		if(is_array($options) && !empty($options))
+		{
+			foreach($default_values as $key => $value)
 			{
-				$name = $this->get_clean_identifier();
-				$default_values = array
-					(
-						"charset" => 'UTF-8',
-						"version" => '2.0',
-						"website" => 'http://www.wildcardsworld.com',
-						"filename" => "{$this->table_name}_{$name}-backup.xml"
-					);
-
-				// try to get MyBB default charset
-				global $lang;
-				if(isset($lang->settings['charset']))
+				if(!isset($options[$key]) || !$options[$key])
 				{
-					$default_values['charset'] = $lang->settings['charset'];
+					$options[$key] = $value;
 				}
+			}
+		}
+		else
+		{
+			$options = $default_values;
+		}
 
-				if(is_array($options) && !empty($options))
-				{
-					foreach($default_values as $key => $value)
-					{
-						if(!isset($options[$key]) || !$options[$key])
-						{
-							$options[$key] = $value;
-						}
-					}
-				}
-				else
-				{
-					$options = $default_values;
-				}
-
-				$xml = <<<EOF
+		$xml = <<<EOF
 <?xml version="1.0" encoding="{$options['charset']}"?>
 <{$this->table_name} version="{$options['version']}" xmlns="{$options['website']}">
 <{$this->table_name}_{$id}>
 {$row}	</{$this->table_name}_{$id}>
 </{$this->table_name}>
 EOF;
-				// send out headers (opens a save dialogue)
-				header("Content-Disposition: attachment; filename={$options['filename']}");
-				header('Content-Type: application/xml');
-				header('Content-Length: ' . strlen($xml));
-				header('Pragma: no-cache');
-				header('Expires: 0');
-				echo $xml;
-			}
-		}
-		return false;
+		// send out headers (opens a save dialogue)
+		header("Content-Disposition: attachment; filename={$options['filename']}");
+		header('Content-Type: application/xml');
+		header('Content-Length: ' . strlen($xml));
+		header('Pragma: no-cache');
+		header('Expires: 0');
+		echo $xml;
+		return true;
 	}
 
 	/*

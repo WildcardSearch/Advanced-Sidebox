@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * this file contains extra functions for install.php
  */
@@ -19,10 +19,8 @@
 function asb_create_script_info($return = false)
 {
 	require_once MYBB_ROOT . 'inc/plugins/asb/classes/script_info.php';
-	$scripts = array
-	(
-		"index" => array
-		(
+	$scripts = array(
+		"index" => array(
 			"title" => 'Index',
 			"filename" => 'index.php',
 			"template_name" => 'index',
@@ -31,8 +29,7 @@ function asb_create_script_info($return = false)
 			"find_bottom" => '{$footer}',
 			"active" => 1
 		),
-		"forumdisplay" => array
-		(
+		"forumdisplay" => array(
 			"title" => 'Forum Display',
 			"filename" => 'forumdisplay.php',
 			"template_name" => 'forumdisplay_threadlist',
@@ -43,8 +40,7 @@ function asb_create_script_info($return = false)
 			"find_bottom" => '{$inline_edit_js}',
 			"active" => 1
 		),
-		"showthread" => array
-		(
+		"showthread" => array(
 			"title" => 'Show Thread',
 			"filename" => 'showthread.php',
 			"template_name" => 'showthread',
@@ -53,8 +49,7 @@ function asb_create_script_info($return = false)
 			"find_bottom" => '{$footer}',
 			"active" => 1
 		),
-		"member" => array
-		(
+		"member" => array(
 			"title" => 'Member Profile',
 			"filename" => 'member.php',
 			"action" => 'profile',
@@ -64,8 +59,7 @@ function asb_create_script_info($return = false)
 			"find_bottom" => '{$footer}',
 			"active" => 1
 		),
-		"memberlist" => array
-		(
+		"memberlist" => array(
 			"title" => 'Member List',
 			"filename" => 'memberlist.php',
 			"template_name" => 'memberlist',
@@ -74,8 +68,7 @@ function asb_create_script_info($return = false)
 			"find_bottom" => '{$footer}',
 			"active" => 1
 		),
-		"showteam" => array
-		(
+		"showteam" => array(
 			"title" => 'Forum Team',
 			"filename" => 'showteam.php',
 			"template_name" => 'showteam',
@@ -84,8 +77,7 @@ function asb_create_script_info($return = false)
 			"find_bottom" => '{$footer}',
 			"active" => 1
 		),
-		"stats" => array
-		(
+		"stats" => array(
 			"title" => 'Statistics',
 			"filename" => 'stats.php',
 			"template_name" => 'stats',
@@ -94,8 +86,7 @@ function asb_create_script_info($return = false)
 			"find_bottom" => '{$footer}',
 			"active" => 1
 		),
-		"portal" => array
-		(
+		"portal" => array(
 			"title" => 'Portal',
 			"filename" => 'portal.php',
 			"template_name" => 'portal',
@@ -228,7 +219,7 @@ function asb_set_cache_version()
 {
 	global $cache;
 
-	// get version from this plug-in file
+	// get version from this plugin file
 	$asb_info = asb_info();
 
 	// update version cache to latest

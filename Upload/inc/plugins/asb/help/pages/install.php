@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * this file contains a custom help document for ASB
  */
@@ -22,7 +22,7 @@ $help_content = <<<EOF
 			</p>
 			<p class="info">And that's all there is to it!</p>
 			<h2>handling periodic upgrades</h2>
-			<p>This plug-in has made many changes since version 1.0 and many features have been added. Thankfully with some help from <a href="http://www.communityplugins.com/" title="CommunityPlugins.com"><span style="color: #FF7500; font-weight: bold;">pavemen</span></a> we have been able to make upgrading ASB a breeze. Any upgrade that is needed can be performed as follows:</p>
+			<p>This plugin has made many changes since version 1.0 and many features have been added. Thankfully with some help from <a href="http://www.communityplugins.com/" title="CommunityPlugins.com"><span style="color: #FF7500; font-weight: bold;">pavemen</span></a> we have been able to make upgrading ASB a breeze. Any upgrade that is needed can be performed as follows:</p>
 			<p>
 				<ul>
 					<li>Deactivate in ACP</li>
@@ -31,7 +31,7 @@ $help_content = <<<EOF
 				</ul>
 			</p>
 			<p class="info">There is never a need to uninstall and lose your work!</p>
-			<p class="warning">You should always be sure to back up your work and deactivate this plug-in before attempting an upgrade.</p>
+			<p class="warning">You should always be sure to back up your work and deactivate this plugin before attempting an upgrade.</p>
 		</div>
 EOF;
 

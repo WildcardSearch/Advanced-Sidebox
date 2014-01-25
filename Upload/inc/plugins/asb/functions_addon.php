@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * functions used by the default the modules and available to any third party add-ons as well
  */
@@ -17,21 +17,17 @@
 function asb_strip_quotes($message)
 {
 	// Assign pattern and replace values.
-	$pattern = array
-	(
+	$pattern = array(
 		"#\[quote=([\"']|&quot;|)(.*?)(?:\\1)(.*?)(?:[\"']|&quot;)?\](.*?)\[/quote\](\r\n?|\n?)#esi",
 		"#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si",
 		"#\[\/quote\](\r\n?|\n?)#si"
 	);
 
-	do
-	{
+	do {
 		$message = preg_replace($pattern, '', $message, -1, $count);
-	}
-	while($count);
+	} while($count);
 
-	$find = array
-	(
+	$find = array(
 		"#(\r\n*|\n*)<\/cite>(\r\n*|\n*)#",
 		"#(\r\n*|\n*)<\/blockquote>#"
 	);

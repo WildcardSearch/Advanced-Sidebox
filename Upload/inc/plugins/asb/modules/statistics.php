@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * ASB default module
  */
@@ -13,6 +13,11 @@ if(!defined("IN_MYBB") || !defined("IN_ASB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+/*
+ * asb_statistics_info()
+ *
+ * provide info to ASB about the addon
+ */
 function asb_statistics_info()
 {
 	global $lang;
@@ -22,28 +27,23 @@ function asb_statistics_info()
 		$lang->load('asb_addon');
 	}
 
- 	return array
-	(
+ 	return array(
 		"title" => $lang->asb_stats,
 		"description" => $lang->asb_stats_desc,
 		"wrap_content" => true,
 		"version" => "1.2",
-		"settings" => array
-		(
-			"format_username" =>	array
-			(
+		"settings" => array(
+			"format_username" => array(
 				"sid" => "NULL",
 				"name" => "format_username",
 				"title" => $lang->asb_stats_format_usernames_title,
 				"description" => $lang->asb_stats_format_usernames_desc,
 				"optionscode" => "yesno",
 				"value" => '0'
-			)
+			),
 		),
-		"templates" => array
-		(
-			array
-			(
+		"templates" => array(
+			array(
 				"title" => "asb_statistics",
 				"template" => <<<EOF
 				<tr>
@@ -58,25 +58,22 @@ function asb_statistics_info()
 					</td>
 				</tr>
 EOF
-				,
-				"sid" => -1
 			)
 		)
 	);
 }
 
 /*
- * This function is required. It is used by asb.php to display the custom content in your sidebox.
+ * asb_statistics_build_template()
+ *
+ * handles display of children of this addon at page load
+ *
+ * @param - $args - (array) the specific information from the child box
  */
 function asb_statistics_build_template($args)
 {
-	foreach(array('settings', 'template_var') as $key)
-	{
-		$$key = $args[$key];
-	}
-	// don't forget to declare your variable! will not work without this
-	global $$template_var; // <-- important!
-	global $mybb, $cache, $templates, $lang;
+	extract($args);
+	global $$template_var, $mybb, $cache, $templates, $lang;
 
 	// Load global and custom language phrases
 	if(!$lang->asb_addon)
@@ -90,11 +87,8 @@ function asb_statistics_build_template($args)
 	$statistics['numposts'] = my_number_format($statistics['numposts']);
 	$statistics['numusers'] = my_number_format($statistics['numusers']);
 
-	if(!$statistics['lastusername'])
-	{
-		$newestmember = "<strong>" . $lang->asb_stats_no_one . "</strong>";
-	}
-	else
+	$newestmember = "<strong>" . $lang->asb_stats_no_one . "</strong>";
+	if($statistics['lastusername'])
 	{
 		if($settings['format_username']['value'])
 		{
@@ -105,8 +99,8 @@ function asb_statistics_build_template($args)
 		{
 			$last_username = $statistics['lastusername'];
 		}
+		$newestmember = build_profile_link($last_username, $statistics['lastuid']);
 	}
-	$newestmember = build_profile_link($last_username, $statistics['lastuid']);
 
 	eval("\$" . $template_var . " = \"" . $templates->get("asb_statistics") . "\";");
 	return true;

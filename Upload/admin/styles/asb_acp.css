@@ -1,7 +1,7 @@
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * this file contains style information for the ACP pages
  */
@@ -21,7 +21,8 @@
 	left: 2px;
 }
 
-.asb_label a:hover, a:active {
+.asb_label a:hover,
+a:active {
 	color: #333;
 }
 
@@ -41,7 +42,8 @@ div.draggable {
 	z-index: 50;
 }
 
-.box_type, .box_type a {
+.box_type,
+.box_type a {
 	color: #f4f4f4;
 }
 
@@ -270,7 +272,8 @@ td.off {
 	background: #F2F2F2;
 }
 
-.filter_link:hover, .filter_link:hover a	{
+.filter_link:hover,
+.filter_link:hover a	{
 	background: #02426c;
 	color: #F2F2F2;
 	text-decoration: none;

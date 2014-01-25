@@ -1,8 +1,8 @@
 <?php
 /*
- * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.6.x
  * Copyright 2013 WildcardSearch
- * http://www.wildcardsworld.com
+ * http://www.rantcentralforums.com
  *
  * ASB default module
  */
@@ -16,7 +16,7 @@ if(!defined("IN_MYBB") || !defined("IN_ASB"))
 /*
  * asb_rand_quote_info()
  *
- * gives the handler all the info it needs to handle the side box module and track its version and upgrades status
+ * provide info to ASB about the addon
  */
 function asb_rand_quote_info()
 {
@@ -27,17 +27,14 @@ function asb_rand_quote_info()
 		$lang->load('asb_addon');
 	}
 
-	return array
-	(
+	return array(
 		"title" => $lang->asb_random_quotes,
 		"description" => $lang->asb_random_quotes_desc,
 		"wrap_content" => true,
 		"xmlhttp" => true,
 		"version" => "1.5",
-		"settings" => array
-		(
-			"forum_show_list" => array
-			(
+		"settings" => array(
+			"forum_show_list" => array(
 				"sid" => "NULL",
 				"name" => "forum_show_list",
 				"title" => $lang->asb_forum_show_list_title,
@@ -45,8 +42,7 @@ function asb_rand_quote_info()
 				"optionscode" => "text",
 				"value" => ''
 			),
-			"forum_hide_list" => array
-			(
+			"forum_hide_list" => array(
 				"sid" => "NULL",
 				"name" => "forum_hide_list",
 				"title" => $lang->asb_forum_hide_list_title,
@@ -54,8 +50,7 @@ function asb_rand_quote_info()
 				"optionscode" => "text",
 				"value" => ''
 			),
-			"thread_show_list" => array
-			(
+			"thread_show_list" => array(
 				"sid" => "NULL",
 				"name" => "thread_show_list",
 				"title" => $lang->asb_thread_show_list_title,
@@ -63,8 +58,7 @@ function asb_rand_quote_info()
 				"optionscode" => "text",
 				"value" => ''
 			),
-			"thread_hide_list" => array
-			(
+			"thread_hide_list" => array(
 				"sid" => "NULL",
 				"name" => "thread_hide_list",
 				"title" => $lang->asb_thread_hide_list_title,
@@ -72,8 +66,7 @@ function asb_rand_quote_info()
 				"optionscode" => "text",
 				"value" => ''
 			),
-			"min_length" => array
-			(
+			"min_length" => array(
 				"sid" => "NULL",
 				"name" => "min_length",
 				"title" => $lang->asb_random_quotes_min_quote_length_title,
@@ -81,8 +74,7 @@ function asb_rand_quote_info()
 				"optionscode" => "text",
 				"value" => '20'
 			),
-			"max_length" => array
-			(
+			"max_length" => array(
 				"sid" => "NULL",
 				"name" => "max_length",
 				"title" => $lang->asb_random_quotes_max_quote_length_title,
@@ -90,8 +82,7 @@ function asb_rand_quote_info()
 				"optionscode" => "text",
 				"value" => '160'
 			),
-			"default_text" => array
-			(
+			"default_text" => array(
 				"sid" => "NULL",
 				"name" => "default_text",
 				"title" => $lang->asb_random_quotes_default_text_title,
@@ -99,8 +90,7 @@ function asb_rand_quote_info()
 				"optionscode" => "text",
 				"value" => ''
 			),
-			"xmlhttp_on" => array
-			(
+			"xmlhttp_on" => array(
 				"sid" => "NULL",
 				"name" => "xmlhttp_on",
 				"title" => $lang->asb_xmlhttp_on_title,
@@ -109,11 +99,12 @@ function asb_rand_quote_info()
 				"value" => '0'
 			)
 		),
-		"templates" => array
-		(
-			array
-			(
-				"title" => "rand_quote_sidebox",
+		"discarded_templates" => array(
+			'rand_quote_sidebox',
+		),
+		"templates" => array(
+			array(
+				"title" => "asb_rand_quote_sidebox",
 				"template" => <<<EOF
 				<tr>
 					<td class="tcat">
@@ -131,8 +122,6 @@ function asb_rand_quote_info()
 					</td>
 				</tr>{\$read_more}
 EOF
-				,
-				"sid" => -1
 			)
 		)
 	);
@@ -141,19 +130,13 @@ EOF
 /*
  * asb_rand_quote_build_template()
  *
- * @param - (array) $settings
-					passed from core, side box settings
- * @param - (string) $template_var
-					the encoded unique name of the side box requested for
- * @param - (int) $width
-					the width of the column the calling side box is positioned in
+ * handles display of children of this addon at page load
+ *
+ * @param - $args - (array) the specific information from the child box
  */
 function asb_rand_quote_build_template($args)
 {
-	foreach(array('settings', 'template_var', 'width') as $key)
-	{
-		$$key = $args[$key];
-	}
+	extract($args);
 
 	global $$template_var, $lang;
 
@@ -185,19 +168,13 @@ EOF;
 /*
  * asb_rand_quote_xmlhttp()
  *
- * @param - (int) $dateline
-					UNIX time stamp
- * @param - (array) $settings
-					array of side box settings
- * @param - (int) $width
-					width of column side box lives in
+ * handles display of children of this addon via AJAX
+ *
+ * @param - $args - (array) the specific information from the child box
  */
 function asb_rand_quote_xmlhttp($args)
 {
-	foreach(array('settings', 'dateline', 'width') as $key)
-	{
-		$$key = $args[$key];
-	}
+	extract($args);
 
 	// get a quote and return it
 	$this_quote = asb_rand_quote_get_quote($settings, $width);
@@ -211,10 +188,10 @@ function asb_rand_quote_xmlhttp($args)
 /*
  * asb_rand_quote_get_quote()
  *
- * @param - (array) $settings
-					passed from asb_xmlhttp.php, the requesting side box's settings array
- * @param - (int) $width
-					the width of the column
+ * get random quotes
+ *
+ * @param - $settings (array) individual side box settings passed to the module
+ * @param - $width - (int) the width of the column in which the child is positioned
  */
 function asb_rand_quote_get_quote($settings, $width)
 {
@@ -241,133 +218,126 @@ function asb_rand_quote_get_quote($settings, $width)
 	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
 	$query_where = $unviewwhere . asb_build_SQL_where($where, ' AND ', ' AND ');
 
-	// get a random post
-	$query_string = 
-"SELECT
-	p.pid, p.message, p.fid, p.tid, p.subject, p.uid,
-	u.username, u.usergroup, u.displaygroup, u.avatar
-FROM " .
-	TABLE_PREFIX . "posts p 
-LEFT JOIN " .
-	TABLE_PREFIX . "users u ON (u.uid=p.uid)
-WHERE 
-	p.visible='1'{$query_where}
-ORDER BY
-	RAND()
-LIMIT 1;";
-	$post_query = $db->query($query_string);
+	$post_query = $db->query("
+		SELECT
+			p.pid, p.message, p.fid, p.tid, p.subject, p.uid,
+			u.username, u.usergroup, u.displaygroup, u.avatar
+		FROM " .
+			TABLE_PREFIX . "posts p
+		LEFT JOIN " .
+			TABLE_PREFIX . "users u ON (u.uid=p.uid)
+		WHERE
+			p.visible='1'{$query_where}
+		ORDER BY
+			RAND()
+		LIMIT 1;"
+	);
 
 	// if there was 1 . . .
-	if($db->num_rows($post_query))
-	{
-		$rand_post = $db->fetch_array($post_query);
-
-		// build a post parser
-		require_once MYBB_ROOT."inc/class_parser.php";
-		$parser = new postParser;
-
-		// we just need the text and smilies (we'll parse them after we check length)
-		$pattern = "|[[\/\!]*?[^\[\]]*?]|si";
-		$new_message = asb_strip_url(preg_replace($pattern, '$1', $rand_post['message']));
-		
-		// get some dimensions that make sense in relation to column width
-		$asb_width = (int) $width;
-		$asb_inner_size = $asb_width * .83;
-		$avatar_size = (int) ($asb_inner_size / 5);
-		$font_size = $asb_width / 4.5;
-
-		$font_size = max(10, min(16, $font_size));
-		$username_font_size = (int) ($font_size * .9);
-		$title_font_size = (int) ($font_size * .65);
-		$message_font_size = (int) $font_size;
-
-		if(strlen($new_message) < $settings['min_length']['value'])
-		{
-			if($settings['default_text']['value'])
-			{
-				$new_message = $settings['default_text']['value'];
-			}
-			else
-			{
-				// nothing to show
-				return false;
-			}
-		}
-		
-		if($settings['max_length']['value'] && strlen($new_message) > $settings['max_length']['value'])
-		{
-			$new_message = substr($new_message, 0, $settings['max_length']['value']) . ' . . .';
-		}
-
-		// set up the user name link so that it displays correctly for the display group of the user
-		$plain_text_username = $username = htmlspecialchars_uni($rand_post['username']);
-		$usergroup = $rand_post['usergroup'];
-		$displaygroup = $rand_post['displaygroup'];
-		$username = format_name($username, $usergroup, $displaygroup);
-		$author_link = get_profile_link($rand_post['uid']);
-		$post_link = get_post_link($rand_post['pid'], $rand_post['tid']) . '#pid' . $rand_post['pid'];
-		$thread_link = get_thread_link($rand_post['tid']);
-
-		// allow smilies, but kill 
-		$parser_options = array("allow_smilies" => 1);
-		$new_message = str_replace(array('<br />', '/me'), array('', " * {$plain_text_username}"), $parser->parse_message($new_message . ' ', $parser_options));
-
-		$rand_quote_text = <<<EOF
-<span style="font-size: {$message_font_size}px;">{$new_message}</span>
-EOF;
-
-		// If the user has an avatar then display it . . .
-		if($rand_post['avatar'] != "")
-		{
-			$avatar_filename = $rand_post['avatar'];
-		}
-		else
-		{
-			// . . . otherwise force the default avatar.
-			$avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
-		}
-
-		$rand_quote_avatar = <<<EOF
-<img style="padding: 4px; width: 15%; vertical-align: middle;" src="{$avatar_filename}" alt="{$plain_text_username}'s avatar" title="{$plain_text_username}'s avatar"/>
-EOF;
-
-		$rand_quote_author = <<<EOF
-<a  style="vertical-align: middle;" href="{$author_link}" title="{$plain_text_username}"><span style="font-size: {$username_font_size}px;">{$username}</span></a>
-EOF;
-
-		$read_more = <<<EOF
-
-				<tr>
-					<td class="tfoot">
-						<div style="text-align: center;"><a href="{$post_link}" title="{$lang->asb_random_quotes_read_more_title}"><strong>{$lang->asb_random_quotes_read_more}</strong></a></div>
-					</td>
-				</tr>
-EOF;
-
-		if(my_strlen($rand_post['subject']) > 40)
-		{
-			$rand_post['subject'] = my_substr($rand_post['subject'], 0, 40) . " . . .";
-		}
-
-		if(substr(strtolower($rand_post['subject']), 0, 3) == 're:')
-		{
-			$rand_post['subject'] = substr($rand_post['subject'], 3);
-		}
-
-		$rand_post['subject'] = htmlspecialchars_uni($parser->parse_badwords($rand_post['subject']));
-
-		$thread_title_link = <<<EOF
-<strong><a href="{$thread_link}" title="{$lang->asb_random_quotes_read_more_threadlink_title}"><span style="font-size: {$title_font_size}px;">{$rand_post['subject']}</span></a></strong>
-EOF;
-
-		// eval() the template
-		eval("\$this_quote = \"" . $templates->get("rand_quote_sidebox") . "\";");
-		return $this_quote;
-	}
-	else
+	if($db->num_rows($post_query) == 0)
 	{
 		return false;
 	}
+
+	$rand_post = $db->fetch_array($post_query);
+
+	// build a post parser
+	require_once MYBB_ROOT."inc/class_parser.php";
+	$parser = new postParser;
+
+	// we just need the text and smilies (we'll parse them after we check length)
+	$pattern = "|[[\/\!]*?[^\[\]]*?]|si";
+	$new_message = asb_strip_url(preg_replace($pattern, '$1', $rand_post['message']));
+
+	// get some dimensions that make sense in relation to column width
+	$asb_width = (int) $width;
+	$asb_inner_size = $asb_width * .83;
+	$avatar_size = (int) ($asb_inner_size / 5);
+	$font_size = $asb_width / 4.5;
+
+	$font_size = max(10, min(16, $font_size));
+	$username_font_size = (int) ($font_size * .9);
+	$title_font_size = (int) ($font_size * .65);
+	$message_font_size = (int) $font_size;
+
+	if(strlen($new_message) < $settings['min_length']['value'])
+	{
+		if($settings['default_text']['value'])
+		{
+			$new_message = $settings['default_text']['value'];
+		}
+		else
+		{
+			// nothing to show
+			return false;
+		}
+	}
+
+	if($settings['max_length']['value'] && strlen($new_message) > $settings['max_length']['value'])
+	{
+		$new_message = substr($new_message, 0, $settings['max_length']['value']) . ' . . .';
+	}
+
+	// set up the user name link so that it displays correctly for the display group of the user
+	$plain_text_username = $username = htmlspecialchars_uni($rand_post['username']);
+	$usergroup = $rand_post['usergroup'];
+	$displaygroup = $rand_post['displaygroup'];
+	$username = format_name($username, $usergroup, $displaygroup);
+	$author_link = get_profile_link($rand_post['uid']);
+	$post_link = get_post_link($rand_post['pid'], $rand_post['tid']) . '#pid' . $rand_post['pid'];
+	$thread_link = get_thread_link($rand_post['tid']);
+
+	// allow smilies, but kill
+	$parser_options = array("allow_smilies" => 1);
+	$new_message = str_replace(array('<br />', '/me'), array('', " * {$plain_text_username}"), $parser->parse_message($new_message . ' ', $parser_options));
+
+	$rand_quote_text = <<<EOF
+<span style="font-size: {$message_font_size}px;">{$new_message}</span>
+EOF;
+
+	// if the user has an avatar then display it, otherwise force the default avatar.
+	$avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
+	if($rand_post['avatar'] != "")
+	{
+		$avatar_filename = $rand_post['avatar'];
+	}
+
+	$rand_quote_avatar = <<<EOF
+<img style="padding: 4px; width: 15%; vertical-align: middle;" src="{$avatar_filename}" alt="{$plain_text_username}'s avatar" title="{$plain_text_username}'s profile"/>
+EOF;
+
+	$rand_quote_author = <<<EOF
+<a  style="vertical-align: middle;" href="{$author_link}" title="{$plain_text_username}"><span style="font-size: {$username_font_size}px;">{$username}</span></a>
+EOF;
+
+	$read_more = <<<EOF
+
+			<tr>
+				<td class="tfoot">
+					<div style="text-align: center;"><a href="{$post_link}" title="{$lang->asb_random_quotes_read_more_title}"><strong>{$lang->asb_random_quotes_read_more}</strong></a></div>
+				</td>
+			</tr>
+EOF;
+
+	if(my_strlen($rand_post['subject']) > 40)
+	{
+		$rand_post['subject'] = my_substr($rand_post['subject'], 0, 40) . " . . .";
+	}
+
+	if(substr(strtolower($rand_post['subject']), 0, 3) == 're:')
+	{
+		$rand_post['subject'] = substr($rand_post['subject'], 3);
+	}
+
+	$rand_post['subject'] = htmlspecialchars_uni($parser->parse_badwords($rand_post['subject']));
+
+	$thread_title_link = <<<EOF
+<strong><a href="{$thread_link}" title="{$lang->asb_random_quotes_read_more_threadlink_title}"><span style="font-size: {$title_font_size}px;">{$rand_post['subject']}</span></a></strong>
+EOF;
+
+	// eval() the template
+	eval("\$this_quote = \"" . $templates->get("rand_quote_sidebox") . "\";");
+	return $this_quote;
 }
 
 ?>

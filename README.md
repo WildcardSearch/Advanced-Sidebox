@@ -1,12 +1,12 @@
-## Advanced-Sidebox 2.0.3
+## Advanced-Sidebox 2.0.4
 
 <p align="center">
   <img title="Advanced Sidebox Logo" alt="Advanced Sidebox Logo" src="https://github.com/WildcardSearch/Advanced-Sidebox/wiki/asb_logo_320.png" />
 </p>
 
-*A plug-in for MyBB forums that displays custom boxes on various forum pages.*
+*A plugin for MyBB forums that displays custom boxes on various forum pages.*
 
-This plug-in seeks to give the admin more options when adding side boxes to the forum and allow control in a more intuitive way. This plug-in edits the template cache and does not modify your forum's templates-- therefore it does not work with every theme but *is* designed to work with most.
+This plugin seeks to give the admin more options when adding side boxes to the forum and allow control in a more intuitive way. This plugin edits the template cache and does not modify your forum's templates-- therefore it does not work with every theme but *is* designed to work with most.
 
 ## Features
 
