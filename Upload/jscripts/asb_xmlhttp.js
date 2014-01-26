@@ -11,6 +11,8 @@
 // thanks to http://www.fluther.com/users/adrianscott/
 Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 {
+	dateline: '',
+
 	initialize: function($super, container, url, options)
 	{
 		// set up our parent object
@@ -23,21 +25,25 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 		this.updater = { };
 		this.container = $(container);
 		this.url = url;
+		this.dateline = this.options.parameters.dateline;
 
 		// initiate the timer
 		this.start();
 	},
+
 	start: function()
 	{
 		this.options.onComplete = this.updateComplete.bind(this);
 		this.timer = this.onTimerEvent.bind(this).delay(this.decay * this.frequency);
 	},
+
 	stop: function()
 	{
 		this.updater.options.onComplete = undefined;
 		clearTimeout(this.timer);
 		(this.onComplete || Prototype.emptyFunction).apply(this, arguments);
 	},
+
 	updateComplete: function(response)
 	{
 		// good response?
@@ -48,12 +54,8 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 			// update the side box's <tbody>
 			this.container.down('tbody').update(response.responseText);
 
-			// the <table>'s name property holds the last update time stamp (and some other info)
-			this.container.setAttribute('name',
-				this.container.id +  '_' +
-				this.options.parameters.addon + '_' +
-				Math.floor((new Date).getTime() / 1000)
-			);
+			// last update time
+			this.dateline = Math.floor(new Date().getTime() / 1000);
 		} else {
 			// currently does nothing, but left in to add this option
 			this.decay = this.decay * this.options.decay;
@@ -61,6 +63,7 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 		// key up to do it again
 		this.timer = this.onTimerEvent.bind(this).delay(this.decay * this.frequency);
 	},
+
 	onTimerEvent: function()
 	{
 		// and finally, this is what we are doing every {rate} seconds
@@ -85,7 +88,7 @@ function asb_build_updaters(updaters, width_left, width_right)
 
 	var this_id = '';
 	var name_array = [];
-	var dateline = 0, width = 0;
+	var width = 0;
 	for (var i = 0; i < updaters.length; i++) {
 		// build the element ID
 		this_id = updaters[i].addon + '_main_' + updaters[i].id;
@@ -97,10 +100,6 @@ function asb_build_updaters(updaters, width_left, width_right)
 		}
 
 		if ($(this_id)) {
-			// get the dateline
-			name_array = $(this_id).readAttribute('name').split("_");
-			dateline = name_array[name_array.length - 1];
-
 			// this object will only update when a valid response is received
 			new Ajax.SideboxPeriodicalUpdater(this_id, 'xmlhttp.php',
 			{
@@ -109,7 +108,7 @@ function asb_build_updaters(updaters, width_left, width_right)
 					action: 'asb',
 					id: updaters[i].id,
 					addon: updaters[i].addon,
-					dateline: dateline,
+					dateline: updaters[i].dateline,
 					width: width
 				},
 				method: 'post',
