@@ -82,7 +82,7 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
  *
  * @param - updaters - (array) an array filled with objects filled with side box details
  */
-function asbBuildUpdaters(updaters, width)
+function asbBuildUpdaters(updaters, widths)
 {
 	// no objects in the array
 	if (updaters.length == 0) {
@@ -97,9 +97,9 @@ function asbBuildUpdaters(updaters, width)
 
 		if ($(this_id)) {
 			// get the correct width
-			width = width.left;
+			width = widths.left;
 			if (updaters[i].position) {
-				width = width.right;
+				width = widths.right;
 			}
 
 			// this object will only update when a valid response is received
