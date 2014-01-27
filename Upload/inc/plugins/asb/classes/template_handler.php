@@ -221,7 +221,9 @@ EOF;
 <script type="text/javascript" src="jscripts/asb_xmlhttp.js"></script>
 <script type="text/javascript">
 <!--
-	Event.observe(window, 'load', function() { asb_build_updaters([ {$extra_scripts} ], {$this->width_left}, {$this->width_right}); } );
+	Event.observe(window, 'load', function() {
+		asbBuildUpdaters([ {$extra_scripts} ], { left: {$this->width_left}, right: {$this->width_right} });
+	});
 // -->
 </script>
 EOF;

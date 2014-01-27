@@ -11,7 +11,7 @@
 // thanks to http://www.fluther.com/users/adrianscott/
 Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 {
-	dateline: '',
+	phpTimeDiff: 0,
 
 	initialize: function($super, container, url, options)
 	{
@@ -20,12 +20,14 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 
 		// now get this instances overrides and options
 		this.onComplete = this.options.onComplete;
-		this.frequency = (this.options.frequency || 2);
-		this.decay = (this.options.decay || 1);
-		this.updater = { };
+		this.frequency = (this.options.frequency || 30);
+		this.decay = this.options.decay = (this.options.decay || 1);
+		this.updater = {};
 		this.container = $(container);
 		this.url = url;
-		this.dateline = this.options.parameters.dateline;
+
+		// if the server is on a different timezone, get the offset in seconds
+		this.phpTimeDiff = Math.floor(this.options.parameters.dateline - (new Date().getTime() / 1000));
 
 		// initiate the timer
 		this.start();
@@ -54,12 +56,14 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 			// update the side box's <tbody>
 			this.container.down('tbody').update(response.responseText);
 
-			// last update time
-			this.dateline = Math.floor(new Date().getTime() / 1000);
 		} else {
 			// currently does nothing, but left in to add this option
 			this.decay = this.decay * this.options.decay;
 		}
+
+		// last update time
+		this.options.parameters.dateline = Math.floor(new Date().getTime() / 1000 + this.phpTimeDiff);
+
 		// key up to do it again
 		this.timer = this.onTimerEvent.bind(this).delay(this.decay * this.frequency);
 	},
@@ -72,13 +76,13 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 });
 
 /*
- * asb_build_updaters()
+ * asbBuildUpdaters()
  *
  * prepare the Updater objects
  *
  * @param - updaters - (array) an array filled with objects filled with side box details
  */
-function asb_build_updaters(updaters, width_left, width_right)
+function asbBuildUpdaters(updaters, width)
 {
 	// no objects in the array
 	if (updaters.length == 0) {
@@ -86,20 +90,18 @@ function asb_build_updaters(updaters, width_left, width_right)
 		return;
 	}
 
-	var this_id = '';
-	var name_array = [];
-	var width = 0;
+	var this_id = '', width = 0;
 	for (var i = 0; i < updaters.length; i++) {
 		// build the element ID
 		this_id = updaters[i].addon + '_main_' + updaters[i].id;
 
-		// get the correct width
-		width = width_left;
-		if (updaters[i].position) {
-			width = width_right;
-		}
-
 		if ($(this_id)) {
+			// get the correct width
+			width = width.left;
+			if (updaters[i].position) {
+				width = width.right;
+			}
+
 			// this object will only update when a valid response is received
 			new Ajax.SideboxPeriodicalUpdater(this_id, 'xmlhttp.php',
 			{
@@ -111,7 +113,7 @@ function asb_build_updaters(updaters, width_left, width_right)
 					dateline: updaters[i].dateline,
 					width: width
 				},
-				method: 'post',
+				method: 'get',
 				frequency: updaters[i].rate
 			});
 		}
