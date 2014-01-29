@@ -191,6 +191,7 @@ EOF;
 		{
 			$this->find_bottom = '{$footer}';
 		}
+		$filename = THIS_SCRIPT;
 
 		$left_content = $this->left_content;
 		eval("\$this->insert_top = \"" . $templates->get('asb_begin') . "\";");

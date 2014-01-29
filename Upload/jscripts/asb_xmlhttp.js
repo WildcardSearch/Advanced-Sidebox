@@ -18,7 +18,7 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 		// set up our parent object
 		$super(options);
 
-		// now get this instances overrides and options
+		// now get this instance's overrides and options
 		this.onComplete = this.options.onComplete;
 		this.frequency = (this.options.frequency || 30);
 		this.decay = this.options.decay = (this.options.decay || 1);
@@ -51,7 +51,7 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 		// good response?
 		if (response.responseText && response.responseText != 'nochange') {
 			// might add this option later
-			this.decay = 1;
+			this.decay = this.options.decay;
 
 			// update the side box's <tbody>
 			this.container.down('tbody').update(response.responseText);

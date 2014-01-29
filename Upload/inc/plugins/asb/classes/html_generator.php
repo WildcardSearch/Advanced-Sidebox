@@ -141,7 +141,7 @@ class HTMLGenerator
 		{
 			$icon_img = $this->img($options['icon'], $icon_options);
 			$icon_link = <<<EOF
-<a href="{$url}"{$properties}>{$icon_img}</a>&nbsp;
+<a href="{$url}">{$icon_img}</a>&nbsp;
 EOF;
 		}
 
@@ -194,7 +194,7 @@ EOF;
 			if(isset($options[$key]) && $options[$key])
 			{
 				$property_list .= <<<EOF
-{$key}="{$options[$key]}"
+ {$key}="{$options[$key]}"
 EOF;
 			}
 		}

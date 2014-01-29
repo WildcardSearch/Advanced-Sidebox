@@ -135,6 +135,7 @@ $l['asb_save_fail'] = 'The box could not be saved';
 $l['asb_delete_box_success'] = 'The box was deleted successfully';
 $l['asb_delete_box_failure'] = 'There was an error while attempting to remove the seleced sidebox';
 $l['asb_no_description'] = "no description";
+$l['asb_edit_fail_bad_module'] = 'The chosen module was invalid and cannot be used.';
 
 // menus
 $l['asb_add_new_box'] = 'Add A New Side Box';
@@ -318,5 +319,8 @@ $l['asb_script_activate_success'] = "The script definition was activated success
 $l['asb_script_activate_fail'] = "The script definition could not be activated successfully";
 $l['asb_script_deactivate_success'] = "The script definition was deactivated successfully";
 $l['asb_script_deactivate_fail'] = "The script definition could not be deactivated successfully";
+
+// ajax
+$l['asb_ajax_deleting_sidebox'] = 'Deleting . . .';
 
 ?>

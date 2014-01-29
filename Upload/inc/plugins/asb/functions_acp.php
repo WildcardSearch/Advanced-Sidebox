@@ -24,8 +24,7 @@ function asb_build_help_link($topic = '')
 	}
 
 	$help_url = $html->url(array("topic" => $topic), "{$mybb->settings['bburl']}/inc/plugins/asb/help/index.php");
-	$help_link = $html->link($help_url, $lang->asb_help, array("style" => 'font-weight: bold;', "icon" => "{$mybb->settings['bburl']}/inc/plugins/asb/images/help.gif", "title" => $lang->asb_help, "onclick" => "window.open('{$help_url}', 'mywindowtitle', 'width=840, height=520, scrollbars=yes'); return false;"), array("alt" => '?', "title" => $lang->asb_help, "style" => 'margin-bottom: -3px;'));
-	return $help_link;
+	return $html->link($help_url, $lang->asb_help, array("id" => 'help_link', "style" => 'font-weight: bold;', "icon" => "{$mybb->settings['bburl']}/inc/plugins/asb/images/help.gif", "title" => $lang->asb_help), array("id" => 'help_link_icon', "alt" => '?', "title" => $lang->asb_help, "style" => 'margin-bottom: -3px;'));
 }
 
 /*
@@ -40,124 +39,6 @@ function asb_build_settings_menu_link()
 	$settings_url = asb_build_settings_url(asb_get_settingsgroup());
 	$settings_link = $html->link($settings_url, $lang->asb_plugin_settings, array("icon" => "{$mybb->settings['bburl']}/inc/plugins/asb/images/settings.gif", "style" => 'font-weight: bold;', "title" => $lang->asb_plugin_settings), array("alt" => 'S', "style" => 'margin-bottom: -3px;'));
 	return $settings_link;
-}
-
-/*
- * asb_output_header()
- *
- * Output ACP headers for our main page
- */
-function asb_output_header($title)
-{
-    global $mybb, $admin_session, $lang, $plugins, $lang, $page;
-
-	$plugins->run_hooks("admin_page_output_header");
-
-	$rtl = "";
-	if($lang->settings['rtl'] == 1)
-	{
-		$rtl = " dir=\"rtl\"";
-	}
-
-	echo <<<EOF
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"{$rtl}>
-	<head profile="http://gmpg.org/xfn/1">
-		<title>{$title}</title>
-		<meta name="author" content="MyBB Group"/>
-
-EOF;
-
-	echo("		<meta name=\"copyright\" content=\"Copyright " . COPY_YEAR . " MyBB Group.\"/>\n");
-
-	echo <<<EOF
-		<link rel="stylesheet" href="styles/{$page->style}/main.css" type="text/css" />
-
-EOF;
-
-	// Load style sheet for this module if it has one
-	if(file_exists(MYBB_ADMIN_DIR . "styles/{$page->style}/{$page->active_module}.css"))
-	{
-		echo <<<EOF
-		<link rel="stylesheet" href="styles/{$page->style}/{$page->active_module}.css" type="text/css" />
-
-EOF;
-	}
-
-	echo <<<EOF
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.0.0/prototype.js"></script>
-		<script type="text/javascript" src="../jscripts/general.js"></script>
-		<script type="text/javascript" src="../jscripts/popup_menu.js"></script>
-		<script type="text/javascript" src="./jscripts/admincp.js"></script>
-		<script type="text/javascript" src="./jscripts/tabs.js"></script>
-
-EOF;
-
-	// Stop JS elements showing while page is loading (JS supported browsers only)
-	echo <<<EOF
-		<style type="text/css">
-			.popup_button { display: none; }
-		</style>
-		<script type="text/javascript">
-			//<![CDATA[
-				document.write('<style type="text/css">.popup_button { display: inline; } .popup_menu { display: none; }<\/style>');
-			//]]>
-		</script>
-		<script type="text/javascript">
-			//<![CDATA[
-			var loading_text = '{$lang->loading_text}';
-			var cookieDomain = '{$mybb->settings['cookiedomain']}';
-			var cookiePath = '{$mybb->settings['cookiepath']}';
-			var cookiePrefix = '{$mybb->settings['cookieprefix']}';
-			var imagepath = '../images';
-			//]]>
-		</script>
-
-		{$page->extra_header}
-	</head>
-	<body>
-		<div id="container">
-		<div id="logo"><h1><span class="invisible">{$lang->mybb_admin_cp}</span></h1></div>
-		<div id="welcome">
-			<span class="logged_in_as">{$lang->logged_in_as} <a href="index.php?module=user-users&amp;action=edit&amp;uid={$mybb->user['uid']}" class="username">{$mybb->user['username']}</a></span> | <a href="{$mybb->settings['bburl']}" target="_blank" class="forum">{$lang->view_board}</a> | <a href="index.php?action=logout&amp;my_post_key={$mybb->post_code}" class="logout">{$lang->logout}</a>
-		</div>
-
-EOF;
-
-	echo $page->_build_menu();
-
-	echo <<<EOF
-	<div id="page">
-		<div id="left_menu">
-EOF;
-	echo $page->submenu;
-	echo $page->sidebar;
-	echo <<<EOF
-	</div>
-		<div id="content">
-			<div class="breadcrumb">
-EOF;
-	echo $page->_generate_breadcrumb();
-	echo <<<EOF
-	</div>
-		<div id="inner">
-EOF;
-
-	if(isset($admin_session['data']['flash_message']) && $admin_session['data']['flash_message'])
-	{
-		$message = $admin_session['data']['flash_message']['message'];
-		$type = $admin_session['data']['flash_message']['type'];
-		echo <<<EOF
-	<div id="flash_message" class="{$type}">
-		{$message}
-		</div>
-EOF;
-		update_admin_session('flash_message', '');
-	}
-	if($page->show_post_verify_error == true)
-	{
-		$page->output_error($lang->invalid_post_verify_key);
-	}
 }
 
 /*

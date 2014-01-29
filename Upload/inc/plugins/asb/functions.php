@@ -201,21 +201,23 @@ function asb_build_script_filename($this_script = '')
 		);
 	}
 
-	// if there is something to work with . . .
-	if(!trim($this_script['filename']))
+	$this_script = array_map('trim', $this_script);
+
+	// if there is nothing to work with . . .
+	if(!$this_script['filename'])
 	{
 		return;
 	}
 
 	// build each piece
-	$filename = trim($this_script['filename']);
-	if(trim($this_script['action']))
+	$filename = $this_script['filename'];
+	foreach(array('action', 'page') as $key)
 	{
-		$filename .= '&action=' . trim($this_script['action']);
-	}
-	if(trim($this_script['page']))
-	{
-		$filename .= '&page=' . trim($this_script['page']);
+		if(!$this_script[$key])
+		{
+			continue;
+		}
+		$filename .= "&{$key}={$this_script[$key]}";
 	}
 	return $filename;
 }
@@ -233,21 +235,24 @@ function asb_get_this_script(&$asb, $get_all = false)
 	{
 		$return_array = $asb['scripts'][THIS_SCRIPT];
 	}
-	elseif(isset($mybb->input['action']) && trim($mybb->input['action']))
+
+	foreach(array('action', 'page') as $key)
 	{
-		if(isset($mybb->input['action']) && trim($mybb->input['action']) && is_array($asb['scripts'][THIS_SCRIPT . "&action={$mybb->input['action']}"]) && !empty($asb['scripts'][THIS_SCRIPT . "&action={$mybb->input['action']}"]))
+		$mybb->input[$key] = trim($mybb->input[$key]);
+		if(!$mybb->input[$key])
 		{
-			$return_array = $asb['scripts'][THIS_SCRIPT . "&action={$mybb->input['action']}"];
+			continue;
 		}
-	}
-	elseif(isset($mybb->input['page']) && trim($mybb->input['page']))
-	{
-		if(is_array($asb['scripts'][THIS_SCRIPT . "&page={$mybb->input['page']}"]) && !empty($asb['scripts'][THIS_SCRIPT . "&page={$mybb->input['page']}"]))
+
+		$filename = THIS_SCRIPT . "&{$key}={$mybb->input[$key]}";
+		if(!is_array($asb['scripts'][$filename]) || empty($asb['scripts'][$filename]))
 		{
-			$return_array = $asb['scripts'][THIS_SCRIPT . "&page={$mybb->input['page']}"];
+			continue;
 		}
+		$return_array = $asb['scripts'][$filename];
 	}
-	else
+
+	if(empty($return_array) || !is_array($return_array))
 	{
 		return;
 	}
@@ -256,12 +261,16 @@ function asb_get_this_script(&$asb, $get_all = false)
 	$return_array['template_vars'] = array_merge((array) $asb['scripts']['global']['template_vars'], (array) $return_array['template_vars']);
 	$return_array['extra_scripts'] = (array) $asb['scripts']['global']['extra_scripts'] + (array) $return_array['extra_scripts'];
 
-	if($get_all)
+	// the template handler does not need sideboxes and templates
+	if(!$get_all)
 	{
-		$return_array['sideboxes'][0] = (array) $asb['scripts']['global']['sideboxes'][0] + (array) $return_array['sideboxes'][0];
-		$return_array['sideboxes'][1] = (array) $asb['scripts']['global']['sideboxes'][1] + (array) $return_array['sideboxes'][1];
-		$return_array['templates'] = array_merge((array) $asb['scripts']['global']['templates'], (array) $return_array['templates']);
+		return $return_array;
 	}
+
+	// asb_start(), asb_initialize() and asb_build_cache() do
+	$return_array['sideboxes'][0] = (array) $asb['scripts']['global']['sideboxes'][0] + (array) $return_array['sideboxes'][0];
+	$return_array['sideboxes'][1] = (array) $asb['scripts']['global']['sideboxes'][1] + (array) $return_array['sideboxes'][1];
+	$return_array['templates'] = array_merge((array) $asb['scripts']['global']['templates'], (array) $return_array['templates']);
 	return $return_array;
 }
 
