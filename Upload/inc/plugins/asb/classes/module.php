@@ -15,7 +15,8 @@ if(!class_exists('MalleableObject'))
 /*
  * standard interface for external PHP modules
  *
- * can be used to wrap any external PHP module for secure loading, validation and execution of its functions
+ * can be used to wrap any external PHP module for secure loading,
+ * validation and execution of its functions
  */
 interface ExternalModuleInterface
 {
@@ -24,7 +25,8 @@ interface ExternalModuleInterface
 }
 
 /*
- * a standard wrapper for external PHP routines built upon the MalleableObject abstract class and abiding by ExternalModuleInterface
+ * a standard wrapper for external PHP routines built upon the
+ * MalleableObject abstract class and abiding by ExternalModuleInterface
  */
 abstract class ExternalModule extends MalleableObject implements ExternalModuleInterface
 {
@@ -42,6 +44,7 @@ abstract class ExternalModule extends MalleableObject implements ExternalModuleI
 	 *
 	 * @param - $name - (string) base name of the module to load
 	 * @param - $path - (string) fully qualified path to the modules
+	 * @return: n/a
 	 */
 	public function __construct($module)
 	{
@@ -63,7 +66,7 @@ abstract class ExternalModule extends MalleableObject implements ExternalModuleI
 	 *
 	 * @param - $name - (string) base name of the module to load
 	 *
-	 * returns: true if successfully loaded and validated/false if not
+	 * @return: (bool) true on success, false on fail
 	 */
 	public function load($module)
 	{
@@ -87,6 +90,8 @@ abstract class ExternalModule extends MalleableObject implements ExternalModuleI
 	 *
 	 * @param - $function_name - (string)
 	 * @param - $args - (array) any data to pass to the function
+	 * @return: (mixed) the return value of the called module function or
+	 * (bool) false on error
 	 */
 	public function run($function_name, $args = '')
 	{
@@ -134,6 +139,8 @@ class Addon_type extends ExternalModule
 	 * load()
 	 *
 	 * attempts to load a module by name.
+	 *
+	 * @return: (bool) true on success, false on fail
 	 */
 	public function load($module)
 	{
@@ -163,6 +170,8 @@ class Addon_type extends ExternalModule
 	 * install()
 	 *
 	 * install templates if they exist to allow the add-on module to function correctly
+	 *
+	 * @return: n/a
 	 */
 	public function install($cleanup = true)
 	{
@@ -172,44 +181,49 @@ class Addon_type extends ExternalModule
 		if($this->is_installed && $cleanup)
 		{
 			// . . . remove the leftovers before installing
-			$status = $this->uninstall();
+			$this->uninstall();
 		}
 
 		// if there are templates . . .
-		if(is_array($this->templates))
+		if(!is_array($this->templates))
 		{
-			$insert_array = array();
-			foreach($this->templates as $template)
+			return;
+		}
+
+		$insert_array = array();
+		foreach($this->templates as $template)
+		{
+			$template['sid'] = -2;
+			$query = $db->simple_select('templates', '*', "title='{$template['title']}' AND sid IN('-2', '-1')");
+
+			// if it exists, update
+			if($db->num_rows($query) > 0)
 			{
-				$template['sid'] = -2;
-				$query = $db->simple_select('templates', '*', "title='{$template['title']}' AND sid IN('-2', '-1')");
-
-				// if it exists, update
-				if($db->num_rows($query) > 0)
-				{
-					$db->update_query("templates", $template, "title='{$template['title']}' AND sid IN('-2', '-1')");
-				}
-				else
-				{
-					// if not, create a new template
-					$insert_array[] = $template;
-				}
-
-				if(!empty($insert_array))
-				{
-					$db->insert_query_multiple("templates", $insert_array);
-				}
+				$db->update_query("templates", $template, "title='{$template['title']}' AND sid IN('-2', '-1')");
+			}
+			else
+			{
+				// if not, create a new template
+				$insert_array[] = $template;
 			}
 		}
-		return $error;
+
+		if(!empty($insert_array))
+		{
+			$db->insert_query_multiple("templates", $insert_array);
+		}
 	}
 
 	/*
 	 * uninstall()
 	 *
-	 * remove any templates used by the module and clean up any boxes created using this add-on module
+	 * remove any templates used by the module and clean up any boxes created
+	 * using this add-on module
 	 *
-	 * @param - $cleanup, when false instructs the method to leave any side boxes that use this module behind when uninstalling. this is useful for when we want to upgrade an add-on without losing admin's work
+	 * @param - $cleanup - (bool) false instructs the method to leave any side boxes
+	 * that use this module behind when uninstalling. this is useful for when we want to
+	 * upgrade an add-on without losing admin's work
+	 * @return: n/a
 	 */
 	public function uninstall($cleanup = true)
 	{
@@ -218,34 +232,35 @@ class Addon_type extends ExternalModule
 		// installed?
 		if(!$this->is_installed)
 		{
-			return true;
+			return;
 		}
 
 		$this->unset_cache_version();
 
-		// if there are templates . . .
-		if(is_array($this->templates))
+		// unless specifically asked not to, delete any boxes that use this module
+		if($cleanup)
 		{
-			// remove them all
-			$delete_list = $sep = '';
-			foreach($this->templates as $template)
-			{
-				$delete_list .= "{$sep}'{$template['title']}'";
-				$sep = ',';
-			}
-
-			if($delete_list)
-			{
-				$db->delete_query('templates', "title IN({$delete_list})");
-			}
-
-			// unless specifically asked not to, delete any boxes that use this module
-			if($cleanup)
-			{
-				$this->remove_children();
-			}
+			$this->remove_children();
 		}
-		return true;
+
+		// if there are templates . . .
+		if(!is_array($this->templates))
+		{
+			return;
+		}
+
+		// remove them all
+		$delete_list = $sep = '';
+		foreach($this->templates as $template)
+		{
+			$delete_list .= "{$sep}'{$template['title']}'";
+			$sep = ',';
+		}
+
+		if($delete_list)
+		{
+			$db->delete_query('templates', "title IN({$delete_list})");
+		}
 	}
 
 	/*
@@ -253,6 +268,8 @@ class Addon_type extends ExternalModule
 	 *
 	 * called upon add-on version change to verify module's templates/settings
 	 * discarded templates and ACP settings (from pre-1.4) are removed
+	 *
+	 * @return: n/a
 	 */
 	protected function upgrade()
 	{
@@ -301,6 +318,8 @@ class Addon_type extends ExternalModule
 	 * remove()
 	 *
 	 * uninstalls (if necessary) and physically deletes the module from the server
+	 *
+	 * @return: (bool) true on success, false on fail
 	 */
 	public function remove()
 	{
@@ -318,6 +337,8 @@ class Addon_type extends ExternalModule
 	 * remove_children()
 	 *
 	 * delete all the side boxes of this type
+	 *
+	 * @return: n/a
 	 */
 	protected function remove_children()
 	{
@@ -332,6 +353,8 @@ class Addon_type extends ExternalModule
 	 * update_children()
 	 *
 	 * update settings for side boxes of this type
+	 *
+	 * @return: n/a
 	 */
 	protected function update_children()
 	{
@@ -399,6 +422,8 @@ class Addon_type extends ExternalModule
 	 * get_cache_version()
 	 *
 	 * version control derived from the work of pavemen in MyBB Publisher
+	 *
+	 * @return: (string) version or (int) 0 on error
 	 */
 	protected function get_cache_version()
 	{
@@ -418,6 +443,8 @@ class Addon_type extends ExternalModule
 	 * set_cache_version()
 	 *
 	 * version control derived from the work of pavemen in MyBB Publisher
+	 *
+	 * @return: (bool) true on success, false on fail
 	 */
 	protected function set_cache_version()
 	{
@@ -434,6 +461,8 @@ class Addon_type extends ExternalModule
 	 * unset_cache_version()
 	 *
 	 * version control derived from the work of pavemen in MyBB Publisher
+	 *
+	 * @return: (bool) true on success, false on fail
 	 */
 	protected function unset_cache_version()
 	{
@@ -452,6 +481,9 @@ class Addon_type extends ExternalModule
 	 * build_template()
 	 *
 	 * runs template building code for the current module referenced by this object
+	 *
+	 * @return: (mixed) the return value of the called module function or
+	 * (bool) false on error
 	 */
 	public function build_template($settings, $template_var, $width)
 	{
@@ -470,6 +502,8 @@ class Addon_type extends ExternalModule
 	 * @param - $settings (array) the individual side box settings
 	 * @param - $width (int) the width of the column in which the produced
 	 * side box will reside
+	 * @return: (mixed) the return value of the called module function or
+	 * (bool) false on error
 	 */
 	public function do_xmlhttp($dateline, $settings, $width)
 	{

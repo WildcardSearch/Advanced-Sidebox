@@ -12,9 +12,8 @@
  *
  * create the default script information rows (tailored to mimic the previous versions)
  *
- * @param - $return - (boolean) true to return an associative array of ScriptInfo objects (no save) / false to simply save
- *
- * return: mixed (see above dependency)
+ * @param - $return - (bool) true to return an associative array of ScriptInfo objects (no save) / false to simply save
+ * @return: (mixed) see above dependency
  */
 function asb_create_script_info($return = false)
 {
@@ -134,9 +133,9 @@ EOF
 /*
  * asb_build_theme_exclude_select()
  *
- * rebuilds the theme exclude list ACP setting. used in cases where themes are added after the installation of Advanced Sidebox and the admin would like to exclude that theme.
+ * rebuilds the theme exclude list ACP setting
  *
- return: either a select box list of themes or an indicator that no themes are installed
+ * @return: (string) the <select> HTML or false on error
  */
 function asb_build_theme_exclude_select()
 {
@@ -183,16 +182,15 @@ EOF;
 	return $theme_select;
 }
 
-/*
- * versioning
- */
+/* versioning */
 
 /*
  * asb_get_cache_version()
  *
  * check cached version info
- *
  * derived from the work of pavemen in MyBB Publisher
+ *
+ * @return: (int) the currently installed version
  */
 function asb_get_cache_version()
 {
@@ -211,9 +209,9 @@ function asb_get_cache_version()
  * asb_set_cache_version()
  *
  * set cached version info
- *
  * derived from the work of pavemen in MyBB Publisher
  *
+ * @return: (bool) true on success
  */
 function asb_set_cache_version()
 {
@@ -233,8 +231,9 @@ function asb_set_cache_version()
  * asb_unset_cache_version()
  *
  * remove cached version info
- *
  * derived from the work of pavemen in MyBB Publisher
+ *
+ * @return: (bool) true on success
  */
 function asb_unset_cache_version()
 {

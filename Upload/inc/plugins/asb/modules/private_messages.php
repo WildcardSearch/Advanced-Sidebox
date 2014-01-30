@@ -17,6 +17,8 @@ if(!defined("IN_MYBB") || !defined("IN_ASB"))
  * asb_private_messages_info()
  *
  * provide info to ASB about the addon
+ *
+ * @return: (array) the module info
  */
 function asb_private_messages_info()
 {
@@ -66,6 +68,7 @@ EOF
  * handles display of children of this addon at page load
  *
  * @param - $args - (array) the specific information from the child box
+ * @return: (bool) true on success, false on fail/no content
  */
 function asb_private_messages_build_template($args)
 {
@@ -102,6 +105,7 @@ EOF;
  * handles display of children of this addon via AJAX
  *
  * @param - $args - (array) the specific information from the child box
+ * @return: n/a
  */
 function asb_private_messages_xmlhttp($args)
 {
@@ -126,6 +130,9 @@ function asb_private_messages_xmlhttp($args)
  * asb_private_messages_get_messages()
  *
  * get the user's private messages
+ *
+ * @return: (mixed) a (string) containing the HTML side box markup or
+ * (bool) false on fail/no content
  */
 function asb_private_messages_get_messages()
 {

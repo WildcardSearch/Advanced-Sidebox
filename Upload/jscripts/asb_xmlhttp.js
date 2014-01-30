@@ -13,6 +13,17 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 {
 	phpTimeDiff: 0,
 
+	/**
+	 * initialize()
+	 *
+	 * constructor: sets up the object and starts the timer
+	 *
+	 * @param - $super - (callback) the parent initialize() function, Ajax.Base.initialize()
+	 * @param - container - (string) the id of the container to be updated
+	 * @param - url - (string) the URL of the AJAX server-side routine
+	 * @param - options - (object) various options for the updater
+	 * @return: n/a
+	 */
 	initialize: function($super, container, url, options)
 	{
 		// set up our parent object
@@ -33,12 +44,26 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 		this.start();
 	},
 
+	/**
+	 * start()
+	 *
+	 * initiate the timer
+	 *
+	 * @return: n/a
+	 */
 	start: function()
 	{
 		this.options.onComplete = this.updateComplete.bind(this);
 		this.timer = this.onTimerEvent.bind(this).delay(this.decay * this.frequency);
 	},
 
+	/**
+	 * stop()
+	 *
+	 * halt the timer
+	 *
+	 * @return: n/a
+	 */
 	stop: function()
 	{
 		this.updater.options.onComplete = undefined;
@@ -46,6 +71,14 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 		(this.onComplete || Prototype.emptyFunction).apply(this, arguments);
 	},
 
+	/**
+	 * updateComplete()
+	 *
+	 * check the XMLHTTP response and update the side box if there are changes
+	 *
+	 * @param - response - (Response) the XMLHTTP response object
+	 * @return: n/a
+	 */
 	updateComplete: function(response)
 	{
 		// good response?
@@ -68,9 +101,18 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 		this.timer = this.onTimerEvent.bind(this).delay(this.decay * this.frequency);
 	},
 
+	/**
+	 * onTimerEvent()
+	 *
+	 * send an AJAX request unless the side box is collapsed
+	 *
+	 * @return: n/a
+	 */
 	onTimerEvent: function()
 	{
-		if (this.container.style.display == 'none') {
+		// don't update collapsed side boxes (thanks again, Destroy666)
+		if (this.container.offsetWidth <= 0 && this.container.offsetHeight <= 0) {
+			// just reset the timer and get out
 			this.timer = this.onTimerEvent.bind(this).delay(this.decay * this.frequency);
 			return;
 		}
@@ -86,6 +128,8 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
  * prepare the Updater objects
  *
  * @param - updaters - (array) an array filled with objects filled with side box details
+ * @param - widths - (object) widths for both positions
+ * @return: n/a
  */
 function asbBuildUpdaters(updaters, widths)
 {

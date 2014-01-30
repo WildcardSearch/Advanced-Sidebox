@@ -7,6 +7,17 @@
  */
 
 ASBScript = {
+	current: '',
+
+	/**
+	 * init()
+	 *
+	 * hide/show the appropriate inputs based on current values,
+	 * observe action/hook/template detection drop-downs and
+	 * bind detection to changing of the script filename
+	 *
+	 * @return: n/a
+	 */
 	init: function()
 	{
 		// only show replace all options when selected
@@ -48,15 +59,23 @@ ASBScript = {
 		$('filename').observe('blur', ASBScript.update);
 	},
 
+	/**
+	 * update()
+	 *
+	 * show the spinners and launch the detection request
+	 *
+	 * @param - event - (Event) the blur event object
+	 * @return: n/a
+	 */
 	update: function(event)
 	{
 		// if nothing has changed, get out
-		if (this.value == edit_script || this.value == '') {
+		if (this.value == ASBScript.current || this.value == '') {
 			return;
 		}
 
 		// otherwise, update the current script
-		edit_script = this.value;
+		ASBScript.current = this.value;
 
 		// hide the 'detected' selectors
 		$('hook_list').hide();
@@ -76,12 +95,20 @@ ASBScript = {
 				module: 'config-asb',
 				action: 'xmlhttp',
 				mode: 'analyze_script',
-				filename: $('filename').value
+				filename: this.value
 			},
 			onSuccess: ASBScript.showResults
-		}
+		});
 	},
 
+	/**
+	 * showResults()
+	 *
+	 * hide the spinners and build the select elements
+	 *
+	 * @param - response - (Response) the XMLHTTP response object
+	 * @return: n/a
+	 */
 	showResults: function(response)
 	{
 		// hide all the spinners
@@ -114,11 +141,18 @@ ASBScript = {
 			$('action_list').show();
 		}
 
-		// re-do our observation of the selectors now that
-		// they have been rebuilt
+		// re-do our observation of the selectors now that they have been rebuilt
 		ASBScript.observeInputs();
 	},
 
+	/**
+	 * observeInputs()
+	 *
+	 * insert the chosen item from the select elements into the appropriate input
+	 *
+	 * @param - response - (Response) the XMLHTTP response object
+	 * @return: n/a
+	 */
 	observeInputs: function ()
 	{
 		if ($('hook_selector')) {

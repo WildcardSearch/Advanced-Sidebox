@@ -20,6 +20,8 @@ require_once MYBB_ROOT . "inc/plugins/asb/install.php";
  * asb_admin()
  *
  * the ACP page router
+ *
+ * @return: n/a
  */
 $plugins->add_hook('admin_load', 'asb_admin');
 function asb_admin()
@@ -78,6 +80,8 @@ function asb_admin()
  * asb_admin_manage_sideboxes()
  *
  * main side box management page - drag and drop and standard controls for side boxes
+ *
+ * @return: n/a
  */
 function asb_admin_manage_sideboxes()
 {
@@ -239,6 +243,8 @@ EOF;
  * asb_admin_edit_box()
  *
  * handles the modal/JavaScript edit box and also (as a backup) displays a standard form for those with JavaScript disabled
+ *
+ * @return: n/a
  */
 function asb_admin_edit_box()
 {
@@ -688,6 +694,8 @@ EOF;
  * asb_admin_custom_boxes()
  *
  * handle user-defined box types
+ *
+ * @return: n/a
  */
 function asb_admin_custom_boxes()
 {
@@ -1042,6 +1050,8 @@ EOF;
  * asb_admin_manage_scripts()
  *
  * add/edit/delete script info
+ *
+ * @return: n/a
  */
 function asb_admin_manage_scripts()
 {
@@ -1205,12 +1215,12 @@ EOF;
 
 		$page->extra_header .= <<<EOF
 	<script type="text/javascript" src="./jscripts/peeker.js"></script>
+	<script type="text/javascript" src="jscripts/asb_scripts.js"></script>
 	<script type="text/javascript">
 	<!--
-		var edit_script = '{$filename}';
+		ASBScript.current = '{$filename}';
 	// -->
 	</script>
-	<script type="text/javascript" src="jscripts/asb_scripts.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
 	<script src="jscripts/asb.js" type="text/javascript"></script>
 
@@ -1382,6 +1392,8 @@ EOF;
  * asb_admin_manage_modules()
  *
  * view and delete add-ons
+ *
+ * @return: n/a
  */
 function asb_admin_manage_modules()
 {
@@ -1447,6 +1459,8 @@ EOF;
  * asb_admin_xmlhttp()
  *
  * handler for AJAX side box routines
+ *
+ * @return: n/a
  */
 function asb_admin_xmlhttp()
 {
@@ -1570,6 +1584,8 @@ EOF;
  * asb_admin_delete_box()
  *
  * remove a side box (only still around for those without JS . . . like who, idk)
+ *
+ * @return: n/a
  */
 function asb_admin_delete_box()
 {
@@ -1598,6 +1614,8 @@ function asb_admin_delete_box()
  * asb_admin_delete_addon()
  *
  * completely remove an add-on module
+ *
+ * @return: n/a
  */
 function asb_admin_delete_addon()
 {
@@ -1627,6 +1645,8 @@ function asb_admin_delete_addon()
  * asb_admin_update_theme_select()
  *
  * rebuild the theme exclude list.
+ *
+ * @return: n/a
  */
 function asb_admin_update_theme_select()
 {
@@ -1674,6 +1694,8 @@ function asb_admin_update_theme_select()
  * asb_admin_config_settings_change()
  *
  * serialize the theme exclusion list selector
+ *
+ * @return: n/a
  */
 $plugins->add_hook("admin_config_settings_change", "asb_admin_config_settings_change");
 function asb_admin_config_settings_change()
@@ -1688,9 +1710,10 @@ function asb_admin_config_settings_change()
 }
 
 /*
- * asb_admin_action(&$action)
+ * asb_admin_action()
  *
  * @param - &$action is an array containing the list of selectable items on the config tab
+ * @return: n/a
  */
 $plugins->add_hook('admin_config_action_handler', 'asb_admin_config_action_handler');
 function asb_admin_config_action_handler(&$action)
@@ -1704,6 +1727,7 @@ function asb_admin_config_action_handler(&$action)
  * Add an entry to the ACP Config page menu
  *
  * @param - &$sub_menu is the menu array we will add a member to
+ * @return: n/a
  */
 $plugins->add_hook('admin_config_menu', 'asb_admin_config_menu');
 function asb_admin_config_menu(&$sub_menu)
@@ -1732,6 +1756,7 @@ function asb_admin_config_menu(&$sub_menu)
  *
  * @param - &$admin_permissions is the array of permission types
  * we are adding an element to
+ * @return: n/a
  */
 $plugins->add_hook('admin_config_permissions', 'asb_admin_config_permissions');
 function asb_admin_config_permissions(&$admin_permissions)

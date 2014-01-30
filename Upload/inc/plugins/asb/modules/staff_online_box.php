@@ -17,6 +17,8 @@ if(!defined("IN_MYBB") || !defined("IN_ASB"))
  * asb_staff_online_box_info()
  *
  * provide info to ASB about the addon
+ *
+ * @return: (array) the module info
  */
 function asb_staff_online_box_info()
 {
@@ -89,6 +91,7 @@ EOF
  * handles display of children of this addon at page load
  *
  * @param - $args - (array) the specific information from the child box
+ * @return: (bool) true on success, false on fail/no content
  */
 function asb_staff_online_box_build_template($args)
 {
@@ -124,6 +127,7 @@ EOF;
  * handles display of children of this addon via AJAX
  *
  * @param - $args - (array) the specific information from the child box
+ * @return: n/a
  */
 function asb_staff_online_box_xmlhttp($args)
 {
@@ -144,6 +148,8 @@ function asb_staff_online_box_xmlhttp($args)
  *
  * @param - $settings (array) individual side box settings passed to the module
  * @param - $width - (int) the width of the column in which the child is positioned
+ * @return: (mixed) a (string) containing the HTML side box markup or
+ * (bool) false on fail/no content
  */
 function asb_staff_online_box_get_online_staff($settings, $width)
 {

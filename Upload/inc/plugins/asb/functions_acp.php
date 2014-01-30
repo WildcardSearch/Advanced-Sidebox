@@ -13,6 +13,7 @@
  * produces a link to a particular page in the plugin help system (with icon) specified by topic
  *
  * @param - $topic is the intended page's topic keyword
+ * @return: (string) help link HTML
  */
 function asb_build_help_link($topic = '')
 {
@@ -31,6 +32,8 @@ function asb_build_help_link($topic = '')
  * asb_build_settings_menu_link()
  *
  * produces a link to the plugin settings with icon
+ *
+ * @return: (string) settings link HTML
  */
 function asb_build_settings_menu_link()
 {
@@ -47,6 +50,7 @@ function asb_build_settings_menu_link()
  * Output ACP tabs for our pages
  *
  * @param - $current is the tab currently being viewed
+ * @return: n/a
  */
 function asb_output_tabs($current)
 {
@@ -98,6 +102,10 @@ function asb_output_tabs($current)
  * asb_output_footer()
  *
  * Output ACP footers for our pages
+ *
+ * @param - $page_key - (string) the current page key used by the help
+ * system and the footer menu
+ * @return: n/a
  */
 function asb_output_footer($page_key)
 {
@@ -110,7 +118,10 @@ function asb_output_footer($page_key)
 /*
  * asb_build_footer_menu()
  *
+ * build a footer menu specific to each page
+ *
  * @param - $page_key is the topic key name for the current page
+ * @return: (string) the footer menu HTML
  */
 function asb_build_footer_menu($page_key = '')
 {
@@ -142,7 +153,10 @@ EOF;
 /*
  * asb_build_permissions_table()
  *
+ * build a popup with a table of side box permission info
+ *
  * @param - $id is the numeric id of the sidebox
+ * @return: (string) the permission table HTML
  */
 function asb_build_permissions_table($id)
 {
@@ -295,6 +309,7 @@ EOF;
  * @param - $sidebox Sidebox type object xD
  * @param - $wrap specifies whether to produce the <div> or just the contents
  * @param - $ajax specifies whether to produce the delete link or not
+ * @return: (string) the side box <div>
  */
 function asb_build_sidebox_info($sidebox, $wrap = true, $ajax = false)
 {
@@ -349,6 +364,8 @@ EOF;
  * asb_cache_has_changed()
  *
  * set the flag so the cache is rebuilt new run
+ *
+ * @return: n/a
  */
 function asb_cache_has_changed()
 {
@@ -360,10 +377,13 @@ function asb_cache_has_changed()
 }
 
 /*
- * asb_detect_script_info($filename)
+ * asb_detect_script_info()
  *
  * searches for hooks, templates and actions and returns a
  * keyed array of select box HTML for any that are found
+ *
+ * @param - $filename - (string) the file to check
+ * @return: (array) script component information
  */
 function asb_detect_script_info($filename)
 {
@@ -442,9 +462,12 @@ function asb_detect_script_info($filename)
 }
 
 /*
- * asb_legacy_custom_import($tree)
+ * asb_legacy_custom_import()
  *
  * imports XML files created with ASB 1.x series
+ *
+ * @param - $tree - (array) as returned by XMLParser
+ * @return: n/a
  */
 function asb_legacy_custom_import($tree)
 {
@@ -485,6 +508,7 @@ function asb_legacy_custom_import($tree)
  * build links for ACP Manage Side Boxes screen
  *
  * @param - $filter is a string containing the script to show or 'all_scripts' to avoid filtering altogether
+ * @return: (string) the form HTML
  */
 function asb_build_filter_selector($filter)
 {
@@ -514,6 +538,7 @@ function asb_build_filter_selector($filter)
  * @param - $setting is an associative array for the settings properties
  * @param - $sidebox is an integer representing the currently loaded box (edit) or 0 if adding a new side box
  * @param - $module is a valid Addon_type object (add-on module)
+ * @return: n/a
  */
 function asb_build_setting($this_form, $this_form_container, $setting, $sidebox, $module)
 {

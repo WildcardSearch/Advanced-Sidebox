@@ -11,6 +11,8 @@
  * asb_do_checks()
  *
  * avoid wasted execution by determining when and if code is necessary
+ *
+ * @return: n/a
  */
 function asb_do_checks()
 {
@@ -39,6 +41,8 @@ function asb_do_checks()
  * asb_get_cache()
  *
  * retrieve the cache, rebuilding it if necessary
+ *
+ * @return: n/a
  */
 function asb_get_cache()
 {
@@ -65,9 +69,12 @@ function asb_get_cache()
 }
 
 /*
- * asb_build_cache(&$asb)
+ * asb_build_cache()
  *
  * build all of the relevant info needed to manage side boxes
+ *
+ * @param - &$asb - (array) a reference to the asb cache data variable
+ * @return: n/a
  */
 function asb_build_cache(&$asb)
 {
@@ -179,9 +186,12 @@ function asb_build_cache(&$asb)
 }
 
 /*
- * asb_build_script_filename($this_script = '')
+ * asb_build_script_filename()
  *
  * add all the parts of the script to build a unique name
+ *
+ * @param - $this_script - (array) an optional array of script environment info
+ * @return: (string) filename marked up for asb
  */
 function asb_build_script_filename($this_script = '')
 {
@@ -226,6 +236,11 @@ function asb_build_script_filename($this_script = '')
  * asb_get_this_script(&$asb)
  *
  * get the correct cached script info using the script parameters
+ *
+ * @param - &$asb - (array) a reference to the asb cache data variable
+ * @param - $get_all - (bool) true indicates that side boxes and templates
+ * should be loaded along with the other info
+ * @return: (array) an array of information used to present this script's side boxes
  */
 function asb_get_this_script(&$asb, $get_all = false)
 {
@@ -275,9 +290,12 @@ function asb_get_this_script(&$asb, $get_all = false)
 }
 
 /*
- * asb_check_user_permissions($good_groups)
+ * asb_check_user_permissions()
  *
  * standard check of all user groups against an allowable list
+ *
+ * @param - $good_groups - (array) groups allowed to perform the action we are protecting
+ * @return: (bool) true if the user is allowed, false if not
  */
 function asb_check_user_permissions($good_groups)
 {
@@ -317,9 +335,12 @@ function asb_check_user_permissions($good_groups)
 }
 
 /*
- * asb_build_sidebox_content($this_box)
+ * asb_build_sidebox_content()
  *
  * use the sidebox info to produce its template
+ *
+ * @param - $this_box - (Sidebox object) or (array) of side box data
+ * @return: (string) HTML side box <div> markup or (bool) false on error
  */
 function asb_build_sidebox_content($this_box)
 {
@@ -403,6 +424,8 @@ EOF;
  * asb_get_all_modules()
  *
  * retrieve any detected modules
+ *
+ * @return: (array) an array of Addon_type objects
  */
 function asb_get_all_modules()
 {
@@ -438,6 +461,8 @@ function asb_get_all_modules()
  * asb_get_all_custom()
  *
  * retrieve all custom boxes
+ *
+ * @return: (array) of Custom_type objects
  */
 function asb_get_all_custom()
 {
@@ -461,6 +486,9 @@ function asb_get_all_custom()
  * asb_get_all_sideboxes()
  *
  * retrieve all side boxes
+ *
+ * @param - $good_script - (string) optional script filter
+ * @return: (array) an array of side box objects
  */
 function asb_get_all_sideboxes($good_script = '')
 {
@@ -496,6 +524,8 @@ function asb_get_all_sideboxes($good_script = '')
  * asb_get_all_scripts()
  *
  * retrieve all script definitions
+ *
+ * @return: (array) of script data arrays
  */
 function asb_get_all_scripts()
 {
@@ -520,6 +550,8 @@ function asb_get_all_scripts()
  * asb_compile_box_types()
  *
  * get a list of all the current addons and alphabetize them by title
+ *
+ * @return: (array) of modules => module titles
  */
 function asb_compile_box_types()
 {

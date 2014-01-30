@@ -17,7 +17,7 @@ MyModal = Class.create(MyModal,
 	 * of the Prototype JS library when serializing multiple
 	 * select elements
 	 *
-	 * @param - event - (Event) the click event object
+	 * @param - event - (Event) the submit event object
 	 * @return: n/a
 	 */
 	submit: function(event)
@@ -44,11 +44,11 @@ MyModal = Class.create(MyModal,
 					continue;
 				}
 
-				newElement = document.createElement('input');
-				newElement.setAttribute('type', 'hidden');
-				newElement.setAttribute('name', select.getAttribute('name'));
-				newElement.value = option.value;
-				form.appendChild(newElement);
+				form.insert(new Element('input', {
+					type: 'hidden',
+					name: select.getAttribute('name'),
+					value: option.value
+				}));
 			}
 
 			// remove the select element once it is replaced

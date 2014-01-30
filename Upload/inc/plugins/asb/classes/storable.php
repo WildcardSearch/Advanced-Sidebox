@@ -5,21 +5,9 @@
  */
 
 /*
+ * StorableObjectInterface
+ *
  * standard interface for database storage/retrieval
- *
- * load()
- *
- * load the object from the DB and validate it (hinges on a stored ID)
- *
- * @param - $data - (mixed) either the integer database row ID/Object ID or an associative array of the database row
- *
- * save()
- *
- * this method simply saves the data stored in the object to the database (if it is valid)
- *
- * remove()
- *
- * delete the table row for the object
  */
 interface StorableObjectInterface
 {
@@ -31,8 +19,10 @@ interface StorableObjectInterface
 /*
  * standard object for db storage/retrieval
  *
- * provides a generic wrapper for any object that can be stored/retrieved in/from the DB
- * inherits property manipulation methods from MalleableObject and abides by both the inherited MalleableObjectInterface and StorableObjectInterface interfaces
+ * provides a generic wrapper for any object that can be stored/retrieved
+ * in/from the DB inherits property manipulation methods from
+ * MalleableObject and abides by both the inherited MalleableObjectInterface
+ * and StorableObjectInterface interfaces
  */
 abstract class StorableObject extends MalleableObject implements StorableObjectInterface
 {
@@ -44,7 +34,7 @@ abstract class StorableObject extends MalleableObject implements StorableObjectI
 
 	// the database table associated with this object
 	protected $table_name = '';
-	
+
 	protected $no_store = array
 		(
 			'id', 'valid', 'data', 'table_name', 'no_store'
@@ -53,8 +43,9 @@ abstract class StorableObject extends MalleableObject implements StorableObjectI
 	/*
 	 * __construct()
 	 *
-	 * @param $data
-	 *	either an integer representing the db ID/Object ID or an associative array of the database table row
+	 * @param - $data - (mixed) either (int) representing the db ID/Object ID or
+	 * an associative (array) of the database table row
+	 * @return: n/a
 	 */
 	public function __construct($data = '')
 	{
@@ -72,8 +63,9 @@ abstract class StorableObject extends MalleableObject implements StorableObjectI
 	/*
 	 * load()
 	 *
-	 * @param $data
-	 *	either an integer representing the db ID/Object ID or an associative array of the database table row
+	 * @param - $data - (mixed) either (int) representing the db ID/Object ID or
+	 * an associative (array) of the database table row
+	 * @return: (bool) true on success, false on fail
 	 */
 	public function load($data)
 	{
@@ -114,6 +106,8 @@ abstract class StorableObject extends MalleableObject implements StorableObjectI
 	 * save()
 	 *
 	 * stores the objects data in the database
+	 *
+	 * @return: (bool) true on success, false on fail
 	 */
 	public function save()
 	{
@@ -178,6 +172,8 @@ abstract class StorableObject extends MalleableObject implements StorableObjectI
 	 * remove()
 	 *
 	 * remove the object from the database
+	 *
+	 * @return: (bool) true on success, false on fail
 	 */
 	public function remove($no_cleanup = false)
 	{

@@ -12,8 +12,7 @@ Sidebox = {
 	/**
 	 * init()
 	 *
-	 * build the columns as both sortable and droppable where
-	 * applicable, observe the edit links on all side box divs,
+	 * build the columns, observe the edit links on all side box divs,
 	 * remove the delete icons from side box divs and replace
 	 * the module links with a plain text title
 	 *
@@ -21,14 +20,7 @@ Sidebox = {
 	 */
 	init: function()
 	{
-		// set up our columns
-		for (var i = 0; i < Sidebox.columns.length; i++) {
-			var column = Sidebox.columns[i];
-			Sidebox.buildSortable(column);
-			if (column != 'trash_column') {
-				Sidebox.buildDroppable(column);
-			}
-		}
+		Sidebox.buildColumns();
 
 		// observe the edit links on side boxes
 		$$("a[id^='edit_sidebox_']").invoke('observe', 'click', Sidebox.edit);
@@ -45,6 +37,25 @@ Sidebox = {
 	},
 
 	/* columns */
+
+	/**
+	 * buildColumns()
+	 *
+	 * build the columns as both sortable and droppable where applicable
+	 *
+	 * @return: n/a
+	 */
+	buildColumns: function()
+	{
+		// set up our columns
+		for (var i = 0; i < Sidebox.columns.length; i++) {
+			var column = Sidebox.columns[i];
+			Sidebox.buildSortable(column);
+			if (column != 'trash_column') {
+				Sidebox.buildDroppable(column);
+			}
+		}
+	},
 
 	/**
 	 * buildSortable()
@@ -169,7 +180,7 @@ Sidebox = {
 			class: 'sidebox'
 		}).update(title));
 
-		Sidebox.buildSortable(columnId);
+		Sidebox.buildColumns();
 	},
 
 	/**

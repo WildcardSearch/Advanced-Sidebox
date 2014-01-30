@@ -29,8 +29,9 @@ class Sidebox extends StorableObject
 	 *
 	 * called upon creation
 	 *
-	 * @param - $data - (mixed) an associative array corresponding to both the class specs
-	 * and the database table specs or a database table row ID
+	 * @param - $data - (mixed) an associative array corresponding to both the class
+	 * specs and the database table specs or a database table row ID
+	 * @return: n/a
 	 */
 	function __construct($data = '')
 	{
@@ -46,6 +47,7 @@ class Sidebox extends StorableObject
 	 *
 	 * @param - $data can be an array fetched from the db or
 	 * a valid ID # (__construct will feed 0 if no data is given)
+	 * @return: (bool) true on success, false on fail
 	 */
 	public function load($data)
 	{
