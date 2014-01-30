@@ -114,7 +114,7 @@ function asb_output_footer($page_key)
  */
 function asb_build_footer_menu($page_key = '')
 {
-	global $mybb, $lang;
+	global $mybb;
 
 	if(!$page_key)
 	{
@@ -132,7 +132,6 @@ function asb_build_footer_menu($page_key = '')
 
 <div class="asb_label">
 {$filter_links}
-	{$module_info}
 	{$settings_link}
 	{$help_link}
 </div>

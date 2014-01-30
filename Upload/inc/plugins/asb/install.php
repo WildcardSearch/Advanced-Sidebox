@@ -92,14 +92,14 @@ EOF;
 
 	// This array returns information about the plugin, some of which was prefabricated above based on whether the plugin has been installed or not.
 	return array(
-		"name"					=> $name,
-		"description"			=> $asb_description,
-		"website"				=> "https://github.com/WildcardSearch/Advanced-Sidebox",
-		"author"				=> $author,
-		"authorsite"			=> "http://www.rantcentralforums.com",
-		"version"				=> "2.0.5",
-		"compatibility" 		=> "16*",
-		"guid" 					=> "870e9163e2ae9b606a789d9f7d4d2462",
+		"name" => $name,
+		"description" => $asb_description,
+		"website" => "https://github.com/WildcardSearch/Advanced-Sidebox",
+		"author" => $author,
+		"authorsite" => "http://www.rantcentralforums.com",
+		"version" => "2.0.5",
+		"compatibility" => "16*",
+		"guid" => "870e9163e2ae9b606a789d9f7d4d2462",
 	);
 }
 

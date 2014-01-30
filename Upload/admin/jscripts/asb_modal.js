@@ -14,7 +14,7 @@ MyModal = Class.create(MyModal,
 	 *
 	 * serialize and send the form data, replacing any multiple select
 	 * elements with an array of hidden inputs to overcome a limitation
-	 * of the Prototype JS library has when serializing multiple
+	 * of the Prototype JS library when serializing multiple
 	 * select elements
 	 *
 	 * @param - event - (Event) the click event object

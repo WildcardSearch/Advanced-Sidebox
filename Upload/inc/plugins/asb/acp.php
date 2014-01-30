@@ -170,7 +170,6 @@ EOF;
 	$page->extra_header .= <<<EOF
 	<script type="text/javascript">
 	<!--
-	columns = ['left_column', 'right_column', 'trash_column'];
 	lang.deleting_sidebox = "{$lang->asb_ajax_deleting_sidebox}";
 	// -->
 	</script>
@@ -424,7 +423,6 @@ EOF;
 		exit;
 	}
 
-	// if $sidebox exists it will have a non-zero id property . . .
 	if($id == 0)
 	{
 		// if it doesn't then this is a new box, check the page view filter to try to predict which script the user will want

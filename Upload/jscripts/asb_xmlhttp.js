@@ -23,7 +23,7 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 		this.frequency = (this.options.frequency || 30);
 		this.decay = this.options.decay = (this.options.decay || 1);
 		this.updater = {};
-		this.container = $(container);
+		this.container = $(container).down('tbody');
 		this.url = url;
 
 		// if the server is on a different timezone, get the offset in seconds
@@ -54,7 +54,7 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 			this.decay = this.options.decay;
 
 			// update the side box's <tbody>
-			this.container.down('tbody').update(response.responseText);
+			this.container.update(response.responseText);
 
 		} else {
 			// currently does nothing, but left in to add this option
@@ -70,6 +70,11 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 
 	onTimerEvent: function()
 	{
+		if (this.container.style.display == 'none') {
+			this.timer = this.onTimerEvent.bind(this).delay(this.decay * this.frequency);
+			return;
+		}
+
 		// and finally, this is what we are doing every {rate} seconds
 		this.updater = new Ajax.Request(this.url, this.options);
 	}

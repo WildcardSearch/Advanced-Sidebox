@@ -43,7 +43,7 @@ abstract class ExternalModule extends MalleableObject implements ExternalModuleI
 	 * @param - $name - (string) base name of the module to load
 	 * @param - $path - (string) fully qualified path to the modules
 	 */
-	function __construct($module)
+	public function __construct($module)
 	{
 		// if there is data
 		if($module)
@@ -110,7 +110,7 @@ abstract class ExternalModule extends MalleableObject implements ExternalModuleI
 }
 
 /*
- * Sidebox_type extended for add-on modules
+ * ExternalModule extended for add-on modules
  */
 class Addon_type extends ExternalModule
 {

@@ -3,10 +3,12 @@
  * Copyright 2013 WildcardSearch
  * http://www.rantcentralforums.com
  *
- * this file contains JavaScript for the ACP functions
+ * this file contains JavaScript for the ACP side box functions
  */
 
 Sidebox = {
+	columns: ['left_column', 'right_column', 'trash_column'],
+
 	/**
 	 * init()
 	 *
@@ -20,10 +22,11 @@ Sidebox = {
 	init: function()
 	{
 		// set up our columns
-		for (var i = 0; i < columns.length; i++) {
-			Sidebox.buildSortable(columns[i]);
-			if (columns[i] != 'trash_column') {
-				Sidebox.buildDroppable(columns[i]);
+		for (var i = 0; i < Sidebox.columns.length; i++) {
+			var column = Sidebox.columns[i];
+			Sidebox.buildSortable(column);
+			if (column != 'trash_column') {
+				Sidebox.buildDroppable(column);
 			}
 		}
 
@@ -56,7 +59,7 @@ Sidebox = {
 		Sortable.create(id, {
 			tag: 'div',
 			dropOnEmpty: true,
-			containment: columns,
+			containment: Sidebox.columns,
 			only: 'sidebox',
 			onUpdate: function(dragged, dropped, event)
 			{
@@ -161,13 +164,11 @@ Sidebox = {
 			return;
 		}
 
-		column = $(columnId);
-		var newBox = document.createElement('div');
-		newBox.innerHTML = title;
-		newBox.id = 'sidebox_' + id;
-		newBox.setAttribute('class', 'sidebox');
-		newBox.style.position = 'relative';
-		column.appendChild(newBox);
+		$(columnId).insert(new Element('div', {
+			id: 'sidebox_' + id,
+			class: 'sidebox'
+		}).update(title));
+
 		Sidebox.buildSortable(columnId);
 	},
 

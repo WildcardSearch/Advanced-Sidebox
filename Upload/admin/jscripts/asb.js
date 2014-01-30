@@ -19,14 +19,14 @@ ASB = {
 		if ($('help_link')) {
 			$('help_link').observe('click', function(event) {
 				Event.stop(event);
-				window.open(this.href, 'asbHelp', 'width=840, height=520, scrollbars=yes');
+				MyBB.popupWindow(this.href, 'asbHelp', 840, 520);
 			});
 		}
 
 		if ($('help_link_icon')) {
 			$('help_link_icon').observe('click', function(event) {
 				Event.stop(event);
-				window.open(this.up('a').href, 'asbHelp', 'width=840, height=520, scrollbars=yes');
+				MyBB.popupWindow(this.up('a').href, 'asbHelp', 840, 520);
 			});
 		}
 	}
