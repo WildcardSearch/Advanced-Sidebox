@@ -60,7 +60,8 @@ div.draggable {
 	text-shadow: 3px 3px 3px #070772;
 }
 
-.custom_type, .custom_type a {
+.custom_type,
+.custom_type a {
 	color: #451869;
 }
 
@@ -89,6 +90,7 @@ div.draggable {
 	font-weight: bold;
 	padding: 5px;
 	text-shadow: 3px 3px 3px #285326;
+	position: relative;
 }
 
 .column {

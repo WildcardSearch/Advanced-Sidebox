@@ -53,6 +53,8 @@ class HTMLGenerator
 	 *
 	 * @param - $url - (string) - the base URL for all links and URLs
 	 * @param - $extra_keys - (mixed) - a string key name or an array of key names to allow
+	 *
+	 * @return: n/a
 	 */
 	public function __construct($url = '', $extra_keys = '')
 	{
@@ -88,6 +90,7 @@ class HTMLGenerator
 	 * @param - $options - (array) keyed to standard URL options
 	 * @param - $base_url - (string) overrides the default URL base if present
 	 * @param - $encoded - (boolean) override URL encoded ampersand (for JS mostly)
+	 * @return: (string) URL
 	 */
 	public function url($options = array(), $base_url = '', $encoded = true)
 	{
@@ -132,6 +135,7 @@ class HTMLGenerator
 	 * @param - $url - (string) the address
 	 * @param - $title - (string) the title of the link
 	 * @param - $options - (array) options to effect the HTML output
+	 * @return: (string) HTML anchor
 	 */
 	public function link($url = '', $caption = '', $options = '', $icon_options = array())
 	{
@@ -141,7 +145,7 @@ class HTMLGenerator
 		{
 			$icon_img = $this->img($options['icon'], $icon_options);
 			$icon_link = <<<EOF
-<a href="{$url}"{$properties}>{$icon_img}</a>&nbsp;
+<a href="{$url}">{$icon_img}</a>&nbsp;
 EOF;
 		}
 
@@ -166,6 +170,7 @@ EOF;
 	 *
 	 * @param - $url - (string) image source attribute
 	 * @param - $options - (array) a keyed array of options to be generated
+	 * @return: (string) HTML image
 	 */
 	public function img($url, $options = array())
 	{
@@ -181,6 +186,7 @@ EOF;
 	 *
 	 * @param - $options - (array) keyed array of properties
 	 * @param - $allowed - (array) unindexed array of allowable property names
+	 * @return: (string) a list of properties
 	 */
 	protected function build_property_list($options = array(), $allowed = array())
 	{
@@ -194,7 +200,7 @@ EOF;
 			if(isset($options[$key]) && $options[$key])
 			{
 				$property_list .= <<<EOF
-{$key}="{$options[$key]}"
+ {$key}="{$options[$key]}"
 EOF;
 			}
 		}

@@ -17,6 +17,8 @@ if(!defined("IN_MYBB") || !defined("IN_ASB"))
  * asb_rand_quote_info()
  *
  * provide info to ASB about the addon
+ *
+ * @return: (array) the module info
  */
 function asb_rand_quote_info()
 {
@@ -133,6 +135,7 @@ EOF
  * handles display of children of this addon at page load
  *
  * @param - $args - (array) the specific information from the child box
+ * @return: (bool) true on success, false on fail/no content
  */
 function asb_rand_quote_build_template($args)
 {
@@ -171,6 +174,7 @@ EOF;
  * handles display of children of this addon via AJAX
  *
  * @param - $args - (array) the specific information from the child box
+ * @return: n/a
  */
 function asb_rand_quote_xmlhttp($args)
 {
@@ -192,6 +196,8 @@ function asb_rand_quote_xmlhttp($args)
  *
  * @param - $settings (array) individual side box settings passed to the module
  * @param - $width - (int) the width of the column in which the child is positioned
+ * @return: (mixed) a (string) containing the HTML side box markup or
+ * (bool) false on fail/no content
  */
 function asb_rand_quote_get_quote($settings, $width)
 {
@@ -279,10 +285,8 @@ function asb_rand_quote_get_quote($settings, $width)
 	}
 
 	// set up the user name link so that it displays correctly for the display group of the user
-	$plain_text_username = $username = htmlspecialchars_uni($rand_post['username']);
-	$usergroup = $rand_post['usergroup'];
-	$displaygroup = $rand_post['displaygroup'];
-	$username = format_name($username, $usergroup, $displaygroup);
+	$plain_text_username = htmlspecialchars_uni($rand_post['username']);
+	$username = format_name($plain_text_username, $rand_post['usergroup'], $rand_post['displaygroup']);
 	$author_link = get_profile_link($rand_post['uid']);
 	$post_link = get_post_link($rand_post['pid'], $rand_post['tid']) . '#pid' . $rand_post['pid'];
 	$thread_link = get_thread_link($rand_post['tid']);
@@ -336,7 +340,7 @@ EOF;
 EOF;
 
 	// eval() the template
-	eval("\$this_quote = \"" . $templates->get("rand_quote_sidebox") . "\";");
+	eval("\$this_quote = \"" . $templates->get("asb_rand_quote_sidebox") . "\";");
 	return $this_quote;
 }
 

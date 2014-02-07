@@ -19,7 +19,8 @@ interface PortableObjectInterface
 /*
  * abstract class PortableObject
  *
- * provides functionality to import and export any StorableObject as an XML file and to output a row to be included in a collection exported by an outside function
+ * provides functionality to import and export any StorableObject as an XML file and
+ * to output a row to be included in a collection exported by an outside function
  */
 abstract class PortableObject extends StorableObject implements PortableObjectInterface
 {
@@ -28,12 +29,12 @@ abstract class PortableObject extends StorableObject implements PortableObjectIn
 	 *
 	 * provides export functionality for any StorableObject
 	 *
-	 * @param - $options 	- (array) basic export options:
-	 *									-	['charset'] def: MyBB default/UTF-8
-	 *									-	['version'] def: 2.0
-	 *									-	['website'] def: mine :p
-	 *									-	['filename'] def: a unique filename built from either the
-	 * 																name, title or id, whichever is available
+	 * @param - $options - (array) basic export options:
+	 * - ['charset'] def: MyBB default/UTF-8
+	 * - ['version'] def: 2.0
+	 * - ['website'] def: mine :p
+	 * - ['filename'] def: a unique filename built from either the name, title or id
+	 * @return: (bool) true on success, false on fail
 	 */
 	public function export($options = '')
 	{
@@ -101,7 +102,10 @@ EOF;
 	/*
 	 * public function import()
 	 *
+	 * import data from XML
+	 *
 	 * @param - $xml - (string) the contents of the XML file to be imported
+	 * @return: (bool) true on success, false on fail
 	*/
 	public function import($xml)
 	{
@@ -155,7 +159,9 @@ EOF;
 	/*
 	 * public function build_row()
 	 *
-	 * build a single row of XML markup for this object
+	 * build XML for this object
+	 *
+	 * @return: (string) the XML markup for this object
 	 */
 	public function build_row()
 	{
@@ -184,7 +190,9 @@ EOF;
 	/*
 	 * get_clean_identifier()
 	 *
-	 * returns the name, title or ID (first available-- in that order) to be used as a unique identifier
+	 * find an appropriate property to serve as the identifier in the filename
+	 * 
+	 * @return: (mixed) the (string) name/title or (int) ID to be used as a unique identifier
 	 */
 	public function get_clean_identifier()
 	{

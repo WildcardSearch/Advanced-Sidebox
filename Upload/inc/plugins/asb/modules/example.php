@@ -17,6 +17,8 @@ if(!defined("IN_MYBB") || !defined("IN_ASB"))
  * asb_example_info()
  *
  * provide info to ASB about the addon
+ *
+ * @return: (array) the module info
  */
 function asb_example_info()
 {
@@ -41,6 +43,7 @@ function asb_example_info()
  * handles display of children of this addon at page load
  *
  * @param - $args - (array) the specific information from the child box
+ * @return: (bool) true on success, false on fail/no content
  */
 function asb_example_build_template($args)
 {

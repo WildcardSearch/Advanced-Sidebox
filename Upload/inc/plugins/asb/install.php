@@ -17,6 +17,8 @@ if(!defined("IN_MYBB") || !defined("IN_ASB"))
  * asb_info()
  *
  * Information about the plugin used by MyBB for display as well as to connect with updates
+ *
+ * @return: (array) the plugin info
  */
 function asb_info()
 {
@@ -92,21 +94,23 @@ EOF;
 
 	// This array returns information about the plugin, some of which was prefabricated above based on whether the plugin has been installed or not.
 	return array(
-		"name"					=> $name,
-		"description"			=> $asb_description,
-		"website"				=> "https://github.com/WildcardSearch/Advanced-Sidebox",
-		"author"				=> $author,
-		"authorsite"			=> "http://www.rantcentralforums.com",
-		"version"				=> "2.0.4",
-		"compatibility" 		=> "16*",
-		"guid" 					=> "870e9163e2ae9b606a789d9f7d4d2462",
+		"name" => $name,
+		"description" => $asb_description,
+		"website" => "https://github.com/WildcardSearch/Advanced-Sidebox",
+		"author" => $author,
+		"authorsite" => "http://www.rantcentralforums.com",
+		"version" => "2.0.5",
+		"compatibility" => "16*",
+		"guid" => "870e9163e2ae9b606a789d9f7d4d2462",
 	);
 }
 
 /*
  * asb_is_installed()
  *
- * Checks to see if the plugin's settings group is installed. If so then assume the plugin is installed.
+ * check to see if the plugin's settings group is installed-- assume the plugin is installed if so
+ *
+ * @return: (bool) true if installed, false if not
  */
 function asb_is_installed()
 {
@@ -117,7 +121,11 @@ function asb_is_installed()
 /*
  * asb_install()
  *
- * Add tables, a column to the mybb_users table (show_sidebox), install the plugin setting group (asb_settings), settings, a template (asb_wrapped_sidebox), check for existing modules and install any detected.
+ * add tables, a column to the mybb_users table (show_sidebox),
+ * install the plugin setting group (asb_settings), settings, templates and
+ * check for existing modules and install any detected
+ *
+ * @return: n/a
  */
 function asb_install()
 {
@@ -152,7 +160,10 @@ function asb_install()
 /*
  * asb_activate()
  *
- *  version control (a la pavemen), upgrade if necessary and change permissions for ASB
+ * handle version control (a la pavemen), upgrade if necessary and
+ * change permissions for ASB
+ *
+ * @return: n/a
  */
 function asb_activate()
 {
@@ -187,6 +198,8 @@ function asb_activate()
  * asb_deactivate()
  *
  * simply disables admin permissions for side boxes
+ *
+ * @return: n/a
  */
 function asb_deactivate()
 {
@@ -197,7 +210,11 @@ function asb_deactivate()
 /*
  * asb_uninstall()
  *
- * DROP the table added to the DB and the column previously added to the mybb_users table (show_sidebox), delete the plugin settings, templates and style sheets.
+ * drop the table added to the DB and the column added to
+ * the mybb_users table (show_sidebox),
+ * delete the plugin settings, templates and style sheets
+ *
+ * @return: n/a
  */
 function asb_uninstall()
 {
@@ -243,6 +260,8 @@ function asb_uninstall()
  *
  * retrieves the plugin's settings group gid if it exists
  * attempts to cache repeat calls
+ *
+ * @return: (int) the setting groups id
  */
 function asb_get_settingsgroup()
 {
@@ -271,6 +290,7 @@ function asb_get_settingsgroup()
  * builds the url to modify plugin settings if given valid info
  *
  * @param - $gid is an integer representing a valid settings group id
+ * @return: (string) the URL to view the setting group
  */
 function asb_build_settings_url($gid)
 {
@@ -284,6 +304,8 @@ function asb_build_settings_url($gid)
  * asb_build_settings_link()
  *
  * builds a link to modify plugin settings if it exists
+ *
+ * @return: (string) an HTML anchor element pointing to the plugin settings
  */
 function asb_build_settings_link()
 {

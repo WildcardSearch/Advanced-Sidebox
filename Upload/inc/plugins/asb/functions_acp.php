@@ -13,6 +13,7 @@
  * produces a link to a particular page in the plugin help system (with icon) specified by topic
  *
  * @param - $topic is the intended page's topic keyword
+ * @return: (string) help link HTML
  */
 function asb_build_help_link($topic = '')
 {
@@ -24,14 +25,15 @@ function asb_build_help_link($topic = '')
 	}
 
 	$help_url = $html->url(array("topic" => $topic), "{$mybb->settings['bburl']}/inc/plugins/asb/help/index.php");
-	$help_link = $html->link($help_url, $lang->asb_help, array("style" => 'font-weight: bold;', "icon" => "{$mybb->settings['bburl']}/inc/plugins/asb/images/help.gif", "title" => $lang->asb_help, "onclick" => "window.open('{$help_url}', 'mywindowtitle', 'width=840, height=520, scrollbars=yes'); return false;"), array("alt" => '?', "title" => $lang->asb_help, "style" => 'margin-bottom: -3px;'));
-	return $help_link;
+	return $html->link($help_url, $lang->asb_help, array("id" => 'help_link', "style" => 'font-weight: bold;', "icon" => "{$mybb->settings['bburl']}/inc/plugins/asb/images/help.gif", "title" => $lang->asb_help), array("id" => 'help_link_icon', "alt" => '?', "title" => $lang->asb_help, "style" => 'margin-bottom: -3px;'));
 }
 
 /*
  * asb_build_settings_menu_link()
  *
  * produces a link to the plugin settings with icon
+ *
+ * @return: (string) settings link HTML
  */
 function asb_build_settings_menu_link()
 {
@@ -43,129 +45,12 @@ function asb_build_settings_menu_link()
 }
 
 /*
- * asb_output_header()
- *
- * Output ACP headers for our main page
- */
-function asb_output_header($title)
-{
-    global $mybb, $admin_session, $lang, $plugins, $lang, $page;
-
-	$plugins->run_hooks("admin_page_output_header");
-
-	$rtl = "";
-	if($lang->settings['rtl'] == 1)
-	{
-		$rtl = " dir=\"rtl\"";
-	}
-
-	echo <<<EOF
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"{$rtl}>
-	<head profile="http://gmpg.org/xfn/1">
-		<title>{$title}</title>
-		<meta name="author" content="MyBB Group"/>
-
-EOF;
-
-	echo("		<meta name=\"copyright\" content=\"Copyright " . COPY_YEAR . " MyBB Group.\"/>\n");
-
-	echo <<<EOF
-		<link rel="stylesheet" href="styles/{$page->style}/main.css" type="text/css" />
-
-EOF;
-
-	// Load style sheet for this module if it has one
-	if(file_exists(MYBB_ADMIN_DIR . "styles/{$page->style}/{$page->active_module}.css"))
-	{
-		echo <<<EOF
-		<link rel="stylesheet" href="styles/{$page->style}/{$page->active_module}.css" type="text/css" />
-
-EOF;
-	}
-
-	echo <<<EOF
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.0.0/prototype.js"></script>
-		<script type="text/javascript" src="../jscripts/general.js"></script>
-		<script type="text/javascript" src="../jscripts/popup_menu.js"></script>
-		<script type="text/javascript" src="./jscripts/admincp.js"></script>
-		<script type="text/javascript" src="./jscripts/tabs.js"></script>
-
-EOF;
-
-	// Stop JS elements showing while page is loading (JS supported browsers only)
-	echo <<<EOF
-		<style type="text/css">
-			.popup_button { display: none; }
-		</style>
-		<script type="text/javascript">
-			//<![CDATA[
-				document.write('<style type="text/css">.popup_button { display: inline; } .popup_menu { display: none; }<\/style>');
-			//]]>
-		</script>
-		<script type="text/javascript">
-			//<![CDATA[
-			var loading_text = '{$lang->loading_text}';
-			var cookieDomain = '{$mybb->settings['cookiedomain']}';
-			var cookiePath = '{$mybb->settings['cookiepath']}';
-			var cookiePrefix = '{$mybb->settings['cookieprefix']}';
-			var imagepath = '../images';
-			//]]>
-		</script>
-
-		{$page->extra_header}
-	</head>
-	<body>
-		<div id="container">
-		<div id="logo"><h1><span class="invisible">{$lang->mybb_admin_cp}</span></h1></div>
-		<div id="welcome">
-			<span class="logged_in_as">{$lang->logged_in_as} <a href="index.php?module=user-users&amp;action=edit&amp;uid={$mybb->user['uid']}" class="username">{$mybb->user['username']}</a></span> | <a href="{$mybb->settings['bburl']}" target="_blank" class="forum">{$lang->view_board}</a> | <a href="index.php?action=logout&amp;my_post_key={$mybb->post_code}" class="logout">{$lang->logout}</a>
-		</div>
-
-EOF;
-
-	echo $page->_build_menu();
-
-	echo <<<EOF
-	<div id="page">
-		<div id="left_menu">
-EOF;
-	echo $page->submenu;
-	echo $page->sidebar;
-	echo <<<EOF
-	</div>
-		<div id="content">
-			<div class="breadcrumb">
-EOF;
-	echo $page->_generate_breadcrumb();
-	echo <<<EOF
-	</div>
-		<div id="inner">
-EOF;
-
-	if(isset($admin_session['data']['flash_message']) && $admin_session['data']['flash_message'])
-	{
-		$message = $admin_session['data']['flash_message']['message'];
-		$type = $admin_session['data']['flash_message']['type'];
-		echo <<<EOF
-	<div id="flash_message" class="{$type}">
-		{$message}
-		</div>
-EOF;
-		update_admin_session('flash_message', '');
-	}
-	if($page->show_post_verify_error == true)
-	{
-		$page->output_error($lang->invalid_post_verify_key);
-	}
-}
-
-/*
  * asb_output_tabs()
  *
  * Output ACP tabs for our pages
  *
  * @param - $current is the tab currently being viewed
+ * @return: n/a
  */
 function asb_output_tabs($current)
 {
@@ -217,6 +102,10 @@ function asb_output_tabs($current)
  * asb_output_footer()
  *
  * Output ACP footers for our pages
+ *
+ * @param - $page_key - (string) the current page key used by the help
+ * system and the footer menu
+ * @return: n/a
  */
 function asb_output_footer($page_key)
 {
@@ -229,11 +118,14 @@ function asb_output_footer($page_key)
 /*
  * asb_build_footer_menu()
  *
+ * build a footer menu specific to each page
+ *
  * @param - $page_key is the topic key name for the current page
+ * @return: (string) the footer menu HTML
  */
 function asb_build_footer_menu($page_key = '')
 {
-	global $mybb, $lang;
+	global $mybb;
 
 	if(!$page_key)
 	{
@@ -251,7 +143,6 @@ function asb_build_footer_menu($page_key = '')
 
 <div class="asb_label">
 {$filter_links}
-	{$module_info}
 	{$settings_link}
 	{$help_link}
 </div>
@@ -262,7 +153,10 @@ EOF;
 /*
  * asb_build_permissions_table()
  *
+ * build a popup with a table of side box permission info
+ *
  * @param - $id is the numeric id of the sidebox
+ * @return: (string) the permission table HTML
  */
 function asb_build_permissions_table($id)
 {
@@ -415,6 +309,7 @@ EOF;
  * @param - $sidebox Sidebox type object xD
  * @param - $wrap specifies whether to produce the <div> or just the contents
  * @param - $ajax specifies whether to produce the delete link or not
+ * @return: (string) the side box <div>
  */
 function asb_build_sidebox_info($sidebox, $wrap = true, $ajax = false)
 {
@@ -469,6 +364,8 @@ EOF;
  * asb_cache_has_changed()
  *
  * set the flag so the cache is rebuilt new run
+ *
+ * @return: n/a
  */
 function asb_cache_has_changed()
 {
@@ -480,10 +377,13 @@ function asb_cache_has_changed()
 }
 
 /*
- * asb_detect_script_info($filename)
+ * asb_detect_script_info()
  *
  * searches for hooks, templates and actions and returns a
  * keyed array of select box HTML for any that are found
+ *
+ * @param - $filename - (string) the file to check
+ * @return: (array) script component information
  */
 function asb_detect_script_info($filename)
 {
@@ -562,9 +462,12 @@ function asb_detect_script_info($filename)
 }
 
 /*
- * asb_legacy_custom_import($tree)
+ * asb_legacy_custom_import()
  *
  * imports XML files created with ASB 1.x series
+ *
+ * @param - $tree - (array) as returned by XMLParser
+ * @return: n/a
  */
 function asb_legacy_custom_import($tree)
 {
@@ -605,6 +508,7 @@ function asb_legacy_custom_import($tree)
  * build links for ACP Manage Side Boxes screen
  *
  * @param - $filter is a string containing the script to show or 'all_scripts' to avoid filtering altogether
+ * @return: (string) the form HTML
  */
 function asb_build_filter_selector($filter)
 {
@@ -634,6 +538,7 @@ function asb_build_filter_selector($filter)
  * @param - $setting is an associative array for the settings properties
  * @param - $sidebox is an integer representing the currently loaded box (edit) or 0 if adding a new side box
  * @param - $module is a valid Addon_type object (add-on module)
+ * @return: n/a
  */
 function asb_build_setting($this_form, $this_form_container, $setting, $sidebox, $module)
 {

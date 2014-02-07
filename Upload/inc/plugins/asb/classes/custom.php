@@ -23,6 +23,7 @@ class Custom_type extends PortableObject
 	 *
 	 * @param - $data - (mixed) an associative array corresponding to both the class specs
 	 * and the database table specs or a database table row ID
+	 * @return: n/a
 	 */
 	public function __construct($data = '')
 	{
@@ -37,6 +38,7 @@ class Custom_type extends PortableObject
 	 *
 	 * @param - $data can be an array fetched from the db or
 	 * a valid ID # (__construct will feed 0 if no data is given)
+	 * @return: (bool) true on success, false on fail
 	 */
 	public function load($data)
 	{
@@ -54,6 +56,7 @@ class Custom_type extends PortableObject
 	 * removes the custom side box from the database
 	 *
 	 * @param - $no_cleanup is a boolean value and when true will prevent the removal of sideboxes using this custom type
+	 * @return: (bool) true on success, false on fail
 	 */
 	public function remove($no_cleanup = false)
 	{
@@ -69,6 +72,7 @@ class Custom_type extends PortableObject
 	 * remove_children()
 	 *
 	 * delete all the side boxes of this type
+	 * @return: n/a
 	 */
 	protected function remove_children()
 	{
@@ -83,6 +87,7 @@ class Custom_type extends PortableObject
 	 * build_template()
 	 *
 	 * builds the content for the template variable used for this custom box
+	 * @return: (bool) true on success, false on fail
 	 */
 	public function build_template($template_variable)
 	{

@@ -12,7 +12,8 @@
  *
  * strips all quote tags (and their contents) from a post message
  *
- * @param - $message is a string containing the unparsed message
+ * @param - $message - (string) the unparsed message
+ * @return: (string) the message sans quotes
  */
 function asb_strip_quotes($message)
 {
@@ -37,8 +38,10 @@ function asb_strip_quotes($message)
 /*
  * asb_strip_url()
  *
- * @param - $message
-					the text to cleanse
+ * strip all URLs from the given string
+ *
+ * @param - $message - (string) the text to cleanse
+ * @return: (string) the message less URLs
  */
 function asb_strip_url($message)
 {
@@ -56,6 +59,7 @@ function asb_strip_url($message)
  * @param - $ids - (mixed) an (int) id or a (string) comma-separated list of ids
  * @param - $field - (string) the field name of the DB table
  * @param - $wrap - (bool) whether to present the id list as an SQL IN() or not
+ * @return: (string) an SQL IN() function using the ids provided
  */
 function asb_build_id_list($ids, $field = 'id', $wrap = true)
 {
@@ -112,6 +116,7 @@ EOF;
  * @param - $op - (string) the operand to use as a separator
  * @param - $prefix - (string) an operand or other prefix can be used here
  * @param - $wrap - (bool) whether to prefix and enclose the conditions in parentheses or not
+ * @return: (string) an SQL WHERE clause using the provided info
  */
 function asb_build_SQL_where($conditions, $op = 'AND', $prefix = '', $wrap = true)
 {

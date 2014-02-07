@@ -55,6 +55,7 @@ class TemplateHandler
 	 * @param - $extra_scripts - (string) - any extra JS needed by modules used on this script
 	 * @param - $template_vars - (array) - a non-indexed array of template variables
 	 * 					to globalize (used when outputting to custom pages)
+	 * @return: n/a
 	 */
 	public function __construct($left_insert, $right_insert, $width_left, $width_right, $extra_scripts = '', $template_vars = array())
 	{
@@ -154,6 +155,8 @@ EOF;
 	 * make_edits()
 	 *
 	 * handles the rudimentary tasks of editing a template for side boxes
+	 *
+	 * @return: n/a
 	 */
 	public function make_edits()
 	{
@@ -191,6 +194,7 @@ EOF;
 		{
 			$this->find_bottom = '{$footer}';
 		}
+		$filename = THIS_SCRIPT;
 
 		$left_content = $this->left_content;
 		eval("\$this->insert_top = \"" . $templates->get('asb_begin') . "\";");
@@ -221,7 +225,9 @@ EOF;
 <script type="text/javascript" src="jscripts/asb_xmlhttp.js"></script>
 <script type="text/javascript">
 <!--
-	Event.observe(window, 'load', function() { asb_build_updaters([ {$extra_scripts} ], {$this->width_left}, {$this->width_right}); } );
+	Event.observe(window, 'load', function() {
+		asbBuildUpdaters([ {$extra_scripts} ], { left: {$this->width_left}, right: {$this->width_right} });
+	});
 // -->
 </script>
 EOF;

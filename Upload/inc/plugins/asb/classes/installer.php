@@ -34,6 +34,7 @@ class WildcardPluginInstaller
 	 * load the installation data and prepare for anything
 	 *
 	 * @param - $path - (string) path to the install data
+	 * @return: n/a
 	 */
 	public function __construct($path)
 	{
@@ -93,6 +94,8 @@ class WildcardPluginInstaller
 	 * install()
 	 *
 	 * install all the elements stored in the installation data file
+	 *
+	 * @return: n/a
 	 */
 	public function install()
 	{
@@ -106,6 +109,8 @@ class WildcardPluginInstaller
 	 * uninstall()
 	 *
 	 * uninstall all elements as provided in the install data
+	 *
+	 * @return: n/a
 	 */
 	public function uninstall()
 	{
@@ -125,6 +130,7 @@ class WildcardPluginInstaller
 	 *
 	 * @param - $table - (string) table name without prefix
 	 * @param - $columns - (array) an associative array of columns
+	 * @return: n/a
 	 */
 	private function add_table($table, $columns)
 	{
@@ -157,6 +163,7 @@ class WildcardPluginInstaller
 	 * create multiple tables from stored info
 	 *
 	 * @param - $tables - (array) an associative array of database tables and their columns
+	 * @return: n/a
 	 */
 	public function add_tables()
 	{
@@ -183,6 +190,8 @@ class WildcardPluginInstaller
 	 * remove_tables()
 	 *
 	 * drop multiple database tables
+	 *
+	 * @return: n/a
 	 */
 	public function remove_tables()
 	{
@@ -201,6 +210,7 @@ class WildcardPluginInstaller
 	 * add columns in the list to a table (if they do not already exist)
 	 *
 	 * @param - $column_list - (array) an associative array of tables and columns
+	 * @return: n/a
 	 */
 	public function add_columns()
 	{
@@ -234,6 +244,7 @@ class WildcardPluginInstaller
 	 * drop multiple listed columns
 	 *
 	 * @param - $column_list - (array) an associative array of tables and columns
+	 * @return: n/a
 	 */
 	public function remove_columns()
 	{
@@ -267,8 +278,7 @@ class WildcardPluginInstaller
 	 * create multiple setting groups
 	 *
 	 * @param - $groups - (array) an associative array of setting groups
-	 *
-	 * return: an associative array of setting groups and gids
+	 * @return: an associative array of setting groups and gids
 	 */
 	private function add_settinggroups($groups)
 	{
@@ -302,6 +312,7 @@ class WildcardPluginInstaller
 	 * create settings from an array
 	 *
 	 * @param - $settings - (array) an associative array of groups and settings
+	 * @return: n/a
 	 */
 	public function add_settings()
 	{
@@ -346,12 +357,14 @@ class WildcardPluginInstaller
 	 * add_template_groups()
 	 *
 	 * create or update the template groups stored in the object
+	 *
+	 * @return: n/a
 	 */
 	public function add_template_groups()
 	{
 		if(!is_array($this->templates) || empty($this->templates))
 		{
-			return false;
+			return;
 		}
 
 		$insert_array = $update_array = array();
@@ -382,12 +395,13 @@ class WildcardPluginInstaller
 	 * create multiple templates from stored info
 	 *
 	 * @param - $templates - (array) an associative array of template data
+	 * @return: n/a
 	 */
 	public function add_templates()
 	{
 		if(!is_array($this->templates) || empty($this->templates))
 		{
-			return false;
+			return;
 		}
 
 		$this->add_template_groups();
@@ -435,6 +449,7 @@ class WildcardPluginInstaller
 	 * @param - $table - (string) table name without prefix
 	 * @param - $field - (string) field name
 	 * @param - $list - (array) an unindexed array of string values
+	 * @return: n/a
 	 */
 	private function remove_($table, $field, $list)
 	{

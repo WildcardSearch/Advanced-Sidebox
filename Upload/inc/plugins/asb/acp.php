@@ -20,6 +20,8 @@ require_once MYBB_ROOT . "inc/plugins/asb/install.php";
  * asb_admin()
  *
  * the ACP page router
+ *
+ * @return: n/a
  */
 $plugins->add_hook('admin_load', 'asb_admin');
 function asb_admin()
@@ -78,6 +80,8 @@ function asb_admin()
  * asb_admin_manage_sideboxes()
  *
  * main side box management page - drag and drop and standard controls for side boxes
+ *
+ * @return: n/a
  */
 function asb_admin_manage_sideboxes()
 {
@@ -106,7 +110,7 @@ EOF;
 
 			// build the JS to enable dragging
 			$module_script .= <<<EOF
-		new Draggable('{$id}', { revert: true });
+	new Draggable('{$id}', { revert: true });
 
 EOF;
 		}
@@ -135,7 +139,7 @@ EOF;
 
 			// build the js to enable dragging
 			$module_script .= <<<EOF
-		new Draggable('{$id}', { revert: true });
+	new Draggable('{$id}', { revert: true });
 
 EOF;
 		}
@@ -168,19 +172,22 @@ EOF;
 
 	// set up the page header
 	$page->extra_header .= <<<EOF
-<script type="text/javascript">
-		<!--
-			columns = ['left_column', 'right_column', 'trash_column'];
-		// -->
-		</script>
-		<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
-		<script src="../jscripts/scriptaculous.js?load=effects,dragdrop,controls" type="text/javascript"></script>
-		<script src="jscripts/imodal.js" type="text/javascript"></script>
-		<link rel="stylesheet" type="text/css" href="styles/default/imodal.css"/>
-		<script src="jscripts/asb.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	<!--
+	lang.deleting_sidebox = "{$lang->asb_ajax_deleting_sidebox}";
+	// -->
+	</script>
+	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
+	<script src="../jscripts/scriptaculous.js?load=effects,dragdrop,controls" type="text/javascript"></script>
+	<script src="jscripts/imodal.js" type="text/javascript"></script>
+	<link rel="stylesheet" type="text/css" href="styles/default/imodal.css"/>
+	<script src="jscripts/asb.js" type="text/javascript"></script>
+	<script src="jscripts/asb_modal.js" type="text/javascript"></script>
+	<script src="jscripts/asb_sideboxes.js" type="text/javascript"></script>
+
 EOF;
 
-	asb_output_header("{$lang->asb} - {$lang->asb_manage_sideboxes}");
+	$page->output_header("{$lang->asb} - {$lang->asb_manage_sideboxes}");
 	asb_output_tabs('asb');
 
 	$filter_text = '';
@@ -191,6 +198,7 @@ EOF;
 
 	// build the display
 	$markup = <<<EOF
+
 	<div id="droppable_container">{$filter_text}
 		<table width="100%" class="back_drop">
 			<tr>
@@ -220,45 +228,6 @@ EOF;
 	</div>
 	<script type="text/javascript">
 	<!--
-		// set up our columns
-		build_sortable('left_column');
-		build_sortable('right_column');
-		build_sortable('trash_column');
-
-		/* stop the edit link from taking admin to a new page
-		 * we will popup a modal instead (this allows a fallback for
-		 * noscript)
-		 */
-		$$("a[id^='edit_sidebox_']").invoke
-		(
-			'observe',
-			'click',
-			function(event)
-			{
-				Event.stop(event);
-			}
-		);
-
-		// remove the delete icon as we have the trash column
-		$$('.del_icon').each
-		(
-			function(e)
-			{
-				e.remove();
-			}
-		);
-
-		/* replace all the links with their titles
-		 * (we don't need them we have drag and drop)
-		 */
-		$$('.add_box_link').each
-		(
-			function(e)
-			{
-				e.replace(e.innerHTML);
-			}
-		);
-
 {$module_script}
 	// -->
 	</script>
@@ -274,6 +243,8 @@ EOF;
  * asb_admin_edit_box()
  *
  * handles the modal/JavaScript edit box and also (as a backup) displays a standard form for those with JavaScript disabled
+ *
+ * @return: n/a
  */
 function asb_admin_edit_box()
 {
@@ -281,21 +252,50 @@ function asb_admin_edit_box()
 
 	$box_types = asb_compile_box_types();
 
+	$sidebox = new Sidebox($mybb->input['id']);
+	$id = (int) $sidebox->get('id');
+
+	$position = (int) $mybb->input['box_position'];
+	if($mybb->input['ajax'] == 1)
+	{
+		$position = (int) $mybb->input['pos'];
+		if($id)
+		{
+			$position = (int) $sidebox->get('position');
+		}
+	}
+
+	$is_custom = $is_module = false;
+	$custom_title = 0;
+
+	$module = $mybb->input['addon'];
+	$parent = new Addon_type($module);
+	if(!$parent->is_valid())
+	{
+		// did this box come from a custom static box?
+		$variable_array = explode('_', $module);
+		$custom_id = $variable_array[count($variable_array) - 1];
+
+		$parent = new Custom_type($custom_id);
+
+		if($parent->is_valid())
+		{
+			$is_custom = true;
+		}
+		else
+		{
+			flash_message($lang->asb_edit_fail_bad_module);
+			admin_redirect($html->url());
+		}
+	}
+	else
+	{
+		$is_module = true;
+	}
+
 	// saving?
 	if($mybb->request_method == 'post')
 	{
-		// start with a new box
-		$sidebox = new Sidebox();
-
-		// position
-		$pos_key = 'box_position';
-		// if called by JS
-		if($mybb->input['ajax'] == 1)
-		{
-			// the position will be stored in a hidden field
-			$pos_key = 'pos';
-		}
-		$position = (int) $mybb->input[$pos_key];
 		$sidebox->set('position', $position);
 
 		// display order
@@ -312,18 +312,8 @@ function asb_admin_edit_box()
 		}
 		$sidebox->set('display_order', $display_order);
 
-		// if we are handling an AJAX request
-		if($mybb->input['ajax'] == 1)
-		{
-			// then we need to convert the input to an array
-			$script_list = explode(",", $mybb->input['script_select_box'][0]);
-			$group_list = explode(",", $mybb->input['group_select_box'][0]);
-		}
-		else
-		{
-			$script_list = $mybb->input['script_select_box'];
-			$group_list = $mybb->input['group_select_box'];
-		}
+		$script_list = $mybb->input['script_select_box'];
+		$group_list = $mybb->input['group_select_box'];
 
 		if($group_list[0] == 'all')
 		{
@@ -339,25 +329,19 @@ function asb_admin_edit_box()
 		$sidebox->set('groups', $group_list);
 
 		// box type
-		$module = trim($mybb->input['addon']);
 		$sidebox->set('box_type', $module);
 
-		// id
-		$sidebox->set('id', $mybb->input['id']);
-
-		// is this side box created by an add-on module?
-		$test = new Addon_type($module);
-		if($test->is_valid())
+		$sidebox->set('wrap_content', true);
+		if($is_module)
 		{
-			$sidebox->set('wrap_content', $test->get('wrap_content'));
-			$addon_settings = $test->get('settings');
+			$sidebox->set('wrap_content', $parent->get('wrap_content'));
+			$addon_settings = $parent->get('settings');
 
 			// if the parent module has settings . . .
 			if(is_array($addon_settings))
 			{
-				$settings = array();
-
 				// loop through them
+				$settings = array();
 				foreach($addon_settings as $setting)
 				{
 					// and if the setting has a value
@@ -371,23 +355,10 @@ function asb_admin_edit_box()
 				$sidebox->set('settings', $settings);
 			}
 		}
-		else
+		elseif($is_custom)
 		{
-			// did this box come from a custom static box?
-			$variable_array = explode('_', $module);
-			$custom_id = $variable_array[count($variable_array) - 1];
-
-			$test = new Custom_type($custom_id);
-			if($test->is_valid())
-			{
-				// then use its wrap_content property
-				$sidebox->set('wrap_content', $test->get('wrap_content'));
-			}
-			else
-			{
-				// otherwise wrap the box
-				$sidebox->set('wrap_content', true);
-			}
+			// then use its wrap_content property
+			$sidebox->set('wrap_content', $parent->get('wrap_content'));
 		}
 
 		// if the text field isn't empty . . .
@@ -412,90 +383,56 @@ function asb_admin_edit_box()
 		}
 
 		// save the side box
-		$sidebox->save();
+		$new_id = $sidebox->save();
 		asb_cache_has_changed();
 
 		// AJAX?
-		if($mybb->input['ajax'] == 1)
+		if($mybb->input['ajax'] != 1)
 		{
-			// get some info
-			$id = (int) $sidebox->get('id');
-			$column_id = 'left_column';
-			if($position)
-			{
-				$column_id = 'right_column';
-			}
+			// if in the standard form handle it with a redirect
+			flash_message($lang->asb_save_success, "success");
+			admin_redirect('index.php?module=config-asb');
+		}
 
-			// creating a new box?
-			$build_script = '';
-			if((int) $mybb->input['id'] == 0)
-			{
-				// then escape the title
-				$box_title = addcslashes($sidebox->get('title'), "'");
+		$column_id = 'left_column';
+		if($position)
+		{
+			$column_id = 'right_column';
+		}
 
-				/*
-				 * create the new <div> representation of the side box
-				 * (title only it will be filled in later by the updater)
-				 */
-				$build_script = <<<EOF
-$('{$column_id}').highlight(); var new_box=document.createElement('div'); new_box.innerHTML='{$box_title}'; new_box.id='sidebox_{$id}'; new_box.setAttribute('class','sidebox'); new_box.style.position='relative'; $('{$column_id}').appendChild(new_box); build_sortable('{$column_id}'); build_droppable('{$column_id}');
-EOF;
-			}
+		// creating a new box?
+		$build_script = '';
+		if($id == 0)
+		{
+			// grab the insert id
+			$id = $new_id;
 
-			// update the side box after we're done via AJAX
-			$script = <<<EOF
+			// then escape the title
+			$box_title = addcslashes($sidebox->get('title'), "'");
+
+			/*
+			 * create the new <div> representation of the side box
+			 * (title only it will be filled in later by the updater)
+			 */
+			$build_script = "Sidebox.createDiv({$id}, '{$box_title}', '{$column_id}'); ";
+		}
+
+		// update the side box after we're done via AJAX
+		$script = <<<EOF
 <script type="text/javascript">
-{$build_script} new Ajax.Updater('sidebox_{$id}', "index.php?module=config-asb&action=xmlhttp&mode=build_info&id={$id}",{ method:"get", evalScripts: true });
+{$build_script}Sidebox.updateDiv({$id});
 </script>
 EOF;
 
-			// the modal box will eval() any scripts passed as output (that are valid).
-			echo($script);
-			exit;
-		}
-
-		// if in the standard form handle it with a redirect
-		flash_message($lang->asb_save_success, "success");
-		admin_redirect('index.php?module=config-asb');
+		// the modal box will eval() any scripts passed as output (that are valid).
+		echo($script);
+		exit;
 	}
 
-	// attempt to load the specified box
-	$sidebox = new Sidebox((int) $mybb->input['id']);
-	$box_id = (int) $sidebox->get('id');
-	$module = $mybb->input['addon'];
-	$pos = (int) $mybb->input['pos'];
-	$is_custom = $is_module = false;
-	$custom_title = 0;
-
-	$parent = new Addon_type($module);
-	if(!$parent->is_valid())
-	{
-		// did this box come from a custom static box?
-		$variable_array = explode('_', $module);
-		$custom_id = $variable_array[count($variable_array) - 1];
-
-		$parent = new Custom_type($custom_id);
-
-		if($parent->is_valid())
-		{
-			$is_custom = true;
-		}
-		else
-		{
-			flash_message('Bad module!');
-			admin_redirect($html->url());
-		}
-	}
-	else
-	{
-		$is_module = true;
-	}
-
-	// if $sidebox exists it will have a non-zero id property . . .
-	if($box_id == 0)
+	if($id == 0)
 	{
 		// if it doesn't then this is a new box, check the page view filter to try to predict which script the user will want
-		if(isset($mybb->input['page']) && $mybb->input['page'])
+		if($mybb->input['page'])
 		{
 			// start them out with the script they are viewing for Which Scripts
 			$selected_scripts[] = $mybb->input['page'];
@@ -532,7 +469,6 @@ EOF;
 			// then this box has a custom title
 			$custom_title = 1;
 		}
-		$module = $sidebox->get('box_type');
 	}
 
 	// AJAX?
@@ -557,9 +493,13 @@ EOF;
 		$page->add_breadcrumb_item($page_title);
 
 		// add a little CSS
-		$page->extra_header .= '<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />';
-		asb_output_header("{$lang->asb} - {$page_title}");
-		$form = new Form($html->url(array("action" => 'edit_box', "id" => $box_id, "addon" => $module)), "post", "modal_form");
+		$page->extra_header .= <<<EOF
+	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
+	<script src="jscripts/asb.js" type="text/javascript"></script>
+
+EOF;
+		$page->output_header("{$lang->asb} - {$page_title}");
+		$form = new Form($html->url(array("action" => 'edit_box', "id" => $id, "addon" => $module)), "post", "modal_form");
 	}
 
 	$tabs = array(
@@ -598,10 +538,7 @@ EOF;
 	}
 
 	// current editing text
-	if($is_module || $is_custom)
-	{
-		$currently_editing = '"' . $parent->get('title') . '"';
-	}
+	$currently_editing = '"' . $parent->get('title') . '"';
 
 	$box_action = $lang->asb_creating;
 	if(isset($mybb->input['id']))
@@ -615,7 +552,7 @@ EOF;
 	if($mybb->input['ajax'] != 1)
 	{
 		// box title
-		$form_container->output_row($lang->asb_custom_title, $current_title, $form->generate_text_box('box_title'), 'box_title', array("id" => 'box_title'));
+		$form_container->output_row($lang->asb_custom_title, $current_title, $form->generate_text_box('box_title') . $form->generate_hidden_field('current_title', $sidebox->get('title')), 'box_title', array("id" => 'box_title'));
 
 		// position
 		$form_container->output_row($lang->asb_position, '', $form->generate_radio_button('box_position', 0, $lang->asb_position_left, array("checked" => ($sidebox->get('position') == 0))) . '&nbsp;&nbsp;' . $form->generate_radio_button('box_position', 1, $lang->asb_position_right, array("checked" => ($sidebox->get('position') != 0))));
@@ -626,11 +563,8 @@ EOF;
 	else
 	{
 		// box title
-		$form_container->output_row('', '', $form->generate_text_box('box_title') . '<br />' . $current_title . $form->generate_hidden_field('display_order', $sidebox->get('display_order')), 'box_title', array("id" => 'box_title'));
+		$form_container->output_row('', '', $form->generate_text_box('box_title') . '<br />' . $current_title . $form->generate_hidden_field('current_title', $sidebox->get('title')) . $form->generate_hidden_field('display_order', $sidebox->get('display_order')) . $form->generate_hidden_field('pos', $position), 'box_title', array("id" => 'box_title'));
 	}
-
-	// hidden forms to pass info to post
-	$form_container->output_row('', '', $form->generate_hidden_field('current_title', $sidebox->get('title')) . $form->generate_hidden_field('pos', $pos));
 	$form_container->end();
 
 	echo "\n</div>\n<div id=\"tab_permissions\">\n";
@@ -710,7 +644,7 @@ EOF;
 
 		$form_container = new FormContainer($lang->asb_modal_tab_settings_desc);
 
-		if($box_id)
+		if($id)
 		{
 			$sidebox_settings = $sidebox->get('settings');
 		}
@@ -724,7 +658,7 @@ EOF;
 			foreach($sidebox_settings as $setting)
 			{
 				// allow the handler to build module settings
-				asb_build_setting($form, $form_container, $setting, $box_id, $module);
+				asb_build_setting($form, $form_container, $setting, $id, $module);
 			}
 		}
 		$form_container->end();
@@ -760,6 +694,8 @@ EOF;
  * asb_admin_custom_boxes()
  *
  * handle user-defined box types
+ *
+ * @return: n/a
  */
 function asb_admin_custom_boxes()
 {
@@ -964,6 +900,7 @@ EOF;
 
 		$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
+	<script src="jscripts/asb.js" type="text/javascript"></script>
 EOF;
 
 		$page->add_breadcrumb_item($lang->asb_custom_boxes, $html->url(array("action" => 'custom_boxes')));
@@ -1026,6 +963,7 @@ EOF;
 
 	$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
+	<script src="jscripts/asb.js" type="text/javascript"></script>
 EOF;
 
 	$page->add_breadcrumb_item($lang->asb_custom_boxes);
@@ -1112,6 +1050,8 @@ EOF;
  * asb_admin_manage_scripts()
  *
  * add/edit/delete script info
+ *
+ * @return: n/a
  */
 function asb_admin_manage_scripts()
 {
@@ -1275,13 +1215,15 @@ EOF;
 
 		$page->extra_header .= <<<EOF
 	<script type="text/javascript" src="./jscripts/peeker.js"></script>
+	<script type="text/javascript" src="jscripts/asb_scripts.js"></script>
 	<script type="text/javascript">
 	<!--
-		var edit_script = '{$filename}';
+		ASBScript.current = '{$filename}';
 	// -->
 	</script>
-	<script type="text/javascript" src="jscripts/asb_scripts.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
+	<script src="jscripts/asb.js" type="text/javascript"></script>
+
 EOF;
 
 		$page->add_breadcrumb_item($lang->asb_manage_scripts, $html->url(array("action" => 'manage_scripts')));
@@ -1365,6 +1307,8 @@ EOF;
 	{
 		$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
+	<script src="jscripts/asb.js" type="text/javascript"></script>
+
 EOF;
 
 		$page->add_breadcrumb_item($lang->asb_manage_scripts);
@@ -1448,6 +1392,8 @@ EOF;
  * asb_admin_manage_modules()
  *
  * view and delete add-ons
+ *
+ * @return: n/a
  */
 function asb_admin_manage_modules()
 {
@@ -1455,6 +1401,8 @@ function asb_admin_manage_modules()
 
 	$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
+	<script src="jscripts/asb.js" type="text/javascript"></script>
+
 EOF;
 
 	$page->add_breadcrumb_item($lang->asb, $html->url());
@@ -1511,6 +1459,8 @@ EOF;
  * asb_admin_xmlhttp()
  *
  * handler for AJAX side box routines
+ *
+ * @return: n/a
  */
 function asb_admin_xmlhttp()
 {
@@ -1519,85 +1469,80 @@ function asb_admin_xmlhttp()
 	// if ordering (or trashing)
 	if($mybb->input['mode'] == 'order')
 	{
-		$left_column = '';
-		$right_column = '';
 		parse_str($mybb->input['data']);
 
 		if($mybb->input['pos'] == 'trash_column')
 		{
-			// if there is anything in the side box
-			if(is_array($trash_column) && !empty($trash_column))
+			// if there is nothing in the column
+			if(!is_array($trash_column) || empty($trash_column))
 			{
-				// loop through them all
-				foreach($trash_column as $id)
-				{
-					$sidebox = new Sidebox($id);
-
-					// and if they are valid side boxes
-					if($sidebox->is_valid())
-					{
-						// remove them
-						$sidebox->remove();
-						asb_cache_has_changed();
-
-						// return the removed side boxes id to the AJAX object (so that the div can be destroyed as well)
-						echo($id);
-					}
-				}
+				exit;
 			}
+
+			// loop through them all
+			$ids = array();
+			foreach($trash_column as $id)
+			{
+				$sidebox = new Sidebox($id);
+				$sidebox->remove();
+				asb_cache_has_changed();
+
+				// return the removed side boxes id to the Sidebox object (so that the div can be destroyed as well)
+				$ids[] = $id;
+			}
+			$ids = implode(',', $ids);
+			echo($ids);
+			exit;
 		}
 		elseif($mybb->input['pos'] == 'right_column')
 		{
-			$pos = 1;
+			$position = 1;
 			$this_column = $right_column;
 		}
 		elseif($mybb->input['pos'] == 'left_column')
 		{
-			$pos = 0;
+			$position = 0;
 			$this_column = $left_column;
 		}
 
 		// if there are side boxes in this column after the move (this function is called by onUpdate)
-		if(is_array($this_column) && !empty($this_column))
+		if(!is_array($this_column) || empty($this_column))
 		{
-			$disp_order = 1;
+			return;
+		}
 
-			// loop through all the side boxes in this column
-			foreach($this_column as $id)
+		$disp_order = 1;
+
+		// loop through all the side boxes in this column
+		foreach($this_column as $id)
+		{
+			$has_changed = false;
+			$sidebox = new Sidebox($id);
+			$this_order = (int) ($disp_order * 10);
+			++$disp_order;
+
+			// if the order has been edited
+			if($sidebox->get('display_order') != $this_order)
 			{
-				$has_changed = false;
+				// handle it
+				$sidebox->set('display_order', $this_order);
+				$has_changed = true;
+			}
 
-				$sidebox = new Sidebox($id);
+			// if the position has changed
+			if($sidebox->get('position') != $position)
+			{
+				// alter it
+				$sidebox->set('position', $position);
+				$has_changed = true;
+			}
 
-				// get some info
-				$this_order = (int) ($disp_order * 10);
-				++$disp_order;
-				$current_order = $sidebox->get('display_order');
-				$original_pos = $sidebox->get('position');
-
-				// if the order has been edited
-				if($current_order != $this_order)
-				{
-					// handle it
-					$sidebox->set('display_order', $this_order);
-					$has_changed = true;
-				}
-
-				// if the position has changed
-				if($original_pos != $pos)
-				{
-					// alter it
-					$sidebox->set('position', $pos);
-					$has_changed = true;
-				}
-
-				// if the side box has been modified
-				if($has_changed != false)
-				{
-					// save it
-					$sidebox->save();
-					asb_cache_has_changed();
-				}
+			// if the side box has been modified
+			if($has_changed != false)
+			{
+				// save it
+				$sidebox->save();
+				asb_cache_has_changed();
 			}
 		}
 	}
@@ -1639,6 +1584,8 @@ EOF;
  * asb_admin_delete_box()
  *
  * remove a side box (only still around for those without JS . . . like who, idk)
+ *
+ * @return: n/a
  */
 function asb_admin_delete_box()
 {
@@ -1667,6 +1614,8 @@ function asb_admin_delete_box()
  * asb_admin_delete_addon()
  *
  * completely remove an add-on module
+ *
+ * @return: n/a
  */
 function asb_admin_delete_addon()
 {
@@ -1696,6 +1645,8 @@ function asb_admin_delete_addon()
  * asb_admin_update_theme_select()
  *
  * rebuild the theme exclude list.
+ *
+ * @return: n/a
  */
 function asb_admin_update_theme_select()
 {
@@ -1743,6 +1694,8 @@ function asb_admin_update_theme_select()
  * asb_admin_config_settings_change()
  *
  * serialize the theme exclusion list selector
+ *
+ * @return: n/a
  */
 $plugins->add_hook("admin_config_settings_change", "asb_admin_config_settings_change");
 function asb_admin_config_settings_change()
@@ -1757,9 +1710,10 @@ function asb_admin_config_settings_change()
 }
 
 /*
- * asb_admin_action(&$action)
+ * asb_admin_action()
  *
  * @param - &$action is an array containing the list of selectable items on the config tab
+ * @return: n/a
  */
 $plugins->add_hook('admin_config_action_handler', 'asb_admin_config_action_handler');
 function asb_admin_config_action_handler(&$action)
@@ -1773,6 +1727,7 @@ function asb_admin_config_action_handler(&$action)
  * Add an entry to the ACP Config page menu
  *
  * @param - &$sub_menu is the menu array we will add a member to
+ * @return: n/a
  */
 $plugins->add_hook('admin_config_menu', 'asb_admin_config_menu');
 function asb_admin_config_menu(&$sub_menu)
@@ -1801,6 +1756,7 @@ function asb_admin_config_menu(&$sub_menu)
  *
  * @param - &$admin_permissions is the array of permission types
  * we are adding an element to
+ * @return: n/a
  */
 $plugins->add_hook('admin_config_permissions', 'asb_admin_config_permissions');
 function asb_admin_config_permissions(&$admin_permissions)

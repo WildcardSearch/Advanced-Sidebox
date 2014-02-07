@@ -15,6 +15,8 @@ asb_initialize();
  *
  * main implementation of many hooks depending upon THIS_SCRIPT constant and
  * $mybb->input/$_GET vars (see asb_initialize())
+ *
+ * @return: n/a
  */
 function asb_start()
 {
@@ -149,7 +151,11 @@ function asb_start()
 }
 
 /*
- * add only the appropriate hooks
+ * asb_initialize()
+ *
+ * add the appropriate hooks and caches any templates that will be used
+ *
+ * @return: n/a
  */
 function asb_initialize()
 {
@@ -197,9 +203,9 @@ function asb_initialize()
 /*
  * asb_usercp_options_end()
  *
- * Hooks: usercp_options_end, usercp_do_options_end
- *
  * add a check box to the User CP under Other Options to toggle the side boxes
+ *
+ * @return: n/a
  */
 function asb_usercp_options_end()
 {
@@ -247,6 +253,8 @@ EOF;
  * asb_xmlhttp()
  *
  * handle the AJAX refresh for side box modules (replacing asb/xmlhttp.php)
+ *
+ * @return: n/a
  */
 function asb_xmlhttp()
 {
