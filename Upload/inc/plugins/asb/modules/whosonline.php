@@ -32,7 +32,7 @@ function asb_whosonline_info()
 	return array(
 		"title" => $lang->asb_wol,
 		"description" => $lang->asb_wol_desc,
-		"version" => "1.4.1",
+		"version" => "1.4.2",
 		"wrap_content" => true,
 		"xmlhttp" => true,
 		"settings" =>	array(
@@ -312,7 +312,7 @@ EOF;
 				{
 					$user['username'] = format_name(trim($user['username']), $user['usergroup'], $user['displaygroup']);
 					eval("\$onlinemembers .= \"" . $templates->get("asb_whosonline_memberbit_name", 1, 0) . "\";");
-					$sep = ', ';
+					$sep = $lang->comma . ' ';
 				}
 			}
 			else
