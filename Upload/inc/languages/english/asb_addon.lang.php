@@ -185,6 +185,8 @@ $l['asb_random_quotes_fade_out_desc'] = 'YES to fade NO to clip (. . .)';
 $l['asb_random_quotes_default_text_title'] = 'Default Text';
 $l['asb_random_quotes_default_text_desc'] = 'display this if the message is too short';
 
+$l['asb_random_quote_users_profile'] = "{1}'s profile";
+
 // staff online
 $l['asb_staff_online'] = 'Online Staff';
 $l['asb_staff_online_desc'] = 'Display online staff members list';

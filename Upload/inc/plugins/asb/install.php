@@ -33,7 +33,8 @@ function asb_info()
 	$settings_link = asb_build_settings_link();
 	if($settings_link)
 	{
-		if(file_exists(MYBB_ROOT . 'inc/plugins/adv_sidebox/acp_functions.php'))
+		if(file_exists(MYBB_ROOT . 'inc/plugins/asb/cleanup.php') &&
+		   file_exists(MYBB_ROOT . 'inc/plugins/adv_sidebox/acp_functions.php'))
 		{
 			$remove_link = <<<EOF
 
@@ -99,7 +100,7 @@ EOF;
 		"website" => "https://github.com/WildcardSearch/Advanced-Sidebox",
 		"author" => $author,
 		"authorsite" => "http://www.rantcentralforums.com",
-		"version" => "2.0.5",
+		"version" => "2.0.6",
 		"compatibility" => "16*",
 		"guid" => "870e9163e2ae9b606a789d9f7d4d2462",
 	);
