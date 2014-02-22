@@ -32,7 +32,7 @@ function asb_whosonline_info()
 	return array(
 		"title" => $lang->asb_wol,
 		"description" => $lang->asb_wol_desc,
-		"version" => "1.4.2",
+		"version" => "1.4.3",
 		"wrap_content" => true,
 		"xmlhttp" => true,
 		"settings" =>	array(
@@ -88,7 +88,7 @@ function asb_whosonline_info()
 				</tr>
 				<tr>
 					<td class="trow2">
-						<table>
+						<table style="width: 100%; text-align: center;">
 							<tr>
 								{\$onlinemembers}
 							</tr>
