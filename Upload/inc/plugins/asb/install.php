@@ -188,6 +188,15 @@ function asb_activate()
         }
         $installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
 		$installer->install();
+
+		/*
+		 * remove a work-around for the MyBB 1.6.11 language bug
+		 * that was fixed in 1.6.12
+		 */
+		if(version_compare($old_version, '2.0.5', '<'))
+		{
+			@unlink(MYBB_ROOT . 'inc/languages/english/admin/asb_addon.lang.php');
+		}
 	}
 	asb_set_cache_version();
 
