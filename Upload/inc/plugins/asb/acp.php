@@ -4,7 +4,8 @@
  * Copyright 2013 WildcardSearch
  * http://www.rantcentralforums.com
  *
- * this file contains the ACP functionality and depends upon install.php for plugin info and installation routines
+ * this file contains the ACP functionality and depends upon install.php
+ * for plugin info and installation routines
  */
 
 // disallow direct access to this file for security reasons
@@ -250,8 +251,6 @@ function asb_admin_edit_box()
 {
 	global $page, $lang, $mybb, $db, $html, $scripts, $all_scripts;
 
-	$box_types = asb_compile_box_types();
-
 	$sidebox = new Sidebox($mybb->input['id']);
 	$id = (int) $sidebox->get('id');
 
@@ -378,7 +377,7 @@ function asb_admin_edit_box()
 			else
 			{
 				// otherwise use the default title
-				$sidebox->set('title', $box_types[$sidebox->get('box_type')]);
+				$sidebox->set('title', $parent->get('title'));
 			}
 		}
 
@@ -681,7 +680,7 @@ EOF;
 	{
 		echo "\n</div>\n";
 		// finish form and page
-		$buttons[] = $form->generate_submit_button('Save', array('name' => 'save_box_submit'));
+		$buttons[] = $form->generate_submit_button($lang->asb_save, array('name' => 'save_box_submit'));
 		$form->output_submit_wrapper($buttons);
 		$form->end();
 
@@ -703,41 +702,45 @@ function asb_admin_custom_boxes()
 
 	if($mybb->input['mode'] == 'export')
 	{
-		if((int) $mybb->input['id'] > 0)
+		if((int) $mybb->input['id'] == 0)
 		{
-			$this_custom = new Custom_type($mybb->input['id']);
-
-			if(!$this_custom->is_valid())
-			{
-				flash_message($lang->asb_custom_export_error, 'error');
-				admin_redirect($html->url(array("action" => 'custom_boxes')));
-			}
-
-			$this_custom->export();
-			exit();
+			flash_message($lang->asb_custom_export_error, 'error');
+			admin_redirect($html->url(array("action" => 'custom_boxes')));
 		}
+
+		$this_custom = new Custom_type($mybb->input['id']);
+		if(!$this_custom->is_valid())
+		{
+			flash_message($lang->asb_custom_export_error, 'error');
+			admin_redirect($html->url(array("action" => 'custom_boxes')));
+		}
+
+		$this_custom->export();
+		exit();
 	}
 
 	if($mybb->input['mode'] == 'delete')
 	{
 		// info good?
-		if((int) $mybb->input['id'] > 0)
+		if((int) $mybb->input['id'] == 0)
 		{
-			// nuke it
-			$this_custom = new Custom_type($mybb->input['id']);
-
-			// success?
-			if($this_custom->remove())
-			{
-				// :)
-				flash_message($lang->asb_add_custom_box_delete_success, "success");
-				asb_cache_has_changed();
-				admin_redirect($html->url(array("action" => 'custom_boxes')));
-			}
+			flash_message($lang->asb_add_custom_box_delete_failure, "error");
+			admin_redirect($html->url(array("action" => 'custom_boxes')));
 		}
 
-		// :(
-		flash_message($lang->asb_add_custom_box_delete_failure, "error");
+		// nuke it
+		$this_custom = new Custom_type($mybb->input['id']);
+
+		// success?
+		if(!$this_custom->remove())
+		{
+			flash_message($lang->asb_add_custom_box_delete_failure, "error");
+			admin_redirect($html->url(array("action" => 'custom_boxes')));
+		}
+
+		// :)
+		flash_message($lang->asb_add_custom_box_delete_success, "success");
+		asb_cache_has_changed();
 		admin_redirect($html->url(array("action" => 'custom_boxes')));
 	}
 
@@ -1329,7 +1332,7 @@ EOF;
 		$table->construct_header($lang->asb_status, array("width" => '7%'));
 		$table->construct_header($lang->asb_controls, array("width" => '8%'));
 
-		$query = $db->simple_select('asb_script_info');
+		$query = $db->simple_select('asb_script_info', '*', '', array("order_by" => 'title', "order_dir" => 'ASC'));
 		if($db->num_rows($query) > 0)
 		{
 			while($data = $db->fetch_array($query))
@@ -1485,11 +1488,11 @@ function asb_admin_xmlhttp()
 			{
 				$sidebox = new Sidebox($id);
 				$sidebox->remove();
-				asb_cache_has_changed();
 
 				// return the removed side boxes id to the Sidebox object (so that the div can be destroyed as well)
 				$ids[] = $id;
 			}
+			asb_cache_has_changed();
 			$ids = implode(',', $ids);
 			echo($ids);
 			exit;
@@ -1702,8 +1705,15 @@ function asb_admin_config_settings_change()
 {
     global $mybb;
 
-    // only serialize our setting if it is being saved (thanks to Tanweth for helping me find this)
-	if(isset($mybb->input['upsetting']['asb_exclude_theme']))
+    /* only serialize our setting if it is being saved
+	 * (thanks to Tanweth for helping me find this)
+	 *
+	 * we are checking for the existence of asb_show_empty_boxes
+	 * because checking for asb_exclude_theme fails if deselecting
+	 * all themes:
+	 * https://github.com/WildcardSearch/Advanced-Sidebox/issues/148
+	 */
+	if(isset($mybb->input['upsetting']['asb_show_empty_boxes']))
 	{
 		$mybb->input['upsetting']['asb_exclude_theme'] = serialize($mybb->input['upsetting']['asb_exclude_theme']);
 	}
