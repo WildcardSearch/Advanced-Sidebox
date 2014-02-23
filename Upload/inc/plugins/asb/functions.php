@@ -12,7 +12,7 @@
  *
  * avoid wasted execution by determining when and if code is necessary
  *
- * @return: n/a
+ * @return: (bool) true on success, false on fail
  */
 function asb_do_checks()
 {
@@ -42,7 +42,7 @@ function asb_do_checks()
  *
  * retrieve the cache, rebuilding it if necessary
  *
- * @return: n/a
+ * @return: (array) the cache data
  */
 function asb_get_cache()
 {
@@ -233,16 +233,16 @@ function asb_build_script_filename($this_script = '')
 }
 
 /*
- * asb_get_this_script(&$asb)
+ * asb_get_this_script()
  *
  * get the correct cached script info using the script parameters
  *
- * @param - &$asb - (array) a reference to the asb cache data variable
+ * @param - $asb - (array) the asb cache data
  * @param - $get_all - (bool) true indicates that side boxes and templates
  * should be loaded along with the other info
  * @return: (array) an array of information used to present this script's side boxes
  */
-function asb_get_this_script(&$asb, $get_all = false)
+function asb_get_this_script($asb, $get_all = false)
 {
 	global $mybb;
 
@@ -276,16 +276,67 @@ function asb_get_this_script(&$asb, $get_all = false)
 	$return_array['template_vars'] = array_merge((array) $asb['scripts']['global']['template_vars'], (array) $return_array['template_vars']);
 	$return_array['extra_scripts'] = (array) $asb['scripts']['global']['extra_scripts'] + (array) $return_array['extra_scripts'];
 
-	// the template handler does not need sideboxes and templates
+	// the template handler does not need side boxes and templates
 	if(!$get_all)
 	{
 		return $return_array;
 	}
 
-	// asb_start(), asb_initialize() and asb_build_cache() do
-	$return_array['sideboxes'][0] = (array) $asb['scripts']['global']['sideboxes'][0] + (array) $return_array['sideboxes'][0];
-	$return_array['sideboxes'][1] = (array) $asb['scripts']['global']['sideboxes'][1] + (array) $return_array['sideboxes'][1];
+	// asb_start() and asb_initialize() do
+	$return_array['sideboxes'][0] = asb_merge_sidebox_list($asb, (array) $asb['scripts']['global']['sideboxes'][0], (array) $return_array['sideboxes'][0]);
+	$return_array['sideboxes'][1] = asb_merge_sidebox_list($asb, (array) $asb['scripts']['global']['sideboxes'][1], (array) $return_array['sideboxes'][1]);
 	$return_array['templates'] = array_merge((array) $asb['scripts']['global']['templates'], (array) $return_array['templates']);
+	return $return_array;
+}
+
+/*
+ * asb_merge_sidebox_list()
+ *
+ * merge global and script specific side box lists while maintaining display order
+ *
+ * @param - $asb - (array) the asb cache data
+ * @param - $... - (array) two or more arrays of side box ids => module names
+ * @return: (array) an array with the merged and sorted arrays
+ */
+function asb_merge_sidebox_list($asb)
+{
+	// allow for variable amount of arguments
+	$args = func_get_args();
+
+	// if there aren't at least two arrays to merge . . .
+	if(count($args) <= 2)
+	{
+		// return the single array if it exists
+		if($args[1])
+		{
+			return $args[1];
+		}
+		// or an empty array if all else fails
+		return array();
+	}
+
+	// remove the cache data from the arg list
+	array_shift($args);
+
+	// merge all the passed arrays
+	$merged_array = array();
+	foreach($args as $sideboxes)
+	{
+		foreach($sideboxes as $sidebox => $module)
+		{
+			$merged_array[$sidebox] = $module;
+		}
+	}
+
+	// now sort them according to the original side box's display order
+	$return_array = array();
+	foreach($asb['sideboxes'] as $sidebox => $module)
+	{
+		if(isset($merged_array[$sidebox]))
+		{
+			$return_array[$sidebox] = $module['box_type'];
+		}
+	}
 	return $return_array;
 }
 
@@ -543,44 +594,6 @@ function asb_get_all_scripts()
 			$return_array[$filename] = $this_script;
 		}
 	}
-	return $return_array;
-}
-
-/*
- * asb_compile_box_types()
- *
- * get a list of all the current addons and alphabetize them by title
- *
- * @return: (array) of modules => module titles
- */
-function asb_compile_box_types()
-{
-	// get all the box types and their titles
-	$return_array = array();
-
-	$addons = asb_get_all_modules();
-	$custom = asb_get_all_custom();
-
-	// get user-defined static types
-	if(is_array($custom))
-	{
-		foreach($custom as $this_custom)
-		{
-			$return_array[$this_custom->get('base_name')] = $this_custom->get('title');
-		}
-	}
-
-	// get add-on modules
-	if(is_array($addons))
-	{
-		foreach($addons as $module)
-		{
-			$return_array[$module->get('base_name')] = $module->get('title');
-		}
-	}
-	$box_types_lowercase = array_map('strtolower', $return_array);
-	array_multisort($box_types_lowercase, SORT_ASC, SORT_STRING, $return_array);
-
 	return $return_array;
 }
 
