@@ -32,7 +32,7 @@ function asb_whosonline_info()
 	return array(
 		"title" => $lang->asb_wol,
 		"description" => $lang->asb_wol_desc,
-		"version" => "1.4.1",
+		"version" => "1.4.4",
 		"wrap_content" => true,
 		"xmlhttp" => true,
 		"settings" =>	array(
@@ -83,12 +83,12 @@ function asb_whosonline_info()
 				"template" => <<<EOF
 				<tr>
 					<td class="trow1">
-						<span class="smalltext">{\$lang->asb_wol_online_users} [<a href="online.php" title="Who\'s Online">Complete List</a>]<br /><strong>&raquo;</strong> {\$lang->asb_wol_online_counts}</span>
+						<span class="smalltext">{\$lang->asb_wol_online_users} [<a href="online.php" title="Who\'s Online">{\$lang->asb_wol_complete_list}</a>]<br /><strong>&raquo;</strong> {\$lang->asb_wol_online_counts}</span>
 					</td>
 				</tr>
 				<tr>
 					<td class="trow2">
-						<table>
+						<table style="text-align: center;">
 							<tr>
 								{\$onlinemembers}
 							</tr>
@@ -209,8 +209,8 @@ function asb_whosonline_get_online_members($settings, $width)
 	$guestcount = 0;
 	$membercount = 0;
 	$onlinemembers = '';
-	$query = $db->query("
-		SELECT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup, u.avatar
+	$query = $db->write_query("
+		SELECT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup, u.avatar, u.avatardimensions
 		FROM " . TABLE_PREFIX . "sessions s
 		LEFT JOIN " . TABLE_PREFIX . "users u ON (s.uid=u.uid)
 		WHERE s.time > '$timesearch'
@@ -270,13 +270,24 @@ function asb_whosonline_get_online_members($settings, $width)
 					}
 
 					$avatar_height_style = " min-height: {$avatar_height}px; max-height: {$avatar_height}px;";
+					$avatar_width_style = " min-width: {$avatar_width}px; max-width: {$avatar_width}px;";
 					if($settings['asb_avatar_maintain_aspect']['value'])
 					{
-						$avatar_height_style = '';
+						// Check the avatar's dimensions, then constrain it by its largest dimension
+						$avatar_dimensions = explode('|', $user['avatardimensions']);
+						
+						if($avatar_dimensions[0] > $avatar_dimensions[1])
+						{
+							$avatar_height_style = '';
+						}
+						else
+						{
+							$avatar_width_style = '';
+						}
 					}
 
 					$user_avatar = <<<EOF
-<img style="width: 100%; min-width: {$avatar_width}px; max-width: {$avatar_width}px;{$avatar_height_style}" src="{$avatar_filename}" alt="{$lang->asb_wol_avatar}" title="{$user['username']}'s {$lang->asb_wol_profile}"/>
+<img style="width: 100%;{$avatar_width_style}{$avatar_height_style}" src="{$avatar_filename}" alt="{$lang->asb_wol_avatar}" title="{$user['username']}'s {$lang->asb_wol_profile}"/>
 EOF;
 
 					// if this is the last allowable avatar (conforming to ACP settings)
@@ -312,7 +323,7 @@ EOF;
 				{
 					$user['username'] = format_name(trim($user['username']), $user['usergroup'], $user['displaygroup']);
 					eval("\$onlinemembers .= \"" . $templates->get("asb_whosonline_memberbit_name", 1, 0) . "\";");
-					$sep = ', ';
+					$sep = $lang->comma . ' ';
 				}
 			}
 			else

@@ -49,11 +49,8 @@ $l['asb_welcome_new_thread'] = '1 new thread';
 $l['asb_welcome_new_threads'] = '{1} new threads';
 $l['asb_welcome_new_post'] = '1 new post';
 $l['asb_welcome_new_posts'] = '{1} new posts';
-$l['asb_welcome_view_new'] = 'View New Posts';
 $l['asb_welcome_view_todays'] = "View Today's Posts";
 $l['asb_welcome_guest_welcome_registration'] = 'You have to <a href="{1}">register</a> before you can post on our site.';
-$l['asb_welcome_password'] = 'Password';
-$l['asb_welcome_remember_me'] = 'Remember Me';
 
 // search
 $l['asb_search'] = 'Search';
@@ -100,6 +97,7 @@ $l['asb_wol_avatar_maintain_aspect_desc'] = 'YES to alter only the width of the 
 
 $l['asb_wol_online_users'] = 'There are currently <b>{1}</b> online users.';
 $l['asb_wol_online_user'] = 'There is currently 1 user online';
+$l['asb_wol_complete_list'] = 'Complete List';
 $l['asb_wol_online_counts'] = '<b>{1}</b> Member(s) | <b>{2}</b> Guest(s)';
 
 $l['asb_wol_no_one_online'] = 'There are currently no members online.';
@@ -153,7 +151,6 @@ $l['asb_pms_no_messages'] = 'Please {1} or {2} to use this functionality.';
 $l['asb_pms_login'] = 'login';
 $l['asb_pms_register'] = 'register';
 $l['asb_pms_user_disabled_pms'] = 'You have disabled this functionality in {1}.';
-$l['asb_pms_usercp'] = 'User CP';
 $l['asb_pms_disabled_by_admin'] = "You don't have privileges to access this functionality, or it has been disabled by administrator. You may contact administrator for assistance.";
 $l['asb_pms_unread'] = 'Unread Messages';
 $l['asb_pms_total'] = 'Total Messages';
@@ -184,6 +181,8 @@ $l['asb_random_quotes_fade_out_desc'] = 'YES to fade NO to clip (. . .)';
 
 $l['asb_random_quotes_default_text_title'] = 'Default Text';
 $l['asb_random_quotes_default_text_desc'] = 'display this if the message is too short';
+
+$l['asb_random_quote_users_profile'] = "{1}'s profile";
 
 // staff online
 $l['asb_staff_online'] = 'Online Staff';

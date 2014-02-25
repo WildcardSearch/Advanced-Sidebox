@@ -33,7 +33,7 @@ function asb_welcome_box_info()
 		"title" => $lang->asb_welcome,
 		"description" => $lang->asb_welcome_desc,
 		"wrap_content" => true,
-		"version" => "1.3.1",
+		"version" => "1.3.2",
 		"templates" => array(
 			array(
 				"title" => "asb_welcome",
@@ -53,7 +53,7 @@ EOF
 				<strong>&raquo;</strong> {\$lang->asb_welcome_new_announcements}<br />
 				<strong>&raquo;</strong> {\$lang->asb_welcome_new_threads}<br />
 				<strong>&raquo;</strong> {\$lang->asb_welcome_new_posts}<br /><br />
-				<a href="{\$mybb->settings[\'bburl\']}/search.php?action=getnew">{\$lang->asb_welcome_view_new}</a><br /><a href="{\$mybb->settings[\'bburl\']}/search.php?action=getdaily">{\$lang->asb_welcome_view_todays}</a>
+				<a href="{\$mybb->settings[\'bburl\']}/search.php?action=getnew">{\$lang->welcome_newposts}</a><br /><a href="{\$mybb->settings[\'bburl\']}/search.php?action=getdaily">{\$lang->asb_welcome_view_todays}</a>
 				</span>
 EOF
 			),
@@ -65,8 +65,8 @@ EOF
 				<form method="post" action="{\$mybb->settings[\'bburl\']}/member.php"><input type="hidden" name="action" value="do_login"/>
 					<input type="hidden" name="url" value="member.php"/>
 					{\$username}<br />&nbsp;&nbsp;<input style="width: 95%;" type="text" class="textbox" name="username"/><br /><br />
-					{\$lang->asb_welcome_password}<br />&nbsp;&nbsp;<input style="width: 95%;" type="password" class="textbox" name="password"/><br /><br />
-					<label title="{\$lang->asb_welcome_remember_me_desc}"><input type="checkbox" class="checkbox" name="remember" value="yes"/> {\$lang->asb_welcome_remember_me}</label><br /><br />
+					{\$lang->password}<br />&nbsp;&nbsp;<input style="width: 95%;" type="password" class="textbox" name="password"/><br /><br />
+					<label title="{\$lang->remember_me_desc}"><input type="checkbox" class="checkbox" name="remember" value="yes"/> {\$lang->asb_welcome_remember_me}</label><br /><br />
 					<input type="submit" class="button" name="loginsubmit" value="{\$lang->login}"/>
 				</form>
 EOF

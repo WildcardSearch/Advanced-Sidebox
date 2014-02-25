@@ -34,7 +34,7 @@ function asb_rand_quote_info()
 		"description" => $lang->asb_random_quotes_desc,
 		"wrap_content" => true,
 		"xmlhttp" => true,
-		"version" => "1.5",
+		"version" => "1.5.1",
 		"settings" => array(
 			"forum_show_list" => array(
 				"sid" => "NULL",
@@ -115,14 +115,25 @@ function asb_rand_quote_info()
 				</tr>
 				<tr>
 					<td class="trow1">
-						{\$rand_quote_avatar}&nbsp;{\$rand_quote_author}
+						<img style="padding: 4px; width: 15%; vertical-align: middle;" src="{\$avatar_filename}" alt="{\$avatar_alt}" title="{\$avatar_alt}"/>&nbsp;<a  style="vertical-align: middle;" href="{\$author_link}" title="{\$plain_text_username}"><span style="font-size: {\$username_font_size}px;">{\$username}</span></a>
 					</td>
 				</tr>
 				<tr>
 					<td class="trow2">
-						{\$rand_quote_text}
+						<span style="font-size: {\$message_font_size}px;">{\$new_message}</span>
 					</td>
 				</tr>{\$read_more}
+EOF
+			),
+			array(
+				"title" => 'asb_rand_quote_read_more',
+				"template" => <<<EOF
+
+				<tr>
+					<td class="tfoot">
+						<div style="text-align: center;"><a href="{\$post_link}" title="{\$lang->asb_random_quotes_read_more_title}"><strong>{\$lang->asb_random_quotes_read_more}</strong></a></div>
+					</td>
+				</tr>
 EOF
 			)
 		)
@@ -295,10 +306,6 @@ function asb_rand_quote_get_quote($settings, $width)
 	$parser_options = array("allow_smilies" => 1);
 	$new_message = str_replace(array('<br />', '/me'), array('', " * {$plain_text_username}"), $parser->parse_message($new_message . ' ', $parser_options));
 
-	$rand_quote_text = <<<EOF
-<span style="font-size: {$message_font_size}px;">{$new_message}</span>
-EOF;
-
 	// if the user has an avatar then display it, otherwise force the default avatar.
 	$avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
 	if($rand_post['avatar'] != "")
@@ -306,22 +313,9 @@ EOF;
 		$avatar_filename = $rand_post['avatar'];
 	}
 
-	$rand_quote_avatar = <<<EOF
-<img style="padding: 4px; width: 15%; vertical-align: middle;" src="{$avatar_filename}" alt="{$plain_text_username}'s avatar" title="{$plain_text_username}'s profile"/>
-EOF;
+	$avatar_alt = $lang->sprintf($lang->asb_random_quote_users_profile, $plain_text_username);
 
-	$rand_quote_author = <<<EOF
-<a  style="vertical-align: middle;" href="{$author_link}" title="{$plain_text_username}"><span style="font-size: {$username_font_size}px;">{$username}</span></a>
-EOF;
-
-	$read_more = <<<EOF
-
-			<tr>
-				<td class="tfoot">
-					<div style="text-align: center;"><a href="{$post_link}" title="{$lang->asb_random_quotes_read_more_title}"><strong>{$lang->asb_random_quotes_read_more}</strong></a></div>
-				</td>
-			</tr>
-EOF;
+	eval("\$read_more = \"" . $templates->get('asb_rand_quote_read_more') . "\";");
 
 	if(my_strlen($rand_post['subject']) > 40)
 	{
