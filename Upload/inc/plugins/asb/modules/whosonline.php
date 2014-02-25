@@ -83,7 +83,7 @@ function asb_whosonline_info()
 				"template" => <<<EOF
 				<tr>
 					<td class="trow1">
-						<span class="smalltext">{\$lang->asb_wol_online_users} [<a href="online.php" title="Who\'s Online">Complete List</a>]<br /><strong>&raquo;</strong> {\$lang->asb_wol_online_counts}</span>
+						<span class="smalltext">{\$lang->asb_wol_online_users} [<a href="online.php" title="Who\'s Online">{\$lang->asb_wol_complete_list}</a>]<br /><strong>&raquo;</strong> {\$lang->asb_wol_online_counts}</span>
 					</td>
 				</tr>
 				<tr>
