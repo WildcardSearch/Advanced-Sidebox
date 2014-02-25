@@ -97,6 +97,7 @@ $l['asb_wol_avatar_maintain_aspect_desc'] = 'YES to alter only the width of the 
 
 $l['asb_wol_online_users'] = 'There are currently <b>{1}</b> online users.';
 $l['asb_wol_online_user'] = 'There is currently 1 user online';
+$l['asb_wol_complete_list'] = 'Complete List';
 $l['asb_wol_online_counts'] = '<b>{1}</b> Member(s) | <b>{2}</b> Guest(s)';
 
 $l['asb_wol_no_one_online'] = 'There are currently no members online.';
