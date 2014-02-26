@@ -536,22 +536,20 @@ function asb_build_filter_selector($filter)
  * @param - $this_form is a valid object of class DefaultForm
  * @param - $this_form_container is a valid object of class DefaultFormContainer
  * @param - $setting is an associative array for the settings properties
- * @param - $sidebox is an integer representing the currently loaded box (edit) or 0 if adding a new side box
- * @param - $module is a valid Addon_type object (add-on module)
  * @return: n/a
  */
-function asb_build_setting($this_form, $this_form_container, $setting, $sidebox, $module)
+function asb_build_setting($this_form, $this_form_container, $setting)
 {
 	// create each element with unique id and name properties
 	$options = "";
 	$type = explode("\n", $setting['optionscode']);
-	$type[0] = trim($type[0]);
+    $type = array_map('trim', $type);
 	$element_name = "{$setting['name']}";
 	$element_id = "setting_{$setting['name']}";
 
 	// prepare labels
-	$this_label = '<strong>' . $setting['title'] . '</strong>';
-	$this_desc = '<i>' . $setting['description'] . '</i>';
+	$this_label = '<strong>' . htmlspecialchars_uni($setting['title']) . '</strong>';
+	$this_desc = '<i>' . htmlspecialchars_uni($setting['description']) . '</i>';
 
 	// sort by type
 	if($type[0] == "text" || $type[0] == "")
@@ -598,11 +596,6 @@ function asb_build_setting($this_form, $this_form_container, $setting, $sidebox,
 			{
 				continue;
 			}
-			$title_lang = "setting_{$setting['name']}_{$optionsexp[0]}";
-			if($lang->$title_lang)
-			{
-				$optionsexp[1] = $lang->$title_lang;
-			}
 
 			if($type[0] == "select")
 			{
@@ -639,7 +632,11 @@ function asb_build_setting($this_form, $this_form_container, $setting, $sidebox,
 		{
 			$setting_code = implode("<br />", $option_list);
 		}
-		$option_list = array();
+	}
+
+	if($setting_code)
+	{
+		$this_form_container->output_row($this_label, $this_desc, $setting_code, '', array(), array('id' => 'row_' . $element_id));
 	}
 }
 

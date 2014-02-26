@@ -657,7 +657,7 @@ EOF;
 			foreach($sidebox_settings as $setting)
 			{
 				// allow the handler to build module settings
-				asb_build_setting($form, $form_container, $setting, $id, $module);
+				asb_build_setting($form, $form_container, $setting);
 			}
 		}
 		$form_container->end();
