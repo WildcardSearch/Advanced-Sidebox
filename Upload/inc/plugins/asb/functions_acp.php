@@ -549,7 +549,7 @@ function asb_build_setting($this_form, $this_form_container, $setting)
 
 	// prepare labels
 	$this_label = '<strong>' . htmlspecialchars_uni($setting['title']) . '</strong>';
-	$this_desc = '<i>' . htmlspecialchars_uni($setting['description']) . '</i>';
+	$this_desc = '<i>' . $setting['description'] . '</i>';
 
 	// sort by type
 	if($type[0] == "text" || $type[0] == "")
