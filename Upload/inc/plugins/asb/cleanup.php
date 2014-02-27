@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x
- * Copyright 2013 WildcardSearch
+ * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
  * this file removes any existing files from ASB 1.0

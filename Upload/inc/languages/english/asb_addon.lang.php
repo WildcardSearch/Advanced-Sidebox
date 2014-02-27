@@ -1,7 +1,7 @@
 <?php
 /*
  * Plug-in Name: Advanced Sidebox for MyBB 1.6.x
- * Copyright 2013 WildcardSearch
+ * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
  * contains language used on both forum and ACP side by add-on modules

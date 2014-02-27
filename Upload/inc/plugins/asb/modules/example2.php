@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x
- * Copyright 2013 WildcardSearch
+ * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
  * this is an example of the an Advanced Sidebox add-on using a MyBB standard template to eval() content

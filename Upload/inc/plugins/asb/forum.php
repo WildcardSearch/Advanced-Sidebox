@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x
- * Copyright 2013 WildcardSearch
+ * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
  * the forum-side routines start here
@@ -28,7 +28,7 @@ function asb_start()
 	// don't waste execution if unnecessary
 	if(!asb_do_checks())
 	{
-		return false;
+		return;
 	}
 
 	$asb = asb_get_cache();
