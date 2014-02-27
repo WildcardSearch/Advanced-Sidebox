@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x
- * Copyright 2013 WildcardSearch
+ * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
  * functions used by the default the modules and available to any third party add-ons as well

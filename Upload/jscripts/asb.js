@@ -1,6 +1,6 @@
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x
- * Copyright 2013 WildcardSearch
+ * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
  * this file contains handlers for the side box toggle icon scripts

@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x
- * Copyright 2013 WildcardSearch
+ * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
  * this is an example of the simplest version of an ASB add-on
@@ -55,18 +55,13 @@ function asb_example_build_template($args)
 	global $$template_var; //<-- this is necessary
 
 	/*
-	 * set any variables in your template (or string as in this case) here just before the eval()
-	 *
 	 * note the structure, this content should appropriate (and validate) as the contents of an HTML <tbody> element in structure and content.
 	 */
-	$hello_world = <<<EOF
+	$$template_var = <<<EOF
 		<tr>
-					<td class=\"trow1\">Same from either side.</td>
+					<td class="trow1">Same from either side.</td>
 				</tr>
 EOF;
-
-	// then we will set the modules template variable by eval()ing its contents to the variable we declared global above
-	eval("\$" . $template_var . " = \"" . $hello_world . "\";");
 
 	// return true if your box has something to show, or false if it doesn't.
 	return true;

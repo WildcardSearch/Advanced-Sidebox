@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x
- * Copyright 2013 WildcardSearch
+ * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
  * This file contains the install functions for acp.php
@@ -33,7 +33,8 @@ function asb_info()
 	$settings_link = asb_build_settings_link();
 	if($settings_link)
 	{
-		if(file_exists(MYBB_ROOT . 'inc/plugins/adv_sidebox/acp_functions.php'))
+		if(file_exists(MYBB_ROOT . 'inc/plugins/asb/cleanup.php') &&
+		   file_exists(MYBB_ROOT . 'inc/plugins/adv_sidebox/acp_functions.php'))
 		{
 			$remove_link = <<<EOF
 
@@ -99,7 +100,7 @@ EOF;
 		"website" => "https://github.com/WildcardSearch/Advanced-Sidebox",
 		"author" => $author,
 		"authorsite" => "http://www.rantcentralforums.com",
-		"version" => "2.0.5",
+		"version" => "2.0.6",
 		"compatibility" => "16*",
 		"guid" => "870e9163e2ae9b606a789d9f7d4d2462",
 	);
@@ -187,6 +188,15 @@ function asb_activate()
         }
         $installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
 		$installer->install();
+
+		/*
+		 * remove a work-around for the MyBB 1.6.11 language bug
+		 * that was fixed in 1.6.12
+		 */
+		if(version_compare($old_version, '2.0.5', '<'))
+		{
+			@unlink(MYBB_ROOT . 'inc/languages/english/admin/asb_addon.lang.php');
+		}
 	}
 	asb_set_cache_version();
 

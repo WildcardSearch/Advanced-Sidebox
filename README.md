@@ -1,4 +1,4 @@
-## Advanced-Sidebox 2.0.5 STABLE
+## Advanced-Sidebox 2.0.6
 
 <p align="center">
   <img title="Advanced Sidebox Logo" alt="Advanced Sidebox Logo" src="https://github.com/WildcardSearch/Advanced-Sidebox/wiki/asb_logo_320.png" />

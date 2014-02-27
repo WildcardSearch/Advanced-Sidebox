@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.6.x
- * Copyright 2013 WildcardSearch
+ * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
  * ASB default module
@@ -34,7 +34,7 @@ function asb_private_messages_info()
 		"description" => $lang->asb_private_messages_desc,
 		"wrap_content" => true,
 		"xmlhttp" => true,
-		"version" => "1.1",
+		"version" => "1.1.1",
 		"settings" => array(
 			"xmlhttp_on" => array(
 				"sid"					=> "NULL",
@@ -89,7 +89,7 @@ function asb_private_messages_build_template($args)
 	}
 	else
 	{
-		$pm_message = $lang->sprintf($lang->asb_pms_user_disabled_pms, "<a href=\"{$mybb->settings['bburl']}/usercp.php?action=options\">{$lang->asb_pms_usercp}</a>");
+		$pm_message = $lang->sprintf($lang->asb_pms_user_disabled_pms, "<a href=\"{$mybb->settings['bburl']}/usercp.php?action=options\">{$lang->welcome_usercp}</a>");
 		$$template_var = <<<EOF
 	<tr>
 		<td class='trow1'>{$pm_message}>/td>
@@ -159,7 +159,7 @@ function asb_private_messages_get_messages()
 			if(!$mybb->usergroup['canusepms'] || !$mybb->settings['enablepms'])
 			{
 				// if not tell them
-				$pmessages = $lang->sprintf("<tr><td class='trow1'>{$lang->asb_pms_disabled_by_admin}</td></tr>", "<a href=\"{$mybb->settings['bburl']}/usercp.php?action=options\">{$lang->asb_pms_usercp}</a>");
+				$pmessages = $lang->sprintf("<tr><td class='trow1'>{$lang->asb_pms_disabled_by_admin}</td></tr>", "<a href=\"{$mybb->settings['bburl']}/usercp.php?action=options\">{$lang->welcome_usercp}</a>");
 				$ret_val = false;
 			}
 			else
