@@ -287,7 +287,7 @@ function asb_whosonline_get_online_members($settings, $width)
 					}
 
 					$user_avatar = <<<EOF
-<img style="width: 100%;{$avatar_width_style}{$avatar_height_style}" src="{$avatar_filename}" alt="{$lang->asb_wol_avatar}" title="{$user['username']}'s {$lang->asb_wol_profile}"/>
+<img style="{$avatar_width_style}{$avatar_height_style}" src="{$avatar_filename}" alt="{$lang->asb_wol_avatar}" title="{$user['username']}'s {$lang->asb_wol_profile}"/>
 EOF;
 
 					// if this is the last allowable avatar (conforming to ACP settings)
