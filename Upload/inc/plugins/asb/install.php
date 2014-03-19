@@ -100,7 +100,7 @@ EOF;
 		"website" => "https://github.com/WildcardSearch/Advanced-Sidebox",
 		"author" => $author,
 		"authorsite" => "http://www.rantcentralforums.com",
-		"version" => "2.0.6",
+		"version" => "2.0.7",
 		"compatibility" => "16*",
 		"guid" => "870e9163e2ae9b606a789d9f7d4d2462",
 	);
@@ -115,7 +115,6 @@ EOF;
  */
 function asb_is_installed()
 {
-	global $db;
 	return asb_get_settingsgroup();
 }
 
