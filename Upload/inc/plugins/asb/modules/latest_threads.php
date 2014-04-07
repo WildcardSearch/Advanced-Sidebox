@@ -32,7 +32,7 @@ function asb_latest_threads_info()
 	return array(
 		"title" => $lang->asb_latest_threads,
 		"description" => $lang->asb_latest_threads_desc,
-		"version" => "1.1",
+		"version" => "1.1.1",
 		"wrap_content" => true,
 		"xmlhttp" => true,
 		"settings" => array(
@@ -91,6 +91,14 @@ function asb_latest_threads_info()
 				"description" => $lang->asb_avatar_width_desc,
 				"optionscode" => "text",
 				"value" => '30'
+			),
+			"new_threads_only" => array(
+				"sid" => "NULL",
+				"name" => "new_threads_only",
+				"title" => $lang->asb_new_threads_only_title,
+				"description" => $lang->asb_new_threads_only_desc,
+				"optionscode" => "text",
+				"value" => '0'
 			),
 			"xmlhttp_on" => array(
 				"sid" => "NULL",
@@ -277,6 +285,14 @@ function latest_threads_get_threadlist($settings, $width)
 		$unviewwhere = " AND t.fid NOT IN ({$unviewable})";
 	}
 
+	// new threads only?
+	if($settings['new_threads_only'] > 0)
+	{
+		// use admin's time limit
+		$thread_time_limit = TIME_NOW - 60 * 60 * 24 * (int) $settings['new_threads_only'];
+		$new_threads = " AND t.dateline > {$thread_time_limit}";
+	}
+
 	// build the exclude conditions
 	$show['fids'] = asb_build_id_list($settings['forum_show_list']['value'], 't.fid');
 	$show['tids'] = asb_build_id_list($settings['thread_show_list']['value'], 't.tid');
@@ -284,7 +300,7 @@ function latest_threads_get_threadlist($settings, $width)
 	$hide['tids'] = asb_build_id_list($settings['thread_hide_list']['value'], 't.tid');
 	$where['show'] = asb_build_SQL_where($show, ' OR ');
 	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
-	$query_where = $unviewwhere . asb_build_SQL_where($where, ' AND ', ' AND ');
+	$query_where = $new_threads . $unviewwhere . asb_build_SQL_where($where, ' AND ', ' AND ');
 
 	$altbg = alt_trow();
 	$maxtitlelen = 48;
