@@ -195,6 +195,10 @@ function asb_whosonline_get_online_members($settings, $width)
 
 	// width
 	$rowlength = (int) $settings['asb_avatar_per_row']['value'];
+	if ($rowlength == 0) {
+		return false;
+	}
+
 	$max_rows = (int) $settings['asb_avatar_max_rows']['value'];
 	$row = 1;
 	$avatar_count = 0;
