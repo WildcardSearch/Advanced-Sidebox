@@ -288,7 +288,7 @@ class Addon_type extends ExternalModule
 			$delete_list = $sep = '';
 			foreach($this->discarded_templates as $template)
 			{
-				$delete_list .= "{$sep}'{$template['title']}'";
+				$delete_list .= "{$sep}'{$template}'";
 				$sep = ',';
 			}
 
