@@ -286,10 +286,10 @@ function latest_threads_get_threadlist($settings, $width)
 	}
 
 	// new threads only?
-	if($settings['new_threads_only'] > 0)
+	if((int) $settings['new_threads_only']['value'] > 0)
 	{
 		// use admin's time limit
-		$thread_time_limit = TIME_NOW - 60 * 60 * 24 * (int) $settings['new_threads_only'];
+		$thread_time_limit = TIME_NOW - 60 * 60 * 24 * (int) $settings['new_threads_only']['value'];
 		$new_threads = " AND t.dateline > {$thread_time_limit}";
 	}
 
