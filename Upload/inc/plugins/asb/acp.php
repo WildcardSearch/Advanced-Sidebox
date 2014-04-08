@@ -413,13 +413,13 @@ function asb_admin_edit_box()
 			 * create the new <div> representation of the side box
 			 * (title only it will be filled in later by the updater)
 			 */
-			$build_script = "Sidebox.createDiv({$id}, '{$box_title}', '{$column_id}'); ";
+			$build_script = "ASB.sidebox.createDiv({$id}, '{$box_title}', '{$column_id}'); ";
 		}
 
 		// update the side box after we're done via AJAX
 		$script = <<<EOF
 <script type="text/javascript">
-{$build_script}Sidebox.updateDiv({$id});
+{$build_script}ASB.sidebox.updateDiv({$id});
 </script>
 EOF;
 
@@ -430,7 +430,7 @@ EOF;
 
 	if($id == 0)
 	{
-		// if it doesn't then this is a new box, check the page view filter to try to predict which script the user will want
+		// this is a new box, check the page view filter to try to predict which script the user will want
 		if($mybb->input['page'])
 		{
 			// start them out with the script they are viewing for Which Scripts
@@ -1563,7 +1563,7 @@ Event.observe('edit_sidebox_{$id}', 'click', function(event) {
 	Event.stop(event);
 
 	// create the modal edit box dialogue
-	new MyModal({
+	new ASB.Modal({
 		type: 'ajax',
 		url: this.readAttribute('href') + '&ajax=1'
 	});
@@ -1748,15 +1748,13 @@ function asb_admin_config_menu(&$sub_menu)
 		$lang->load('asb');
 	}
 
-	$asb_menuitem = array(
-		'id' 		=> 'asb',
-		'title' 	=> $lang->asb,
-		'link' 		=> ASB_URL
-	);
-
 	end($sub_menu);
 	$key = (key($sub_menu)) + 10;
-	$sub_menu[$key] = $asb_menuitem;
+	$sub_menu[$key] = array(
+		'id' => 'asb',
+		'title' => $lang->asb,
+		'link' => ASB_URL
+	);
 }
 
 /*

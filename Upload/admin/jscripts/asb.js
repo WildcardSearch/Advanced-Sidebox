@@ -6,7 +6,7 @@
  * this file contains JavaScript for the ACP functions
  */
 
-ASB = {
+(function() {
 	/**
 	 * init()
 	 *
@@ -14,8 +14,7 @@ ASB = {
 	 *
 	 * @return: n/a
 	 */
-	init: function()
-	{
+	function init() {
 		if ($('help_link')) {
 			$('help_link').observe('click', function(event) {
 				Event.stop(event);
@@ -30,5 +29,6 @@ ASB = {
 			});
 		}
 	}
-};
-Event.observe(window, 'load', ASB.init);
+
+	Event.observe(window, 'load', init);
+})();
