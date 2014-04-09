@@ -36,10 +36,15 @@ function asb_admin()
 	}
 
 	// now load up, this is our time
-	global $mybb, $lang, $html, $scripts, $all_scripts;
+	global $mybb, $lang, $html, $scripts, $all_scripts, $min;
 	if(!$lang->asb)
 	{
 		$lang->load('asb');
+	}
+
+	if($mybb->settings['asb_minify_js'])
+	{
+		$min = '.min';
 	}
 
 	// a few general functions and classes for the ACP side
@@ -86,7 +91,7 @@ function asb_admin()
  */
 function asb_admin_manage_sideboxes()
 {
-	global $mybb, $db, $page, $lang, $html, $scripts, $all_scripts;
+	global $mybb, $db, $page, $lang, $html, $scripts, $all_scripts, $min;
 
 	$addons = asb_get_all_modules();
 
@@ -182,9 +187,9 @@ EOF;
 	<script src="../jscripts/scriptaculous.js?load=effects,dragdrop,controls" type="text/javascript"></script>
 	<script src="jscripts/imodal.js" type="text/javascript"></script>
 	<link rel="stylesheet" type="text/css" href="styles/default/imodal.css"/>
-	<script src="jscripts/asb.js" type="text/javascript"></script>
-	<script src="jscripts/asb_modal.js" type="text/javascript"></script>
-	<script src="jscripts/asb_sideboxes.js" type="text/javascript"></script>
+	<script src="jscripts/asb{$min}.js" type="text/javascript"></script>
+	<script src="jscripts/asb_modal{$min}.js" type="text/javascript"></script>
+	<script src="jscripts/asb_sideboxes{$min}.js" type="text/javascript"></script>
 
 EOF;
 
@@ -249,7 +254,7 @@ EOF;
  */
 function asb_admin_edit_box()
 {
-	global $page, $lang, $mybb, $db, $html, $scripts, $all_scripts;
+	global $page, $lang, $mybb, $db, $html, $scripts, $all_scripts, $min;
 
 	$sidebox = new Sidebox($mybb->input['id']);
 	$id = (int) $sidebox->get('id');
@@ -494,7 +499,7 @@ EOF;
 		// add a little CSS
 		$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
-	<script src="jscripts/asb.js" type="text/javascript"></script>
+	<script src="jscripts/asb{$min}.js" type="text/javascript"></script>
 
 EOF;
 		$page->output_header("{$lang->asb} - {$page_title}");
@@ -698,7 +703,7 @@ EOF;
  */
 function asb_admin_custom_boxes()
 {
-	global $lang, $mybb, $db, $page, $html;
+	global $lang, $mybb, $db, $page, $html, $min;
 
 	if($mybb->input['mode'] == 'export')
 	{
@@ -903,7 +908,7 @@ EOF;
 
 		$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
-	<script src="jscripts/asb.js" type="text/javascript"></script>
+	<script src="jscripts/asb{$min}.js" type="text/javascript"></script>
 EOF;
 
 		$page->add_breadcrumb_item($lang->asb_custom_boxes, $html->url(array("action" => 'custom_boxes')));
@@ -966,7 +971,7 @@ EOF;
 
 	$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
-	<script src="jscripts/asb.js" type="text/javascript"></script>
+	<script src="jscripts/asb{$min}.js" type="text/javascript"></script>
 EOF;
 
 	$page->add_breadcrumb_item($lang->asb_custom_boxes);
@@ -1058,7 +1063,7 @@ EOF;
  */
 function asb_admin_manage_scripts()
 {
-	global $mybb, $db, $page, $lang, $html;
+	global $mybb, $db, $page, $lang, $html, $min;
 
 	require_once MYBB_ROOT . 'inc/plugins/asb/classes/script_info.php';
 
@@ -1218,14 +1223,14 @@ EOF;
 
 		$page->extra_header .= <<<EOF
 	<script type="text/javascript" src="./jscripts/peeker.js"></script>
-	<script type="text/javascript" src="jscripts/asb_scripts.js"></script>
+	<script type="text/javascript" src="jscripts/asb_scripts{$min}.js"></script>
 	<script type="text/javascript">
 	<!--
 		ASB.scripts.setCurrent('{$filename}');
 	// -->
 	</script>
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
-	<script src="jscripts/asb.js" type="text/javascript"></script>
+	<script src="jscripts/asb{$min}.js" type="text/javascript"></script>
 
 EOF;
 
@@ -1310,7 +1315,7 @@ EOF;
 	{
 		$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
-	<script src="jscripts/asb.js" type="text/javascript"></script>
+	<script src="jscripts/asb{$min}.js" type="text/javascript"></script>
 
 EOF;
 
@@ -1400,11 +1405,11 @@ EOF;
  */
 function asb_admin_manage_modules()
 {
-	global $lang, $mybb, $db, $page, $html;
+	global $lang, $mybb, $db, $page, $html, $min;
 
 	$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
-	<script src="jscripts/asb.js" type="text/javascript"></script>
+	<script src="jscripts/asb{$min}.js" type="text/javascript"></script>
 
 EOF;
 

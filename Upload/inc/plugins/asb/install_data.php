@@ -103,6 +103,15 @@ $settings = array(
 				"value" => '1',
 				"disporder" => '40'
 			),
+			"asb_minify_js" => array(
+				"sid" => "NULL",
+				"name" => "asb_minify_js",
+				"title" => $lang->asb_minify_js_title,
+				"description" => $lang->asb_minify_js_desc,
+				"optionscode" => "yesno",
+				"value" => '1',
+				"disporder" => '50'
+			),
 			"asb_exclude_theme" => array(
 				"sid" => "NULL",
 				"name" => "asb_exclude_theme",
@@ -110,7 +119,7 @@ $settings = array(
 				"description" => $db->escape_string($lang->asb_theme_exclude_list_description . $update_themes_link),
 				"optionscode" => $db->escape_string(asb_build_theme_exclude_select()),
 				"value" => '',
-				"disporder" => '50'
+				"disporder" => '60'
 			)
 		)
 	)

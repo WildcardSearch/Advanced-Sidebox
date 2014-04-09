@@ -23,16 +23,25 @@ $l['asb_remove_old_files_desc'] = "Components of an older version were found!";
 // settings and descriptions
 $l['asb_plugin_settings'] = "Plugin Settings";
 $l['asb_settingsgroup_description'] = "control where and how the sideboxes display";
+
 $l['asb_show_empty_boxes'] = "Show Sideboxes With No Content?";
-$l['asb_show_toggle_icons'] = "Show Column Visibility Toggle Icons?";
-$l['asb_show_expanders'] = "Show Expand/Collapse Icons?";
-$l['asb_allow_user_disable'] = "Allow Users To Disable Side Boxes?";
 $l['asb_show_empty_boxes_desc'] = "select YES to show the box (with custom explanation text) or NO to hide any side boxes that doesn't have proper content";
+
+$l['asb_show_toggle_icons'] = "Show Column Visibility Toggle Icons?";
+
+$l['asb_show_expanders'] = "Show Expand/Collapse Icons?";
+
+$l['asb_allow_user_disable'] = "Allow Users To Disable Side Boxes?";
 
 $l['asb_width_left'] = "Left Width";
 $l['asb_width_left_desc'] = "width of left column in pixels";
+
 $l['asb_width_right'] = "Right Width";
 $l['asb_width_right_desc'] = "width of right column in pixels";
+
+$l['asb_minify_js_title'] = 'Minify JavaScript?';
+$l['asb_minify_js_desc'] = 'YES (default) to serve client-side scripts minified to increase performance, NO to serve beautiful, commented code ;)';
+
 $l['asb_theme_exclude_list'] = "Theme EXCLUDE List";
 $l['asb_theme_exclude_list_description'] = "select themes to disable sidebox display for them.<br />(use CTRL to select/deselect multiple themes)";
 $l['asb_theme_exclude_select_update_link'] = 'Update Theme Exclude Selector';

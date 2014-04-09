@@ -164,6 +164,11 @@ EOF;
 	{
 		global $templates, $mybb, $headerinclude;
 
+		if($mybb->settings['asb_minify_js'])
+		{
+			$min = '.min';
+		}
+
 		// load the cache and attempt to store this script's info
 		$asb = asb_get_cache();
 		$this_script = asb_get_this_script($asb);
@@ -207,7 +212,9 @@ EOF;
 		if($mybb->settings['asb_show_toggle_icons'])
 		{
 			// we will need this js
-			$headerinclude .= '<script type="text/javascript" src="jscripts/asb.js"></script>';
+			$headerinclude .= <<<EOF
+<script type="text/javascript" src="jscripts/asb{$min}.js"></script>
+EOF;
 		}
 
 		if(is_array($this->extra_scripts) && !empty($this->extra_scripts))
@@ -224,7 +231,7 @@ EOF;
 			}
 			$headerinclude .= <<<EOF
 
-<script type="text/javascript" src="jscripts/asb_xmlhttp.js"></script>
+<script type="text/javascript" src="jscripts/asb_xmlhttp{$min}.js"></script>
 <script type="text/javascript">
 <!--
 	Event.observe(window, 'load', function() {
@@ -237,6 +244,10 @@ EOF;
 
 		if(is_array($this->js)) {
 			foreach($this->js as $script) {
+				if(file_exists(MYBB_ROOT . "jscripts/asb/{$script}{$min}.js"))
+				{
+					$script .= $min;
+				}
 				$headerinclude .= <<<EOF
 
 <script type="text/javascript" src="jscripts/asb/{$script}.js"></script>
