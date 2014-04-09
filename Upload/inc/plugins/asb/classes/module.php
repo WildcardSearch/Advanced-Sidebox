@@ -120,7 +120,8 @@ abstract class ExternalModule extends MalleableObject implements ExternalModuleI
 class Addon_type extends ExternalModule
 {
 	protected $author = 'Wildcard';
-	protected $author_site = 'http://wildcardsearch.github.com/Advanced-Sidebox';
+	protected $author_site = '';
+	protected $module_site = 'https://github.com/WildcardSearch/Advanced-Sidebox';
 	protected $settings = array();
 	public $has_settings = false;
 	protected $scripts = array();

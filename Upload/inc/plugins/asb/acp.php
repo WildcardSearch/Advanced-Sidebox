@@ -1422,9 +1422,10 @@ EOF;
 	asb_output_tabs('asb_modules');
 
 	$table = new Table;
-	$table->construct_header($lang->asb_name);
-	$table->construct_header($lang->asb_description);
-	$table->construct_header($lang->asb_controls);
+	$table->construct_header($lang->asb_name, array("width" => '22%'));
+	$table->construct_header($lang->asb_description, array("width" => '55%'));
+	$table->construct_header($lang->asb_modules_author, array("width" => '15%'));
+	$table->construct_header($lang->asb_controls, array("width" => '8%'));
 
 	$addons = asb_get_all_modules();
 
@@ -1433,13 +1434,27 @@ EOF;
 	{
 		foreach($addons as $this_module)
 		{
-			$data = $this_module->get(array('title', 'description', 'base_name'));
+			$data = $this_module->get(array('title', 'description', 'base_name', 'author', 'author_site', 'module_site'));
 
 			// title
-			$table->construct_cell("<strong>{$data['title']}</strong>");
+			$table->construct_cell($html->link($data['module_site'], $data['title'], array("style" => 'font-weight: bold;')));
 
 			// description
 			$table->construct_cell($data['description']);
+
+			if($data['author'] == 'Wildcard')
+			{
+				$data['author'] = 'default';
+			}
+
+			$author = $data['author'];
+			if($data['author_site'])
+			{
+				$author = $html->link($data['author_site'], $data['author'], array("style" => 'font-weight: bold;'));
+			}
+
+			// author
+			$table->construct_cell($author);
 
 			// options pop-up
 			$popup = new PopupMenu('module_' . $data['base_name'], $lang->asb_options);
