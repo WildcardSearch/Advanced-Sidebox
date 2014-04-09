@@ -1221,7 +1221,7 @@ EOF;
 	<script type="text/javascript" src="jscripts/asb_scripts.js"></script>
 	<script type="text/javascript">
 	<!--
-		ASBScript.current = '{$filename}';
+		ASB.scripts.setCurrent('{$filename}');
 	// -->
 	</script>
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />

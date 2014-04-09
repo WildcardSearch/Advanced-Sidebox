@@ -6,7 +6,7 @@
  * this file contains JavaScript for the ACP script edit functions
  */
 
-(function() {
+var ASB = (function(a) {
 	var current = '';
 
 	/**
@@ -169,5 +169,23 @@
 		}
 	}
 
+	/**
+	 * setCurrent()
+	 *
+	 * public setter
+	 *
+	 * @param - value - (String) the current file name
+	 * @return: n/a
+	 */
+	function setCurrent(value) {
+		current = value || '';
+	}
+
 	Event.observe(window, 'load', init);
-})();
+
+	a.scripts = {
+		setCurrent: setCurrent,
+	};
+
+	return a;
+})(ASB || {});
