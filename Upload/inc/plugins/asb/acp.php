@@ -435,6 +435,8 @@ EOF;
 
 	if($id == 0)
 	{
+		$page_title = $lang->asb_add_a_sidebox;
+
 		// this is a new box, check the page view filter to try to predict which script the user will want
 		if($mybb->input['page'])
 		{
@@ -913,7 +915,7 @@ EOF;
 
 		$page->add_breadcrumb_item($lang->asb_custom_boxes, $html->url(array("action" => 'custom_boxes')));
 		$page->add_breadcrumb_item($lang->asb_add_custom);
-		$page->output_header("{$lang->asb_name} - {$action}");
+		$page->output_header("{$lang->asb} - {$action}");
 		asb_output_tabs('asb_add_custom');
 
 		$form = new Form($html->url(array("action" => 'custom_boxes')) . $specify_box, "post", "edit_box");
@@ -975,7 +977,7 @@ EOF;
 EOF;
 
 	$page->add_breadcrumb_item($lang->asb_custom_boxes);
-	$page->output_header("{$lang->asb_name} - {$lang->asb_custom_boxes}");
+	$page->output_header("{$lang->asb} - {$lang->asb_custom_boxes}");
 	asb_output_tabs('asb_custom');
 
 	$new_box_url = $html->url(array("action" => 'custom_boxes', "mode" => 'edit'));
@@ -1320,7 +1322,7 @@ EOF;
 EOF;
 
 		$page->add_breadcrumb_item($lang->asb_manage_scripts);
-		$page->output_header("{$lang->asb_name} - {$lang->asb_manage_scripts}");
+		$page->output_header("{$lang->asb} - {$lang->asb_manage_scripts}");
 		asb_output_tabs('asb_scripts');
 
 		$new_script_url = $html->url(array("action" => 'manage_scripts', "mode" => 'edit'));
