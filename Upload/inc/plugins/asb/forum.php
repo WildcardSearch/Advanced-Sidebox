@@ -144,7 +144,7 @@ function asb_start()
 	// load the template handler class definitions
 	require_once MYBB_ROOT . 'inc/plugins/asb/classes/template_handler.php';
 
-	$template_handler = new TemplateHandler($boxes[0], $boxes[1], $width[0], $width[1], $this_script['extra_scripts'], $this_script['template_vars']);
+	$template_handler = new TemplateHandler($boxes[0], $boxes[1], $width[0], $width[1], $this_script['extra_scripts'], $this_script['js'], $this_script['template_vars']);
 
 	// edit the templates (or eval() if any scripts require it)
 	$template_handler->make_edits();

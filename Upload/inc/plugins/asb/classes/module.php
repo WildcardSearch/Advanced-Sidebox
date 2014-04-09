@@ -123,13 +123,14 @@ class Addon_type extends ExternalModule
 	protected $author_site = 'http://wildcardsearch.github.com/Advanced-Sidebox';
 	protected $settings = array();
 	public $has_settings = false;
+	protected $scripts = array();
+	public $has_scripts = false;
 	protected $templates = array();
 	public $xmlhttp = false;
 	protected $is_installed = false;
 	protected $is_upgraded = false;
 	protected $old_version = 0;
 	protected $version = 0;
-	protected $discarded_settings = array();
 	protected $discarded_templates = array();
 	protected $wrap_content = false;
 	protected $prefix = 'asb';
@@ -148,6 +149,7 @@ class Addon_type extends ExternalModule
 		if(parent::load($module))
 		{
 			$this->has_settings = !empty($this->settings);
+			$this->has_scripts = !empty($this->scripts);
 			$this->old_version = $this->get_cache_version();
 
 			// if this module needs to be upgraded . . .

@@ -170,6 +170,13 @@ function asb_build_cache(&$asb)
 						$asb['scripts'][$filename]['extra_scripts'][$module]['rate'] = $settings['xmlhttp_on']['value'];
 					}
 				}
+
+				if($addons[$module]->has_scripts)
+				{
+					foreach($addons[$module]->get('scripts') as $script) {
+						$asb['scripts'][$filename]['js'][$script] = $script;
+					}
+				}
 			}
 			// side box from a custom box?
 			else if(isset($custom[$module]) && $custom[$module] instanceof Custom_type)
@@ -275,6 +282,7 @@ function asb_get_this_script($asb, $get_all = false)
 	// merge any globally visible (script-wise) side boxes with this script
 	$return_array['template_vars'] = array_merge((array) $asb['scripts']['global']['template_vars'], (array) $return_array['template_vars']);
 	$return_array['extra_scripts'] = (array) $asb['scripts']['global']['extra_scripts'] + (array) $return_array['extra_scripts'];
+	$return_array['js'] = (array) $asb['scripts']['global']['js'] + (array) $return_array['js'];
 
 	// the template handler does not need side boxes and templates
 	if(!$get_all)

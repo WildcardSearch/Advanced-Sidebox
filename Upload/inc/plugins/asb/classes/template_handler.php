@@ -14,6 +14,7 @@ class TemplateHandler
 
 	// any extra JS needed
 	protected $extra_scripts = '';
+	protected $js = '';
 
 	// true to eval() columns in lieu of editing templates
 	protected $eval = false;
@@ -57,7 +58,7 @@ class TemplateHandler
 	 * 					to globalize (used when outputting to custom pages)
 	 * @return: n/a
 	 */
-	public function __construct($left_insert, $right_insert, $width_left, $width_right, $extra_scripts = '', $template_vars = array())
+	public function __construct($left_insert, $right_insert, $width_left, $width_right, $extra_scripts = '', $js, $template_vars = array())
 	{
 		global $mybb, $lang, $templates;
 
@@ -70,6 +71,7 @@ class TemplateHandler
 		$this->width_left = $width_left;
 		$this->width_right = $width_right;
 		$this->extra_scripts = $extra_scripts;
+		$this->js = $js;
 		$this->template_vars = $template_vars;
 
 		$toggles = $show = array();
@@ -226,11 +228,20 @@ EOF;
 <script type="text/javascript">
 <!--
 	Event.observe(window, 'load', function() {
-		asbBuildUpdaters([ {$extra_scripts} ], { left: {$this->width_left}, right: {$this->width_right} });
+		ASB.ajax.buildUpdaters([ {$extra_scripts} ], { left: {$this->width_left}, right: {$this->width_right} });
 	});
 // -->
 </script>
 EOF;
+		}
+
+		if(is_array($this->js)) {
+			foreach($this->js as $script) {
+				$headerinclude .= <<<EOF
+
+<script type="text/javascript" src="jscripts/asb/{$script}.js"></script>
+EOF;
+			}
 		}
 
 		// replace everything on the page?
