@@ -10,6 +10,7 @@
 class Sidebox extends StorableObject
 {
 	protected $title;
+	protected $title_link;
 	protected $box_type;
 	protected $position = 0;
 	protected $display_order;

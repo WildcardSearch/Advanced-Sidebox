@@ -418,7 +418,7 @@ function asb_build_sidebox_content($this_box)
 	}
 
 	// build our info
-	foreach(array('id', 'box_type', 'wrap_content', 'title') as $key)
+	foreach(array('id', 'box_type', 'wrap_content', 'title', 'title_link') as $key)
 	{
 		if(isset($data[$key]))
 		{
@@ -439,8 +439,14 @@ function asb_build_sidebox_content($this_box)
 		$sidebox['expdisplay_id'] = "{$box_type}_{$id}_e";
 		$sidebox['name'] = "{$id}_{$box_type}_" . TIME_NOW;
 		$sidebox['class'] = $sidebox['id'] = "{$box_type}_main_{$id}";
-		$sidebox['title'] = $title;
 		$sidebox['content'] = $content;
+		$sidebox['title'] = $title;
+		if($title_link)
+		{
+			$sidebox['title'] = <<<EOF
+<a href="{$title_link}">{$title}</a>
+EOF;
+		}
 
 		if($mybb->settings['asb_show_expanders'])
 		{

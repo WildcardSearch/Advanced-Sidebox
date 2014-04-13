@@ -211,6 +211,10 @@ $l['asb_custom_title'] = 'Custom Title';
 $l['asb_default_title'] = 'currently using default title';
 $l['asb_default_title_info'] = '(leave blank to keep default title)';
 
+// title link
+$l['asb_title_link'] = 'Title Link';
+$l['asb_title_link_desc'] = 'URL for title link (leave blank for no link)';
+
 // misc. options
 $l['asb_display_order'] = 'Display Order';
 

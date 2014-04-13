@@ -13,6 +13,7 @@ $tables = array(
 		"display_order" => 'INT(10) NOT NULL',
 		"box_type" => 'VARCHAR(25) NOT NULL',
 		"title" => 'VARCHAR(32) NOT NULL',
+		"title_link" => 'VARCHAR(128) NOT NULL',
 		"position" => 'INT(2)',
 		"scripts" => 'TEXT',
 		"groups" => 'TEXT',

@@ -386,6 +386,8 @@ function asb_admin_edit_box()
 			}
 		}
 
+		$sidebox->set('title_link', trim($mybb->input['title_link']));
+
 		// save the side box
 		$new_id = $sidebox->save();
 		asb_cache_has_changed();
@@ -535,12 +537,12 @@ EOF;
 	if($custom_title == 1)
 	{
 		// alter the descrption
-		$current_title = '<br /><em>' . $lang->asb_current_title . '</em><br /><br /><strong>' . $sidebox->get('title') . '</strong><br />' . $lang->asb_current_title_info;
+		$current_title = '<em>' . $lang->asb_current_title . '</em><br /><br /><strong>' . $sidebox->get('title') . '</strong><br />' . $lang->asb_current_title_info;
 	}
 	else
 	{
 		// default description
-		$current_title = '<br />' . $lang->asb_default_title_info;
+		$current_title = $lang->asb_default_title_info;
 	}
 
 	// current editing text
@@ -560,6 +562,9 @@ EOF;
 		// box title
 		$form_container->output_row($lang->asb_custom_title, $current_title, $form->generate_text_box('box_title') . $form->generate_hidden_field('current_title', $sidebox->get('title')), 'box_title', array("id" => 'box_title'));
 
+		// title link
+		$form_container->output_row($lang->asb_title_link, $lang->asb_title_link_desc, $form->generate_text_box('title_link', $sidebox->get('title_link')), 'title_link', array("id" => 'title_link'));
+
 		// position
 		$form_container->output_row($lang->asb_position, '', $form->generate_radio_button('box_position', 0, $lang->asb_position_left, array("checked" => ($sidebox->get('position') == 0))) . '&nbsp;&nbsp;' . $form->generate_radio_button('box_position', 1, $lang->asb_position_right, array("checked" => ($sidebox->get('position') != 0))));
 
@@ -569,7 +574,10 @@ EOF;
 	else
 	{
 		// box title
-		$form_container->output_row('', '', $form->generate_text_box('box_title') . '<br />' . $current_title . $form->generate_hidden_field('current_title', $sidebox->get('title')) . $form->generate_hidden_field('display_order', $sidebox->get('display_order')) . $form->generate_hidden_field('pos', $position), 'box_title', array("id" => 'box_title'));
+		$form_container->output_row($lang->asb_title, $current_title, $form->generate_text_box('box_title'), 'box_title', array("id" => 'box_title'));
+
+		// title link
+		$form_container->output_row($lang->asb_title_link, $lang->asb_title_link_desc, $form->generate_text_box('title_link', $sidebox->get('title_link')) . $form->generate_hidden_field('current_title', $sidebox->get('title')) . $form->generate_hidden_field('display_order', $sidebox->get('display_order')) . $form->generate_hidden_field('pos', $position), 'title_link', array("id" => 'title_link'));
 	}
 	$form_container->end();
 
