@@ -25,6 +25,9 @@ $l['asb_thread_show_list_desc'] = '(optional) add a thread id or a comma-separat
 $l['asb_thread_hide_list_title'] = 'Thread Hide List';
 $l['asb_thread_hide_list_desc'] = '(optional) add a thread id or a comma-separated list of tids to be <strong>excluded/hidden</strong> [If Forum Show List or Forum Hide List are in use, this settings <strong>will override and amend</strong>]';
 
+$l['asb_important_threads_only_title'] = 'Important Threads Only?';
+$l['asb_important_threads_only_desc'] = "YES to only use 'stickied' threads, NO (default) to use any threads/posts";
+
 // examples
 $l['asb_example1_title'] = '[Example 1] Simplest Box';
 $l['asb_example1_desc'] = 'As simple as it gets. This box illustrates the easiest way to create an add-on module';

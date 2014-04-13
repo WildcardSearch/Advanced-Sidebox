@@ -100,6 +100,14 @@ function asb_latest_threads_info()
 				"optionscode" => "text",
 				"value" => '0'
 			),
+			"important_threads_only" => array(
+				"sid" => "NULL",
+				"name" => "important_threads_only",
+				"title" => $lang->asb_important_threads_only_title,
+				"description" => $lang->asb_important_threads_only_desc,
+				"optionscode" => "yesno",
+				"value" => '0'
+			),
 			"xmlhttp_on" => array(
 				"sid" => "NULL",
 				"name" => "xmlhttp_on",
@@ -293,6 +301,11 @@ function latest_threads_get_threadlist($settings, $width)
 		$new_threads = " AND t.dateline > {$thread_time_limit}";
 	}
 
+	if($settings['important_threads_only']['value'])
+	{
+		$important_threads = " AND NOT t.sticky=0";
+	}
+
 	// build the exclude conditions
 	$show['fids'] = asb_build_id_list($settings['forum_show_list']['value'], 't.fid');
 	$show['tids'] = asb_build_id_list($settings['thread_show_list']['value'], 't.tid');
@@ -300,7 +313,7 @@ function latest_threads_get_threadlist($settings, $width)
 	$hide['tids'] = asb_build_id_list($settings['thread_hide_list']['value'], 't.tid');
 	$where['show'] = asb_build_SQL_where($show, ' OR ');
 	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
-	$query_where = $new_threads . $unviewwhere . asb_build_SQL_where($where, ' AND ', ' AND ');
+	$query_where = $new_threads . $important_threads . $unviewwhere . asb_build_SQL_where($where, ' AND ', ' AND ');
 
 	$altbg = alt_trow();
 	$maxtitlelen = 48;
