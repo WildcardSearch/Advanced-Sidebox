@@ -7,7 +7,7 @@
  * contains language used on both forum and ACP side by add-on modules
  */
 
-$l['asb_addon'] = 'Add-on';
+$l['asb_addon'] = 'Addon';
 
 // default settings
 $l['asb_xmlhttp_on_title'] = 'AJAX Update?';
@@ -195,5 +195,27 @@ $l['asb_staff_online_max_staff_title'] = 'Staff Limit';
 $l['asb_staff_online_max_staff_desc'] = 'maximal number of staff members to display';
 
 $l['asb_staff_online_no_staff_online'] = 'There are no staff members currently online.';
+
+// slideshow
+$l['asb_slideshow'] = 'Slideshow';
+$l['asb_slideshow_desc'] = 'Display images in series with configurable options';
+
+$l['asb_slideshow_folder_title'] = 'Image Path';
+$l['asb_slideshow_folder_description'] = 'this is the folder that contains the images to display from the forum root. (Example: images OR images/english NOT http://myforum.com/images)';
+
+$l['asb_slideshow_rate_title'] = 'Rate';
+$l['asb_slideshow_rate_description'] = 'time in seconds to pause on each image';
+
+$l['asb_slideshow_shuffle_title'] = 'Shuffle?';
+$l['asb_slideshow_shuffle_description'] = 'YES (default) to randomize image order, NO to use default order';
+
+$l['asb_slideshow_fade_rate_title'] = 'Transistion Time';
+$l['asb_slideshow_fade_rate_description'] = 'time in seconds to fade from one image to the next';
+
+$l['asb_slideshow_footer_text_title'] = 'Footer Link Text';
+$l['asb_slideshow_footer_text_description'] = 'text for footer link, leave blank for no footer';
+
+$l['asb_slideshow_footer_url_title'] = 'Footer Link URL';
+$l['asb_slideshow_footer_url_description'] = 'URL for footer link, above setting must have a value before it will be effective';
 
 ?>
