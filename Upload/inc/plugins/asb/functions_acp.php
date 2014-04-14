@@ -155,7 +155,7 @@ EOF;
  *
  * build a popup with a table of side box permission info
  *
- * @param - $id is the numeric id of the sidebox
+ * @param - $id - (int) the numeric id of the sidebox
  * @return: (string) the permission table HTML
  */
 function asb_build_permissions_table($id)
@@ -165,17 +165,51 @@ function asb_build_permissions_table($id)
 		return false;
 	}
 
-	global $db, $lang, $all_scripts;
+	global $lang, $all_scripts;
 
 	$sidebox = new Sidebox($id);
 
 	if(!$sidebox->is_valid())
 	{
-		return false;
+		return $lang->asb_invalid_sidebox;
+	}
+
+	if(!$all_scripts)
+	{
+		return $lang->asb_no_active_scripts;
+	}
+
+	$visibility_rows = asb_build_visibility_rows($sidebox, $group_count, $global);
+	$theme_list = asb_build_theme_visibility_list($sidebox, $group_count + 1, $global);
+
+	return <<<EOF
+<table width="100%" class="box_info">{$visibility_rows}{$theme_list}
+</table>
+EOF;
+}
+
+/*
+ * asb_build_visibility_rows()
+ *
+ * build HTML for the script/group table rows
+ *
+ * @param - $sidebox - (Sidebox object) is the sidebox to build the rows for
+ * @param - &$group_count - (int) a reference to the group count
+ * @param - &$global (bool) a reference to whether this return indicated global
+ * visibility
+ * @return: (string) the permission table row HTML
+ */
+function asb_build_visibility_rows($sidebox, &$group_count, &$global)
+{
+	global $db, $lang, $all_scripts;
+
+	if(!is_array($all_scripts) || empty($all_scripts))
+	{
+		return $lang->asb_no_active_scripts;
 	}
 
 	// prepare options for which groups
-	$options = array('Guests');
+	$options = array($lang->asb_guests);
 	$groups = array();
 
 	// look for all groups except Super Admins
@@ -185,6 +219,7 @@ function asb_build_permissions_table($id)
 		// store the titles by group id
 		$options[(int)$usergroup['gid']] = $usergroup['title'];
 	}
+	$group_count = $all_group_count = count($options);
 
 	$groups = $sidebox->get('groups');
 	$scripts = $sidebox->get('scripts');
@@ -193,11 +228,12 @@ function asb_build_permissions_table($id)
 	{
 		if(empty($groups))
 		{
-			return $lang->asb_globally_visible;
+			$global = true;
+			return "<tr><td class=\"vis_info\">{$lang->asb_globally_visible}</td></tr>";
 		}
 		elseif(isset($groups[0]) && strlen($groups[0]) == 0)
 		{
-			return $lang->asb_all_scripts_deactivated;
+			return "<tr><td class=\"vis_info\">{$lang->asb_all_scripts_deactivated}</td></tr>";
 		}
 		else
 		{
@@ -206,34 +242,19 @@ function asb_build_permissions_table($id)
 	}
 	elseif(isset($scripts[0]) && strlen($scripts[0]) == 0)
 	{
-		return $lang->asb_all_scripts_deactivated;
+		return "<tr><td class=\"vis_info\">{$lang->asb_all_scripts_deactivated}</td></tr>";
 	}
 
-	if(!is_array($all_scripts) || empty($all_scripts))
-	{
-		return false;
-	}
-
-	$all_group_count = count($options);
-	$info = <<<EOF
-
-<table width="100%" class="box_info">
-<tr>
-<td class="group_header"><strong>{$lang->asb_visibility}</strong></td>
-
-EOF;
-
+	$group_headers = '';
 	foreach($options as $gid => $title)
 	{
-		$info .= <<<EOF
-<td title="{$title}" class="group_header">{$gid}</td>
+		$group_headers .= <<<EOF
 
+		<td title="{$title}" class="group_header">{$gid}</td>
 EOF;
 	}
 
-	$info .= '	</tr>
-';
-
+	$script_rows = '';
 	foreach($all_scripts as $script => $script_title)
 	{
 		$script_title_full = '';
@@ -242,11 +263,13 @@ EOF;
 			$script_title_full = $script_title;
 			$script_title = substr($script_title, 0, 8) . '. . .';
 		}
-		$info .= <<<EOF
-<tr>
-<td class="script_header" title="{$script_title_full}">{$script_title}</td>
 
+		$script_rows .= <<<EOF
+
+	<tr>
+		<td class="script_header" title="{$script_title_full}">{$script_title}</td>
 EOF;
+
 		if(empty($scripts) || array_key_exists($script, $scripts) || in_array($script, $scripts))
 		{
 			if(empty($groups))
@@ -254,9 +277,9 @@ EOF;
 				$x = 1;
 				while($x <= $all_group_count)
 				{
-					$info .= <<<EOF
-<td class="info_cell on"></td>
+					$script_rows .= <<<EOF
 
+		<td class="info_cell on"></td>
 EOF;
 					++$x;
 				}
@@ -265,20 +288,15 @@ EOF;
 			{
 				foreach($options as $gid => $title)
 				{
+					$vis_class = 'off';
 					if(in_array($gid, $groups))
 					{
-						$info .= <<<EOF
-<td class="info_cell on"></td>
-
-EOF;
+						$vis_class = 'on';
 					}
-					else
-					{
-						$info .= <<<EOF
-<td class="info_cell off"></td>
+					$script_rows .= <<<EOF
 
+		<td class="info_cell {$vis_class}"></td>
 EOF;
-					}
 				}
 			}
 		}
@@ -287,20 +305,86 @@ EOF;
 			$x = 1;
 			while($x <= $all_group_count)
 			{
-				$info .= <<<EOF
-<td class="info_cell off"></td>
+				$script_rows .= <<<EOF
 
+		<td class="info_cell off"></td>
 EOF;
 				++$x;
 			}
 		}
 
-		$info .= '	</tr>
-';
+		$script_rows .= <<<EOF
+
+	</tr>
+EOF;
 	}
 
-	$info .= '</table>';
-	return $info;
+	return <<<EOF
+
+	<tr>
+		<td class="group_header"><strong>{$lang->asb_visibility}</strong></td>{$group_headers}
+	</tr>{$script_rows}
+EOF;
+}
+
+/*
+ * asb_build_theme_visibility_list()
+ *
+ * build HTML for the script/group table rows
+ *
+ * @param - $sidebox - (Sidebox object) is the sidebox to build the rows for
+ * @param - $colspan - (int) a reference to the group count
+ * @param - $global (bool) a reference to whether the perm rows return
+ * indicated global visibility
+ * @return: (string) the permission table row HTML
+ */
+function asb_build_theme_visibility_list($sidebox, $colspan, $global)
+{
+	global $lang;
+
+	$themes = asb_get_all_themes();
+	$good_themes = $sidebox->get('themes');
+
+	if(!$themes)
+	{
+		return false;
+	}
+
+	if(!$good_themes || count($good_themes) == count($themes))
+	{
+		$theme_list = $lang->asb_visibile_for_all_themes;
+		if($global)
+		{
+			return '';
+		}
+	}
+	else
+	{
+		$theme_list = '';
+		foreach($themes as $tid => $name)
+		{
+			if($good_themes && !in_array($tid, $good_themes))
+			{
+				$theme_list .= <<<EOF
+{$sep}<s>{$name}</s>
+EOF;
+			}
+			else
+			{
+				$theme_list .= <<<EOF
+{$sep}{$name}
+EOF;
+			}
+			$sep = ', ';
+		}
+	}
+
+	return <<<EOF
+
+	<tr>
+		<td colspan="{$colspan}">{$theme_list}</td>
+	</tr>
+EOF;
 }
 
 /*

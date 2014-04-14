@@ -19,8 +19,8 @@ function asb_do_checks()
 	global $mybb, $theme;
 
 	// if the EXCLUDE list isn't empty and this theme is listed . . .
-	$exclude_list = unserialize($mybb->settings['asb_exclude_theme']);
-	if(is_array($exclude_list) && in_array($theme['tid'], $exclude_list))
+	$exclude_list = asb_get_excluded_themes();
+	if($exclude_list && in_array($theme['tid'], $exclude_list))
 	{
 		// no side boxes for you
 		return false;
@@ -35,6 +35,37 @@ function asb_do_checks()
 		return false;
 	}
 	return true;
+}
+
+/*
+ * asb_get_excluded_themes()
+ *
+ * get the tids of any excluded themes
+ *
+ * @return: (bool) true on success, false on fail
+ */
+function asb_get_excluded_themes($sql = false)
+{
+	global $mybb;
+
+	$retval = unserialize($mybb->settings['asb_exclude_theme']);
+	if(!is_array($retval) || empty($retval))
+	{
+		$retval  = false;
+	}
+
+	if($sql)
+	{
+		if($retval)
+		{
+			$retval = ' AND NOT IN(' . implode(',', $retval) . ')';
+		}
+		else
+		{
+			$retval = '';
+		}
+	}
+	return $retval;
 }
 
 /*
@@ -607,6 +638,38 @@ function asb_get_all_scripts()
 			$filename = asb_build_script_filename($this_script);
 			$return_array[$filename] = $this_script;
 		}
+	}
+	return $return_array;
+}
+
+/*
+ * asb_get_all_themes()
+ *
+ * rebuilds the theme exclude list ACP setting
+ *
+ * @return: (string) the <select> HTML or false on error
+ */
+function asb_get_all_themes($full = false)
+{
+	global $db;
+
+	if($full != true)
+	{
+		$excluded_themes = asb_get_excluded_themes(true);
+	}
+
+	// get all the themes that are not MasterStyles
+	$query = $db->simple_select("themes", "tid, name", "NOT pid='0'{$excluded_themes}");
+
+	$return_array = array();
+	if($db->num_rows($query) == 0)
+	{
+		return $return_array;
+	}
+
+	while($this_theme = $db->fetch_array($query))
+	{
+		$return_array[$this_theme['tid']] = $this_theme['name'];
 	}
 	return $return_array;
 }

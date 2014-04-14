@@ -139,39 +139,12 @@ EOF
  */
 function asb_build_theme_exclude_select()
 {
-	global $db;
+	$all_themes = asb_get_all_themes(true);
 
-	// get all the themes that are not MasterStyles
-	$query = $db->simple_select("themes", "tid, name", "NOT pid='0'");
-
-	// create a theme counter so our box is tidy
-	$theme_count = 0;
-
-	if($db->num_rows($query) > 0)
+	$theme_count = min(5, count($all_themes));
+	if($theme_count == 0)
 	{
-		// Create an option for each theme and insert code to unserialize each option and 'remember' settings
-		while($this_theme = $db->fetch_array($query))
-		{
-			$this_theme['name'] = addcslashes($this_theme['name'], '"');
-			$theme_select .= <<<EOF
-	<option value=\"{$this_theme['tid']}\" " . (is_array(unserialize(\$setting['value'])) ? (\$setting['value'] != "" && in_array("{$this_theme['tid']}", unserialize(\$setting['value'])) ? "selected=\"selected\"":""):"") . ">{$this_theme['name']}</option>
-EOF;
-			++$theme_count;
-		}
-		$theme_count = min(5, $theme_count);
-
-		// put it all together
-		$theme_select = <<<EOF
-php
-<select multiple name=\"upsetting[asb_exclude_theme][]\" size=\"{$theme_count}\">
-{$theme_select}
-</select>
-
-EOF;
-	}
-	else
-	{
-		$theme_select = <<<EOF
+		return $theme_select = <<<EOF
 php
 <select name=\"upsetting[asb_exclude_theme][]\" size=\"1\">
 	<option value=\"0\">no themes!</option>
@@ -179,7 +152,24 @@ php
 
 EOF;
 	}
-	return $theme_select;
+
+	// Create an option for each theme and insert code to unserialize each option and 'remember' settings
+	foreach($all_themes as $tid => $name)
+	{
+		$name = addcslashes($name, '"');
+		$theme_select .= <<<EOF
+<option value=\"{$tid}\" " . (is_array(unserialize(\$setting['value'])) ? (\$setting['value'] != "" && in_array("{$tid}", unserialize(\$setting['value'])) ? "selected=\"selected\"":""):"") . ">{$name}</option>
+EOF;
+	}
+
+	// put it all together
+	return <<<EOF
+php
+<select multiple name=\"upsetting[asb_exclude_theme][]\" size=\"{$theme_count}\">
+{$theme_select}
+</select>
+
+EOF;
 }
 
 /* versioning */

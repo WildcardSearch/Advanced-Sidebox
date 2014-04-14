@@ -160,6 +160,7 @@ $l['asb_add_new_sidebox'] = "Add a new side box of this type";
 $l['asb_modal_tab_general'] = "General";
 $l['asb_modal_tab_permissions'] = "Permissions";
 $l['asb_modal_tab_pages'] = "Pages";
+$l['asb_modal_tab_themes'] = "Themes";
 $l['asb_modal_tab_settings'] = "Settings";
 $l['asb_modal_tab_settings_desc'] = "Custom Module Settings";
 
@@ -181,6 +182,9 @@ $l['asb_which_scripts'] = 'Which Scripts?';
 $l['asb_no_script_filter'] = "Do not filter by script";
 $l['asb_script_filter_title'] = "Show only the boxes for {1}";
 
+// themes
+$l['asb_which_themes'] = 'Which Themes?';
+
 $l['asb_index'] = 'Index';
 $l['asb_forumdisplay'] = 'Forum';
 $l['asb_showthread'] = 'Thread';
@@ -199,6 +203,10 @@ $l['asb_abbr_member'] = 'Profile';
 $l['asb_abbr_memberlist'] = 'Mem. List';
 $l['asb_abbr_showteam'] = 'Team';
 $l['asb_abbr_stats'] = 'Stats';
+
+$l['asb_invalid_sidebox'] = 'invalid side box';
+$l['asb_no_active_scripts'] = 'no active scripts';
+$l['asb_visibile_for_all_themes'] = 'Visible For All Themes';
 
 $l['asb_all_scripts_deactivated'] = "This Side Box Is Deactivated";
 $l['asb_globally_visible'] = "Globally Visible";

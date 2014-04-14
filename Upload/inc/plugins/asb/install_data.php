@@ -17,6 +17,7 @@ $tables = array(
 		"position" => 'INT(2)',
 		"scripts" => 'TEXT',
 		"groups" => 'TEXT',
+		"themes" => 'TEXT',
 		"settings" => 'TEXT',
 		"wrap_content" => 'INT(1)',
 		"dateline" => 'INT(10)'

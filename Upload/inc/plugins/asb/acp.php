@@ -317,20 +317,25 @@ function asb_admin_edit_box()
 		$sidebox->set('display_order', $display_order);
 
 		$script_list = $mybb->input['script_select_box'];
-		$group_list = $mybb->input['group_select_box'];
-
-		if($group_list[0] == 'all')
-		{
-			$group_list = array();
-		}
 		if($script_list[0] == 'all_scripts' || (count($script_list) >= count($all_scripts)))
 		{
 			$script_list = array();
 		}
-
-		// store them
 		$sidebox->set('scripts', $script_list);
+
+		$group_list = $mybb->input['group_select_box'];
+		if($group_list[0] == 'all')
+		{
+			$group_list = array();
+		}
 		$sidebox->set('groups', $group_list);
+
+		$theme_list = $mybb->input['theme_select_box'];
+		if($theme_list[0] == 'all_themes')
+		{
+			$theme_list = array();
+		}
+		$sidebox->set('themes', $theme_list);
 
 		// box type
 		$sidebox->set('box_type', $module);
@@ -514,6 +519,7 @@ EOF;
 		"general" => $lang->asb_modal_tab_general,
 		"permissions" => $lang->asb_modal_tab_permissions,
 		"pages" => $lang->asb_modal_tab_pages,
+		"themes" => $lang->asb_modal_tab_themes,
 		"settings" => $lang->asb_modal_tab_settings
 	);
 
@@ -581,7 +587,7 @@ EOF;
 	}
 	$form_container->end();
 
-	echo "\n</div>\n<div id=\"tab_permissions\">\n";
+	echo "\n</div>\n<div id=\"tab_permissions\" style=\"text-align: center;\">\n";
 	$form_container = new FormContainer($lang->asb_which_groups);
 
 	// prepare options for which groups
@@ -611,7 +617,7 @@ EOF;
 
 	$form_container->end();
 
-	echo "\n</div>\n<div id=\"tab_pages\">\n";
+	echo "\n</div>\n<div id=\"tab_pages\" style=\"text-align: center;\">\n";
 	$form_container = new FormContainer($lang->asb_which_scripts);
 
 	// prepare for which scripts
@@ -646,6 +652,22 @@ EOF;
 
 	// which scripts
 	$form_container->output_row('', $script_warning, $form->generate_select_box('script_select_box[]', $choices, $selected_scripts, array("id" => 'script_select_box', "multiple" => true)));
+	$form_container->end();
+
+	echo "\n</div>\n<div id=\"tab_themes\" style=\"text-align: center;\">\n";
+	$form_container = new FormContainer($lang->asb_which_themes);
+
+	// do we have themes stored?
+	$themes = $sidebox->get('themes');
+	if(empty($themes))
+	{
+		$themes = 'all_themes';
+	}
+
+	$choices = array("all_themes" => 'All Themes') + asb_get_all_themes();
+
+	// which scripts
+	$form_container->output_row('', '', $form->generate_select_box('theme_select_box[]', $choices, $themes, array("id" => 'theme_select_box', "multiple" => true)));
 	$form_container->end();
 
 	if($do_settings)

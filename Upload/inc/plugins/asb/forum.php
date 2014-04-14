@@ -20,7 +20,7 @@ asb_initialize();
  */
 function asb_start()
 {
-	global $mybb;
+	global $mybb, $theme;
 
 	// side box, add-on and custom box classes
 	require_once MYBB_ROOT . 'inc/plugins/asb/classes/forum.php';
@@ -84,6 +84,13 @@ function asb_start()
 
 			// can the user view this side box?
 			if(!asb_check_user_permissions($sidebox->get('groups')))
+			{
+				continue;
+			}
+
+			// is this theme available for this side box?
+			$good_themes = $sidebox->get('themes');
+			if($good_themes && !in_array($theme['tid'], $good_themes))
 			{
 				continue;
 			}
