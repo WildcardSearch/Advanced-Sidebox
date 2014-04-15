@@ -908,7 +908,7 @@ function asb_admin_custom_boxes()
 	<!--
 		CodePress.language = 'mybb';
 	// -->
-	</script>'
+	</script>
 EOF;
 		}
 
