@@ -161,7 +161,7 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 	}
 
 	// get our setting value
-	$max_rows = (int) $settings['max_staff']['value'];
+	$max_rows = (int) $settings['max_staff'];
 
 	// if max_rows is set to 0 then show nothing
 	if(!$max_rows)

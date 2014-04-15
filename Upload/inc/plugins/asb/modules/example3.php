@@ -66,14 +66,14 @@ function asb_example3_build_template($args)
 		$lang->load('asb_addon');
 	}
 
-	if(!$settings['example3_setting']['value'])
+	if(!$settings['example3_setting'])
 	{
-		$settings['example3_setting']['value'] = $lang->asb_example3_info;
+		$settings['example3_setting'] = $lang->asb_example3_info;
 	}
 
 	$$template_var = <<<EOF
 		<tr>
-					<td class="trow1"><span style="color: red; font-size: 1.4em; font-weight: bold;">{$settings['example3_setting']['value']}</span>
+					<td class="trow1"><span style="color: red; font-size: 1.4em; font-weight: bold;">{$settings['example3_setting']}</span>
 					</td>
 				</tr>
 EOF;

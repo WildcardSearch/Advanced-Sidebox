@@ -423,7 +423,9 @@ EOF;
 	if(!$ajax)
 	{
 		$delete_link = $html->url(array("action" => 'delete_box', "id" => $id));
-		$delete_icon = "<a href=\"{$delete_link}\" class=\"del_icon\" title=\"{$lang->asb_delete}\"><img src=\"../inc/plugins/asb/images/delete.png\" height=\"18\" width=\"18\" alt=\"{$lang->asb_delete}\"/></a>";
+		$delete_icon = <<<EOF
+<a href="{$delete_link}" class="del_icon" title="{$lang->asb_delete}"><img src="../inc/plugins/asb/images/delete.png" height="18" width="18" alt="{$lang->asb_delete}"/></a>
+EOF;
 	}
 
 	// the content

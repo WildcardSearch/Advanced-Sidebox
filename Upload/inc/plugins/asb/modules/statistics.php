@@ -93,7 +93,7 @@ function asb_statistics_build_template($args)
 	$newestmember = "<strong>" . $lang->asb_stats_no_one . "</strong>";
 	if($statistics['lastusername'])
 	{
-		if($settings['format_username']['value'])
+		if($settings['format_username'])
 		{
 			$last_user = get_user($statistics['lastuid']);
 			$last_username = format_name($last_user['username'], $last_user['usergroup'], $last_user['displaygroup']);

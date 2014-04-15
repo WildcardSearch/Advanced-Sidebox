@@ -104,10 +104,10 @@ function asb_slideshow_build_template($args)
 
 	global $$template_var, $mybb;
 
-	$shuffle = $settings['shuffle']['value'] ? 'true' : 'false';
-	$folder = $settings['folder']['value'];
-	$rate = (int) $settings['rate']['value'] ? (int) $settings['rate']['value'] : 10;
-	$fade_rate = (float) $settings['fade_rate']['value'] ? (float) $settings['fade_rate']['value'] : 1;
+	$shuffle = $settings['shuffle'] ? 'true' : 'false';
+	$folder = $settings['folder'];
+	$rate = (int) $settings['rate'] ? (int) $settings['rate'] : 10;
+	$fade_rate = (float) $settings['fade_rate'] ? (float) $settings['fade_rate'] : 1;
 
 	if(!is_dir(MYBB_ROOT . $folder))
 	{
@@ -132,13 +132,13 @@ function asb_slideshow_build_template($args)
 		$sep = ',';
 	}
 
-	if ($settings['footer_text']['value'] && $settings['footer_url']['value']) {
+	if ($settings['footer_text'] && $settings['footer_url']) {
 		$footer = <<<EOF
 
 				<tr>
 					<td class="tfoot">
 						<div style="text-align: center;">
-							<a style="font-weight: bold;" href="{$settings['footer_url']['value']}">{$settings['footer_text']['value']}</a>
+							<a style="font-weight: bold;" href="{$settings['footer_url']}">{$settings['footer_text']}</a>
 						</div>
 					</td>
 				</tr>

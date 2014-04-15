@@ -107,17 +107,9 @@ function asb_start()
 			// add-on module, so we can proceed
 			if($module->is_valid())
 			{
-				// if this side box doesn't have any settings, but the add-on module it was derived from does . . .
-				$settings = $sidebox->get('settings');
-				if($sidebox->has_settings == false && $module->has_settings)
-				{
-					// . . . this side box hasn't been upgraded to the new on-board settings system. Use the settings (and values) from the add-on module as default settings
-					$settings = $module->get('settings');
-				}
-
 				// build the template. pass settings, template variable
 				// name and column width
-				$result = $module->build_template($settings, $template_var, $width[$pos]);
+				$result = $module->build_template($sidebox->get('settings'), $template_var, $width[$pos]);
 			}
 			// if it doesn't verify as an add-on, try it as a custom box
 			elseif(isset($asb['custom'][$module_name]) && is_array($asb['custom'][$module_name]))

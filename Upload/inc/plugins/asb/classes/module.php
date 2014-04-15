@@ -398,20 +398,13 @@ class Addon_type extends ExternalModule
 				}
 			}
 
-			// update all the settings
+			// update any settings which are missing
 			foreach($this->settings as $name => $setting)
 			{
 				if(!isset($sidebox_settings[$name]))
 				{
 					// new setting-- default value
-					$sidebox_settings[$name] = $this->settings[$name];
-				}
-				else
-				{
-					// existing setting-- preserve value
-					$value = $sidebox_settings[$name]['value'];
-					$sidebox_settings[$name] = $setting;
-					$sidebox_settings[$name]['value'] = $value;
+					$sidebox_settings[$name] = $this->settings[$name]['value'];
 				}
 			}
 

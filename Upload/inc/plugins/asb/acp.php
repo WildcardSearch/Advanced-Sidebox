@@ -357,8 +357,7 @@ function asb_admin_edit_box()
 					if(isset($mybb->input[$setting['name']]))
 					{
 						// store it
-						$setting['value'] = $mybb->input[$setting['name']];
-						$settings[$setting['name']] = $setting;
+						$settings[$setting['name']] = $mybb->input[$setting['name']];
 					}
 				}
 				$sidebox->set('settings', $settings);
@@ -670,7 +669,7 @@ EOF;
 	$form_container->output_row('', '', $form->generate_select_box('theme_select_box[]', $choices, $themes, array("id" => 'theme_select_box', "multiple" => true)));
 	$form_container->end();
 
-	if($do_settings)
+	if($do_settings && $sidebox->has_settings)
 	{
 		echo "</div>\n<div id=\"tab_settings\">\n";
 		if($mybb->input['ajax'] == 1)
@@ -680,23 +679,26 @@ EOF;
 
 		$form_container = new FormContainer($lang->asb_modal_tab_settings_desc);
 
+		$settings = $parent->get('settings');
+
 		if($id)
 		{
 			$sidebox_settings = $sidebox->get('settings');
-		}
-		elseif($is_module)
-		{
-			$sidebox_settings = $parent->get('settings');
-		}
-
-		if(is_array($sidebox_settings))
-		{
-			foreach($sidebox_settings as $setting)
+			foreach($settings as $name => $value)
 			{
-				// allow the handler to build module settings
-				asb_build_setting($form, $form_container, $setting);
+				if(isset($value))
+				{
+					$settings[$name]['value'] = $value;
+				}
 			}
 		}
+
+		foreach((array) $settings as $setting)
+		{
+			// allow the handler to build module settings
+			asb_build_setting($form, $form_container, $setting);
+		}
+
 		$form_container->end();
 		echo "</div>\n";
 	}
@@ -1273,7 +1275,7 @@ EOF;
 
 		$spinner = <<<EOF
 <div class="ajax_spinners" style="display: none;">
-	<img src="../images/spinner.gif" alt="{$lang->asb_detecting} . . ." title="{$lang->asb_detecting} . . ."/><br /><br />
+	<img src="../images/spinner.gif" alt="{$lang->asb_detecting} . . ."/><br /><br />
 </div>
 EOF;
 

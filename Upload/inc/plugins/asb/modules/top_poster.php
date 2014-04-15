@@ -89,11 +89,11 @@ function asb_top_poster_build_template($args)
 		$lang->load('asb_addon');
 	}
 
-	if(!$settings['time_frame']['value'])
+	if(!$settings['time_frame'])
 	{
-		$settings['time_frame']['value'] = 1;
+		$settings['time_frame'] = 1;
 	}
-	$timesearch = TIME_NOW - (86400 * $settings['time_frame']['value']);
+	$timesearch = TIME_NOW - (86400 * $settings['time_frame']);
 
 	$group_by = 'p.uid';
 	if($db->type == 'pgsql')
@@ -118,7 +118,7 @@ EOF
 	$ret_val = false;
 
 	// adjust language for time frame
-	switch ($settings['time_frame']['value']) {
+	switch ($settings['time_frame']) {
 	case 7:
 		$top_poster_timeframe = $lang->asb_top_poster_one_week;
 		break;
@@ -144,9 +144,9 @@ EOF
 	// default to default :p
 	$top_poster_avatar = "{$theme['imgdir']}/default_avatar.gif";
 	$avatar_width = (int) $width * .83;
-	if((int) $settings['avatar_size']['value'])
+	if((int) $settings['avatar_size'])
 	{
-		$avatar_width = (int) $settings['avatar_size']['value'];
+		$avatar_width = (int) $settings['avatar_size'];
 	}
 
 	$user = $db->fetch_array($query);

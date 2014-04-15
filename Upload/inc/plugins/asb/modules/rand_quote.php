@@ -234,16 +234,16 @@ function asb_rand_quote_get_quote($settings, $width)
 		$unviewwhere = " AND p.fid NOT IN ({$unviewable})";
 	}
 
-	if($settings['important_threads_only']['value'])
+	if($settings['important_threads_only'])
 	{
 		$important_threads = " AND NOT t.sticky=0";
 	}
 
 	// build the exclude conditions
-	$show['fids'] = asb_build_id_list($settings['forum_show_list']['value'], 'p.fid');
-	$show['tids'] = asb_build_id_list($settings['thread_show_list']['value'], 'p.tid');
-	$hide['fids'] = asb_build_id_list($settings['forum_hide_list']['value'], 'p.fid');
-	$hide['tids'] = asb_build_id_list($settings['thread_hide_list']['value'], 'p.tid');
+	$show['fids'] = asb_build_id_list($settings['forum_show_list'], 'p.fid');
+	$show['tids'] = asb_build_id_list($settings['thread_show_list'], 'p.tid');
+	$hide['fids'] = asb_build_id_list($settings['forum_hide_list'], 'p.fid');
+	$hide['tids'] = asb_build_id_list($settings['thread_hide_list'], 'p.tid');
 	$where['show'] = asb_build_SQL_where($show, ' OR ');
 	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
 	$query_where = $important_threads . $unviewwhere . asb_build_SQL_where($where, ' AND ', ' AND ');
@@ -293,11 +293,11 @@ function asb_rand_quote_get_quote($settings, $width)
 	$title_font_size = (int) ($font_size * .65);
 	$message_font_size = (int) $font_size;
 
-	if(strlen($new_message) < $settings['min_length']['value'])
+	if(strlen($new_message) < $settings['min_length'])
 	{
-		if($settings['default_text']['value'])
+		if($settings['default_text'])
 		{
-			$new_message = $settings['default_text']['value'];
+			$new_message = $settings['default_text'];
 		}
 		else
 		{
@@ -306,9 +306,9 @@ function asb_rand_quote_get_quote($settings, $width)
 		}
 	}
 
-	if($settings['max_length']['value'] && strlen($new_message) > $settings['max_length']['value'])
+	if($settings['max_length'] && strlen($new_message) > $settings['max_length'])
 	{
-		$new_message = substr($new_message, 0, $settings['max_length']['value']) . ' . . .';
+		$new_message = substr($new_message, 0, $settings['max_length']) . ' . . .';
 	}
 
 	// set up the user name link so that it displays correctly for the display group of the user

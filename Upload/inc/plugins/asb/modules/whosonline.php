@@ -194,12 +194,12 @@ function asb_whosonline_get_online_members($settings, $width)
 	$all_users = array();
 
 	// width
-	$rowlength = (int) $settings['asb_avatar_per_row']['value'];
+	$rowlength = (int) $settings['asb_avatar_per_row'];
 	if ($rowlength == 0) {
 		return false;
 	}
 
-	$max_rows = (int) $settings['asb_avatar_max_rows']['value'];
+	$max_rows = (int) $settings['asb_avatar_max_rows'];
 	$row = 1;
 	$avatar_count = 0;
 	$enough_already = false;
@@ -260,7 +260,7 @@ function asb_whosonline_get_online_members($settings, $width)
 			{
 				$user['profilelink'] = get_profile_link($user['uid']);
 
-				if($settings['show_avatars']['value'])
+				if($settings['show_avatars'])
 				{
 					// If the user has an avatar then display it . . .
 					if($user['avatar'] != "")
@@ -275,7 +275,7 @@ function asb_whosonline_get_online_members($settings, $width)
 
 					$avatar_height_style = " min-height: {$avatar_height}px; max-height: {$avatar_height}px;";
 					$avatar_width_style = " min-width: {$avatar_width}px; max-width: {$avatar_width}px;";
-					if($settings['asb_avatar_maintain_aspect']['value'])
+					if($settings['asb_avatar_maintain_aspect'])
 					{
 						// Check the avatar's dimensions, then constrain it by its largest dimension
 						$avatar_dimensions = explode('|', $user['avatardimensions']);
@@ -337,7 +337,7 @@ EOF;
 		}
 	}
 
-	if(!$settings['show_avatars']['value'])
+	if(!$settings['show_avatars'])
 	{
 		$onlinemembers = '<td>' . $onlinemembers . '</td>';
 	}

@@ -212,16 +212,16 @@ function recent_posts_get_postlist($settings)
 		$unviewwhere = " AND p.fid NOT IN ($unviewable)";
 	}
 
-	if($settings['important_threads_only']['value'])
+	if($settings['important_threads_only'])
 	{
 		$important_threads = " AND NOT t.sticky=0";
 	}
 
 	// build the exclude conditions
-	$show['fids'] = asb_build_id_list($settings['forum_show_list']['value'], 'p.fid');
-	$show['tids'] = asb_build_id_list($settings['thread_show_list']['value'], 'p.tid');
-	$hide['fids'] = asb_build_id_list($settings['forum_hide_list']['value'], 'p.fid');
-	$hide['tids'] = asb_build_id_list($settings['thread_hide_list']['value'], 'p.tid');
+	$show['fids'] = asb_build_id_list($settings['forum_show_list'], 'p.fid');
+	$show['tids'] = asb_build_id_list($settings['thread_show_list'], 'p.tid');
+	$hide['fids'] = asb_build_id_list($settings['forum_hide_list'], 'p.fid');
+	$hide['tids'] = asb_build_id_list($settings['thread_hide_list'], 'p.tid');
 	$where['show'] = asb_build_SQL_where($show, ' OR ');
 	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
 	$query_where = $important_threads . $unviewwhere . asb_build_SQL_where($where, ' AND ', ' AND ');
@@ -247,7 +247,7 @@ function recent_posts_get_postlist($settings)
 		ORDER BY
 			p.dateline DESC
 		LIMIT
-			0, " . (int) $settings['max_posts']['value']
+			0, " . (int) $settings['max_posts']
 	);
 
 	if($db->num_rows($query) == 0)
@@ -351,9 +351,9 @@ function recent_posts_get_postlist($settings)
 		$pattern = "|[[\/\!]*?[^\[\]]*?]|si";
 		$post_excerpt = strip_tags(str_replace('<br />', '', asb_strip_url(preg_replace($pattern, '$1', $post['message']))));
 
-		if(strlen($post_excerpt) > $settings['max_length']['value'])
+		if(strlen($post_excerpt) > $settings['max_length'])
 		{
-			$post_excerpt = substr($post_excerpt, 0, $settings['max_length']['value']) . ' . . .';
+			$post_excerpt = substr($post_excerpt, 0, $settings['max_length']) . ' . . .';
 		}
 
 		eval("\$postlist .= \"" . $templates->get("asb_recent_posts_post") . "\";");

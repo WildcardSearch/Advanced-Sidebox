@@ -294,23 +294,23 @@ function latest_threads_get_threadlist($settings, $width)
 	}
 
 	// new threads only?
-	if((int) $settings['new_threads_only']['value'] > 0)
+	if((int) $settings['new_threads_only'] > 0)
 	{
 		// use admin's time limit
-		$thread_time_limit = TIME_NOW - 60 * 60 * 24 * (int) $settings['new_threads_only']['value'];
+		$thread_time_limit = TIME_NOW - 60 * 60 * 24 * (int) $settings['new_threads_only'];
 		$new_threads = " AND t.dateline > {$thread_time_limit}";
 	}
 
-	if($settings['important_threads_only']['value'])
+	if($settings['important_threads_only'])
 	{
 		$important_threads = " AND NOT t.sticky=0";
 	}
 
 	// build the exclude conditions
-	$show['fids'] = asb_build_id_list($settings['forum_show_list']['value'], 't.fid');
-	$show['tids'] = asb_build_id_list($settings['thread_show_list']['value'], 't.tid');
-	$hide['fids'] = asb_build_id_list($settings['forum_hide_list']['value'], 't.fid');
-	$hide['tids'] = asb_build_id_list($settings['thread_hide_list']['value'], 't.tid');
+	$show['fids'] = asb_build_id_list($settings['forum_show_list'], 't.fid');
+	$show['tids'] = asb_build_id_list($settings['thread_show_list'], 't.tid');
+	$hide['fids'] = asb_build_id_list($settings['forum_hide_list'], 't.fid');
+	$hide['tids'] = asb_build_id_list($settings['thread_hide_list'], 't.tid');
 	$where['show'] = asb_build_SQL_where($show, ' OR ');
 	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
 	$query_where = $new_threads . $important_threads . $unviewwhere . asb_build_SQL_where($where, ' AND ', ' AND ');
@@ -333,7 +333,7 @@ function latest_threads_get_threadlist($settings, $width)
 		ORDER BY
 			t.lastpost DESC
 		LIMIT
-			0, " . (int) $settings['max_threads']['value']
+			0, " . (int) $settings['max_threads']
 	);
 
 	if($db->num_rows($query) == 0)
@@ -381,14 +381,14 @@ function latest_threads_get_threadlist($settings, $width)
 		}
 		else
 		{
-			if($settings['last_poster_avatar']['value'])
+			if($settings['last_poster_avatar'])
 			{
 				if(strlen(trim($thread['avatar'])) == 0)
 				{
 					$thread['avatar'] = "{$theme['imgdir']}/default_avatar.gif";
 				}
 
-				$avatar_width = (int) min($width / 2, max($width / 8, $settings['avatar_width']['value']));
+				$avatar_width = (int) min($width / 2, max($width / 8, $settings['avatar_width']));
 
 				$last_poster_name = <<<EOF
 <img src="{$thread['avatar']}" alt="{$thread['last_post']}" title="{$thread['lastposter']}'s profile" style="width: {$avatar_width}px;"/>

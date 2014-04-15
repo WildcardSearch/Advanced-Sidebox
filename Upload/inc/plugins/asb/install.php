@@ -196,6 +196,37 @@ function asb_activate()
 		{
 			@unlink(MYBB_ROOT . 'inc/languages/english/admin/asb_addon.lang.php');
 		}
+
+		/*
+		 * upgrade existing side boxes settings
+		 */
+		if(version_compare($old_version, '2.1', '<'))
+		{
+			if(!class_exists('MalleableObject'))
+			{
+				require_once MYBB_ROOT . "inc/plugins/asb/classes/malleable.php";
+			}
+			if(!class_exists('StorableObject'))
+			{
+				require_once MYBB_ROOT . "inc/plugins/asb/classes/storable.php";
+			}
+			if(!class_exists('Sidebox'))
+			{
+				require_once MYBB_ROOT . "inc/plugins/asb/classes/sidebox.php";
+			}
+			$sideboxes = asb_get_all_sideboxes();
+			foreach($sideboxes as $sidebox)
+			{
+				$settings = array();
+				foreach((array) $sidebox->get('settings') as $name => $setting)
+				{
+					$settings[$name] = $setting['value'];
+				}
+				$sidebox->set('settings', $settings);
+				$sidebox->save();
+			}
+			asb_cache_has_changed();
+		}
 	}
 	asb_set_cache_version();
 
