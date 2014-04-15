@@ -202,18 +202,7 @@ function asb_activate()
 		 */
 		if(version_compare($old_version, '2.1', '<'))
 		{
-			if(!class_exists('MalleableObject'))
-			{
-				require_once MYBB_ROOT . "inc/plugins/asb/classes/malleable.php";
-			}
-			if(!class_exists('StorableObject'))
-			{
-				require_once MYBB_ROOT . "inc/plugins/asb/classes/storable.php";
-			}
-			if(!class_exists('Sidebox'))
-			{
-				require_once MYBB_ROOT . "inc/plugins/asb/classes/sidebox.php";
-			}
+			require_once MYBB_ROOT . "inc/plugins/asb/classes/forum.php";
 			$sideboxes = asb_get_all_sideboxes();
 			foreach($sideboxes as $sidebox)
 			{
@@ -225,6 +214,19 @@ function asb_activate()
 				$sidebox->set('settings', $settings);
 				$sidebox->save();
 			}
+
+			for($x = 1; $x < 4; $x++)
+			{
+				$module_name = 'example';
+				if($x != 1)
+				{
+					$module_name .= $x;
+				}
+
+				$module = new Addon_type($module_name);
+				$module->remove();
+			}
+
 			asb_cache_has_changed();
 		}
 	}
