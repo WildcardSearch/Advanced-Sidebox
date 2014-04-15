@@ -7,78 +7,32 @@
  * this file contains class definitions for the template handling and editing system
  */
 
-class TemplateHandler
+class ASBTemplateHandler
 {
-	// the template to edit (if any)
-	protected $template_name = '';
-
-	// any extra JS needed
-	protected $extra_scripts = '';
-	protected $js = '';
-
-	// true to eval() columns in lieu of editing templates
-	protected $eval = false;
-
-	// used when in eval() mode to produce content for custom scripts
-	protected $template_vars;
-
-	// used to complete replace the edited script
-	protected $replace_all = false;
-
-	// the contents to replace if replace_all is true
-	protected $replacement = '';
-
-	// the search keys
-	protected $find_top = '';
-	protected $find_bottom = '';
-
-	// the columns
-	protected $insert_top = '';
-	protected $insert_bottom = '';
-
-	// the side boxes
-	protected $left_content;
-	protected $right_content;
-
-	// dimensions
-	protected $width_left;
-	protected $width_right;
-
-	/*
-	 * __construct()
-	 *
-	 * called upon creation to store content in an appropriate format IF it exists
-	 *
-	 * @param - $left_insert - (string) the left column of side box content for this page
-	 * @param - $right_insert  - (string) ^ right tho :p
-	 * @param - $width_left - (int) is the width (specified in ACP for each script) for left columns
-	 * @param - $width_right - (int) is blah blah blah but right instead
-	 * @param - $extra_scripts - (string) - any extra JS needed by modules used on this script
-	 * @param - $template_vars - (array) - a non-indexed array of template variables
-	 * 					to globalize (used when outputting to custom pages)
-	 * @return: n/a
-	 */
-	public function __construct($left_insert, $right_insert, $width_left, $width_right, $extra_scripts = '', $js, $template_vars = array())
+	static public function edit($boxes, $width, $script)
 	{
-		global $mybb, $lang, $templates;
+		global $mybb, $lang, $templates, $headerinclude;
 
-		if(!$lang->asb)
+		if($mybb->settings['asb_minify_js'])
 		{
-			$lang->load('asb');
+			$min = '.min';
 		}
 
-		// store width upon construct (mostly here for custom implementations like portal)
-		$this->width_left = $width_left;
-		$this->width_right = $width_right;
-		$this->extra_scripts = $extra_scripts;
-		$this->js = $js;
-		$this->template_vars = $template_vars;
-
+		$left_insert = $boxes[0];
+		$right_insert = $boxes[1];
+		$width_left = $width[0];
+		$width_right = $width[1];
 		$toggles = $show = array();
+		$filename = THIS_SCRIPT;
 
 		// if admin wants to show the toggle icons . . .
 		if($mybb->settings['asb_show_toggle_icons'])
 		{
+			// we will need this js
+			$headerinclude .= <<<EOF
+<script type="text/javascript" src="jscripts/asb{$min}.js"></script>
+EOF;
+
 			$toggle_info['left'] = array(
 				"close" => array(
 					"img" => 'inc/plugins/asb/images/left_arrow.png',
@@ -142,8 +96,8 @@ class TemplateHandler
 				$toggle_name = "toggle_{$key}";
 				$$toggle_name = $toggles[$key];
 
-				// finally set $this->POSITION_content for ::make_edits()
-				$this->$prop_name = <<<EOF
+				// finally set $POSITION_content for ::make_edits()
+				$$prop_name = <<<EOF
 
 			<!-- start: ASB {$key} column -->{$toggle_left}
 			{$content}
@@ -151,77 +105,14 @@ class TemplateHandler
 EOF;
 			}
 		}
-	}
+		eval("\$insert_top = \"" . $templates->get('asb_begin') . "\";");
+		eval("\$insert_bottom = \"" . $templates->get('asb_end') . "\";");
 
-	/*
-	 * make_edits()
-	 *
-	 * handles the rudimentary tasks of editing a template for side boxes
-	 *
-	 * @return: n/a
-	 */
-	public function make_edits()
-	{
-		global $templates, $mybb, $headerinclude;
-
-		if($mybb->settings['asb_minify_js'])
-		{
-			$min = '.min';
-		}
-
-		// load the cache and attempt to store this script's info
-		$asb = asb_get_cache();
-		$this_script = asb_get_this_script($asb);
-
-		// do we have a valid script?
-		if(is_array($this_script) && !empty($this_script))
-		{
-			foreach($this_script as $key => $val)
-			{
-				if(property_exists($this, $key) && isset($val) && $val)
-				{
-					$this->$key = $val;
-				}
-			}
-		}
-		else
-		{
-			// if not get out
-			return;
-		}
-
-		// if there is no info, go with the default values
-		$this->find_top = trim($this->find_top);
-		if(!$this->find_top)
-		{
-			$this->find_top = '{$header}';
-		}
-		$this->find_bottom = trim($this->find_bottom);
-		if(!$this->find_bottom)
-		{
-			$this->find_bottom = '{$footer}';
-		}
-		$filename = THIS_SCRIPT;
-
-		$left_content = $this->left_content;
-		eval("\$this->insert_top = \"" . $templates->get('asb_begin') . "\";");
-
-		$right_content = $this->right_content;
-		eval("\$this->insert_bottom = \"" . $templates->get('asb_end') . "\";");
-
-		if($mybb->settings['asb_show_toggle_icons'])
-		{
-			// we will need this js
-			$headerinclude .= <<<EOF
-<script type="text/javascript" src="jscripts/asb{$min}.js"></script>
-EOF;
-		}
-
-		if(is_array($this->extra_scripts) && !empty($this->extra_scripts))
+		if(is_array($script['extra_scripts']) && !empty($script['extra_scripts']))
 		{
 			$sep = '';
 			$dateline = TIME_NOW;
-			foreach($this->extra_scripts as $addon => $info)
+			foreach($script['extra_scripts'] as $addon => $info)
 			{
 				// build the JS objects to pass to the custom object builder
 				$extra_scripts .= <<<EOF
@@ -235,67 +126,67 @@ EOF;
 <script type="text/javascript">
 <!--
 	Event.observe(window, 'load', function() {
-		ASB.ajax.buildUpdaters([ {$extra_scripts} ], { left: {$this->width_left}, right: {$this->width_right} });
+		ASB.ajax.buildUpdaters([ {$extra_scripts} ], { left: {$width_left}, right: {$width_right} });
 	});
 // -->
 </script>
 EOF;
 		}
 
-		if(is_array($this->js)) {
-			foreach($this->js as $script) {
-				if(file_exists(MYBB_ROOT . "jscripts/asb/{$script}{$min}.js"))
+		if(is_array($script['js'])) {
+			foreach($script['js'] as $script_name) {
+				if(file_exists(MYBB_ROOT . "jscripts/asb/{$script_name}{$min}.js"))
 				{
-					$script .= $min;
+					$script_name .= $min;
 				}
 				$headerinclude .= <<<EOF
 
-<script type="text/javascript" src="jscripts/asb/{$script}.js"></script>
+<script type="text/javascript" src="jscripts/asb/{$script_name}.js"></script>
 EOF;
 			}
 		}
 
 		// replace everything on the page?
-		if($this->replace_all == true)
+		if($script['replace_all'] == true)
 		{
 			// if there is content
-			if($this->replacement)
+			if($script['replacement'])
 			{
 				// replace the existing page entirely
-				$templates->cache[$this->template_name] = str_replace(array('{$asb_left}', '{$asb_right}'), array($this->insert_top, $this->insert_bottom), $this->replacement);
+				$templates->cache[$script['template_name']] = str_replace(array('{$asb_left}', '{$asb_right}'), array($insert_top, $insert_bottom), $script['replacement']);
 			}
 		}
 		// outputting to variables? (custom script/Page Manager)
-		elseif($this->eval)
+		elseif($script['eval'])
 		{
 			// globalize our columns
 			global $asb_left, $asb_right;
 
 			// globalize all the add-on template variables
-			if(is_array($this->template_vars) && !empty($this->template_vars))
+			if(is_array($script['template_vars']) && !empty($script['template_vars']))
 			{
-				foreach($this->template_vars as $var)
+				foreach($script['template_vars'] as $var)
 				{
 					global $$var;
 				}
 			}
 
 			// now eval() their content for the custom script
-			eval("\$asb_left = \"" . str_replace("\\'", "'", addslashes($this->insert_top)) . "\";");
-			eval("\$asb_right = \"" . str_replace("\\'", "'", addslashes($this->insert_bottom)) . "\";");
+			eval("\$asb_left = \"" . str_replace("\\'", "'", addslashes($insert_top)) . "\";");
+			eval("\$asb_right = \"" . str_replace("\\'", "'", addslashes($insert_bottom)) . "\";");
 		}
 		// otherwise we are editing the template in the cache
 		else
 		{
 			// if there are columns stored
-			if($this->insert_top || $this->insert_bottom)
+			if($insert_top || $insert_bottom)
 			{
 				// make the edits
-				$find_top_pos = strpos($templates->cache[$this->template_name], $this->find_top);
+				$find_top_pos = strpos($templates->cache[$script['template_name']], $script['find_top']);
 
 				if($find_top_pos !== false)
 				{
-					$find_bottom_pos = strpos($templates->cache[$this->template_name], $this->find_bottom);
+					$find_bottom_pos = strpos($templates->cache[$script['template_name']], $script['find_bottom']);
 
 					if($find_bottom_pos !== false)
 					{
@@ -305,12 +196,12 @@ EOF;
 						  * FIRST instance of the search text (find_top and find_bottom) rather
 						  * than replacing multiple found instances
 						 */
-						$templates->cache[$this->template_name] =
-							substr($templates->cache[$this->template_name], 0, $find_top_pos + strlen($this->find_top)) .
-							$this->insert_top .
-							substr($templates->cache[$this->template_name], $find_top_pos + strlen($this->find_top), $find_bottom_pos - ($find_top_pos + strlen($this->find_top))) .
-							$this->insert_bottom .
-							substr($templates->cache[$this->template_name], $find_bottom_pos);
+						$templates->cache[$script['template_name']] =
+							substr($templates->cache[$script['template_name']], 0, $find_top_pos + strlen($script['find_top'])) .
+							$insert_top .
+							substr($templates->cache[$script['template_name']], $find_top_pos + strlen($script['find_top']), $find_bottom_pos - ($find_top_pos + strlen($script['find_top']))) .
+							$insert_bottom .
+							substr($templates->cache[$script['template_name']], $find_bottom_pos);
 					}
 				}
 			}

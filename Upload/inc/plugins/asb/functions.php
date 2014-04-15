@@ -80,7 +80,7 @@ function asb_get_cache()
 	global $cache;
 	static $asb;
 
-	// if we've already retrieved it (we will do it thrice per script)
+	// if we've already retrieved it (we will do it twice per script)
 	// then just return the static copy, otherwise retrieve it
 	if(!isset($asb) || empty($asb))
 	{
