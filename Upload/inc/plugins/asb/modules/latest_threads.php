@@ -33,6 +33,7 @@ function asb_latest_threads_info()
 		"title" => $lang->asb_latest_threads,
 		"description" => $lang->asb_latest_threads_desc,
 		"version" => "1.1.1",
+		"compatibility" => '2.1',
 		"wrap_content" => true,
 		"xmlhttp" => true,
 		"settings" => array(

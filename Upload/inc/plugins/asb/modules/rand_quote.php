@@ -35,6 +35,7 @@ function asb_rand_quote_info()
 		"wrap_content" => true,
 		"xmlhttp" => true,
 		"version" => "1.5.1",
+		"compatibility" => '2.1',
 		"settings" => array(
 			"forum_show_list" => array(
 				"sid" => "NULL",

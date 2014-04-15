@@ -34,6 +34,7 @@ function asb_top_poster_info()
 		"description" => $lang->asb_top_poster_desc,
 		"wrap_content" => true,
 		"version" => "1.1.3",
+		"compatibility" => '2.1',
 		"settings" => array(
 			"time_frame" => array(
 				"sid" => "NULL",

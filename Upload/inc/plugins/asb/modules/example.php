@@ -33,7 +33,8 @@ function asb_example_info()
 		"title" => $lang->asb_example1_title,
 		"description" => $lang->asb_example1_desc,
 		"wrap_content" => true,
-		"version" => "1"
+		"version" => '1',
+		"compatibility" => '2.1',
 	);
 }
 

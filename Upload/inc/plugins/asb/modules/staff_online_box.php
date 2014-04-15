@@ -33,6 +33,7 @@ function asb_staff_online_box_info()
 		"title" => $lang->asb_staff_online,
 		"description" => $lang->asb_staff_online_desc,
 		"version" => "1.4.4",
+		"compatibility" => '2.1',
 		"wrap_content" => true,
 		"xmlhttp" => true,
 		"settings" => array(

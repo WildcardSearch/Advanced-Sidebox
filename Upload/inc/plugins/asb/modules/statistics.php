@@ -34,6 +34,7 @@ function asb_statistics_info()
 		"description" => $lang->asb_stats_desc,
 		"wrap_content" => true,
 		"version" => "1.2",
+		"compatibility" => '2.1',
 		"settings" => array(
 			"format_username" => array(
 				"sid" => "NULL",

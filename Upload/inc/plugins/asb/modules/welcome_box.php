@@ -34,6 +34,7 @@ function asb_welcome_box_info()
 		"description" => $lang->asb_welcome_desc,
 		"wrap_content" => true,
 		"version" => "1.3.2",
+		"compatibility" => '2.1',
 		"templates" => array(
 			array(
 				"title" => "asb_welcome",

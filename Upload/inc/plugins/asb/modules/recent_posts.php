@@ -33,6 +33,7 @@ function asb_recent_posts_info()
 		"title" => $lang->asb_recent_posts,
 		"description" => $lang->asb_recent_posts_desc,
 		"version" => "1.3.1",
+		"compatibility" => '2.1',
 		"wrap_content" => true,
 		"xmlhttp" => true,
 		"settings" => array(

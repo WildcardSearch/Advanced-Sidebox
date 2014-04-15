@@ -131,7 +131,8 @@ class Addon_type extends ExternalModule
 	protected $is_installed = false;
 	protected $is_upgraded = false;
 	protected $old_version = 0;
-	protected $version = 0;
+	protected $version = '0';
+	protected $compatibility = '0';
 	protected $discarded_templates = array();
 	protected $wrap_content = false;
 	protected $prefix = 'asb';
@@ -147,26 +148,32 @@ class Addon_type extends ExternalModule
 	public function load($module)
 	{
 		// input is necessary
-		if(parent::load($module))
+		if(!parent::load($module))
 		{
-			$this->has_settings = !empty($this->settings);
-			$this->has_scripts = !empty($this->scripts);
-			$this->old_version = $this->get_cache_version();
-
-			// if this module needs to be upgraded . . .
-			if(version_compare($this->old_version, $this->version, '<') && !defined('IN_ASB_UNINSTALL'))
-			{
-				// get-r-done
-				$this->upgrade();
-			}
-			else
-			{
-				// otherwise mark upgrade status
-				$this->is_upgraded = $this->is_installed = true;
-			}
-			return true;
+			return false;
 		}
-		return false;
+
+		if(!$this->compatibility || version_compare('2.1', $this->compatibility, '<'))
+		{
+			return false;
+		}
+
+		$this->has_settings = !empty($this->settings);
+		$this->has_scripts = !empty($this->scripts);
+		$this->old_version = $this->get_cache_version();
+
+		// if this module needs to be upgraded . . .
+		if(version_compare($this->old_version, $this->version, '<') && !defined('IN_ASB_UNINSTALL'))
+		{
+			// get-r-done
+			$this->upgrade();
+		}
+		else
+		{
+			// otherwise mark upgrade status
+			$this->is_upgraded = $this->is_installed = true;
+		}
+		return true;
 	}
 
 	/*

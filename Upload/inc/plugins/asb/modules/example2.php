@@ -34,6 +34,7 @@ function asb_example2_info()
 		"description" => $lang->asb_example2_desc,
 		"wrap_content"	=> true,
 		"version" =>	"1.1",
+		"compatibility" => '2.1',
 		"templates" => array(
 			array(
 				"title" 			=> "asb_example",

@@ -35,6 +35,7 @@ function asb_private_messages_info()
 		"wrap_content" => true,
 		"xmlhttp" => true,
 		"version" => "1.1.1",
+		"compatibility" => '2.1',
 		"settings" => array(
 			"xmlhttp_on" => array(
 				"sid"					=> "NULL",

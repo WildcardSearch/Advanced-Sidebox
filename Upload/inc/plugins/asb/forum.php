@@ -123,6 +123,10 @@ function asb_start()
 					$result = $custom->build_template($template_var);
 				}
 			}
+			else
+			{
+				continue;
+			}
 
 			/*
 			 * all box types return true or false based upon whether they have

@@ -34,6 +34,7 @@ function asb_slideshow_info()
 		"description" => $lang->asb_slideshow_desc,
 		"wrap_content" => true,
 		"version" => '1',
+		"compatibility" => '2.1',
 		"scripts" => array(
 			'Slideshow',
 		),

@@ -256,6 +256,7 @@ $l['asb_module_plural'] = 'modules';
 $l['asb_module_singular'] = 'module';
 $l['asb_module_awaiting_install'] = ", {1} {2} awaiting installation.";
 $l['asb_module_all_good'] = ' and properly installed.';
+$l['asb_module_out_of_date'] = 'This addon is out-of-date and will require an update before it can be used.';
 
 // user messages
 $l['asb_install_addon_success'] = 'The module was installed successfully';

@@ -34,6 +34,7 @@ function asb_search_box_info()
 		"description" => $lang->asb_search_desc,
 		"wrap_content" => true,
 		"version" => "1.2.1",
+		"compatibility" => '2.1',
 		"templates" => array(
 			array(
 				"title" => "asb_search",

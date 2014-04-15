@@ -33,6 +33,7 @@ function asb_whosonline_info()
 		"title" => $lang->asb_wol,
 		"description" => $lang->asb_wol_desc,
 		"version" => "1.4.4",
+		"compatibility" => '2.1',
 		"wrap_content" => true,
 		"xmlhttp" => true,
 		"settings" =>	array(

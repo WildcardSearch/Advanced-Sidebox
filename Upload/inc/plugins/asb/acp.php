@@ -1466,13 +1466,21 @@ EOF;
 	{
 		foreach($addons as $this_module)
 		{
-			$data = $this_module->get(array('title', 'description', 'base_name', 'author', 'author_site', 'module_site'));
+			$data = $this_module->get(array('title', 'description', 'base_name', 'author', 'author_site', 'module_site', 'version', 'compatibility'));
+
+			$out_of_date = '';
+			if(!$data['compatibility'] || version_compare('2.1', $data['compatibility'], '<'))
+			{
+				$out_of_date = <<<EOF
+<br /><span style="color: red;">{$lang->asb_module_out_of_date}</span>
+EOF;
+			}
 
 			// title
-			$table->construct_cell($html->link($data['module_site'], $data['title'], array("style" => 'font-weight: bold;')));
+			$table->construct_cell($html->link($data['module_site'], $data['title'], array("style" => 'font-weight: bold;')) . " ({$data['version']})");
 
 			// description
-			$table->construct_cell($data['description']);
+			$table->construct_cell($data['description'] . $out_of_date);
 
 			if($data['author'] == 'Wildcard')
 			{
