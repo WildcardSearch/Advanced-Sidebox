@@ -8,9 +8,9 @@
  */
 
 // Include a check for Advanced Sidebox
-if(!defined("IN_MYBB") || !defined("IN_ASB"))
+if(!defined('IN_MYBB') || !defined('IN_ASB'))
 {
-	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
+	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
 /*
@@ -37,7 +37,7 @@ function asb_search_box_info()
 		"compatibility" => '2.1',
 		"templates" => array(
 			array(
-				"title" => "asb_search",
+				"title" => 'asb_search',
 				"template" => <<<EOF
 				<tr>
 					<td class="trow1">
@@ -92,7 +92,7 @@ function asb_search_box_build_template($args)
 		$lang->load('asb_addon');
 	}
 
-	eval("\$" . $template_var . " = \"" . $templates->get("asb_search") . "\";");
+	eval("\$" . $template_var . " = \"" . $templates->get('asb_search') . "\";");
 	return true;
 }
 

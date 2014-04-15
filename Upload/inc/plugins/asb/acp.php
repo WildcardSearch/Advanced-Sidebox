@@ -9,13 +9,13 @@
  */
 
 // disallow direct access to this file for security reasons
-if(!defined("IN_MYBB") || !defined("IN_ASB"))
+if(!defined('IN_MYBB') || !defined('IN_ASB'))
 {
-	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
+	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 define('ASB_URL', 'index.php?module=config-asb');
 require_once MYBB_ROOT . 'inc/plugins/asb/functions_acp.php';
-require_once MYBB_ROOT . "inc/plugins/asb/install.php";
+require_once MYBB_ROOT . 'inc/plugins/asb/install.php';
 
 /*
  * asb_admin()
@@ -400,7 +400,7 @@ function asb_admin_edit_box()
 		if($mybb->input['ajax'] != 1)
 		{
 			// if in the standard form handle it with a redirect
-			flash_message($lang->asb_save_success, "success");
+			flash_message($lang->asb_save_success, 'success');
 			admin_redirect('index.php?module=config-asb');
 		}
 
@@ -496,7 +496,7 @@ EOF;
 	<div class="ModalContent">
 
 EOF;
-		$form = new Form("", "post", "modal_form");
+		$form = new Form('', 'post', 'modal_form');
 	}
 	else
 	{
@@ -511,7 +511,7 @@ EOF;
 
 EOF;
 		$page->output_header("{$lang->asb} - {$page_title}");
-		$form = new Form($html->url(array("action" => 'edit_box', "id" => $id, "addon" => $module)), "post", "modal_form");
+		$form = new Form($html->url(array("action" => 'edit_box', "id" => $id, "addon" => $module)), 'post', 'modal_form');
 	}
 
 	$tabs = array(
@@ -526,7 +526,7 @@ EOF;
 	$do_settings = true;
 	if(!$sidebox->has_settings && !$parent->has_settings)
 	{
-		unset($tabs["settings"]);
+		unset($tabs['settings']);
 		$do_settings = false;
 	}
 	reset($tabs);
@@ -596,7 +596,7 @@ EOF;
 	$options[0] = $lang->asb_guests;
 
 	// look for all groups except Super Admins
-	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'gid'));
+	$query = $db->simple_select('usergroups', 'gid, title', "gid != '1'", array('order_by' => 'gid'));
 	while($usergroup = $db->fetch_array($query))
 	{
 		// store them their titles by groud id
@@ -621,7 +621,7 @@ EOF;
 
 	// prepare for which scripts
 	$choices = array();
-	$choices["all_scripts"] = $lang->asb_all;
+	$choices['all_scripts'] = $lang->asb_all;
 
 	// are there active scripts?
 	if(is_array($all_scripts))
@@ -763,7 +763,7 @@ function asb_admin_custom_boxes()
 		// info good?
 		if((int) $mybb->input['id'] == 0)
 		{
-			flash_message($lang->asb_add_custom_box_delete_failure, "error");
+			flash_message($lang->asb_add_custom_box_delete_failure, 'error');
 			admin_redirect($html->url(array("action" => 'custom_boxes')));
 		}
 
@@ -773,18 +773,18 @@ function asb_admin_custom_boxes()
 		// success?
 		if(!$this_custom->remove())
 		{
-			flash_message($lang->asb_add_custom_box_delete_failure, "error");
+			flash_message($lang->asb_add_custom_box_delete_failure, 'error');
 			admin_redirect($html->url(array("action" => 'custom_boxes')));
 		}
 
 		// :)
-		flash_message($lang->asb_add_custom_box_delete_success, "success");
+		flash_message($lang->asb_add_custom_box_delete_success, 'success');
 		asb_cache_has_changed();
 		admin_redirect($html->url(array("action" => 'custom_boxes')));
 	}
 
 	// POSTing?
-	if($mybb->request_method == "post")
+	if($mybb->request_method == 'post')
 	{
 		if($mybb->input['mode'] == 'import')
 		{
@@ -867,7 +867,7 @@ function asb_admin_custom_boxes()
 			{
 				if(!$mybb->input['box_name'] || !$mybb->input['box_content'])
 				{
-					flash_message($lang->asb_custom_box_save_failure_no_content, "error");
+					flash_message($lang->asb_custom_box_save_failure_no_content, 'error');
 					admin_redirect($html->url(array("action" => 'custom_boxes')));
 				}
 				$this_custom = new Custom_type((int) $mybb->input['id']);
@@ -881,11 +881,11 @@ function asb_admin_custom_boxes()
 				// success?
 				if(!$this_custom->save())
 				{
-					flash_message($lang->asb_custom_box_save_failure, "error");
+					flash_message($lang->asb_custom_box_save_failure, 'error');
 					admin_redirect($html->url(array("action" => 'custom_boxes', "id" => $this_custom->get('id'))));
 				}
 
-				flash_message($lang->asb_custom_box_save_success, "success");
+				flash_message($lang->asb_custom_box_save_success, 'success');
 				asb_cache_has_changed();
 				admin_redirect($html->url(array("action" => 'custom_boxes', "id" => $this_custom->get('id'))));
 			}
@@ -917,7 +917,7 @@ EOF;
 		$action = $lang->asb_add_custom;
 		if($this_box->get('id'))
 		{
-			$specify_box = "&amp;id=" . $this_box->get('id');
+			$specify_box = '&amp;id=' . $this_box->get('id');
 			$currently_editing = $lang->asb_editing . ': <strong>' . $this_box->get('title') . '</strong>';
 			$action = $lang->asb_edit . ' ' . $this_box->get('title');
 		}
@@ -950,7 +950,7 @@ EOF;
 		$page->output_header("{$lang->asb} - {$action}");
 		asb_output_tabs('asb_add_custom');
 
-		$form = new Form($html->url(array("action" => 'custom_boxes')) . $specify_box, "post", "edit_box");
+		$form = new Form($html->url(array("action" => 'custom_boxes')) . $specify_box, 'post', 'edit_box');
 		$form_container = new FormContainer($currently_editing);
 
 		$form_container->output_cell($lang->asb_name);
@@ -1658,18 +1658,18 @@ function asb_admin_delete_box()
 
 	if((int) $mybb->input['id'] == 0)
 	{
-		flash_message($lang->asb_delete_box_failure, "error");
+		flash_message($lang->asb_delete_box_failure, 'error');
 		admin_redirect($html->url());
 	}
 
 	$sidebox = new Sidebox($mybb->input['id']);
 	if(!$sidebox->remove())
 	{
-		flash_message($lang->asb_delete_box_failure, "error");
+		flash_message($lang->asb_delete_box_failure, 'error');
 	}
 	else
 	{
-		flash_message($lang->asb_delete_box_success, "success");
+		flash_message($lang->asb_delete_box_success, 'success');
 		asb_cache_has_changed();
 	}
 	admin_redirect($html->url());
@@ -1689,18 +1689,18 @@ function asb_admin_delete_addon()
 	// info goof?
 	if(!isset($mybb->input['addon']) || strlen(trim($mybb->input['addon'])) == 0)
 	{
-		flash_message($lang->asb_delete_addon_failure, "error");
+		flash_message($lang->asb_delete_addon_failure, 'error');
 		admin_redirect($html->url(array("action" => 'manage_modules')));
 	}
 
 	$this_module = new Addon_type($mybb->input['addon']);
 	if(!$this_module->remove())
 	{
-		flash_message($lang->asb_delete_addon_failure, "error");
+		flash_message($lang->asb_delete_addon_failure, 'error');
 	}
 	else
 	{
-		flash_message($lang->asb_delete_addon_success, "success");
+		flash_message($lang->asb_delete_addon_success, 'success');
 		asb_cache_has_changed();
 	}
 	admin_redirect($html->url(array("action" => 'manage_modules')));
@@ -1719,7 +1719,7 @@ function asb_admin_update_theme_select()
 	$gid = asb_get_settingsgroup();
 	if((int) $gid == 0)
 	{
-		flash_message($lang->asb_theme_exclude_select_update_fail, "error");
+		flash_message($lang->asb_theme_exclude_select_update_fail, 'error');
 		admin_redirect('index.php?module=config-settings');
 	}
 
@@ -1735,7 +1735,7 @@ function asb_admin_update_theme_select()
 	// is the setting created?
 	if($db->num_rows($query) == 0)
 	{
-		flash_message($lang->asb_theme_exclude_select_update_fail, "error");
+		flash_message($lang->asb_theme_exclude_select_update_fail, 'error');
 		admin_redirect('index.php?module=config-settings');
 	}
 
@@ -1746,11 +1746,11 @@ function asb_admin_update_theme_select()
 	// success?
 	if(!$status)
 	{
-		flash_message($lang->asb_theme_exclude_select_update_fail, "error");
+		flash_message($lang->asb_theme_exclude_select_update_fail, 'error');
 	}
 	else
 	{
-		flash_message($lang->asb_theme_exclude_select_update_success, "success");
+		flash_message($lang->asb_theme_exclude_select_update_success, 'success');
 	}
 	admin_redirect(asb_build_settings_url($gid));
 }
@@ -1762,7 +1762,7 @@ function asb_admin_update_theme_select()
  *
  * @return: n/a
  */
-$plugins->add_hook("admin_config_settings_change", "asb_admin_config_settings_change");
+$plugins->add_hook('admin_config_settings_change', 'asb_admin_config_settings_change');
 function asb_admin_config_settings_change()
 {
     global $mybb;

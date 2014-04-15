@@ -213,7 +213,7 @@ function asb_build_visibility_rows($sidebox, &$group_count, &$global)
 	$groups = array();
 
 	// look for all groups except Super Admins
-	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'gid'));
+	$query = $db->simple_select('usergroups', 'gid, title', "gid != '1'", array('order_by' => 'gid'));
 	while($usergroup = $db->fetch_array($query))
 	{
 		// store the titles by group id
@@ -627,7 +627,7 @@ function asb_build_filter_selector($filter)
 function asb_build_setting($this_form, $this_form_container, $setting)
 {
 	// create each element with unique id and name properties
-	$options = "";
+	$options = '';
 	$type = explode("\n", $setting['optionscode']);
     $type = array_map('trim', $type);
 	$element_name = "{$setting['name']}";
@@ -638,37 +638,37 @@ function asb_build_setting($this_form, $this_form_container, $setting)
 	$this_desc = '<i>' . $setting['description'] . '</i>';
 
 	// sort by type
-	if($type[0] == "text" || $type[0] == "")
+	if($type[0] == 'text' || $type[0] == '')
 	{
 		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_text_box($element_name, $setting['value'], array('id' => $element_id)), $element_name, array("id" => $element_id));
 	}
-	else if($type[0] == "textarea")
+	else if($type[0] == 'textarea')
 	{
 		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_text_area($element_name, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
 	}
-	else if($type[0] == "yesno")
+	else if($type[0] == 'yesno')
 	{
 		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_yes_no_radio($element_name, $setting['value'], true, array('id' => $element_id.'_yes', 'class' => $element_id), array('id' => $element_id.'_no', 'class' => $element_id)), $element_name, array('id' => $element_id));
 	}
-	else if($type[0] == "onoff")
+	else if($type[0] == 'onoff')
 	{
 		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_on_off_radio($element_name, $setting['value'], true, array('id' => $element_id.'_on', 'class' => $element_id), array('id' => $element_id.'_off', 'class' => $element_id)), $element_name, array('id' => $element_id));
 	}
-	else if($type[0] == "language")
+	else if($type[0] == 'language')
 	{
 		$languages = $lang->get_languages();
 		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
 	}
-	else if($type[0] == "adminlanguage")
+	else if($type[0] == 'adminlanguage')
 	{
 		$languages = $lang->get_languages(1);
 		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
 	}
-	else if($type[0] == "passwordbox")
+	else if($type[0] == 'passwordbox')
 	{
 		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_password_box($element_name, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
 	}
-	else if($type[0] == "php")
+	else if($type[0] == 'php')
 	{
 		$setting['optionscode'] = substr($setting['optionscode'], 3);
 		eval("\$setting_code = \"" . $setting['optionscode'] . "\";");
@@ -677,17 +677,17 @@ function asb_build_setting($this_form, $this_form_container, $setting)
 	{
 		for($i=0; $i < count($type); $i++)
 		{
-			$optionsexp = explode("=", $type[$i]);
+			$optionsexp = explode('=', $type[$i]);
 			if(!$optionsexp[1])
 			{
 				continue;
 			}
 
-			if($type[0] == "select")
+			if($type[0] == 'select')
 			{
 				$option_list[$optionsexp[0]] = htmlspecialchars_uni($optionsexp[1]);
 			}
-			else if($type[0] == "radio")
+			else if($type[0] == 'radio')
 			{
 				if($setting['value'] == $optionsexp[0])
 				{
@@ -698,7 +698,7 @@ function asb_build_setting($this_form, $this_form_container, $setting)
 					$option_list[$i] = $this_form->generate_radio_button($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'class' => $element_id));
 				}
 			}
-			else if($type[0] == "checkbox")
+			else if($type[0] == 'checkbox')
 			{
 				if($setting['value'] == $optionsexp[0])
 				{
@@ -710,13 +710,13 @@ function asb_build_setting($this_form, $this_form_container, $setting)
 				}
 			}
 		}
-		if($type[0] == "select")
+		if($type[0] == 'select')
 		{
 			$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $option_list, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
 		}
 		else
 		{
-			$setting_code = implode("<br />", $option_list);
+			$setting_code = implode('<br />', $option_list);
 		}
 	}
 

@@ -8,9 +8,9 @@
  */
 
 // Include a check for Advanced Sidebox
-if(!defined("IN_MYBB") || !defined("IN_ASB"))
+if(!defined('IN_MYBB') || !defined('IN_ASB'))
 {
-	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
+	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
 /*
@@ -32,79 +32,79 @@ function asb_recent_posts_info()
 	return array(
 		"title" => $lang->asb_recent_posts,
 		"description" => $lang->asb_recent_posts_desc,
-		"version" => "1.3.1",
+		"version" => '1.3.1',
 		"compatibility" => '2.1',
 		"wrap_content" => true,
 		"xmlhttp" => true,
 		"settings" => array(
 			"max_posts" => array(
-				"sid" => "NULL",
-				"name" => "max_posts",
+				"sid" => 'NULL',
+				"name" => 'max_posts',
 				"title" => $lang->asb_recent_posts_max_title,
 				"description" => $lang->asb_recent_posts_max_description,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => '5'
 			),
 			"max_length" => array(
-				"sid" => "NULL",
-				"name" => "max_length",
+				"sid" => 'NULL',
+				"name" => 'max_length',
 				"title" => $lang->asb_recent_posts_max_length_title,
 				"description" => $lang->asb_recent_posts_max_length_description,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => '20'
 			),
 			"forum_show_list" => array(
-				"sid" => "NULL",
-				"name" => "forum_show_list",
+				"sid" => 'NULL',
+				"name" => 'forum_show_list',
 				"title" => $lang->asb_forum_show_list_title,
 				"description" => $lang->asb_forum_show_list_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => ''
 			),
 			"forum_hide_list" => array(
-				"sid" => "NULL",
-				"name" => "forum_hide_list",
+				"sid" => 'NULL',
+				"name" => 'forum_hide_list',
 				"title" => $lang->asb_forum_hide_list_title,
 				"description" => $lang->asb_forum_hide_list_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => ''
 			),
 			"thread_show_list" => array(
-				"sid" => "NULL",
-				"name" => "thread_show_list",
+				"sid" => 'NULL',
+				"name" => 'thread_show_list',
 				"title" => $lang->asb_thread_show_list_title,
 				"description" => $lang->asb_thread_show_list_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => ''
 			),
 			"thread_hide_list" => array(
-				"sid" => "NULL",
-				"name" => "thread_hide_list",
+				"sid" => 'NULL',
+				"name" => 'thread_hide_list',
 				"title" => $lang->asb_thread_hide_list_title,
 				"description" => $lang->asb_thread_hide_list_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => ''
 			),
 			"important_threads_only" => array(
-				"sid" => "NULL",
-				"name" => "important_threads_only",
+				"sid" => 'NULL',
+				"name" => 'important_threads_only',
 				"title" => $lang->asb_important_threads_only_title,
 				"description" => $lang->asb_important_threads_only_desc,
-				"optionscode" => "yesno",
+				"optionscode" => 'yesno',
 				"value" => '0'
 			),
 			"xmlhttp_on" => array(
-				"sid" => "NULL",
-				"name" => "xmlhttp_on",
+				"sid" => 'NULL',
+				"name" => 'xmlhttp_on',
 				"title" => $lang->asb_xmlhttp_on_title,
 				"description" => $lang->asb_xmlhttp_on_description,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => '0'
 			)
 		),
 		"templates" => array(
 			array(
-				"title" => "asb_recent_posts_post",
+				"title" => 'asb_recent_posts_post',
 				"template" => <<<EOF
 				<tr>
 					<td style="text-align: center;" class="tcat">
@@ -210,12 +210,12 @@ function recent_posts_get_postlist($settings)
 	$unviewable = get_unviewable_forums(true);
 	if($unviewable)
 	{
-		$unviewwhere = " AND p.fid NOT IN ($unviewable)";
+		$unviewwhere = " AND p.fid NOT IN ({$unviewable})";
 	}
 
 	if($settings['important_threads_only'])
 	{
-		$important_threads = " AND NOT t.sticky=0";
+		$important_threads = ' AND NOT t.sticky=0';
 	}
 
 	// build the exclude conditions
@@ -233,16 +233,12 @@ function recent_posts_get_postlist($settings)
 
 	// Query for the latest forum discussions
 	$query = $db->query("
-		SELECT
-			p.tid, p.pid, p.message, p.fid, p.dateline, p.subject,
+		SELECT p.tid, p.pid, p.message, p.fid, p.dateline, p.subject,
 			u.username, u.uid, u.displaygroup, u.usergroup,
 			t.sticky
-		FROM
-			" . TABLE_PREFIX . "posts p
-		LEFT JOIN
-			" . TABLE_PREFIX . "users u ON (u.uid=p.uid)
-		LEFT JOIN " .
-			TABLE_PREFIX . "threads t ON (t.tid=p.tid)
+		FROM {$db->table_prefix}posts p
+		LEFT JOIN {$db->table_prefix}users u ON (u.uid=p.uid)
+		LEFT JOIN {$db->table_prefix}threads t ON (t.tid=p.tid)
 		WHERE
 			p.visible='1'{$query_where}
 		ORDER BY
@@ -258,7 +254,7 @@ function recent_posts_get_postlist($settings)
 	}
 
 	// Build a post parser
-	require_once MYBB_ROOT."inc/class_parser.php";
+	require_once MYBB_ROOT . 'inc/class_parser.php';
 	$parser = new postParser;
 
 	$post_cache = array();
@@ -292,7 +288,7 @@ function recent_posts_get_postlist($settings)
 
 		if(my_strlen($post['subject']) > $maxtitlelen)
 		{
-			$post['subject'] = my_substr($post['subject'], 0, $maxtitlelen) . "...";
+			$post['subject'] = my_substr($post['subject'], 0, $maxtitlelen) . '...';
 		}
 
 		if(substr(strtolower($post['subject']), 0, 3) == 're:')
@@ -334,7 +330,7 @@ function recent_posts_get_postlist($settings)
 		}
 		else
 		{
-			$last_read = my_get_array_cookie("threadread", $post['tid']);
+			$last_read = my_get_array_cookie('threadread', $post['tid']);
 		}
 
 		if($forum_read > $last_read)

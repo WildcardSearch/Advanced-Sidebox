@@ -484,16 +484,16 @@ EOF;
 			// check if this side box is either expanded or collapsed and hide it as necessary.
 			$expdisplay = '';
 			$collapsed_name = "{$box_type}_{$id}_c";
-			if(isset($collapsed[$collapsed_name]) && $collapsed[$collapsed_name] == "display: show;")
+			if(isset($collapsed[$collapsed_name]) && $collapsed[$collapsed_name] == 'display: show;')
 			{
-				$expcolimage = "collapse_collapsed.gif";
-				$expdisplay = "display: none;";
-				$expaltext = "[+]";
+				$expcolimage = 'collapse_collapsed.gif';
+				$expdisplay = 'display: none;';
+				$expaltext = '[+]';
 			}
 			else
 			{
-				$expcolimage = "collapse.gif";
-				$expaltext = "[-]";
+				$expcolimage = 'collapse.gif';
+				$expaltext = '[-]';
 			}
 			eval("\$expander = \"" . $templates->get('asb_expander') . "\";");
 		}
@@ -659,7 +659,7 @@ function asb_get_all_themes($full = false)
 	}
 
 	// get all the themes that are not MasterStyles
-	$query = $db->simple_select("themes", "tid, name", "NOT pid='0'{$excluded_themes}");
+	$query = $db->simple_select('themes', 'tid, name', "NOT pid='0'{$excluded_themes}");
 
 	$return_array = array();
 	if($db->num_rows($query) == 0)

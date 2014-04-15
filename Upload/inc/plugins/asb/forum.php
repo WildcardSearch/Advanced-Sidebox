@@ -165,12 +165,12 @@ function asb_initialize()
 	case 'usercp.php':
 		if($mybb->settings['asb_allow_user_disable'])
 		{
-			$plugins->add_hook("usercp_options_end", "asb_usercp_options_end");
-			$plugins->add_hook("usercp_do_options_end", "asb_usercp_options_end");
+			$plugins->add_hook('usercp_options_end', 'asb_usercp_options_end');
+			$plugins->add_hook('usercp_do_options_end', 'asb_usercp_options_end');
 		}
 		break;
 	case 'xmlhttp.php':
-		$plugins->add_hook("xmlhttp", "asb_xmlhttp");
+		$plugins->add_hook('xmlhttp', 'asb_xmlhttp');
 		break;
 	}
 
@@ -216,9 +216,9 @@ function asb_usercp_options_end()
 	}
 
     // if the form is being submitted save the users choice.
-	if($mybb->request_method == "post")
+	if($mybb->request_method == 'post')
     {
-		$db->update_query("users", array("show_sidebox" => (int) $mybb->input['showsidebox']), "uid='{$user['uid']}'");
+		$db->update_query('users', array("show_sidebox" => (int) $mybb->input['showsidebox']), "uid='{$user['uid']}'");
     }
 
 	// don't be silly and waste a query :p (thanks Destroy666)

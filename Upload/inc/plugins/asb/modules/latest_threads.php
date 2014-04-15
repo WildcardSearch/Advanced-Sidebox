@@ -8,9 +8,9 @@
  */
 
 // Include a check for Advanced Sidebox
-if(!defined("IN_MYBB") || !defined("IN_ASB"))
+if(!defined('IN_MYBB') || !defined('IN_ASB'))
 {
-	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
+	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
 /*
@@ -32,95 +32,95 @@ function asb_latest_threads_info()
 	return array(
 		"title" => $lang->asb_latest_threads,
 		"description" => $lang->asb_latest_threads_desc,
-		"version" => "1.1.1",
+		"version" => '1.1.1',
 		"compatibility" => '2.1',
 		"wrap_content" => true,
 		"xmlhttp" => true,
 		"settings" => array(
 			"max_threads" => array(
-				"sid" => "NULL",
-				"name" => "max_threads",
+				"sid" => 'NULL',
+				"name" => 'max_threads',
 				"title" => $lang->asb_max_threads_title,
 				"description" => $lang->asb_max_threads_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => '20'
 			),
 			"forum_show_list" => array(
-				"sid" => "NULL",
-				"name" => "forum_show_list",
+				"sid" => 'NULL',
+				"name" => 'forum_show_list',
 				"title" => $lang->asb_forum_show_list_title,
 				"description" => $lang->asb_forum_show_list_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => ''
 			),
 			"forum_hide_list" => array(
-				"sid" => "NULL",
-				"name" => "forum_hide_list",
+				"sid" => 'NULL',
+				"name" => 'forum_hide_list',
 				"title" => $lang->asb_forum_hide_list_title,
 				"description" => $lang->asb_forum_hide_list_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => ''
 			),
 			"thread_show_list" => array(
-				"sid" => "NULL",
-				"name" => "thread_show_list",
+				"sid" => 'NULL',
+				"name" => 'thread_show_list',
 				"title" => $lang->asb_thread_show_list_title,
 				"description" => $lang->asb_thread_show_list_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => ''
 			),
 			"thread_hide_list" => array(
-				"sid" => "NULL",
-				"name" => "thread_hide_list",
+				"sid" => 'NULL',
+				"name" => 'thread_hide_list',
 				"title" => $lang->asb_thread_hide_list_title,
 				"description" => $lang->asb_thread_hide_list_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => ''
 			),
 			"last_poster_avatar" => array(
-				"sid" => "NULL",
-				"name" => "last_poster_avatar",
+				"sid" => 'NULL',
+				"name" => 'last_poster_avatar',
 				"title" => $lang->asb_last_poster_avatar_title,
 				"description" => $lang->asb_last_poster_avatar_desc,
-				"optionscode" => "yesno",
+				"optionscode" => 'yesno',
 				"value" => '0'
 			),
 			"avatar_width" => array(
-				"sid" => "NULL",
-				"name" => "avatar_width",
+				"sid" => 'NULL',
+				"name" => 'avatar_width',
 				"title" => $lang->asb_avatar_width_title,
 				"description" => $lang->asb_avatar_width_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => '30'
 			),
 			"new_threads_only" => array(
-				"sid" => "NULL",
-				"name" => "new_threads_only",
+				"sid" => 'NULL',
+				"name" => 'new_threads_only',
 				"title" => $lang->asb_new_threads_only_title,
 				"description" => $lang->asb_new_threads_only_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => '0'
 			),
 			"important_threads_only" => array(
-				"sid" => "NULL",
-				"name" => "important_threads_only",
+				"sid" => 'NULL',
+				"name" => 'important_threads_only',
 				"title" => $lang->asb_important_threads_only_title,
 				"description" => $lang->asb_important_threads_only_desc,
-				"optionscode" => "yesno",
+				"optionscode" => 'yesno',
 				"value" => '0'
 			),
 			"xmlhttp_on" => array(
-				"sid" => "NULL",
-				"name" => "xmlhttp_on",
+				"sid" => 'NULL',
+				"name" => 'xmlhttp_on',
 				"title" => $lang->asb_xmlhttp_on_title,
 				"description" => $lang->asb_xmlhttp_on_description,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => '0'
 			)
 		),
 		"templates" => array(
 			array(
-				"title" => "asb_latest_threads_thread",
+				"title" => 'asb_latest_threads_thread',
 				"template" => <<<EOF
 				<tr>
 					<td class="{\$altbg}">
@@ -246,8 +246,7 @@ function latest_threads_get_threadlist($settings, $width)
 		$query = $db->query("
 			SELECT
 				fid
-			FROM " .
-				TABLE_PREFIX . "forums
+			FROM {$db->table_prefix}forums
 			WHERE
 				active != 0
 			ORDER BY
@@ -260,10 +259,8 @@ function latest_threads_get_threadlist($settings, $width)
 		$query = $db->query("
 			SELECT
 				f.fid, fr.dateline AS lastread
-			FROM " .
-				TABLE_PREFIX . "forums f
-			LEFT JOIN " .
-				TABLE_PREFIX . "forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
+			FROM {$db->table_prefix}forums f
+			LEFT JOIN {$db->table_prefix}forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
 			WHERE
 				f.active != 0
 			ORDER BY
@@ -284,7 +281,7 @@ function latest_threads_get_threadlist($settings, $width)
 	}
 
 	// Build a post parser
-	require_once MYBB_ROOT."inc/class_parser.php";
+	require_once MYBB_ROOT . 'inc/class_parser.php';
 	$parser = new postParser;
 
 	// get forums user cannot view
@@ -304,7 +301,7 @@ function latest_threads_get_threadlist($settings, $width)
 
 	if($settings['important_threads_only'])
 	{
-		$important_threads = " AND NOT t.sticky=0";
+		$important_threads = ' AND NOT t.sticky=0';
 	}
 
 	// build the exclude conditions
@@ -325,10 +322,8 @@ function latest_threads_get_threadlist($settings, $width)
 		SELECT
 			t.*,
 			u.username, u.avatar, u.usergroup, u.displaygroup
-		FROM " .
-			TABLE_PREFIX . "threads t
-		LEFT JOIN " .
-			TABLE_PREFIX . "users u ON (u.uid=t.lastposteruid)
+		FROM {$db->table_prefix}threads t
+		LEFT JOIN {$db->table_prefix}users u ON (u.uid=t.lastposteruid)
 		WHERE
 			t.visible='1' AND t.closed NOT LIKE 'moved|%'{$query_where}
 		ORDER BY
@@ -352,10 +347,10 @@ function latest_threads_get_threadlist($settings, $width)
 
 	$thread_ids = implode(",", array_keys($thread_cache));
 
-	// Fetch the read threads.
+	// fetch the read threads.
 	if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0)
 	{
-		$query = $db->simple_select("threadsread", "tid,dateline", "uid='".$mybb->user['uid']."' AND tid IN(" . $thread_ids . ")");
+		$query = $db->simple_select('threadsread', 'tid,dateline', "uid='{$mybb->user['uid']}' AND tid IN({$thread_ids})");
 		while($readthread = $db->fetch_array($query))
 		{
 			$thread_cache[$readthread['tid']]['lastread'] = $readthread['dateline'];
@@ -447,7 +442,7 @@ EOF;
 		}
 		else
 		{
-			$last_read = my_get_array_cookie("threadread", $thread['tid']);
+			$last_read = my_get_array_cookie('threadread', $thread['tid']);
 		}
 
 		if($forum_read > $last_read)
@@ -457,7 +452,7 @@ EOF;
 
 		if($thread['lastpost'] > $last_read && $last_read)
 		{
-			$thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost");
+			$thread['newpostlink'] = get_thread_link($thread['tid'], 0, 'newpost');
 			eval("\$gotounread = \"" . $templates->get("asb_latest_threads_gotounread") . "\";");
 			$unreadpost = 1;
 		}

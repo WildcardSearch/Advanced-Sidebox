@@ -8,9 +8,9 @@
  */
 
 // this file may not be executed from outside of script
-if(!defined("IN_MYBB") || !defined("IN_ASB"))
+if(!defined('IN_MYBB') || !defined('IN_ASB'))
 {
-	die("You need MyBB and Advanced Sidebox installed and properly initialized to use this script.");
+	die('You need MyBB and Advanced Sidebox installed and properly initialized to use this script.');
 }
 
 /*
@@ -32,25 +32,25 @@ function asb_staff_online_box_info()
  	return array(
 		"title" => $lang->asb_staff_online,
 		"description" => $lang->asb_staff_online_desc,
-		"version" => "1.4.4",
+		"version" => '1.4.4',
 		"compatibility" => '2.1',
 		"wrap_content" => true,
 		"xmlhttp" => true,
 		"settings" => array(
 			"max_staff" => array(
-				"sid" => "NULL",
-				"name" => "max_staff",
+				"sid" => 'NULL',
+				"name" => 'max_staff',
 				"title" => $lang->asb_staff_online_max_staff_title,
 				"description" => $lang->asb_staff_online_max_staff_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => '5'
 			),
 			"xmlhttp_on" => array(
-				"sid" => "NULL",
-				"name" => "xmlhttp_on",
+				"sid" => 'NULL',
+				"name" => 'xmlhttp_on',
 				"title" => $lang->asb_xmlhttp_on_title,
 				"description" => $lang->asb_xmlhttp_on_description,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => '0'
 			)
 		),
@@ -59,7 +59,7 @@ function asb_staff_online_box_info()
 		),
 		"templates" => array(
 			array(
-				"title" => "asb_staff_online_bit",
+				"title" => 'asb_staff_online_bit',
 				"template" => <<<EOF
 				<tr>
 					<td class="{\$bgcolor}">
@@ -175,7 +175,7 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 	$users = array();
 
 	// get all the groups admin has specified should be shown on showteam.php
-	$query = $db->simple_select("usergroups", "gid, title, usertitle, image", "showforumteam=1", array('order_by' => 'disporder'));
+	$query = $db->simple_select('usergroups', 'gid, title, usertitle, image', 'showforumteam=1', array('order_by' => 'disporder'));
 	while($usergroup = $db->fetch_array($query))
 	{
 		// store them in our array
@@ -183,7 +183,7 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 	}
 
 	// get all the users of those specific groups
-	$groups_in = implode(",", array_keys($usergroups));
+	$groups_in = implode(',', array_keys($usergroups));
 
 	// if there were no groups . . .
 	if(!$groups_in)
@@ -200,10 +200,8 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 		SELECT
 			s.sid, s.ip, s.uid, s.time, s.location,
 			u.username, u.invisible, u.usergroup, u.displaygroup, u.avatar
-		FROM
-			" . TABLE_PREFIX . "sessions s
-		LEFT JOIN
-			" . TABLE_PREFIX . "users u ON (s.uid=u.uid)
+		FROM {$db->table_prefix}sessions s
+		LEFT JOIN {$db->table_prefix}users u ON (s.uid=u.uid)
 		WHERE
 			(displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in))) AND s.time > '{$timesearch}'
 		ORDER BY
@@ -265,7 +263,7 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 
 			// if the user has an avatar then display it, otherwise force the default avatar.
 			$staff_avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
-			if($user['avatar'] != "")
+			if($user['avatar'] != '')
 			{
 				$staff_avatar_filename = $user['avatar'];
 			}

@@ -126,24 +126,24 @@ abstract class StorableObject extends MalleableObject implements StorableObjectI
 
 				switch(gettype($this->$property))
 				{
-					case "boolean":
+					case 'boolean':
 						$this->data[$property] = (bool) $value;
 						break;
-					case "integer":
+					case 'integer':
 						$this->data[$property] = (int) $value;
 						break;
-					case "NULL":
+					case 'NULL':
 						$this->data[$property] = NULL;
 						break;
-					case "double":
+					case 'double':
 						$this->data[$property] = (float) $value;
 						break;
-					case "string":
+					case 'string':
 						$this->data[$property] = $db->escape_string($value);
 						break;
-					case "array":
-					case "object":
-					case "resource":
+					case 'array':
+					case 'object':
+					case 'resource':
 						$this->data[$property] = $db->escape_string(json_encode($value));
 						break;
 					default:

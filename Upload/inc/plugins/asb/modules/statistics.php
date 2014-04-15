@@ -8,9 +8,9 @@
  */
 
 // Include a check for Advanced Sidebox
-if(!defined("IN_MYBB") || !defined("IN_ASB"))
+if(!defined('IN_MYBB') || !defined('IN_ASB'))
 {
-	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
+	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
 /*
@@ -33,21 +33,21 @@ function asb_statistics_info()
 		"title" => $lang->asb_stats,
 		"description" => $lang->asb_stats_desc,
 		"wrap_content" => true,
-		"version" => "1.2",
+		"version" => '1.2',
 		"compatibility" => '2.1',
 		"settings" => array(
 			"format_username" => array(
-				"sid" => "NULL",
-				"name" => "format_username",
+				"sid" => 'NULL',
+				"name" => 'format_username',
 				"title" => $lang->asb_stats_format_usernames_title,
 				"description" => $lang->asb_stats_format_usernames_desc,
-				"optionscode" => "yesno",
+				"optionscode" => 'yesno',
 				"value" => '0'
 			),
 		),
 		"templates" => array(
 			array(
-				"title" => "asb_statistics",
+				"title" => 'asb_statistics',
 				"template" => <<<EOF
 				<tr>
 					<td class="trow1">
@@ -91,7 +91,7 @@ function asb_statistics_build_template($args)
 	$statistics['numposts'] = my_number_format($statistics['numposts']);
 	$statistics['numusers'] = my_number_format($statistics['numusers']);
 
-	$newestmember = "<strong>" . $lang->asb_stats_no_one . "</strong>";
+	$newestmember = "<strong>{$lang->asb_stats_no_one}</strong>";
 	if($statistics['lastusername'])
 	{
 		if($settings['format_username'])
@@ -106,7 +106,7 @@ function asb_statistics_build_template($args)
 		$newestmember = build_profile_link($last_username, $statistics['lastuid']);
 	}
 
-	eval("\$" . $template_var . " = \"" . $templates->get("asb_statistics") . "\";");
+	eval("\$" . $template_var . " = \"" . $templates->get('asb_statistics') . "\";");
 	return true;
 }
 

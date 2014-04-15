@@ -9,7 +9,7 @@
 
 if(!class_exists('MalleableObject'))
 {
-	require_once MYBB_ROOT . "inc/plugins/asb/classes/malleable.php";
+	require_once MYBB_ROOT . 'inc/plugins/asb/classes/malleable.php';
 }
 
 /*
@@ -209,7 +209,7 @@ class Addon_type extends ExternalModule
 			// if it exists, update
 			if($db->num_rows($query) > 0)
 			{
-				$db->update_query("templates", $template, "title='{$template['title']}' AND sid IN('-2', '-1')");
+				$db->update_query('templates', $template, "title='{$template['title']}' AND sid IN('-2', '-1')");
 			}
 			else
 			{
@@ -220,7 +220,7 @@ class Addon_type extends ExternalModule
 
 		if(!empty($insert_array))
 		{
-			$db->insert_query_multiple("templates", $insert_array);
+			$db->insert_query_multiple('templates', $insert_array);
 		}
 	}
 

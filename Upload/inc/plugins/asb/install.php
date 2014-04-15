@@ -8,9 +8,9 @@
  */
 
 // disallow direct access to this file for security reasons
-if(!defined("IN_MYBB") || !defined("IN_ASB"))
+if(!defined('IN_MYBB') || !defined('IN_ASB'))
 {
-	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
+	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
 /*
@@ -29,7 +29,7 @@ function asb_info()
 		$lang->load('asb');
 	}
 
-	$extra_links = "<br />";
+	$extra_links = '<br />';
 	$settings_link = asb_build_settings_link();
 	if($settings_link)
 	{
@@ -97,12 +97,12 @@ EOF;
 	return array(
 		"name" => $name,
 		"description" => $asb_description,
-		"website" => "https://github.com/WildcardSearch/Advanced-Sidebox",
+		"website" => 'https://github.com/WildcardSearch/Advanced-Sidebox',
 		"author" => $author,
-		"authorsite" => "http://www.rantcentralforums.com",
-		"version" => "2.1",
-		"compatibility" => "16*",
-		"guid" => "870e9163e2ae9b606a789d9f7d4d2462",
+		"authorsite" => 'http://www.rantcentralforums.com',
+		"version" => '2.1',
+		"compatibility" => '16*',
+		"guid" => '870e9163e2ae9b606a789d9f7d4d2462',
 	);
 }
 
@@ -202,7 +202,7 @@ function asb_activate()
 		 */
 		if(version_compare($old_version, '2.1', '<'))
 		{
-			require_once MYBB_ROOT . "inc/plugins/asb/classes/forum.php";
+			require_once MYBB_ROOT . 'inc/plugins/asb/classes/forum.php';
 			$sideboxes = asb_get_all_sideboxes();
 			foreach($sideboxes as $sidebox)
 			{
@@ -320,7 +320,7 @@ function asb_get_settingsgroup()
 		global $db;
 
 		// otherwise we will have to query the db
-		$query = $db->simple_select("settinggroups", "gid", "name='asb_settings'");
+		$query = $db->simple_select('settinggroups', 'gid', "name='asb_settings'");
 		$gid = (int) $db->fetch_field($query, 'gid');
 	}
 	return $gid;
@@ -338,7 +338,7 @@ function asb_build_settings_url($gid)
 {
 	if($gid)
 	{
-		return "index.php?module=config-settings&amp;action=change&amp;gid=" . $gid;
+		return 'index.php?module=config-settings&amp;action=change&amp;gid=' . $gid;
 	}
 }
 

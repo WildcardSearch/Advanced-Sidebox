@@ -8,9 +8,9 @@
  */
 
 // Include a check for Advanced Sidebox
-if(!defined("IN_MYBB") || !defined("IN_ASB"))
+if(!defined('IN_MYBB') || !defined('IN_ASB'))
 {
-	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
+	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
 /*
@@ -33,12 +33,12 @@ function asb_top_poster_info()
 		"title" => $lang->asb_top_poster_title,
 		"description" => $lang->asb_top_poster_desc,
 		"wrap_content" => true,
-		"version" => "1.1.3",
+		"version" => '1.1.3',
 		"compatibility" => '2.1',
 		"settings" => array(
 			"time_frame" => array(
-				"sid" => "NULL",
-				"name" => "time_frame",
+				"sid" => 'NULL',
+				"name" => 'time_frame',
 				"title" => $lang->asb_top_poster_time_frame_title,
 				"description" => $lang->asb_top_poster_time_frame_desc,
 				"optionscode" => "select
@@ -52,16 +52,16 @@ function asb_top_poster_info()
 				"value" => '1'
 			),
 			"avatar_size" => array(
-				"name" => "avatar_size",
+				"name" => 'avatar_size',
 				"title" => $lang->asb_top_poster_avatar_size_title,
 				"description" => $lang->asb_top_poster_avatar_size_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => ''
 			),
 		),
 		"templates" => array(
 			array(
-				"title" => "asb_top_poster",
+				"title" => 'asb_top_poster',
 				"template" => <<<EOF
 				<tr style="text-align: center;">
 					<td class="trow1"><img src="{\$top_poster_avatar}" style="width: {\$avatar_width}px; margin-top: 10px;" alt="{\$lang->asb_top_poster_no_avatar}"/><br /><br />{\$top_poster_text}</td>
@@ -99,7 +99,7 @@ function asb_top_poster_build_template($args)
 	$group_by = 'p.uid';
 	if($db->type == 'pgsql')
 	{
-		$group_by = $db->build_fields_string("users", "u.");
+		$group_by = $db->build_fields_string('users', 'u.');
 	}
 
 	$query = $db->query(<<<EOF
@@ -165,7 +165,7 @@ EOF
 
 		$top_poster_posts = $user['poststoday'];
 
-		if($user['avatar'] != "")
+		if($user['avatar'] != '')
 		{
 			$top_poster_avatar = $user['avatar'];
 		}

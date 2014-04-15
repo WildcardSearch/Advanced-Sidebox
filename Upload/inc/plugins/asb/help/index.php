@@ -10,7 +10,7 @@
 global $page_title, $links_array;
 
 // CSS
- $header_include = <<<EOF
+$header_include = <<<EOF
 		<link rel="stylesheet" type="text/css" href="asb_help.css" media="screen" />
 EOF;
 
@@ -18,7 +18,7 @@ EOF;
 $links_array = array(
 	"main" => 'Main Page',
 	"install" => 'Install & Upgrade',
-	"manage_sideboxes"	=>	'Sideboxes',
+	"manage_sideboxes" => 'Sideboxes',
 	"edit_box" => 'Add and Edit Sideboxes',
 	"custom" => 'Custom Boxes',
 	"edit_custom" => 'Edit Custom Boxes',

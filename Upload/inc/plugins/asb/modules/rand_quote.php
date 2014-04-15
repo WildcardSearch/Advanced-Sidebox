@@ -8,9 +8,9 @@
  */
 
 // Include a check for Advanced Sidebox
-if(!defined("IN_MYBB") || !defined("IN_ASB"))
+if(!defined('IN_MYBB') || !defined('IN_ASB'))
 {
-	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
+	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
 /*
@@ -34,79 +34,79 @@ function asb_rand_quote_info()
 		"description" => $lang->asb_random_quotes_desc,
 		"wrap_content" => true,
 		"xmlhttp" => true,
-		"version" => "1.5.1",
+		"version" => '1.5.1',
 		"compatibility" => '2.1',
 		"settings" => array(
 			"forum_show_list" => array(
-				"sid" => "NULL",
-				"name" => "forum_show_list",
+				"sid" => 'NULL',
+				"name" => 'forum_show_list',
 				"title" => $lang->asb_forum_show_list_title,
 				"description" => $lang->asb_forum_show_list_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => ''
 			),
 			"forum_hide_list" => array(
-				"sid" => "NULL",
-				"name" => "forum_hide_list",
+				"sid" => 'NULL',
+				"name" => 'forum_hide_list',
 				"title" => $lang->asb_forum_hide_list_title,
 				"description" => $lang->asb_forum_hide_list_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => ''
 			),
 			"thread_show_list" => array(
-				"sid" => "NULL",
-				"name" => "thread_show_list",
+				"sid" => 'NULL',
+				"name" => 'thread_show_list',
 				"title" => $lang->asb_thread_show_list_title,
 				"description" => $lang->asb_thread_show_list_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => ''
 			),
 			"thread_hide_list" => array(
-				"sid" => "NULL",
-				"name" => "thread_hide_list",
+				"sid" => 'NULL',
+				"name" => 'thread_hide_list',
 				"title" => $lang->asb_thread_hide_list_title,
 				"description" => $lang->asb_thread_hide_list_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => ''
 			),
 			"min_length" => array(
-				"sid" => "NULL",
-				"name" => "min_length",
+				"sid" => 'NULL',
+				"name" => 'min_length',
 				"title" => $lang->asb_random_quotes_min_quote_length_title,
 				"description" => $lang->asb_random_quotes_min_quote_length_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => '20'
 			),
 			"max_length" => array(
-				"sid" => "NULL",
-				"name" => "max_length",
+				"sid" => 'NULL',
+				"name" => 'max_length',
 				"title" => $lang->asb_random_quotes_max_quote_length_title,
 				"description" => $lang->asb_random_quotes_max_quote_length,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => '160'
 			),
 			"default_text" => array(
-				"sid" => "NULL",
-				"name" => "default_text",
+				"sid" => 'NULL',
+				"name" => 'default_text',
 				"title" => $lang->asb_random_quotes_default_text_title,
 				"description" => $lang->asb_random_quotes_default_text_desc,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => ''
 			),
 			"important_threads_only" => array(
-				"sid" => "NULL",
-				"name" => "important_threads_only",
+				"sid" => 'NULL',
+				"name" => 'important_threads_only',
 				"title" => $lang->asb_important_threads_only_title,
 				"description" => $lang->asb_important_threads_only_desc,
-				"optionscode" => "yesno",
+				"optionscode" => 'yesno',
 				"value" => '0'
 			),
 			"xmlhttp_on" => array(
-				"sid" => "NULL",
-				"name" => "xmlhttp_on",
+				"sid" => 'NULL',
+				"name" => 'xmlhttp_on',
 				"title" => $lang->asb_xmlhttp_on_title,
 				"description" => $lang->asb_xmlhttp_on_description,
-				"optionscode" => "text",
+				"optionscode" => 'text',
 				"value" => '0'
 			)
 		),
@@ -115,7 +115,7 @@ function asb_rand_quote_info()
 		),
 		"templates" => array(
 			array(
-				"title" => "asb_rand_quote_sidebox",
+				"title" => 'asb_rand_quote_sidebox',
 				"template" => <<<EOF
 				<tr>
 					<td class="tcat">
@@ -237,7 +237,7 @@ function asb_rand_quote_get_quote($settings, $width)
 
 	if($settings['important_threads_only'])
 	{
-		$important_threads = " AND NOT t.sticky=0";
+		$important_threads = ' AND NOT t.sticky=0';
 	}
 
 	// build the exclude conditions
@@ -254,12 +254,9 @@ function asb_rand_quote_get_quote($settings, $width)
 			p.pid, p.message, p.fid, p.tid, p.subject, p.uid,
 			u.username, u.usergroup, u.displaygroup, u.avatar,
 			t.sticky
-		FROM " .
-			TABLE_PREFIX . "posts p
-		LEFT JOIN " .
-			TABLE_PREFIX . "users u ON (u.uid=p.uid)
-		LEFT JOIN " .
-			TABLE_PREFIX . "threads t ON (t.tid=p.tid)
+		FROM {$db->table_prefix}posts p
+		LEFT JOIN {$db->table_prefix}users u ON (u.uid=p.uid)
+		LEFT JOIN {$db->table_prefix}threads t ON (t.tid=p.tid)
 		WHERE
 			p.visible='1'{$query_where}
 		ORDER BY
@@ -276,7 +273,7 @@ function asb_rand_quote_get_quote($settings, $width)
 	$rand_post = $db->fetch_array($post_query);
 
 	// build a post parser
-	require_once MYBB_ROOT."inc/class_parser.php";
+	require_once MYBB_ROOT . 'inc/class_parser.php';
 	$parser = new postParser;
 
 	// we just need the text and smilies (we'll parse them after we check length)
@@ -325,7 +322,7 @@ function asb_rand_quote_get_quote($settings, $width)
 
 	// if the user has an avatar then display it, otherwise force the default avatar.
 	$avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
-	if($rand_post['avatar'] != "")
+	if($rand_post['avatar'] != '')
 	{
 		$avatar_filename = $rand_post['avatar'];
 	}
@@ -336,7 +333,7 @@ function asb_rand_quote_get_quote($settings, $width)
 
 	if(my_strlen($rand_post['subject']) > 40)
 	{
-		$rand_post['subject'] = my_substr($rand_post['subject'], 0, 40) . " . . .";
+		$rand_post['subject'] = my_substr($rand_post['subject'], 0, 40) . ' . . .';
 	}
 
 	if(substr(strtolower($rand_post['subject']), 0, 3) == 're:')

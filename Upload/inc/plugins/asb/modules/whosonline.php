@@ -8,9 +8,9 @@
  */
 
 // Include a check for Advanced Sidebox
-if(!defined("IN_MYBB") || !defined("IN_ASB"))
+if(!defined('IN_MYBB') || !defined('IN_ASB'))
 {
-	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
+	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
 /*
@@ -32,7 +32,7 @@ function asb_whosonline_info()
 	return array(
 		"title" => $lang->asb_wol,
 		"description" => $lang->asb_wol_desc,
-		"version" => "1.4.4",
+		"version" => '1.4.4',
 		"compatibility" => '2.1',
 		"wrap_content" => true,
 		"xmlhttp" => true,
@@ -216,22 +216,22 @@ function asb_whosonline_get_online_members($settings, $width)
 	$onlinemembers = '';
 	$query = $db->write_query("
 		SELECT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup, u.avatar, u.avatardimensions
-		FROM " . TABLE_PREFIX . "sessions s
-		LEFT JOIN " . TABLE_PREFIX . "users u ON (s.uid=u.uid)
-		WHERE s.time > '$timesearch'
+		FROM {$db->table_prefix}sessions s
+		LEFT JOIN {$db->table_prefix}users u ON (s.uid=u.uid)
+		WHERE s.time > '{$timesearch}'
 		ORDER BY u.username ASC, s.time DESC
 	");
 
 	while($user = $db->fetch_array($query))
 	{
 		// create a key to test if this user is a search bot.
-		$botkey = my_strtolower(str_replace("bot=", '', $user['sid']));
+		$botkey = my_strtolower(str_replace('bot=', '', $user['sid']));
 
-		if($user['uid'] == "0")
+		if($user['uid'] == '0')
 		{
 			++$guestcount;
 		}
-		elseif(my_strpos($user['sid'], "bot=") !== false && $session->bots[$botkey])
+		elseif(my_strpos($user['sid'], 'bot=') !== false && $session->bots[$botkey])
 		{
 			// The user is a search bot.
 			$onlinemembers .= format_name($session->bots[$botkey], $session->botgroup);
@@ -264,7 +264,7 @@ function asb_whosonline_get_online_members($settings, $width)
 				if($settings['show_avatars'])
 				{
 					// If the user has an avatar then display it . . .
-					if($user['avatar'] != "")
+					if($user['avatar'] != '')
 					{
 						$avatar_filename = $user['avatar'];
 					}
@@ -280,7 +280,7 @@ function asb_whosonline_get_online_members($settings, $width)
 					{
 						// Check the avatar's dimensions, then constrain it by its largest dimension
 						$avatar_dimensions = explode('|', $user['avatardimensions']);
-						
+
 						if($avatar_dimensions[0] > $avatar_dimensions[1])
 						{
 							$avatar_height_style = '';
@@ -313,12 +313,12 @@ EOF;
 					// . . . otherwise, add it to the list
 					else
 					{
-						eval("\$onlinemembers .= \"" . $templates->get("asb_whosonline_memberbit_avatar", 1, 0) . "\";");
+						eval("\$onlinemembers .= \"" . $templates->get('asb_whosonline_memberbit_avatar', 1, 0) . "\";");
 
 						// If we reach the end of the row, insert a <br />
 						if(($membercount - (($row - 1) * $rowlength)) == $rowlength)
 						{
-							$onlinemembers .= "</tr><tr>";
+							$onlinemembers .= '</tr><tr>';
 							++$row;
 						}
 						++$avatar_count;
@@ -327,7 +327,7 @@ EOF;
 				else
 				{
 					$user['username'] = format_name(trim($user['username']), $user['usergroup'], $user['displaygroup']);
-					eval("\$onlinemembers .= \"" . $templates->get("asb_whosonline_memberbit_name", 1, 0) . "\";");
+					eval("\$onlinemembers .= \"" . $templates->get('asb_whosonline_memberbit_name', 1, 0) . "\";");
 					$sep = $lang->comma . ' ';
 				}
 			}
@@ -357,7 +357,7 @@ EOF;
 	}
 
 	// Most users online
-	$mostonline = $cache->read("mostonline");
+	$mostonline = $cache->read('mostonline');
 	if($onlinecount > $mostonline['numusers'])
 	{
 		$time = TIME_NOW;
@@ -381,7 +381,7 @@ EOF;
 
 	if($membercount)
 	{
-		eval("\$onlinemembers = \"" . $templates->get("asb_whosonline") . "\";");
+		eval("\$onlinemembers = \"" . $templates->get('asb_whosonline') . "\";");
 		return $onlinemembers;
 	}
 	else
