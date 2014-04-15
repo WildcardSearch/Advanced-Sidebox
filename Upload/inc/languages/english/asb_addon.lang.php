@@ -28,19 +28,6 @@ $l['asb_thread_hide_list_desc'] = '(optional) add a thread id or a comma-separat
 $l['asb_important_threads_only_title'] = 'Important Threads Only?';
 $l['asb_important_threads_only_desc'] = "YES to only use 'stickied' threads, NO (default) to use any threads/posts";
 
-// examples
-$l['asb_example1_title'] = '[Example 1] Simplest Box';
-$l['asb_example1_desc'] = 'As simple as it gets. This box illustrates the easiest way to create an add-on module';
-
-$l['asb_example2_title'] = '[Example 2] Using Templates';
-$l['asb_example2_desc'] = 'A simple box to illustrate using templates to produce content';
-
-$l['asb_example3_title'] = '[Example 3] Using Settings';
-$l['asb_example3_desc'] = 'A simple box to illustrate using settings to control content';
-$l['asb_example3_setting_anouncement_text'] = 'Announcement Text';
-$l['asb_example3_setting_anouncement_text_desc'] = 'this text will be styled and displayed';
-$l['asb_example3_info'] = 'Custom text can be used by entering a value for the Announcement Text.';
-
 // welcome
 $l['asb_welcome'] = 'Welcome';
 $l['asb_welcome_desc'] = 'Login for guest, info for member';
