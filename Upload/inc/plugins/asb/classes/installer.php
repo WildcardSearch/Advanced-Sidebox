@@ -212,17 +212,17 @@ class WildcardPluginInstaller
 	 * @param - $column_list - (array) an associative array of tables and columns
 	 * @return: n/a
 	 */
-	public function add_columns()
+	public function add_columns($columns = '')
 	{
-		if(!is_array($this->columns) || empty($this->columns))
+		if(!is_array($columns) || empty($columns))
 		{
-			return false;
+			$columns = $this->columns;
 		}
 
-		foreach($this->columns as $table => $columns)
+		foreach($columns as $table => $all_columns)
 		{
 			$sep = $added_columns = '';
-			foreach($columns as $title => $definition)
+			foreach($all_columns as $title => $definition)
 			{
 				if(!$this->field_exists($table, $title))
 				{
