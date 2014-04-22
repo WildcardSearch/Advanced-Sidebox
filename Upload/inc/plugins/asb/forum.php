@@ -109,7 +109,7 @@ function asb_start()
 			{
 				// build the template. pass settings, template variable
 				// name and column width
-				$result = $module->build_template($sidebox->get('settings'), $template_var, $width[$pos]);
+				$result = $module->build_template($sidebox->get('settings'), $template_var, $width[$pos], get_current_location());
 			}
 			// if it doesn't verify as an add-on, try it as a custom box
 			elseif(isset($asb['custom'][$module_name]) && is_array($asb['custom'][$module_name]))
@@ -144,7 +144,7 @@ function asb_start()
 		}
 	}
 
-	// load the template handler class definitions
+	// load the template handler class definition and make the edits
 	require_once MYBB_ROOT . 'inc/plugins/asb/classes/template_handler.php';
 	ASBTemplateHandler::edit($boxes, $width, $this_script);
 }
@@ -276,7 +276,7 @@ function asb_xmlhttp()
 	if($module->is_valid() && $sidebox->is_valid())
 	{
 		// then call the module's AJAX method and echo its return value
-		echo($module->do_xmlhttp($mybb->input['dateline'], $sidebox->get('settings'), $mybb->input['width']));
+		echo($module->do_xmlhttp($mybb->input['dateline'], $sidebox->get('settings'), $mybb->input['width'], $mybb->input['script']));
 	}
 	exit;
 }

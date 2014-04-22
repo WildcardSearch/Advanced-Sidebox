@@ -120,13 +120,15 @@ EOF;
 EOF;
 				$sep = ", ";
 			}
+
+			$location = get_current_location();
 			$headerinclude .= <<<EOF
 
 <script type="text/javascript" src="jscripts/asb_xmlhttp{$min}.js"></script>
 <script type="text/javascript">
 <!--
 	Event.observe(window, 'load', function() {
-		ASB.ajax.buildUpdaters([ {$extra_scripts} ], { left: {$width_left}, right: {$width_right} });
+		ASB.ajax.buildUpdaters([ {$extra_scripts} ], { left: {$width_left}, right: {$width_right} }, '{$location}');
 	});
 // -->
 </script>

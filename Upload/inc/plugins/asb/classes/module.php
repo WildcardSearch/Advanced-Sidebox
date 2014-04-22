@@ -488,9 +488,9 @@ class Addon_type extends ExternalModule
 	 * @return: (mixed) the return value of the called module function or
 	 * (bool) false on error
 	 */
-	public function build_template($settings, $template_var, $width)
+	public function build_template($settings, $template_var, $width, $script)
 	{
-		foreach(array('settings', 'template_var', 'width') as $key)
+		foreach(array('settings', 'template_var', 'width', 'script') as $key)
 		{
 			$args[$key] = $$key;
 		}

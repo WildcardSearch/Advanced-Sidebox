@@ -130,7 +130,7 @@ var ASB = (function(a) {
 	 * @param - widths - (object) widths for both positions
 	 * @return: n/a
 	 */
-	function buildUpdaters(updaters, widths) {
+	function buildUpdaters(updaters, widths, script) {
 		// no objects in the array
 		if (updaters.length == 0) {
 			// get out
@@ -159,7 +159,8 @@ var ASB = (function(a) {
 					id: updaters[i].id,
 					addon: updaters[i].addon,
 					dateline: updaters[i].dateline,
-					width: width
+					width: width,
+					script: script,
 				},
 				method: 'get',
 				frequency: updaters[i].rate
