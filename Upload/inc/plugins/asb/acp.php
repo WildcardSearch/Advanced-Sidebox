@@ -101,6 +101,11 @@ function asb_admin_manage_sideboxes()
 		// display them
 		foreach($addons as $module)
 		{
+			if(!$module->is_valid())
+			{
+				continue;
+			}
+
 			$id = $box_type = $module->get('base_name');
 			$title = $module->get('title');
 			$title_url = $html->url(array("action" => 'edit_box', "addon" => $box_type));
