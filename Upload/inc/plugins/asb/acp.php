@@ -669,7 +669,7 @@ EOF;
 	$form_container->output_row('', '', $form->generate_select_box('theme_select_box[]', $choices, $themes, array("id" => 'theme_select_box', "multiple" => true)));
 	$form_container->end();
 
-	if($do_settings && $sidebox->has_settings)
+	if($do_settings)
 	{
 		echo "</div>\n<div id=\"tab_settings\">\n";
 		if($mybb->input['ajax'] == 1)
