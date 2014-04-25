@@ -686,9 +686,9 @@ EOF;
 			$sidebox_settings = $sidebox->get('settings');
 			foreach($settings as $name => $value)
 			{
-				if(isset($sidebox_settings['value']))
+				if(isset($sidebox_settings[$name]))
 				{
-					$settings[$name]['value'] = $sidebox_settings['value'];
+					$settings[$name]['value'] = $sidebox_settings[$name];
 				}
 			}
 		}
