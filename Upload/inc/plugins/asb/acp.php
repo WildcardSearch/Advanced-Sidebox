@@ -288,8 +288,12 @@ function asb_admin_edit_box()
 		}
 		else
 		{
-			flash_message($lang->asb_edit_fail_bad_module);
-			admin_redirect($html->url());
+			flash_message($lang->asb_edit_fail_bad_module, 'error');
+			if($mybb->input['ajax'] != 1)
+			{
+				admin_redirect($html->url());
+			}
+			die('<error>asb</error>');
 		}
 	}
 	else

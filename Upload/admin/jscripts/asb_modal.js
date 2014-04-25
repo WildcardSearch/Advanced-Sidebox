@@ -63,8 +63,26 @@ var ASB = (function(a) {
         });
 	}
 
+	/**
+	 * displayModal()
+	 *
+	 * intercept module errors if necessary
+	 *
+	 * @param - $super - (Function) the parent function
+	 * @param - data - (String) the HTML
+	 * @return: n/a
+	 */
+	function displayModal($super, data) {
+		if(data == '<error>asb</error>') {
+			window.location = "./index.php?module=config-asb";
+			return;
+		}
+		$super(data);
+	}
+
 	a.Modal = Class.create(MyModal, {
 		submit: submit,
+		displayModal: displayModal,
 	});
 
 	return a;
