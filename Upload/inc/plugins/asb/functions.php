@@ -27,8 +27,8 @@ function asb_do_checks()
 	}
 
 	/*
-	 * if the current user is not a guest and has disabled the side
-	 * box display in UCP then do not display the side boxes
+	 * if the current user is not a guest, admin has allowed disabling side box
+	 * display  and the user has chosen to do so then do not display
 	 */
 	if($mybb->settings['asb_allow_user_disable'] && $mybb->user['uid'] != 0 && $mybb->user['show_sidebox'] == 0)
 	{
@@ -193,12 +193,12 @@ function asb_build_cache(&$asb)
 					$settings = $sidebox->get('settings');
 
 					// again, default here is off if anything goes wrong
-					if($settings['xmlhttp_on']['value'])
+					if($settings['xmlhttp_on'])
 					{
 						// if all is good add the script building info
 						$asb['scripts'][$filename]['extra_scripts'][$module]['position'] = $pos;
 						$asb['scripts'][$filename]['extra_scripts'][$module]['id'] = $id;
-						$asb['scripts'][$filename]['extra_scripts'][$module]['rate'] = $settings['xmlhttp_on']['value'];
+						$asb['scripts'][$filename]['extra_scripts'][$module]['rate'] = $settings['xmlhttp_on'];
 					}
 				}
 
