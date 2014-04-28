@@ -1247,6 +1247,7 @@ function asb_admin_manage_scripts()
 			$filename = $data['filename'];
 			$action = "{$lang->asb_edit} {$data['title']}";
 		}
+		$lang->asb_edit_script = $action;
 
 		$queryadmin = $db->simple_select('adminoptions', '*', "uid='{$mybb->user['uid']}'");
 		$admin_options = $db->fetch_array($queryadmin);
@@ -1279,7 +1280,7 @@ EOF;
 
 		$page->add_breadcrumb_item($lang->asb_manage_scripts, $html->url(array("action" => 'manage_scripts')));
 		$page->add_breadcrumb_item($lang->asb_edit_script);
-		$page->output_header("{$lang->asb} - {$lang->asb_manage_scripts} - {$action}");
+		$page->output_header("{$lang->asb} - {$lang->asb_manage_scripts} - {$lang->asb_edit_script}");
 		asb_output_tabs('asb_edit_script');
 
 		$spinner = <<<EOF
@@ -1289,7 +1290,7 @@ EOF;
 EOF;
 
 		$form = new Form($html->url(array("action" => 'manage_scripts', "mode" => 'edit')), 'post', 'edit_script');
-		$form_container = new FormContainer("{$button_text} <em>{$data['title']}</em>");
+		$form_container = new FormContainer($lang->asb_edit_script);
 
 		$form_container->output_row("{$lang->asb_title}:", $lang->asb_title_desc, $form->generate_text_box('title', $data['title']));
 
