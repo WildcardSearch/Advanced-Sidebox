@@ -28,7 +28,7 @@ function asb_do_checks()
 
 	/*
 	 * if the current user is not a guest, admin has allowed disabling side box
-	 * display  and the user has chosen to do so then do not display
+	 * display and the user has chosen to do so then do not display
 	 */
 	if($mybb->settings['asb_allow_user_disable'] && $mybb->user['uid'] != 0 && $mybb->user['show_sidebox'] == 0)
 	{
@@ -42,7 +42,7 @@ function asb_do_checks()
  *
  * get the tids of any excluded themes
  *
- * @return: (bool) true on success, false on fail
+ * @return: (array) the list of excluded themes (bool) false on fail
  */
 function asb_get_excluded_themes($sql = false)
 {
@@ -58,7 +58,7 @@ function asb_get_excluded_themes($sql = false)
 	{
 		if($retval)
 		{
-			$retval = ' AND NOT IN(' . implode(',', $retval) . ')';
+			$retval = ' AND pid NOT IN(' . implode(',', $retval) . ')';
 		}
 		else
 		{
