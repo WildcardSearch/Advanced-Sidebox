@@ -192,9 +192,9 @@ EOF;
 	<script src="../jscripts/scriptaculous.js?load=effects,dragdrop,controls" type="text/javascript"></script>
 	<script src="jscripts/imodal.js" type="text/javascript"></script>
 	<link rel="stylesheet" type="text/css" href="styles/default/imodal.css"/>
-	<script src="jscripts/asb{$min}.js" type="text/javascript"></script>
-	<script src="jscripts/asb_modal{$min}.js" type="text/javascript"></script>
-	<script src="jscripts/asb_sideboxes{$min}.js" type="text/javascript"></script>
+	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
+	<script src="jscripts/asb/asb_modal{$min}.js" type="text/javascript"></script>
+	<script src="jscripts/asb/asb_sideboxes{$min}.js" type="text/javascript"></script>
 
 EOF;
 
@@ -516,7 +516,7 @@ EOF;
 		// add a little CSS
 		$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
-	<script src="jscripts/asb{$min}.js" type="text/javascript"></script>
+	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 
 EOF;
 		$page->output_header("{$lang->asb} - {$page_title}");
@@ -951,7 +951,7 @@ EOF;
 
 		$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
-	<script src="jscripts/asb{$min}.js" type="text/javascript"></script>
+	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 EOF;
 
 		$page->add_breadcrumb_item($lang->asb_custom_boxes, $html->url(array("action" => 'custom_boxes')));
@@ -1014,7 +1014,7 @@ EOF;
 
 	$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
-	<script src="jscripts/asb{$min}.js" type="text/javascript"></script>
+	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 EOF;
 
 	$page->add_breadcrumb_item($lang->asb_custom_boxes);
@@ -1266,14 +1266,14 @@ EOF;
 
 		$page->extra_header .= <<<EOF
 	<script type="text/javascript" src="./jscripts/peeker.js"></script>
-	<script type="text/javascript" src="jscripts/asb_scripts{$min}.js"></script>
+	<script type="text/javascript" src="jscripts/asb/asb_scripts{$min}.js"></script>
 	<script type="text/javascript">
 	<!--
 		ASB.scripts.setCurrent('{$filename}');
 	// -->
 	</script>
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
-	<script src="jscripts/asb{$min}.js" type="text/javascript"></script>
+	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 
 EOF;
 
@@ -1358,7 +1358,7 @@ EOF;
 	{
 		$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
-	<script src="jscripts/asb{$min}.js" type="text/javascript"></script>
+	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 
 EOF;
 
@@ -1452,7 +1452,7 @@ function asb_admin_manage_modules()
 
 	$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
-	<script src="jscripts/asb{$min}.js" type="text/javascript"></script>
+	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 
 EOF;
 

@@ -30,7 +30,7 @@ class ASBTemplateHandler
 		{
 			// we will need this js
 			$headerinclude .= <<<EOF
-<script type="text/javascript" src="jscripts/asb{$min}.js"></script>
+<script type="text/javascript" src="jscripts/asb/asb{$min}.js"></script>
 EOF;
 
 			$toggle_info['left'] = array(
@@ -124,7 +124,7 @@ EOF;
 			$location = get_current_location();
 			$headerinclude .= <<<EOF
 
-<script type="text/javascript" src="jscripts/asb_xmlhttp{$min}.js"></script>
+<script type="text/javascript" src="jscripts/asb/asb_xmlhttp{$min}.js"></script>
 <script type="text/javascript">
 <!--
 	Event.observe(window, 'load', function() {

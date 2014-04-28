@@ -198,7 +198,7 @@ function asb_activate()
 		}
 
 		/*
-		 * upgrade existing side boxes settings
+		 * upgrade existing side boxes settings and removed old js files
 		 */
 		if(version_compare($old_version, '2.1', '<'))
 		{
@@ -228,6 +228,19 @@ function asb_activate()
 			}
 
 			asb_cache_has_changed();
+
+			$removed_files = array(
+				'jscripts/asb.js',
+				'jscripts/asb_xmlhttp.js',
+				'admin/jscripts/asb.js',
+				'admin/jscripts/asb_modal.js',
+				'admin/jscripts/asb_scripts.js',
+				'admin/jscripts/asb_sideboxes.js'
+			);
+			foreach($removed_files as $file)
+			{
+				@unlink(MYBB_ROOT . $file);
+			}
 		}
 	}
 	asb_set_cache_version();
