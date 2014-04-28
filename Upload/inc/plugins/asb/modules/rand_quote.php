@@ -235,6 +235,13 @@ function asb_rand_quote_get_quote($settings, $width)
 		$unviewwhere = " AND p.fid NOT IN ({$unviewable})";
 	}
 
+	// get inactive forums
+	$inactive = get_inactive_forums();
+	if($inactive)
+	{
+		$inactivewhere = " AND p.fid NOT IN ({$inactive})";
+	}
+
 	if($settings['important_threads_only'])
 	{
 		$important_threads = ' AND NOT t.sticky=0';
@@ -247,7 +254,7 @@ function asb_rand_quote_get_quote($settings, $width)
 	$hide['tids'] = asb_build_id_list($settings['thread_hide_list'], 'p.tid');
 	$where['show'] = asb_build_SQL_where($show, ' OR ');
 	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
-	$query_where = $important_threads . $unviewwhere . asb_build_SQL_where($where, ' AND ', ' AND ');
+	$query_where = $important_threads . $unviewwhere . $inactivewhere . asb_build_SQL_where($where, ' AND ', ' AND ');
 
 	$post_query = $db->query("
 		SELECT

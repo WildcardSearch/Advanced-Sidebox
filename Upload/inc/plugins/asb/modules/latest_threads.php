@@ -291,6 +291,13 @@ function latest_threads_get_threadlist($settings, $width)
 		$unviewwhere = " AND t.fid NOT IN ({$unviewable})";
 	}
 
+	// get inactive forums
+	$inactive = get_inactive_forums();
+	if($inactive)
+	{
+		$inactivewhere = " AND t.fid NOT IN ({$inactive})";
+	}
+
 	// new threads only?
 	if((int) $settings['new_threads_only'] > 0)
 	{
@@ -311,7 +318,7 @@ function latest_threads_get_threadlist($settings, $width)
 	$hide['tids'] = asb_build_id_list($settings['thread_hide_list'], 't.tid');
 	$where['show'] = asb_build_SQL_where($show, ' OR ');
 	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
-	$query_where = $new_threads . $important_threads . $unviewwhere . asb_build_SQL_where($where, ' AND ', ' AND ');
+	$query_where = $new_threads . $important_threads . $unviewwhere . $inactivewhere . asb_build_SQL_where($where, ' AND ', ' AND ');
 
 	$altbg = alt_trow();
 	$maxtitlelen = 48;
