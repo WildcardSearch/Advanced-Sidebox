@@ -498,7 +498,7 @@ class Addon_type extends ExternalModule
 	}
 
 	/*
-	 * function do_xmlhttp()
+	 * do_xmlhttp()
 	 *
 	 * @param - $dateline (int) UNIX timestamp representing the last time
 	 * the side box was updated
@@ -515,6 +515,34 @@ class Addon_type extends ExternalModule
 			$args[$key] = $$key;
 		}
 		return $this->run('xmlhttp', $args);
+	}
+
+	/*
+	 * do_settings_load()
+	 *
+	 * @return: (mixed) the return value of the called module function or
+	 * (bool) false on error
+	 */
+	public function do_settings_load()
+	{
+		return $this->run('settings_load', $settings);
+	}
+
+	/*
+	 * do_settings_save()
+	 *
+	 * @param - $settings (array) the individual side box settings
+	 * @return: (mixed) the return value of the called module function or
+	 * (bool) false on error
+	 */
+	public function do_settings_save($settings)
+	{
+		$retval = $this->run('settings_save', $settings);
+		if($retval)
+		{
+			return $retval;
+		}
+		return $settings;
 	}
 }
 

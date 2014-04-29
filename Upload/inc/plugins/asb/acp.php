@@ -190,6 +190,7 @@ EOF;
 	</script>
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
 	<script src="../jscripts/scriptaculous.js?load=effects,dragdrop,controls" type="text/javascript"></script>
+	<script type="text/javascript" src="jscripts/peeker.js"></script>
 	<script src="jscripts/imodal.js" type="text/javascript"></script>
 	<link rel="stylesheet" type="text/css" href="styles/default/imodal.css"/>
 	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
@@ -369,6 +370,7 @@ function asb_admin_edit_box()
 						$settings[$setting['name']] = $mybb->input[$setting['name']];
 					}
 				}
+				$settings = $parent->do_settings_save($settings);
 				$sidebox->set('settings', $settings);
 			}
 		}
@@ -516,6 +518,7 @@ EOF;
 		// add a little CSS
 		$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
+	<script type="text/javascript" src="jscripts/peeker.js"></script>
 	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 
 EOF;
@@ -709,6 +712,8 @@ EOF;
 		}
 
 		$form_container->end();
+
+		$parent->do_settings_load();
 		echo "</div>\n";
 	}
 
