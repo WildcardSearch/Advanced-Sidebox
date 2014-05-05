@@ -7,7 +7,7 @@
  * contains language used on both forum and ACP side by add-on modules
  */
 
-$l['asb_addon'] = 'Add-on';
+$l['asb_addon'] = 'Addon';
 
 // default settings
 $l['asb_xmlhttp_on_title'] = 'AJAX Update?';
@@ -25,18 +25,8 @@ $l['asb_thread_show_list_desc'] = '(optional) add a thread id or a comma-separat
 $l['asb_thread_hide_list_title'] = 'Thread Hide List';
 $l['asb_thread_hide_list_desc'] = '(optional) add a thread id or a comma-separated list of tids to be <strong>excluded/hidden</strong> [If Forum Show List or Forum Hide List are in use, this settings <strong>will override and amend</strong>]';
 
-// examples
-$l['asb_example1_title'] = '[Example 1] Simplest Box';
-$l['asb_example1_desc'] = 'As simple as it gets. This box illustrates the easiest way to create an add-on module';
-
-$l['asb_example2_title'] = '[Example 2] Using Templates';
-$l['asb_example2_desc'] = 'A simple box to illustrate using templates to produce content';
-
-$l['asb_example3_title'] = '[Example 3] Using Settings';
-$l['asb_example3_desc'] = 'A simple box to illustrate using settings to control content';
-$l['asb_example3_setting_anouncement_text'] = 'Announcement Text';
-$l['asb_example3_setting_anouncement_text_desc'] = 'this text will be styled and displayed';
-$l['asb_example3_info'] = 'Custom text can be used by entering a value for the Announcement Text.';
+$l['asb_important_threads_only_title'] = 'Important Threads Only?';
+$l['asb_important_threads_only_desc'] = "YES to only use 'stickied' threads, NO (default) to use any threads/posts";
 
 // welcome
 $l['asb_welcome'] = 'Welcome';
@@ -128,6 +118,9 @@ $l['asb_last_poster_avatar_desc'] = 'YES to show the avatar of the last poster, 
 $l['asb_avatar_width_title'] = 'Avatar Width';
 $l['asb_avatar_width_desc'] = 'width in pixels IF showing avatars';
 
+$l['asb_new_threads_only_title'] = 'New Threads Only?';
+$l['asb_new_threads_only_desc'] = 'enter nothing or 0 to show all threads with new posts (default), or enter the amount of days to show only threads created within that time';
+
 //  recent posts
 $l['asb_recent_posts'] = 'Recent Posts';
 $l['asb_recent_posts_desc'] = 'Lists the latest posts';
@@ -192,5 +185,59 @@ $l['asb_staff_online_max_staff_title'] = 'Staff Limit';
 $l['asb_staff_online_max_staff_desc'] = 'maximal number of staff members to display';
 
 $l['asb_staff_online_no_staff_online'] = 'There are no staff members currently online.';
+
+// slideshow
+$l['asb_slideshow'] = 'Slideshow';
+$l['asb_slideshow_desc'] = 'Display images in series with configurable options';
+
+$l['asb_slideshow_folder_title'] = 'Image Path';
+$l['asb_slideshow_folder_description'] = 'this is the folder that contains the images to display from the forum root. (Example: images OR images/english NOT http://myforum.com/images)';
+
+$l['asb_slideshow_rate_title'] = 'Rate';
+$l['asb_slideshow_rate_description'] = 'time in seconds to pause on each image';
+
+$l['asb_slideshow_shuffle_title'] = 'Shuffle?';
+$l['asb_slideshow_shuffle_description'] = 'YES (default) to randomize image order, NO to use default order';
+
+$l['asb_slideshow_fade_rate_title'] = 'Transistion Time';
+$l['asb_slideshow_fade_rate_description'] = 'time in seconds to fade from one image to the next';
+
+$l['asb_slideshow_footer_text_title'] = 'Footer Link Text';
+$l['asb_slideshow_footer_text_description'] = 'text for footer link, leave blank for no footer';
+
+$l['asb_slideshow_footer_url_title'] = 'Footer Link URL';
+$l['asb_slideshow_footer_url_description'] = 'URL for footer link, above setting must have a value before it will be effective';
+
+// top poster
+$l['asb_top_poster_title'] = 'Top Poster';
+$l['asb_top_poster_desc'] = 'Highlight the user of your forum with the most posts within a given time period';
+
+$l['asb_top_poster_no_one'] = 'no one';
+$l['asb_top_poster_no_posts'] = 'no posts';
+$l['asb_top_poster_no_avatar'] = 'no avatar';
+$l['asb_top_poster_posts'] = 'posts!';
+$l['asb_top_poster_congrats'] = 'Congratulations to {1}, our current top poster for the last {2} with {3} posts!';
+
+$l['asb_top_poster_time_frame_title'] = 'Time Frame';
+$l['asb_top_poster_time_frame_desc'] = 'time to compare for top poster stats';
+
+$l['asb_top_poster_avatar_size_title'] = 'Avatar Size';
+$l['asb_top_poster_avatar_size_desc'] = 'size in pixels for top poster avatar (leave blank to fill side box minus some padding)';
+
+$l['asb_top_poster_one_day_title'] = 'One Day';
+$l['asb_top_poster_one_week_title'] = 'One Week';
+$l['asb_top_poster_two_weeks_title'] = 'Two Weeks';
+$l['asb_top_poster_one_month_title'] = 'One Month';
+$l['asb_top_poster_three_months_title'] = 'Three Months';
+$l['asb_top_poster_six_months_title'] = 'Six Months';
+$l['asb_top_poster_one_year_title'] = 'One Year';
+
+$l['asb_top_poster_one_day'] = 'day';
+$l['asb_top_poster_one_week'] = 'week';
+$l['asb_top_poster_two_weeks'] = 'two weeks';
+$l['asb_top_poster_one_month'] = 'month';
+$l['asb_top_poster_three_months'] = 'three months';
+$l['asb_top_poster_six_months'] = 'six months';
+$l['asb_top_poster_one_year'] = 'year';
 
 ?>

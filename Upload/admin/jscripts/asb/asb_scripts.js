@@ -6,8 +6,8 @@
  * this file contains JavaScript for the ACP script edit functions
  */
 
-ASBScript = {
-	current: '',
+var ASB = (function(a) {
+	var current = '';
 
 	/**
 	 * init()
@@ -18,8 +18,7 @@ ASBScript = {
 	 *
 	 * @return: n/a
 	 */
-	init: function()
-	{
+	function init() {
 		// only show replace all options when selected
 		new Peeker($$(".replace_all"), $("replace_content"), /1/, true);
 
@@ -51,13 +50,13 @@ ASBScript = {
 
 		// watch the 'detected' selectors and send the chosen
 		// item to the appropriate text box
-		ASBScript.observeInputs();
+		observeInputs();
 
 		// watch the file name input and if it has changed on blur
 		// attempt to detect hooks, template and URL attributes (page, action)
 		// and display them as selectable lists
-		$('filename').observe('blur', ASBScript.update);
-	},
+		$('filename').observe('blur', update);
+	}
 
 	/**
 	 * update()
@@ -67,15 +66,14 @@ ASBScript = {
 	 * @param - event - (Event) the blur event object
 	 * @return: n/a
 	 */
-	update: function(event)
-	{
+	function update(event) {
 		// if nothing has changed, get out
-		if (this.value == ASBScript.current || this.value == '') {
+		if (this.value == current || this.value == '') {
 			return;
 		}
 
 		// otherwise, update the current script
-		ASBScript.current = this.value;
+		current = this.value;
 
 		// hide the 'detected' selectors
 		$('hook_list').hide();
@@ -90,16 +88,15 @@ ASBScript = {
 
 		// attempt to get the info
 		new Ajax.Request('index.php', {
-			parameters:
-			{
+			parameters: {
 				module: 'config-asb',
 				action: 'xmlhttp',
 				mode: 'analyze_script',
 				filename: this.value
 			},
-			onSuccess: ASBScript.showResults
+			onSuccess: showResults
 		});
-	},
+	}
 
 	/**
 	 * showResults()
@@ -109,8 +106,7 @@ ASBScript = {
 	 * @param - response - (Response) the XMLHTTP response object
 	 * @return: n/a
 	 */
-	showResults: function(response)
-	{
+	function showResults(response) {
 		// hide all the spinners
 		var spinners = $$('div.ajax_spinners');
 		for (x = 0; x < spinners.length; ++x) {
@@ -126,24 +122,24 @@ ASBScript = {
 		var info = response.responseText.evalJSON();
 
 		// if there is info, show it
-		if (info['hooks']) {
-			$('hook_list').innerHTML = info['hooks'];
+		if (info.hooks) {
+			$('hook_list').update(info.hooks);
 			$('hook_list').show();
 		}
 
-		if (info['templates']) {
-			$('template_list').innerHTML = info['templates'];
+		if (info.templates) {
+			$('template_list').update(info.templates);
 			$('template_list').show();
 		}
 
-		if (info['actions']) {
-			$('action_list').innerHTML = info['actions'];
+		if (info.actions) {
+			$('action_list').update(info.actions);
 			$('action_list').show();
 		}
 
 		// re-do our observation of the selectors now that they have been rebuilt
-		ASBScript.observeInputs();
-	},
+		observeInputs();
+	}
 
 	/**
 	 * observeInputs()
@@ -153,8 +149,7 @@ ASBScript = {
 	 * @param - response - (Response) the XMLHTTP response object
 	 * @return: n/a
 	 */
-	observeInputs: function ()
-	{
+	function  observeInputs() {
 		if ($('hook_selector')) {
 			$('hook_selector').observe('change', function(event) {
 				$('hook').value = this.value;
@@ -173,5 +168,24 @@ ASBScript = {
 			});
 		}
 	}
-};
-Event.observe(window, 'load', ASBScript.init);
+
+	/**
+	 * setCurrent()
+	 *
+	 * public setter
+	 *
+	 * @param - value - (String) the current file name
+	 * @return: n/a
+	 */
+	function setCurrent(value) {
+		current = value || '';
+	}
+
+	Event.observe(window, 'load', init);
+
+	a.scripts = {
+		setCurrent: setCurrent,
+	};
+
+	return a;
+})(ASB || {});

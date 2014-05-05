@@ -6,7 +6,7 @@
  * this file contains handlers for the side box toggle icon scripts
  */
 
-ASBColumns = {
+(function() {
 	/**
 	 * init()
 	 *
@@ -14,18 +14,17 @@ ASBColumns = {
 	 *
 	 * @return: n/a
 	 */
-	init: function()
-	{
+	function init() {
 		if ($('asb_hide_column_left')) {
 			// left show/hide icon click
-			$('asb_hide_column_left').observe('click', ASBColumns.toggle);
+			$('asb_hide_column_left').observe('click', toggle);
 		}
 
 		if ($('asb_hide_column_right')) {
 			// left show/hide icon click
-			$('asb_hide_column_right').observe('click', ASBColumns.toggle);
+			$('asb_hide_column_right').observe('click', toggle);
 		}
-	},
+	}
 
 	/**
 	 * toggle()
@@ -36,8 +35,7 @@ ASBColumns = {
 	 * @param - event - (Event) the click event object
 	 * @return: n/a
 	 */
-	toggle: function(event)
-	{
+	function toggle(event) {
 		// the link does nothing if JS is deactivated and until the page has fully loaded
 		Event.stop(event);
 
@@ -68,5 +66,5 @@ ASBColumns = {
 			Cookie.unset(cookieName);
 		}
 	}
-};
-Event.observe(window, 'load', ASBColumns.init);
+	Event.observe(window, 'load', init);
+})();

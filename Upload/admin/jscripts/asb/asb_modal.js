@@ -7,8 +7,7 @@
  * https://prototype.lighthouseapp.com/projects/8886/tickets/1384
  */
 
-MyModal = Class.create(MyModal,
-{
+var ASB = (function(a) {
 	/**
 	 * submit()
 	 *
@@ -17,16 +16,16 @@ MyModal = Class.create(MyModal,
 	 * of the Prototype JS library when serializing multiple
 	 * select elements
 	 *
-	 * @param - event - (Event) the submit event object
+	 * @param - e - (Event) the submit event object
 	 * @return: n/a
 	 */
-	submit: function(event)
-	{
-		Event.stop(event);
+	function submit(e) {
+		var form, select, selects, option, options, newElement, s, o;
+
+		Event.stop(e);
 		this.showOverlayLoader();
 
 		// get all the select elements on this form
-		var form, select, selects, option, options, newElement, s, o;
 		form = $(this.options.formId);
 		selects = $$('#' + this.options.formId + ' select');
 
@@ -63,4 +62,28 @@ MyModal = Class.create(MyModal,
             onComplete: this.onComplete.bind(this),
         });
 	}
-});
+
+	/**
+	 * displayModal()
+	 *
+	 * intercept module errors if necessary
+	 *
+	 * @param - $super - (Function) the parent function
+	 * @param - data - (String) the HTML
+	 * @return: n/a
+	 */
+	function displayModal($super, data) {
+		if(data == '<error>asb</error>') {
+			window.location = "./index.php?module=config-asb";
+			return;
+		}
+		$super(data);
+	}
+
+	a.Modal = Class.create(MyModal, {
+		submit: submit,
+		displayModal: displayModal,
+	});
+
+	return a;
+})(ASB || {});

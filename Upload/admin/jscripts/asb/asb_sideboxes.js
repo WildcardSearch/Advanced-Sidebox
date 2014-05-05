@@ -6,8 +6,8 @@
  * this file contains JavaScript for the ACP side box functions
  */
 
-Sidebox = {
-	columns: ['left_column', 'right_column', 'trash_column'],
+var ASB = (function(a) {
+	var columns = ['left_column', 'right_column', 'trash_column'];
 
 	/**
 	 * init()
@@ -18,12 +18,11 @@ Sidebox = {
 	 *
 	 * @return: n/a
 	 */
-	init: function()
-	{
-		Sidebox.buildColumns();
+	function init() {
+		buildColumns();
 
 		// observe the edit links on side boxes
-		$$("a[id^='edit_sidebox_']").invoke('observe', 'click', Sidebox.edit);
+		$$("a[id^='edit_sidebox_']").invoke('observe', 'click', edit);
 
 		// remove the delete icon as we have the trash column
 		$$('.del_icon').each(function(e) {
@@ -34,7 +33,7 @@ Sidebox = {
 		$$('.add_box_link').each(function(e) {
 			e.replace(e.innerHTML);
 		});
-	},
+	}
 
 	/* columns */
 
@@ -45,17 +44,16 @@ Sidebox = {
 	 *
 	 * @return: n/a
 	 */
-	buildColumns: function()
-	{
+	function buildColumns() {
 		// set up our columns
-		for (var i = 0; i < Sidebox.columns.length; i++) {
-			var column = Sidebox.columns[i];
-			Sidebox.buildSortable(column);
+		for (var i = 0; i < columns.length; i++) {
+			var column = columns[i];
+			buildSortable(column);
 			if (column != 'trash_column') {
-				Sidebox.buildDroppable(column);
+				buildDroppable(column);
 			}
 		}
-	},
+	}
 
 	/**
 	 * buildSortable()
@@ -65,34 +63,30 @@ Sidebox = {
 	 * @param - id - (string) the sortable column id
 	 * @return: n/a
 	 */
-	buildSortable: function(id)
-	{
+	function buildSortable(id) {
 		Sortable.create(id, {
 			tag: 'div',
 			dropOnEmpty: true,
-			containment: Sidebox.columns,
+			containment: columns,
 			only: 'sidebox',
-			onUpdate: function(dragged, dropped, event)
-			{
+			onUpdate: function(dragged, dropped, event) {
 				// when the order changes use AJAX to store the affected side boxes
 				new Ajax.Request('index.php', {
 					method: "post",
-					parameters:
-					{
+					parameters: {
 						module: 'config-asb',
 						action: 'xmlhttp',
 						mode: 'order',
 						pos: id,
 						data: Sortable.serialize(id)
 					},
-					onSuccess: function(response)
-					{
-						Sidebox.removeDivs(response.responseText.split(','));
+					onSuccess: function(response) {
+						removeDivs(response.responseText.split(','));
 					}
 				});
 			}
 		});
-	},
+	}
 
 	/**
 	 * buildDroppable()
@@ -102,14 +96,13 @@ Sidebox = {
 	 * @param - id - (string) the droppable column id
 	 * @return: n/a
 	 */
-	buildDroppable: function(id)
-	{
+	function buildDroppable(id) {
 		Droppables.add(id, {
 			accept: 'draggable',
 			hoverclass: 'hover',
-			onDrop: Sidebox.create
+			onDrop: create
 		});
-	},
+	}
 
 	/* side boxes */
 
@@ -121,17 +114,16 @@ Sidebox = {
 	 * @param - event - (Event) the click event object
 	 * @return: n/a
 	 */
-	edit: function(event)
-	{
+	function edit(event) {
 		// stop the link from redirecting the user-- set up this way so that if JS is disabled the user goes to a standard form rather than a modal edit form
 		Event.stop(event);
 
 		// create the modal edit box dialog
-		new MyModal({
+		new a.Modal({
 			type: 'ajax',
 			url: this.readAttribute('href') + '&ajax=1'
 		});
-	},
+	}
 
 	/**
 	 * create()
@@ -142,8 +134,7 @@ Sidebox = {
 	 * @param - dropped - (element) the column div
 	 * @return: n/a
 	 */
-	create: function(dragged, dropped)
-	{
+	function create(dragged, dropped) {
 		// sort by position
 		var pos = 1;
 		if (dropped.id == 'left_column') {
@@ -151,26 +142,25 @@ Sidebox = {
 		}
 
 		// create the dialog
-		new MyModal({
+		new a.Modal({
 			type: 'ajax',
 			url: 'index.php?module=config-asb&action=edit_box&ajax=1&box=0&addon=' + dragged.id + '&pos=' + pos
 		});
-	},
+	}
 
 	/* side box divs */
 
 	/**
 	 * createDiv()
 	 *
-	 * create a simple side box div to be completed by Sidebox.updateDiv()
+	 * create a simple side box div to be completed by updateDiv()
 	 *
 	 * @param - id - (int) the side box's database id
 	 * @param - title - (string) the side box's title
 	 * @param - columnId - (string) the id attribute of the column
 	 * @return: n/a
 	 */
-	createDiv: function(id, title, columnId)
-	{
+	function createDiv(id, title, columnId) {
 		if (!$(columnId)) {
 			return;
 		}
@@ -180,8 +170,8 @@ Sidebox = {
 			class: 'sidebox'
 		}).update(title));
 
-		Sidebox.buildColumns();
-	},
+		buildColumns();
+	}
 
 	/**
 	 * updateDiv()
@@ -191,18 +181,15 @@ Sidebox = {
 	 * @param - id - (int) the side box's database id
 	 * @return: n/a
 	 */
-	updateDiv: function(id)
-	{
+	function updateDiv(id) {
 		var sideboxId = 'sidebox_' + id;
-		if(!$(sideboxId))
-		{
+		if (!$(sideboxId)) {
 			return;
 		}
 
 		new Ajax.Updater(sideboxId, 'index.php', {
 			method: 'get',
-			parameters:
-			{
+			parameters: {
 				module: 'config-asb',
 				action: 'xmlhttp',
 				mode: 'build_info',
@@ -210,7 +197,7 @@ Sidebox = {
 			},
 			evalScripts: true
 		});
-	},
+	}
 
 	/**
 	 * removeDivs()
@@ -220,8 +207,7 @@ Sidebox = {
 	 * @param - ids - (Array) an array of integer ids
 	 * @return: n/a
 	 */
-	removeDivs: function(ids)
-	{
+	function removeDivs(ids) {
 		if (ids.length == 0) {
 			return;
 		}
@@ -240,5 +226,13 @@ Sidebox = {
 			sidebox.fade({ duration: .8 });
 		}
 	}
-};
-Event.observe(window, 'load', Sidebox.init);
+
+	Event.observe(window, 'load', init);
+
+	a.sidebox = {
+		createDiv: createDiv,
+		updateDiv: updateDiv,
+	};
+
+	return a;
+})(ASB || {});

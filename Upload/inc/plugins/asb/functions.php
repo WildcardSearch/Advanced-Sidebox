@@ -19,22 +19,53 @@ function asb_do_checks()
 	global $mybb, $theme;
 
 	// if the EXCLUDE list isn't empty and this theme is listed . . .
-	$exclude_list = unserialize($mybb->settings['asb_exclude_theme']);
-	if(is_array($exclude_list) && in_array($theme['tid'], $exclude_list))
+	$exclude_list = asb_get_excluded_themes();
+	if($exclude_list && in_array($theme['tid'], $exclude_list))
 	{
 		// no side boxes for you
 		return false;
 	}
 
 	/*
-	 * if the current user is not a guest and has disabled the side
-	 * box display in UCP then do not display the side boxes
+	 * if the current user is not a guest, admin has allowed disabling side box
+	 * display and the user has chosen to do so then do not display
 	 */
 	if($mybb->settings['asb_allow_user_disable'] && $mybb->user['uid'] != 0 && $mybb->user['show_sidebox'] == 0)
 	{
 		return false;
 	}
 	return true;
+}
+
+/*
+ * asb_get_excluded_themes()
+ *
+ * get the tids of any excluded themes
+ *
+ * @return: (array) the list of excluded themes (bool) false on fail
+ */
+function asb_get_excluded_themes($sql = false)
+{
+	global $mybb;
+
+	$retval = unserialize($mybb->settings['asb_exclude_theme']);
+	if(!is_array($retval) || empty($retval))
+	{
+		$retval  = false;
+	}
+
+	if($sql)
+	{
+		if($retval)
+		{
+			$retval = ' AND pid NOT IN(' . implode(',', $retval) . ')';
+		}
+		else
+		{
+			$retval = '';
+		}
+	}
+	return $retval;
 }
 
 /*
@@ -49,7 +80,7 @@ function asb_get_cache()
 	global $cache;
 	static $asb;
 
-	// if we've already retrieved it (we will do it thrice per script)
+	// if we've already retrieved it (we will do it twice per script)
 	// then just return the static copy, otherwise retrieve it
 	if(!isset($asb) || empty($asb))
 	{
@@ -162,12 +193,19 @@ function asb_build_cache(&$asb)
 					$settings = $sidebox->get('settings');
 
 					// again, default here is off if anything goes wrong
-					if($settings['xmlhttp_on']['value'])
+					if($settings['xmlhttp_on'])
 					{
 						// if all is good add the script building info
 						$asb['scripts'][$filename]['extra_scripts'][$module]['position'] = $pos;
 						$asb['scripts'][$filename]['extra_scripts'][$module]['id'] = $id;
-						$asb['scripts'][$filename]['extra_scripts'][$module]['rate'] = $settings['xmlhttp_on']['value'];
+						$asb['scripts'][$filename]['extra_scripts'][$module]['rate'] = $settings['xmlhttp_on'];
+					}
+				}
+
+				if($addons[$module]->has_scripts)
+				{
+					foreach($addons[$module]->get('scripts') as $script) {
+						$asb['scripts'][$filename]['js'][$script] = $script;
 					}
 				}
 			}
@@ -275,6 +313,7 @@ function asb_get_this_script($asb, $get_all = false)
 	// merge any globally visible (script-wise) side boxes with this script
 	$return_array['template_vars'] = array_merge((array) $asb['scripts']['global']['template_vars'], (array) $return_array['template_vars']);
 	$return_array['extra_scripts'] = (array) $asb['scripts']['global']['extra_scripts'] + (array) $return_array['extra_scripts'];
+	$return_array['js'] = (array) $asb['scripts']['global']['js'] + (array) $return_array['js'];
 
 	// the template handler does not need side boxes and templates
 	if(!$get_all)
@@ -410,7 +449,7 @@ function asb_build_sidebox_content($this_box)
 	}
 
 	// build our info
-	foreach(array('id', 'box_type', 'wrap_content', 'title') as $key)
+	foreach(array('id', 'box_type', 'wrap_content', 'title', 'title_link') as $key)
 	{
 		if(isset($data[$key]))
 		{
@@ -431,24 +470,30 @@ function asb_build_sidebox_content($this_box)
 		$sidebox['expdisplay_id'] = "{$box_type}_{$id}_e";
 		$sidebox['name'] = "{$id}_{$box_type}_" . TIME_NOW;
 		$sidebox['class'] = $sidebox['id'] = "{$box_type}_main_{$id}";
-		$sidebox['title'] = $title;
 		$sidebox['content'] = $content;
+		$sidebox['title'] = $title;
+		if($title_link)
+		{
+			$sidebox['title'] = <<<EOF
+<a href="{$title_link}">{$title}</a>
+EOF;
+		}
 
 		if($mybb->settings['asb_show_expanders'])
 		{
 			// check if this side box is either expanded or collapsed and hide it as necessary.
 			$expdisplay = '';
 			$collapsed_name = "{$box_type}_{$id}_c";
-			if(isset($collapsed[$collapsed_name]) && $collapsed[$collapsed_name] == "display: show;")
+			if(isset($collapsed[$collapsed_name]) && $collapsed[$collapsed_name] == 'display: show;')
 			{
-				$expcolimage = "collapse_collapsed.gif";
-				$expdisplay = "display: none;";
-				$expaltext = "[+]";
+				$expcolimage = 'collapse_collapsed.gif';
+				$expdisplay = 'display: none;';
+				$expaltext = '[+]';
 			}
 			else
 			{
-				$expcolimage = "collapse.gif";
-				$expaltext = "[-]";
+				$expcolimage = 'collapse.gif';
+				$expaltext = '[-]';
 			}
 			eval("\$expander = \"" . $templates->get('asb_expander') . "\";");
 		}
@@ -593,6 +638,38 @@ function asb_get_all_scripts()
 			$filename = asb_build_script_filename($this_script);
 			$return_array[$filename] = $this_script;
 		}
+	}
+	return $return_array;
+}
+
+/*
+ * asb_get_all_themes()
+ *
+ * rebuilds the theme exclude list ACP setting
+ *
+ * @return: (string) the <select> HTML or false on error
+ */
+function asb_get_all_themes($full = false)
+{
+	global $db;
+
+	if($full != true)
+	{
+		$excluded_themes = asb_get_excluded_themes(true);
+	}
+
+	// get all the themes that are not MasterStyles
+	$query = $db->simple_select('themes', 'tid, name', "NOT pid='0'{$excluded_themes}");
+
+	$return_array = array();
+	if($db->num_rows($query) == 0)
+	{
+		return $return_array;
+	}
+
+	while($this_theme = $db->fetch_array($query))
+	{
+		$return_array[$this_theme['tid']] = $this_theme['name'];
 	}
 	return $return_array;
 }

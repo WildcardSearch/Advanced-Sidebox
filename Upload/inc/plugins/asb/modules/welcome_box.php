@@ -33,10 +33,11 @@ function asb_welcome_box_info()
 		"title" => $lang->asb_welcome,
 		"description" => $lang->asb_welcome_desc,
 		"wrap_content" => true,
-		"version" => "1.3.2",
+		"version" => '1.3.2',
+		"compatibility" => '2.1',
 		"templates" => array(
 			array(
-				"title" => "asb_welcome",
+				"title" => 'asb_welcome',
 				"template" => <<<EOF
 				<tr>
 					<td class=\"trow1\">
@@ -46,7 +47,7 @@ function asb_welcome_box_info()
 EOF
 			),
 			array(
-				"title" => "asb_welcome_membertext",
+				"title" => 'asb_welcome_membertext',
 				"template" => <<<EOF
 				{\$user_avatar}<span class="smalltext"><em>{\$lang->asb_welcome_member_welcome_lastvisit}:</em> {\$lastvisit}<br />
 				{\$lang->since_then}<br />
@@ -58,7 +59,7 @@ EOF
 EOF
 			),
 			array(
-				"title" => "asb_welcome_guesttext",
+				"title" => 'asb_welcome_guesttext',
 				"template" => <<<EOF
 				<span class="smalltext">{\$lang->asb_welcome_guest_welcome_registration}</span><br />
 				<br />
@@ -98,12 +99,12 @@ function asb_welcome_box_build_template($args)
 	{
 		// Get number of new posts, threads, announcements
 		$query = $db->simple_select("posts", "COUNT(pid) AS newposts", "visible=1 AND dateline>'" . $mybb->user['lastvisit'] . "' $unviewwhere");
-		$newposts = $db->fetch_field($query, "newposts");
+		$newposts = $db->fetch_field($query, 'newposts');
 		if($newposts)
 		{
 			// If there aren't any new posts, there is no point in wasting two more queries
-			$query = $db->simple_select("threads", "COUNT(tid) AS newthreads", "visible=1 AND dateline>'" . $mybb->user['lastvisit'] . "' $unviewwhere");
-			$newthreads = $db->fetch_field($query, "newthreads");
+			$query = $db->simple_select('threads', 'COUNT(tid) AS newthreads', "visible=1 AND dateline>'{$mybb->user['lastvisit']}' {$unviewwhere}");
+			$newthreads = $db->fetch_field($query, 'newthreads');
 
 			$announcementsfids = explode(',', $mybb->settings['portal_announcementsfid']);
 			if(is_array($announcementsfids))
@@ -114,8 +115,8 @@ function asb_welcome_box_build_template($args)
 				}
 
 				$announcementsfids = implode(',', $fid_array);
-				$query = $db->simple_select("threads", "COUNT(tid) AS newann", "visible=1 AND dateline>'" . $mybb->user['lastvisit'] . "' AND fid IN (" . $announcementsfids . ") $unviewwhere");
-				$newann = $db->fetch_field($query, "newann");
+				$query = $db->simple_select('threads', 'COUNT(tid) AS newann', "visible=1 AND dateline>'{$mybb->user['lastvisit']}' AND fid IN ({$announcementsfids}) {$unviewwhere}");
+				$newann = $db->fetch_field($query, 'newann');
 			}
 
 			if(!$newthreads)
@@ -165,7 +166,7 @@ function asb_welcome_box_build_template($args)
 
 		// if the user has an avatar then display it, otherwise force the default avatar.
 		$avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
-		if($mybb->user['avatar'] != "")
+		if($mybb->user['avatar'] != '')
 		{
 			$avatar_filename = $mybb->user['avatar'];
 		}
@@ -194,11 +195,11 @@ EOF;
 			$username = $lang->username;
 			break;
 		}
-		eval("\$welcometext = \"" . $templates->get("asb_welcome_guesttext") . "\";");
+		eval("\$welcometext = \"" . $templates->get('asb_welcome_guesttext') . "\";");
 	}
 
 	$lang->welcome = $lang->sprintf($lang->welcome, $mybb->user['username']);
-	eval("\$" . $template_var . " = \"" . $templates->get("asb_welcome") . "\";");
+	eval("\$" . $template_var . " = \"" . $templates->get('asb_welcome') . "\";");
 	return true;
 }
 

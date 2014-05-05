@@ -9,10 +9,7 @@
  */
 
 // thanks to http://www.fluther.com/users/adrianscott/
-Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
-{
-	phpTimeDiff: 0,
-
+var ASB = (function(a) {
 	/**
 	 * initialize()
 	 *
@@ -24,8 +21,7 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 	 * @param - options - (object) various options for the updater
 	 * @return: n/a
 	 */
-	initialize: function($super, container, url, options)
-	{
+	function initialize($super, container, url, options) {
 		// set up our parent object
 		$super(options);
 
@@ -42,7 +38,7 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 
 		// initiate the timer
 		this.start();
-	},
+	}
 
 	/**
 	 * start()
@@ -51,11 +47,10 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 	 *
 	 * @return: n/a
 	 */
-	start: function()
-	{
+	function start() {
 		this.options.onComplete = this.updateComplete.bind(this);
 		this.timer = this.onTimerEvent.bind(this).delay(this.decay * this.frequency);
-	},
+	}
 
 	/**
 	 * stop()
@@ -64,12 +59,11 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 	 *
 	 * @return: n/a
 	 */
-	stop: function()
-	{
+	function stop() {
 		this.updater.options.onComplete = undefined;
 		clearTimeout(this.timer);
 		(this.onComplete || Prototype.emptyFunction).apply(this, arguments);
-	},
+	}
 
 	/**
 	 * updateComplete()
@@ -79,8 +73,7 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 	 * @param - response - (Response) the XMLHTTP response object
 	 * @return: n/a
 	 */
-	updateComplete: function(response)
-	{
+	function updateComplete(response) {
 		// good response?
 		if (response.responseText && response.responseText != 'nochange') {
 			// might add this option later
@@ -99,7 +92,7 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 
 		// key up to do it again
 		this.timer = this.onTimerEvent.bind(this).delay(this.decay * this.frequency);
-	},
+	}
 
 	/**
 	 * onTimerEvent()
@@ -108,8 +101,7 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 	 *
 	 * @return: n/a
 	 */
-	onTimerEvent: function()
-	{
+	function onTimerEvent() {
 		// don't update collapsed side boxes (thanks again, Destroy666)
 		if (this.container.offsetWidth <= 0 && this.container.offsetHeight <= 0) {
 			// just reset the timer and get out
@@ -120,31 +112,40 @@ Ajax.SideboxPeriodicalUpdater = Class.create(Ajax.Base,
 		// and finally, this is what we are doing every {rate} seconds
 		this.updater = new Ajax.Request(this.url, this.options);
 	}
-});
 
-/*
- * asbBuildUpdaters()
- *
- * prepare the Updater objects
- *
- * @param - updaters - (array) an array filled with objects filled with side box details
- * @param - widths - (object) widths for both positions
- * @return: n/a
- */
-function asbBuildUpdaters(updaters, widths)
-{
-	// no objects in the array
-	if (updaters.length == 0) {
-		// get out
-		return;
-	}
+	SideboxUpdater = Class.create(Ajax.Base, {
+		initialize: initialize,
+		start: start,
+		stop: stop,
+		updateComplete: updateComplete,
+		onTimerEvent: onTimerEvent,
+	});
 
-	var this_id = '', width = 0;
-	for (var i = 0; i < updaters.length; i++) {
-		// build the element ID
-		this_id = updaters[i].addon + '_main_' + updaters[i].id;
+	/*
+	 * buildUpdaters()
+	 *
+	 * prepare the Updater objects
+	 *
+	 * @param - updaters - (array) an array filled with objects filled with side box details
+	 * @param - widths - (object) widths for both positions
+	 * @return: n/a
+	 */
+	function buildUpdaters(updaters, widths, script) {
+		// no objects in the array
+		if (updaters.length == 0) {
+			// get out
+			return;
+		}
 
-		if ($(this_id)) {
+		var this_id = '', width = 0;
+		for (var i = 0; i < updaters.length; i++) {
+			// build the element ID
+			this_id = updaters[i].addon + '_main_' + updaters[i].id;
+
+			if (!$(this_id)) {
+				continue;
+			}
+
 			// get the correct width
 			width = widths.left;
 			if (updaters[i].position) {
@@ -152,19 +153,24 @@ function asbBuildUpdaters(updaters, widths)
 			}
 
 			// this object will only update when a valid response is received
-			new Ajax.SideboxPeriodicalUpdater(this_id, 'xmlhttp.php',
-			{
-				parameters:
-				{
+			new SideboxUpdater(this_id, 'xmlhttp.php', {
+				parameters: {
 					action: 'asb',
 					id: updaters[i].id,
 					addon: updaters[i].addon,
 					dateline: updaters[i].dateline,
-					width: width
+					width: width,
+					script: script,
 				},
 				method: 'get',
 				frequency: updaters[i].rate
 			});
 		}
 	}
-}
+
+	a.ajax = {
+		buildUpdaters: buildUpdaters,
+	};
+
+	return a;
+})(ASB || {});

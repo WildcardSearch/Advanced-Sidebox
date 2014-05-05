@@ -155,7 +155,7 @@ EOF;
  *
  * build a popup with a table of side box permission info
  *
- * @param - $id is the numeric id of the sidebox
+ * @param - $id - (int) the numeric id of the sidebox
  * @return: (string) the permission table HTML
  */
 function asb_build_permissions_table($id)
@@ -165,26 +165,61 @@ function asb_build_permissions_table($id)
 		return false;
 	}
 
-	global $db, $lang, $all_scripts;
+	global $lang, $all_scripts;
 
 	$sidebox = new Sidebox($id);
 
 	if(!$sidebox->is_valid())
 	{
-		return false;
+		return $lang->asb_invalid_sidebox;
+	}
+
+	if(!$all_scripts)
+	{
+		return $lang->asb_no_active_scripts;
+	}
+
+	$visibility_rows = asb_build_visibility_rows($sidebox, $group_count, $global);
+	$theme_list = asb_build_theme_visibility_list($sidebox, $group_count + 1, $global);
+
+	return <<<EOF
+<table width="100%" class="box_info">{$visibility_rows}{$theme_list}
+</table>
+EOF;
+}
+
+/*
+ * asb_build_visibility_rows()
+ *
+ * build HTML for the script/group table rows
+ *
+ * @param - $sidebox - (Sidebox object) is the sidebox to build the rows for
+ * @param - &$group_count - (int) a reference to the group count
+ * @param - &$global (bool) a reference to whether this return indicated global
+ * visibility
+ * @return: (string) the permission table row HTML
+ */
+function asb_build_visibility_rows($sidebox, &$group_count, &$global)
+{
+	global $db, $lang, $all_scripts;
+
+	if(!is_array($all_scripts) || empty($all_scripts))
+	{
+		return $lang->asb_no_active_scripts;
 	}
 
 	// prepare options for which groups
-	$options = array('Guests');
+	$options = array($lang->asb_guests);
 	$groups = array();
 
 	// look for all groups except Super Admins
-	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'gid'));
+	$query = $db->simple_select('usergroups', 'gid, title', "gid != '1'", array('order_by' => 'gid'));
 	while($usergroup = $db->fetch_array($query))
 	{
 		// store the titles by group id
 		$options[(int)$usergroup['gid']] = $usergroup['title'];
 	}
+	$group_count = $all_group_count = count($options);
 
 	$groups = $sidebox->get('groups');
 	$scripts = $sidebox->get('scripts');
@@ -193,11 +228,12 @@ function asb_build_permissions_table($id)
 	{
 		if(empty($groups))
 		{
-			return $lang->asb_globally_visible;
+			$global = true;
+			return "<tr><td class=\"vis_info\">{$lang->asb_globally_visible}</td></tr>";
 		}
 		elseif(isset($groups[0]) && strlen($groups[0]) == 0)
 		{
-			return $lang->asb_all_scripts_deactivated;
+			return "<tr><td class=\"vis_info\">{$lang->asb_all_scripts_deactivated}</td></tr>";
 		}
 		else
 		{
@@ -206,34 +242,19 @@ function asb_build_permissions_table($id)
 	}
 	elseif(isset($scripts[0]) && strlen($scripts[0]) == 0)
 	{
-		return $lang->asb_all_scripts_deactivated;
+		return "<tr><td class=\"vis_info\">{$lang->asb_all_scripts_deactivated}</td></tr>";
 	}
 
-	if(!is_array($all_scripts) || empty($all_scripts))
-	{
-		return false;
-	}
-
-	$all_group_count = count($options);
-	$info = <<<EOF
-
-<table width="100%" class="box_info">
-<tr>
-<td class="group_header"><strong>{$lang->asb_visibility}</strong></td>
-
-EOF;
-
+	$group_headers = '';
 	foreach($options as $gid => $title)
 	{
-		$info .= <<<EOF
-<td title="{$title}" class="group_header">{$gid}</td>
+		$group_headers .= <<<EOF
 
+		<td title="{$title}" class="group_header">{$gid}</td>
 EOF;
 	}
 
-	$info .= '	</tr>
-';
-
+	$script_rows = '';
 	foreach($all_scripts as $script => $script_title)
 	{
 		$script_title_full = '';
@@ -242,11 +263,13 @@ EOF;
 			$script_title_full = $script_title;
 			$script_title = substr($script_title, 0, 8) . '. . .';
 		}
-		$info .= <<<EOF
-<tr>
-<td class="script_header" title="{$script_title_full}">{$script_title}</td>
 
+		$script_rows .= <<<EOF
+
+	<tr>
+		<td class="script_header" title="{$script_title_full}">{$script_title}</td>
 EOF;
+
 		if(empty($scripts) || array_key_exists($script, $scripts) || in_array($script, $scripts))
 		{
 			if(empty($groups))
@@ -254,9 +277,9 @@ EOF;
 				$x = 1;
 				while($x <= $all_group_count)
 				{
-					$info .= <<<EOF
-<td class="info_cell on"></td>
+					$script_rows .= <<<EOF
 
+		<td class="info_cell on"></td>
 EOF;
 					++$x;
 				}
@@ -265,20 +288,15 @@ EOF;
 			{
 				foreach($options as $gid => $title)
 				{
+					$vis_class = 'off';
 					if(in_array($gid, $groups))
 					{
-						$info .= <<<EOF
-<td class="info_cell on"></td>
-
-EOF;
+						$vis_class = 'on';
 					}
-					else
-					{
-						$info .= <<<EOF
-<td class="info_cell off"></td>
+					$script_rows .= <<<EOF
 
+		<td class="info_cell {$vis_class}"></td>
 EOF;
-					}
 				}
 			}
 		}
@@ -287,20 +305,86 @@ EOF;
 			$x = 1;
 			while($x <= $all_group_count)
 			{
-				$info .= <<<EOF
-<td class="info_cell off"></td>
+				$script_rows .= <<<EOF
 
+		<td class="info_cell off"></td>
 EOF;
 				++$x;
 			}
 		}
 
-		$info .= '	</tr>
-';
+		$script_rows .= <<<EOF
+
+	</tr>
+EOF;
 	}
 
-	$info .= '</table>';
-	return $info;
+	return <<<EOF
+
+	<tr>
+		<td class="group_header"><strong>{$lang->asb_visibility}</strong></td>{$group_headers}
+	</tr>{$script_rows}
+EOF;
+}
+
+/*
+ * asb_build_theme_visibility_list()
+ *
+ * build HTML for the script/group table rows
+ *
+ * @param - $sidebox - (Sidebox object) is the sidebox to build the rows for
+ * @param - $colspan - (int) a reference to the group count
+ * @param - $global (bool) a reference to whether the perm rows return
+ * indicated global visibility
+ * @return: (string) the permission table row HTML
+ */
+function asb_build_theme_visibility_list($sidebox, $colspan, $global)
+{
+	global $lang;
+
+	$themes = asb_get_all_themes();
+	$good_themes = $sidebox->get('themes');
+
+	if(!$themes)
+	{
+		return false;
+	}
+
+	if(!$good_themes || count($good_themes) == count($themes))
+	{
+		$theme_list = $lang->asb_visibile_for_all_themes;
+		if($global)
+		{
+			return '';
+		}
+	}
+	else
+	{
+		$theme_list = '';
+		foreach($themes as $tid => $name)
+		{
+			if($good_themes && !in_array($tid, $good_themes))
+			{
+				$theme_list .= <<<EOF
+{$sep}<s>{$name}</s>
+EOF;
+			}
+			else
+			{
+				$theme_list .= <<<EOF
+{$sep}{$name}
+EOF;
+			}
+			$sep = ', ';
+		}
+	}
+
+	return <<<EOF
+
+	<tr>
+		<td colspan="{$colspan}">{$theme_list}</td>
+	</tr>
+EOF;
 }
 
 /*
@@ -339,7 +423,9 @@ EOF;
 	if(!$ajax)
 	{
 		$delete_link = $html->url(array("action" => 'delete_box', "id" => $id));
-		$delete_icon = "<a href=\"{$delete_link}\" class=\"del_icon\" title=\"{$lang->asb_delete}\"><img src=\"../inc/plugins/asb/images/delete.png\" height=\"18\" width=\"18\" alt=\"{$lang->asb_delete}\"/></a>";
+		$delete_icon = <<<EOF
+<a href="{$delete_link}" class="del_icon" title="{$lang->asb_delete}"><img src="../inc/plugins/asb/images/delete.png" height="18" width="18" alt="{$lang->asb_delete}"/></a>
+EOF;
 	}
 
 	// the content
@@ -541,7 +627,7 @@ function asb_build_filter_selector($filter)
 function asb_build_setting($this_form, $this_form_container, $setting)
 {
 	// create each element with unique id and name properties
-	$options = "";
+	$options = '';
 	$type = explode("\n", $setting['optionscode']);
     $type = array_map('trim', $type);
 	$element_name = "{$setting['name']}";
@@ -552,37 +638,37 @@ function asb_build_setting($this_form, $this_form_container, $setting)
 	$this_desc = '<i>' . $setting['description'] . '</i>';
 
 	// sort by type
-	if($type[0] == "text" || $type[0] == "")
+	if($type[0] == 'text' || $type[0] == '')
 	{
 		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_text_box($element_name, $setting['value'], array('id' => $element_id)), $element_name, array("id" => $element_id));
 	}
-	else if($type[0] == "textarea")
+	else if($type[0] == 'textarea')
 	{
 		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_text_area($element_name, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
 	}
-	else if($type[0] == "yesno")
+	else if($type[0] == 'yesno')
 	{
 		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_yes_no_radio($element_name, $setting['value'], true, array('id' => $element_id.'_yes', 'class' => $element_id), array('id' => $element_id.'_no', 'class' => $element_id)), $element_name, array('id' => $element_id));
 	}
-	else if($type[0] == "onoff")
+	else if($type[0] == 'onoff')
 	{
 		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_on_off_radio($element_name, $setting['value'], true, array('id' => $element_id.'_on', 'class' => $element_id), array('id' => $element_id.'_off', 'class' => $element_id)), $element_name, array('id' => $element_id));
 	}
-	else if($type[0] == "language")
+	else if($type[0] == 'language')
 	{
 		$languages = $lang->get_languages();
 		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
 	}
-	else if($type[0] == "adminlanguage")
+	else if($type[0] == 'adminlanguage')
 	{
 		$languages = $lang->get_languages(1);
 		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
 	}
-	else if($type[0] == "passwordbox")
+	else if($type[0] == 'passwordbox')
 	{
 		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_password_box($element_name, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
 	}
-	else if($type[0] == "php")
+	else if($type[0] == 'php')
 	{
 		$setting['optionscode'] = substr($setting['optionscode'], 3);
 		eval("\$setting_code = \"" . $setting['optionscode'] . "\";");
@@ -591,17 +677,17 @@ function asb_build_setting($this_form, $this_form_container, $setting)
 	{
 		for($i=0; $i < count($type); $i++)
 		{
-			$optionsexp = explode("=", $type[$i]);
+			$optionsexp = explode('=', $type[$i]);
 			if(!$optionsexp[1])
 			{
 				continue;
 			}
 
-			if($type[0] == "select")
+			if($type[0] == 'select')
 			{
 				$option_list[$optionsexp[0]] = htmlspecialchars_uni($optionsexp[1]);
 			}
-			else if($type[0] == "radio")
+			else if($type[0] == 'radio')
 			{
 				if($setting['value'] == $optionsexp[0])
 				{
@@ -612,7 +698,7 @@ function asb_build_setting($this_form, $this_form_container, $setting)
 					$option_list[$i] = $this_form->generate_radio_button($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'class' => $element_id));
 				}
 			}
-			else if($type[0] == "checkbox")
+			else if($type[0] == 'checkbox')
 			{
 				if($setting['value'] == $optionsexp[0])
 				{
@@ -624,13 +710,13 @@ function asb_build_setting($this_form, $this_form_container, $setting)
 				}
 			}
 		}
-		if($type[0] == "select")
+		if($type[0] == 'select')
 		{
 			$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $option_list, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
 		}
 		else
 		{
-			$setting_code = implode("<br />", $option_list);
+			$setting_code = implode('<br />', $option_list);
 		}
 	}
 

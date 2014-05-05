@@ -159,7 +159,7 @@ div.draggable {
 	position: relative;
 }
 
-.tooltip span {
+.tooltip span.info {
 	margin-left: -999em;
 	position: absolute;
 }
@@ -200,6 +200,10 @@ div.draggable {
 .info {
 	background: #D6E8FF;
 	border: 1px solid #2BB0D7;
+}
+
+.vis_info {
+	background: #D6E8FF;
 }
 
 .info_icon {

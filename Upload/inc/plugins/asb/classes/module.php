@@ -9,7 +9,7 @@
 
 if(!class_exists('MalleableObject'))
 {
-	require_once MYBB_ROOT . "inc/plugins/asb/classes/malleable.php";
+	require_once MYBB_ROOT . 'inc/plugins/asb/classes/malleable.php';
 }
 
 /*
@@ -120,16 +120,19 @@ abstract class ExternalModule extends MalleableObject implements ExternalModuleI
 class Addon_type extends ExternalModule
 {
 	protected $author = 'Wildcard';
-	protected $author_site = 'http://wildcardsearch.github.com/Advanced-Sidebox';
+	protected $author_site = '';
+	protected $module_site = 'https://github.com/WildcardSearch/Advanced-Sidebox';
 	protected $settings = array();
 	public $has_settings = false;
+	protected $scripts = array();
+	public $has_scripts = false;
 	protected $templates = array();
 	public $xmlhttp = false;
 	protected $is_installed = false;
 	protected $is_upgraded = false;
 	protected $old_version = 0;
-	protected $version = 0;
-	protected $discarded_settings = array();
+	protected $version = '0';
+	protected $compatibility = '0';
 	protected $discarded_templates = array();
 	protected $wrap_content = false;
 	protected $prefix = 'asb';
@@ -145,25 +148,32 @@ class Addon_type extends ExternalModule
 	public function load($module)
 	{
 		// input is necessary
-		if(parent::load($module))
+		if(!parent::load($module))
 		{
-			$this->has_settings = !empty($this->settings);
-			$this->old_version = $this->get_cache_version();
-
-			// if this module needs to be upgraded . . .
-			if(version_compare($this->old_version, $this->version, '<') && !defined('IN_ASB_UNINSTALL'))
-			{
-				// get-r-done
-				$this->upgrade();
-			}
-			else
-			{
-				// otherwise mark upgrade status
-				$this->is_upgraded = $this->is_installed = true;
-			}
-			return true;
+			return false;
 		}
-		return false;
+
+		if(!$this->compatibility || version_compare('2.1', $this->compatibility, '<'))
+		{
+			return false;
+		}
+
+		$this->has_settings = !empty($this->settings);
+		$this->has_scripts = !empty($this->scripts);
+		$this->old_version = $this->get_cache_version();
+
+		// if this module needs to be upgraded . . .
+		if(version_compare($this->old_version, $this->version, '<') && !defined('IN_ASB_UNINSTALL'))
+		{
+			// get-r-done
+			$this->upgrade();
+		}
+		else
+		{
+			// otherwise mark upgrade status
+			$this->is_upgraded = $this->is_installed = true;
+		}
+		return true;
 	}
 
 	/*
@@ -199,7 +209,7 @@ class Addon_type extends ExternalModule
 			// if it exists, update
 			if($db->num_rows($query) > 0)
 			{
-				$db->update_query("templates", $template, "title='{$template['title']}' AND sid IN('-2', '-1')");
+				$db->update_query('templates', $template, "title='{$template['title']}' AND sid IN('-2', '-1')");
 			}
 			else
 			{
@@ -210,7 +220,7 @@ class Addon_type extends ExternalModule
 
 		if(!empty($insert_array))
 		{
-			$db->insert_query_multiple("templates", $insert_array);
+			$db->insert_query_multiple('templates', $insert_array);
 		}
 	}
 
@@ -227,14 +237,6 @@ class Addon_type extends ExternalModule
 	 */
 	public function uninstall($cleanup = true)
 	{
-		global $db;
-
-		// installed?
-		if(!$this->is_installed)
-		{
-			return;
-		}
-
 		$this->unset_cache_version();
 
 		// unless specifically asked not to, delete any boxes that use this module
@@ -259,6 +261,7 @@ class Addon_type extends ExternalModule
 
 		if($delete_list)
 		{
+			global $db;
 			$db->delete_query('templates', "title IN({$delete_list})");
 		}
 	}
@@ -288,7 +291,7 @@ class Addon_type extends ExternalModule
 			$delete_list = $sep = '';
 			foreach($this->discarded_templates as $template)
 			{
-				$delete_list .= "{$sep}'{$template['title']}'";
+				$delete_list .= "{$sep}'{$template}'";
 				$sep = ',';
 			}
 
@@ -395,20 +398,13 @@ class Addon_type extends ExternalModule
 				}
 			}
 
-			// update all the settings
+			// update any settings which are missing
 			foreach($this->settings as $name => $setting)
 			{
 				if(!isset($sidebox_settings[$name]))
 				{
 					// new setting-- default value
-					$sidebox_settings[$name] = $this->settings[$name];
-				}
-				else
-				{
-					// existing setting-- preserve value
-					$value = $sidebox_settings[$name]['value'];
-					$sidebox_settings[$name] = $setting;
-					$sidebox_settings[$name]['value'] = $value;
+					$sidebox_settings[$name] = $this->settings[$name]['value'];
 				}
 			}
 
@@ -485,9 +481,9 @@ class Addon_type extends ExternalModule
 	 * @return: (mixed) the return value of the called module function or
 	 * (bool) false on error
 	 */
-	public function build_template($settings, $template_var, $width)
+	public function build_template($settings, $template_var, $width, $script)
 	{
-		foreach(array('settings', 'template_var', 'width') as $key)
+		foreach(array('settings', 'template_var', 'width', 'script') as $key)
 		{
 			$args[$key] = $$key;
 		}
@@ -495,7 +491,7 @@ class Addon_type extends ExternalModule
 	}
 
 	/*
-	 * function do_xmlhttp()
+	 * do_xmlhttp()
 	 *
 	 * @param - $dateline (int) UNIX timestamp representing the last time
 	 * the side box was updated
@@ -512,6 +508,34 @@ class Addon_type extends ExternalModule
 			$args[$key] = $$key;
 		}
 		return $this->run('xmlhttp', $args);
+	}
+
+	/*
+	 * do_settings_load()
+	 *
+	 * @return: (mixed) the return value of the called module function or
+	 * (bool) false on error
+	 */
+	public function do_settings_load()
+	{
+		return $this->run('settings_load', $settings);
+	}
+
+	/*
+	 * do_settings_save()
+	 *
+	 * @param - $settings (array) the individual side box settings
+	 * @return: (mixed) the return value of the called module function or
+	 * (bool) false on error
+	 */
+	public function do_settings_save($settings)
+	{
+		$retval = $this->run('settings_save', $settings);
+		if($retval)
+		{
+			return $retval;
+		}
+		return $settings;
 	}
 }
 

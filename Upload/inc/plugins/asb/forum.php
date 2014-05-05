@@ -20,7 +20,7 @@ asb_initialize();
  */
 function asb_start()
 {
-	global $mybb;
+	global $mybb, $theme;
 
 	// side box, add-on and custom box classes
 	require_once MYBB_ROOT . 'inc/plugins/asb/classes/forum.php';
@@ -88,6 +88,13 @@ function asb_start()
 				continue;
 			}
 
+			// is this theme available for this side box?
+			$good_themes = $sidebox->get('themes');
+			if($good_themes && !in_array($theme['tid'], $good_themes))
+			{
+				continue;
+			}
+
 			$result = false;
 
 			// get the template variable
@@ -100,17 +107,9 @@ function asb_start()
 			// add-on module, so we can proceed
 			if($module->is_valid())
 			{
-				// if this side box doesn't have any settings, but the add-on module it was derived from does . . .
-				$settings = $sidebox->get('settings');
-				if($sidebox->has_settings == false && $module->has_settings)
-				{
-					// . . . this side box hasn't been upgraded to the new on-board settings system. Use the settings (and values) from the add-on module as default settings
-					$settings = $module->get('settings');
-				}
-
 				// build the template. pass settings, template variable
 				// name and column width
-				$result = $module->build_template($settings, $template_var, $width[$pos]);
+				$result = $module->build_template($sidebox->get('settings'), $template_var, $width[$pos], get_current_location());
 			}
 			// if it doesn't verify as an add-on, try it as a custom box
 			elseif(isset($asb['custom'][$module_name]) && is_array($asb['custom'][$module_name]))
@@ -123,6 +122,10 @@ function asb_start()
 					// build the custom box template
 					$result = $custom->build_template($template_var);
 				}
+			}
+			else
+			{
+				continue;
 			}
 
 			/*
@@ -141,13 +144,9 @@ function asb_start()
 		}
 	}
 
-	// load the template handler class definitions
+	// load the template handler class definition and make the edits
 	require_once MYBB_ROOT . 'inc/plugins/asb/classes/template_handler.php';
-
-	$template_handler = new TemplateHandler($boxes[0], $boxes[1], $width[0], $width[1], $this_script['extra_scripts'], $this_script['template_vars']);
-
-	// edit the templates (or eval() if any scripts require it)
-	$template_handler->make_edits();
+	ASBTemplateHandler::edit($boxes, $width, $this_script);
 }
 
 /*
@@ -166,12 +165,12 @@ function asb_initialize()
 	case 'usercp.php':
 		if($mybb->settings['asb_allow_user_disable'])
 		{
-			$plugins->add_hook("usercp_options_end", "asb_usercp_options_end");
-			$plugins->add_hook("usercp_do_options_end", "asb_usercp_options_end");
+			$plugins->add_hook('usercp_options_end', 'asb_usercp_options_end');
+			$plugins->add_hook('usercp_do_options_end', 'asb_usercp_options_end');
 		}
 		break;
 	case 'xmlhttp.php':
-		$plugins->add_hook("xmlhttp", "asb_xmlhttp");
+		$plugins->add_hook('xmlhttp', 'asb_xmlhttp');
 		break;
 	}
 
@@ -217,9 +216,9 @@ function asb_usercp_options_end()
 	}
 
     // if the form is being submitted save the users choice.
-	if($mybb->request_method == "post")
+	if($mybb->request_method == 'post')
     {
-		$db->update_query("users", array("show_sidebox" => (int) $mybb->input['showsidebox']), "uid='{$user['uid']}'");
+		$db->update_query('users', array("show_sidebox" => (int) $mybb->input['showsidebox']), "uid='{$user['uid']}'");
     }
 
 	// don't be silly and waste a query :p (thanks Destroy666)
@@ -277,7 +276,7 @@ function asb_xmlhttp()
 	if($module->is_valid() && $sidebox->is_valid())
 	{
 		// then call the module's AJAX method and echo its return value
-		echo($module->do_xmlhttp($mybb->input['dateline'], $sidebox->get('settings'), $mybb->input['width']));
+		echo($module->do_xmlhttp($mybb->input['dateline'], $sidebox->get('settings'), $mybb->input['width'], $mybb->input['script']));
 	}
 	exit;
 }

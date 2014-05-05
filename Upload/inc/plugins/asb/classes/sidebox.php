@@ -10,6 +10,7 @@
 class Sidebox extends StorableObject
 {
 	protected $title;
+	protected $title_link;
 	protected $box_type;
 	protected $position = 0;
 	protected $display_order;
@@ -18,6 +19,7 @@ class Sidebox extends StorableObject
 
 	protected $scripts = array();
 	protected $groups = array();
+	protected $themes = array();
 
 	protected $settings = array();
 	public $has_settings = false;
@@ -53,29 +55,16 @@ class Sidebox extends StorableObject
 	{
 		if($data && parent::load($data))
 		{
-			// are there settings?
-			if($this->settings)
+			foreach(array('settings', 'groups', 'scripts', 'themes') as $property)
 			{
-				// if so decode them
-				$this->settings = json_decode($this->settings, true);
-
-				// if they seem legit
-				$this->has_settings = (is_array($this->settings) && !empty($this->settings));
+				if($this->$property)
+				{
+					// if so decode them
+					$this->$property = json_decode($this->$property, true);
+				}
 			}
 
-			// are there settings?
-			if($this->groups)
-			{
-				// if so decode them
-				$this->groups = json_decode($this->groups, true);
-			}
-
-			// are there settings?
-			if($this->scripts)
-			{
-				// if so decode them
-				$this->scripts = json_decode($this->scripts, true);
-			}
+			$this->has_settings = (is_array($this->settings) && !empty($this->settings));
 			return true;
 		}
 		return false;

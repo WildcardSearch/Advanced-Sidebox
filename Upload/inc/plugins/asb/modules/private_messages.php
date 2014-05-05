@@ -8,9 +8,9 @@
  */
 
 // Include a check for Advanced Sidebox
-if(!defined("IN_MYBB") || !defined("IN_ASB"))
+if(!defined('IN_MYBB') || !defined('IN_ASB'))
 {
-	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
+	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
 /*
@@ -34,20 +34,21 @@ function asb_private_messages_info()
 		"description" => $lang->asb_private_messages_desc,
 		"wrap_content" => true,
 		"xmlhttp" => true,
-		"version" => "1.1.1",
+		"version" => '1.1.1',
+		"compatibility" => '2.1',
 		"settings" => array(
 			"xmlhttp_on" => array(
-				"sid"					=> "NULL",
-				"name"				=> "xmlhttp_on",
-				"title"				=> $lang->asb_xmlhttp_on_title,
-				"description"		=> $lang->asb_xmlhttp_on_description,
-				"optionscode"	=> "text",
-				"value"				=> '0'
+				"sid" => 'NULL',
+				"name" => 'xmlhttp_on',
+				"title" => $lang->asb_xmlhttp_on_title,
+				"description" => $lang->asb_xmlhttp_on_description,
+				"optionscode" => 'text',
+				"value" => '0'
 			)
 		),
 		"templates" => array(
 			array(
-				"title" => "asb_pms",
+				"title" => 'asb_pms',
 				"template" => <<<EOF
 				<tr>
 					<td class="trow1">
