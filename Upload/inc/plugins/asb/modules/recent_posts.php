@@ -32,7 +32,7 @@ function asb_recent_posts_info()
 	return array(
 		"title" => $lang->asb_recent_posts,
 		"description" => $lang->asb_recent_posts_desc,
-		"version" => '1.3.1',
+		"version" => '1.3.2',
 		"compatibility" => '2.1',
 		"wrap_content" => true,
 		"xmlhttp" => true,
@@ -108,7 +108,7 @@ function asb_recent_posts_info()
 				"template" => <<<EOF
 				<tr>
 					<td style="text-align: center;" class="tcat">
-						<a href="{\$mybb->settings[\'bburl\']}/{\$post[\'link\']}" title="{\$post[\'subject\']}">{\$post[\'subject\']}</a>
+						<a style="font-weight: bold;" href="{\$mybb->settings[\'bburl\']}/{\$post[\'link\']}" title="{\$post[\'subject\']}">{\$post[\'subject\']}</a>
 					</td>
 				</tr>
 				<tr>
@@ -305,51 +305,6 @@ function recent_posts_get_postlist($settings)
 
 		$post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
 		$post['link'] = get_thread_link($post['tid']) . "&amp;pid={$post['pid']}#pid{$post['pid']}";
-
-		$gotounread = '';
-		$last_read = 0;
-
-		if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
-		{
-			$forum_read = $readforums[$post['fid']];
-
-			$read_cutoff = TIME_NOW - $mybb->settings['threadreadcut'] * 60 * 60 * 24;
-			if($forum_read == 0 || $forum_read < $read_cutoff)
-			{
-				$forum_read = $read_cutoff;
-			}
-		}
-		else
-		{
-			$forum_read = $forumsread[$post['fid']];
-		}
-
-		if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $post['dateline'] > $forum_read)
-		{
-			if($post['lastread'])
-			{
-				$last_read = $post['lastread'];
-			}
-			else
-			{
-				$last_read = $read_cutoff;
-			}
-		}
-		else
-		{
-			$last_read = my_get_array_cookie('threadread', $post['tid']);
-		}
-
-		if($forum_read > $last_read)
-		{
-			$last_read = $forum_read;
-		}
-
-		if($post['dateline'] > $last_read && $last_read)
-		{
-			$post['subject'] = "<strong>{$post['subject']}</strong>";
-			$unreadpost = 1;
-		}
 
 		// we just need the text and smilies (we'll parse them after we check length)
 		$pattern = "|[[\/\!]*?[^\[\]]*?]|si";
