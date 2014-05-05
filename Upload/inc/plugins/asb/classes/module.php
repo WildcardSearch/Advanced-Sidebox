@@ -237,14 +237,6 @@ class Addon_type extends ExternalModule
 	 */
 	public function uninstall($cleanup = true)
 	{
-		global $db;
-
-		// installed?
-		if(!$this->is_installed)
-		{
-			return;
-		}
-
 		$this->unset_cache_version();
 
 		// unless specifically asked not to, delete any boxes that use this module
@@ -269,6 +261,7 @@ class Addon_type extends ExternalModule
 
 		if($delete_list)
 		{
+			global $db;
 			$db->delete_query('templates', "title IN({$delete_list})");
 		}
 	}
