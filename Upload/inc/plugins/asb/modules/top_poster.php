@@ -33,7 +33,7 @@ function asb_top_poster_info()
 		"title" => $lang->asb_top_poster_title,
 		"description" => $lang->asb_top_poster_desc,
 		"wrap_content" => true,
-		"version" => '1.1.3',
+		"version" => '1.1.4',
 		"compatibility" => '2.1',
 		"settings" => array(
 			"time_frame" => array(
@@ -64,10 +64,16 @@ function asb_top_poster_info()
 				"title" => 'asb_top_poster',
 				"template" => <<<EOF
 				<tr style="text-align: center;">
-					<td class="trow1"><img src="{\$top_poster_avatar}" style="width: {\$avatar_width}px; margin-top: 10px;" alt="{\$lang->asb_top_poster_no_avatar}"/><br /><br />{\$top_poster_text}</td>
+					<td class="trow1">{\$top_poster_avatar}{\$top_poster_text}</td>
 				</tr>
 EOF
-			)
+			),
+			array(
+				"title" => 'asb_top_poster_avatar',
+				"template" => <<<EOF
+<img src="{\$top_poster_avatar_src}" style="width: {\$avatar_width}px; margin-top: 10px;" alt="{\$lang->asb_top_poster_no_avatar}"/><br /><br />
+EOF
+			),
 		),
 	);
 }
@@ -115,7 +121,8 @@ EOF
 	// some defaults
 	$top_poster = $lang->asb_top_poster_no_one;
 	$top_poster_posts = $lang->asb_top_poster_no_posts;
-	$top_poster_text = $lang->asb_top_poster_no_posts;
+	$top_poster_text = $lang->asb_top_poster_no_top_poster;
+	$top_poster_avatar = '';
 	$ret_val = false;
 
 	// adjust language for time frame
@@ -142,19 +149,18 @@ EOF
 		$top_poster_timeframe = $lang->asb_top_poster_one_day;
 	}
 
-	// default to default :p
-	$top_poster_avatar = "{$theme['imgdir']}/default_avatar.gif";
-	$avatar_width = (int) $width * .83;
-	if((int) $settings['avatar_size'])
-	{
-		$avatar_width = (int) $settings['avatar_size'];
-	}
-
 	$user = $db->fetch_array($query);
 
 	// if we have a user . . .
 	if($user['poststoday'])
 	{
+		// default to default :p
+		$avatar_width = (int) $width * .83;
+		if((int) $settings['avatar_size'])
+		{
+			$avatar_width = (int) $settings['avatar_size'];
+		}
+
 		// default to guest
 		$top_poster = $lang->guest;
 		if($user['uid'])
@@ -164,13 +170,20 @@ EOF
 		}
 
 		$top_poster_posts = $user['poststoday'];
-
-		if($user['avatar'] != '')
+		$post_lang = $lang->asb_top_poster_posts;
+		if($top_poster_posts == 1)
 		{
-			$top_poster_avatar = $user['avatar'];
+			$post_lang = $lang->asb_top_poster_post;
 		}
 
-		$top_poster_text = $lang->sprintf($lang->asb_top_poster_congrats, $top_poster, $top_poster_timeframe, $top_poster_posts);
+		$top_poster_avatar_src = "{$theme['imgdir']}/default_avatar.gif";
+		if($user['avatar'] != '')
+		{
+			$top_poster_avatar_src = $user['avatar'];
+		}
+		eval("\$top_poster_avatar = \"" . $templates->get('asb_top_poster_avatar') . "\";");
+
+		$top_poster_text = $lang->sprintf($lang->asb_top_poster_congrats, $top_poster, $top_poster_timeframe, $top_poster_posts, $post_lang);
 		$ret_val = true;
 	}
 
