@@ -8,7 +8,6 @@
  */
 
 var ASB = (function(a) {
-
 	/**
 	 * Effect
 	 *
@@ -305,7 +304,7 @@ var ASB = (function(a) {
 			position: 'relative',
 		});
 
-		// no images, no have slideshow
+		// no images, no have slide show
 		if (!this.options.images || this.options.images.length == 0) {
 			return;
 		}
@@ -387,6 +386,8 @@ var ASB = (function(a) {
 	 * @return - void
 	 */
 	function nextImage() {
+		this.bufferImage.title = this.mainImage.title;
+		this.bufferImage.alt = this.mainImage.alt;
 		this.bufferImage.src = this.mainImage.src;
 		this.resizeImage(this.bufferImage).show();
 		this.mainImage.hide();
@@ -405,6 +406,7 @@ var ASB = (function(a) {
 	 * @return - void
 	 */
 	function showCurrent() {
+		this.mainImage.title = this.mainImage.alt = this.options.images[this.current];
 		this.mainImage.src = this.getCurrentImage();
 
 		/*
@@ -452,8 +454,12 @@ var ASB = (function(a) {
 		width = this.clone.getWidth(),
 		ratio;
 
-		// maintain the ratio
-		if (height > width) {
+		// maintain the ratio and resize if necessary
+		if (height < this.options.size &&
+		    width < this.options.size) {
+			this.cloneWidth = height;
+			this.cloneHeight = width;
+		} else if (height > width) {
 			ratio = height / width;
 			this.cloneWidth = parseInt(this.options.size / ratio);
 			this.cloneHeight = this.options.size;

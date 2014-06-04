@@ -193,6 +193,9 @@ $l['asb_slideshow_desc'] = 'Display images in series with configurable options';
 $l['asb_slideshow_folder_title'] = 'Image Path';
 $l['asb_slideshow_folder_description'] = 'this is the folder that contains the images to display from the forum root. (Example: images OR images/english NOT http://myforum.com/images)';
 
+$l['asb_slideshow_recursive_title'] = 'Recursive?';
+$l['asb_slideshow_recursive_description'] = 'YES to include any images found in subfolders, NO (default) to only display images stored directly in the given folder';
+
 $l['asb_slideshow_rate_title'] = 'Rate';
 $l['asb_slideshow_rate_description'] = 'time in seconds to pause on each image';
 
@@ -207,6 +210,8 @@ $l['asb_slideshow_footer_text_description'] = 'text for footer link, leave blank
 
 $l['asb_slideshow_footer_url_title'] = 'Footer Link URL';
 $l['asb_slideshow_footer_url_description'] = 'URL for footer link, above setting must have a value before it will be effective';
+
+$l['asb_slideshow_no_images'] = 'No images to show';
 
 // top poster
 $l['asb_top_poster_title'] = 'Top Poster';

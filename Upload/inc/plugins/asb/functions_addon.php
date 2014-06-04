@@ -149,4 +149,71 @@ function asb_build_SQL_where($conditions, $op = 'AND', $prefix = '', $wrap = tru
 	return $where;
 }
 
+/**
+ * asb_get_folder_images()
+ *
+ * build a list of all the images stored in a particular folder on the server
+ *
+ * @param - $folder - (string) the unqualified folder name from the root
+ * @param - $subfolder - (string) (for recursion) the current subfolder
+ * @param - $recursive - (bool) determines where to recurse into subfolders
+ * @return: (string) a comma-separated, single-quoted list of file names
+ */
+function asb_get_folder_images($folder, $subfolder = '', $recursive = false)
+{
+	// bad folder, get out
+	if(!$folder ||
+	   !is_dir(MYBB_ROOT . $folder))
+	{
+		return false;
+	}
+
+	// make sure the subfolder has a directory separator
+	if($subfolder &&
+	   substr($subfolder, strlen($subfolder) - 1, 1) != '/')
+	{
+		$subfolder .= '/';
+	}
+
+	// cycle through all the files/folders and produce a list
+	$sep = '';
+	foreach(new DirectoryIterator(MYBB_ROOT . $folder) as $file)
+	{
+		// skip navigation folders
+		if($file->isDot())
+		{
+			continue;
+		}
+
+		if($file->isDir())
+		{
+			// no recursion, just skip this
+			if(!$recursive)
+			{
+				continue;
+			}
+
+			// get the files from this directory
+			$sub_files = asb_get_folder_images($folder . '/' . $file->getFilename(), $subfolder . $file->getFilename(), $recursive);
+			if($sub_files)
+			{
+				$filenames .= "{$sep}{$sub_files}";
+				$sep = ',';
+			}
+			continue;
+		}
+
+		// only certain extensions allowed
+		$extension = pathinfo($file->getFilename(), PATHINFO_EXTENSION);
+		if(!in_array($extension, array('gif', 'png', 'jpg', 'jpeg')))
+		{
+			continue;
+		}
+
+		$filenames .= "{$sep}'{$subfolder}{$file->getFilename()}'";
+		$sep = ',';
+	}
+	return $filenames;
+}
+
 ?>
