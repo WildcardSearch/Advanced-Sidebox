@@ -214,9 +214,11 @@ $l['asb_top_poster_desc'] = 'Highlight the user of your forum with the most post
 
 $l['asb_top_poster_no_one'] = 'no one';
 $l['asb_top_poster_no_posts'] = 'no posts';
+$l['asb_top_poster_no_top_poster'] = 'There is no top poster to display.';
 $l['asb_top_poster_no_avatar'] = 'no avatar';
-$l['asb_top_poster_posts'] = 'posts!';
-$l['asb_top_poster_congrats'] = 'Congratulations to {1}, our current top poster for the last {2} with {3} posts!';
+$l['asb_top_poster_posts'] = 'posts';
+$l['asb_top_poster_post'] = 'post';
+$l['asb_top_poster_congrats'] = 'Congratulations to {1}, our current top poster for the last {2} with {3} {4}!';
 
 $l['asb_top_poster_time_frame_title'] = 'Time Frame';
 $l['asb_top_poster_time_frame_desc'] = 'time to compare for top poster stats';
