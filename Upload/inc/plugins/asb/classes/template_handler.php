@@ -112,11 +112,11 @@ EOF;
 		{
 			$sep = '';
 			$dateline = TIME_NOW;
-			foreach($script['extra_scripts'] as $addon => $info)
+			foreach($script['extra_scripts'] as $id => $info)
 			{
 				// build the JS objects to pass to the custom object builder
 				$extra_scripts .= <<<EOF
-{$sep}{ addon: '{$addon}', id: {$info['id']}, position: {$info['position']}, rate: {$info['rate']}, dateline: {$dateline} }
+{$sep}{ addon: '{$info['module']}', id: {$id}, position: {$info['position']}, rate: {$info['rate']}, dateline: {$dateline} }
 EOF;
 				$sep = ", ";
 			}
