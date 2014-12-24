@@ -58,6 +58,20 @@ function asb_top_poster_info()
 				"optionscode" => 'text',
 				"value" => ''
 			),
+			"group_show_list" => array(
+				"name" => 'group_show_list',
+				"title" => $lang->asb_group_show_list_title,
+				"description" => $lang->asb_group_show_list_desc,
+				"optionscode" => 'text',
+				"value" => ''
+			),
+			"group_hide_list" => array(
+				"name" => 'group_hide_list',
+				"title" => $lang->asb_group_hide_list_title,
+				"description" => $lang->asb_group_hide_list_desc,
+				"optionscode" => 'text',
+				"value" => ''
+			),
 		),
 		"templates" => array(
 			array(
@@ -102,6 +116,13 @@ function asb_top_poster_build_template($args)
 	}
 	$timesearch = TIME_NOW - (86400 * $settings['time_frame']);
 
+	// build user group exclusions (if any)
+	$show = asb_build_id_list($settings['group_show_list'], 'u.usergroup');
+	$hide = asb_build_id_list($settings['group_hide_list'], 'u.usergroup');
+	$where['show'] = asb_build_SQL_where($show, ' OR ');
+	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
+	$group_where = asb_build_SQL_where($where, ' AND ', ' AND ');
+
 	$group_by = 'p.uid';
 	if($db->type == 'pgsql')
 	{
@@ -112,7 +133,7 @@ function asb_top_poster_build_template($args)
 SELECT u.uid, u.username, u.usergroup, u.displaygroup, u.avatar, COUNT(*) AS poststoday
 FROM {$db->table_prefix}posts p
 LEFT JOIN {$db->table_prefix}users u ON (p.uid=u.uid)
-WHERE p.dateline > {$timesearch}
+WHERE p.dateline > {$timesearch}{$group_where}
 GROUP BY {$group_by} ORDER BY poststoday DESC
 LIMIT 1
 EOF

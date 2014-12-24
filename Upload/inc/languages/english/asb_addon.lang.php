@@ -20,10 +20,16 @@ $l['asb_forum_hide_list_title'] = 'Forum Hide List';
 $l['asb_forum_hide_list_desc'] = '(optional) add a forum id or a comma-separated list of fids to be <strong>excluded/hidden</strong> [can be amended by Thread Show List and Thread Hide List]';
 
 $l['asb_thread_show_list_title'] = 'Thread Show List';
-$l['asb_thread_show_list_desc'] = '(optional) add a thread id or a comma-separated list of tids to draw posts from [If Forum Show List or Forum Hide List are in use, this settings will not override, but can amend]';
+$l['asb_thread_show_list_desc'] = '(optional) add a thread id or a comma-separated list of tids to draw posts from [If Forum Show List or Forum Hide List are in use, this setting will not override, but can amend]';
 
 $l['asb_thread_hide_list_title'] = 'Thread Hide List';
-$l['asb_thread_hide_list_desc'] = '(optional) add a thread id or a comma-separated list of tids to be <strong>excluded/hidden</strong> [If Forum Show List or Forum Hide List are in use, this settings <strong>will override and amend</strong>]';
+$l['asb_thread_hide_list_desc'] = '(optional) add a thread id or a comma-separated list of tids to be <strong>excluded/hidden</strong> [If Forum Show List or Forum Hide List are in use, this setting <strong>will override and amend</strong>]';
+
+$l['asb_group_show_list_title'] = 'Usergroup Show List';
+$l['asb_group_show_list_desc'] = '(optional) add a usergroup id or a comma-separated list of gids to show exclusively [If Group Hide List is in use, this setting will not override, but can amend]';
+
+$l['asb_group_hide_list_title'] = 'Usergroup Hide List';
+$l['asb_group_hide_list_desc'] = '(optional) add a usergroup id or a comma-separated list of gids to be <strong>excluded/hidden</strong> [If Usergroup Show List is in use, this setting <strong>will override and amend</strong>]';
 
 $l['asb_important_threads_only_title'] = 'Important Threads Only?';
 $l['asb_important_threads_only_desc'] = "YES to only use 'stickied' threads, NO (default) to use any threads/posts";

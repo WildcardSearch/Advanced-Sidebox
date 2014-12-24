@@ -100,7 +100,7 @@ EOF;
 		"website" => 'https://github.com/WildcardSearch/Advanced-Sidebox',
 		"author" => $author,
 		"authorsite" => 'http://www.rantcentralforums.com',
-		"version" => '2.1',
+		"version" => '2.1.1',
 		"compatibility" => '16*',
 		"guid" => '870e9163e2ae9b606a789d9f7d4d2462',
 	);
