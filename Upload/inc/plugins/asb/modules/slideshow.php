@@ -33,7 +33,7 @@ function asb_slideshow_info()
 		"title" => $lang->asb_slideshow,
 		"description" => $lang->asb_slideshow_desc,
 		"wrap_content" => true,
-		"version" => '1',
+		"version" => '1.0.1',
 		"compatibility" => '2.1',
 		"scripts" => array(
 			'Slideshow',
@@ -46,6 +46,14 @@ function asb_slideshow_info()
 				"description" => $lang->asb_slideshow_folder_description,
 				"optionscode" => 'text',
 				"value" => 'images'
+			),
+			"recursive" => array(
+				"sid" => 'NULL',
+				"name" => 'recursive',
+				"title" => $lang->asb_slideshow_recursive_title,
+				"description" => $lang->asb_slideshow_recursive_description,
+				"optionscode" => 'yesno',
+				"value" => '0'
 			),
 			"rate" => array(
 				"sid" => 'NULL',
@@ -88,6 +96,43 @@ function asb_slideshow_info()
 				"value" => ''
 			),
 		),
+		"templates" => array(
+			array(
+				"title" => 'asb_slideshow',
+				"template" => <<<EOF
+				<tr>
+					<td class="trow1" style="text-align: center;">
+						<div id="{\$template_var}"></div>
+						<script type="text/javascript">
+						<!--
+							new ASB.modules.Slideshow(\'{\$template_var}\', {
+								shuffle: {\$shuffle},
+								folder: \'{\$folder}\',
+								images: [{\$filenames}],
+								size: {\$width},
+								rate: {\$rate},
+								fadeRate: {\$fade_rate},
+							});
+						// -->
+						</script>
+					</td>
+				</tr>{\$footer}
+EOF
+			),
+			array(
+				"title" => "asb_slideshow_footer",
+				"template" => <<<EOF
+
+				<tr>
+					<td class="tfoot">
+						<div style="text-align: center;">
+							<a style="font-weight: bold;" href="{\$settings[\'footer_url\']}">{\$settings[\'footer_text\']}</a>
+						</div>
+					</td>
+				</tr>
+EOF
+			),
+		),
 	);
 }
 
@@ -103,70 +148,30 @@ function asb_slideshow_build_template($args)
 {
 	extract($args);
 
-	global $$template_var, $mybb;
+	global $$template_var, $mybb, $templates;
 
 	$shuffle = $settings['shuffle'] ? 'true' : 'false';
 	$folder = $settings['folder'];
 	$rate = (int) $settings['rate'] ? (int) $settings['rate'] : 10;
 	$fade_rate = (float) $settings['fade_rate'] ? (float) $settings['fade_rate'] : 1;
 
-	if(!is_dir(MYBB_ROOT . $folder))
+	$filenames = asb_get_folder_images($folder, '', $settings['recursive']);
+	if(!$filenames)
 	{
+		$$template_var = <<<EOF
+		<tr>
+			<td class="trow1">{$lang->asb_slideshow_no_images}</td>
+		</tr>
+EOF;
 		return false;
 	}
 
-	$sep = '';
-	foreach(new DirectoryIterator(MYBB_ROOT . $folder) as $file)
-	{
-		if($file->isDir() || $file->isDot())
-		{
-			continue;
-		}
-
-		$extension = pathinfo($file->getFilename(), PATHINFO_EXTENSION);
-		if(!in_array($extension, array('gif', 'png', 'jpg', 'jpeg')))
-		{
-			continue;
-		}
-
-		$filenames .= "{$sep}'{$file->getFilename()}'";
-		$sep = ',';
-	}
-
 	if ($settings['footer_text'] && $settings['footer_url']) {
-		$footer = <<<EOF
-
-				<tr>
-					<td class="tfoot">
-						<div style="text-align: center;">
-							<a style="font-weight: bold;" href="{$settings['footer_url']}">{$settings['footer_text']}</a>
-						</div>
-					</td>
-				</tr>
-EOF;
+		eval ("\$footer = \"" . $templates->get('asb_slideshow_footer') . "\";");
 	}
 
 	$width = $width * .9;
-	$folder = $mybb->settings['bburl'] . '/' . $folder;
-	$$template_var = <<<EOF
-		<tr>
-					<td class="trow1" style="text-align: center;">
-						<div id="{$template_var}"></div>
-						<script type="text/javascript">
-						<!--
-							new ASB.modules.Slideshow('{$template_var}', {
-								shuffle: {$shuffle},
-								folder: '{$folder}',
-								images: [{$filenames}],
-								size: {$width},
-								rate: {$rate},
-								fadeRate: {$fade_rate},
-							});
-						// -->
-						</script>
-					</td>
-				</tr>{$footer}
-EOF;
+	eval("\$\$template_var = \"" . $templates->get('asb_slideshow') . "\";");
 
 	return true;
 }

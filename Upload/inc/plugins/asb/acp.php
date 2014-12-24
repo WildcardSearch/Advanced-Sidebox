@@ -326,6 +326,7 @@ function asb_admin_edit_box()
 		}
 		$sidebox->set('display_order', $display_order);
 
+		// scripts
 		$script_list = $mybb->input['script_select_box'];
 		if($script_list[0] == 'all_scripts' || (count($script_list) >= count($all_scripts)))
 		{
@@ -333,6 +334,7 @@ function asb_admin_edit_box()
 		}
 		$sidebox->set('scripts', $script_list);
 
+		// groups
 		$group_list = $mybb->input['group_select_box'];
 		if($group_list[0] == 'all')
 		{
@@ -340,6 +342,7 @@ function asb_admin_edit_box()
 		}
 		$sidebox->set('groups', $group_list);
 
+		// themes
 		$theme_list = $mybb->input['theme_select_box'];
 		if($theme_list[0] == 'all_themes')
 		{
@@ -554,7 +557,9 @@ EOF;
 	if($custom_title == 1)
 	{
 		// alter the descrption
-		$current_title = '<em>' . $lang->asb_current_title . '</em><br /><br /><strong>' . $sidebox->get('title') . '</strong><br />' . $lang->asb_current_title_info;
+		$current_title = <<<EOF
+<em>{$lang->asb_current_title}</em><br /><br /><strong>{$sidebox->get('title')}</strong><br />{$lang->asb_current_title_info}
+EOF;
 	}
 	else
 	{
@@ -593,7 +598,7 @@ EOF;
 		// box title
 		$form_container->output_row($lang->asb_title, $current_title, $form->generate_text_box('box_title'), 'box_title', array("id" => 'box_title'));
 
-		// title link
+		// title link and hidden fields
 		$form_container->output_row($lang->asb_title_link, $lang->asb_title_link_desc, $form->generate_text_box('title_link', $sidebox->get('title_link')) . $form->generate_hidden_field('current_title', $sidebox->get('title')) . $form->generate_hidden_field('display_order', $sidebox->get('display_order')) . $form->generate_hidden_field('pos', $position), 'title_link', array("id" => 'title_link'));
 	}
 	$form_container->end();
@@ -972,7 +977,7 @@ EOF;
 		$form_container->output_cell($lang->asb_custom_box_wrap_content);
 		$form_container->output_row('');
 
-		//name
+		// name
 		$form_container->output_cell($form->generate_text_box('box_name', $this_box->get('title'), array("id" => 'box_name')));
 
 		// description
@@ -1481,7 +1486,7 @@ EOF;
 	{
 		foreach($addons as $this_module)
 		{
-			$data = $this_module->get(array('title', 'description', 'base_name', 'author', 'author_site', 'module_site', 'version', 'compatibility'));
+			$data = $this_module->get(array('title', 'description', 'base_name', 'author', 'author_site', 'module_site', 'version', 'public_version', 'compatibility'));
 
 			$out_of_date = '';
 			if(!$data['compatibility'] || version_compare('2.1', $data['compatibility'], '<'))
@@ -1491,8 +1496,14 @@ EOF;
 EOF;
 			}
 
+			$version = $data['version'];
+			if($data['public_version'])
+			{
+				$version = $data['public_version'];
+			}
+
 			// title
-			$table->construct_cell($html->link($data['module_site'], $data['title'], array("style" => 'font-weight: bold;')) . " ({$data['version']})");
+			$table->construct_cell($html->link($data['module_site'], $data['title'], array("style" => 'font-weight: bold;')) . " ({$version})");
 
 			// description
 			$table->construct_cell($data['description'] . $out_of_date);

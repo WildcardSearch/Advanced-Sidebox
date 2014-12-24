@@ -51,7 +51,7 @@ function asb_get_excluded_themes($sql = false)
 	$retval = unserialize($mybb->settings['asb_exclude_theme']);
 	if(!is_array($retval) || empty($retval))
 	{
-		$retval  = false;
+		$retval = false;
 	}
 
 	if($sql)
@@ -196,9 +196,9 @@ function asb_build_cache(&$asb)
 					if($settings['xmlhttp_on'])
 					{
 						// if all is good add the script building info
-						$asb['scripts'][$filename]['extra_scripts'][$module]['position'] = $pos;
-						$asb['scripts'][$filename]['extra_scripts'][$module]['id'] = $id;
-						$asb['scripts'][$filename]['extra_scripts'][$module]['rate'] = $settings['xmlhttp_on'];
+						$asb['scripts'][$filename]['extra_scripts'][$id]['position'] = $pos;
+						$asb['scripts'][$filename]['extra_scripts'][$id]['module'] = $module;
+						$asb['scripts'][$filename]['extra_scripts'][$id]['rate'] = $settings['xmlhttp_on'];
 					}
 				}
 

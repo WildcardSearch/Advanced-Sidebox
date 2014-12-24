@@ -35,7 +35,12 @@ function asb_start()
 	$this_script = asb_get_this_script($asb, true);
 
 	// no boxes, get out
-	if(empty($this_script['sideboxes'][0]) && empty($this_script['sideboxes'][1]))
+	if((!is_array($this_script['sideboxes']) ||
+	   empty($this_script['sideboxes'])) ||
+	   (empty($this_script['sideboxes'][0]) &&
+	   empty($this_script['sideboxes'][1])) ||
+	   strlen($this_script['find_top']) == 0 ||
+	   strlen($this_script['find_bottom']) == 0)
 	{
 		return;
 	}

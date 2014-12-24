@@ -20,10 +20,16 @@ $l['asb_forum_hide_list_title'] = 'Forum Hide List';
 $l['asb_forum_hide_list_desc'] = '(optional) add a forum id or a comma-separated list of fids to be <strong>excluded/hidden</strong> [can be amended by Thread Show List and Thread Hide List]';
 
 $l['asb_thread_show_list_title'] = 'Thread Show List';
-$l['asb_thread_show_list_desc'] = '(optional) add a thread id or a comma-separated list of tids to draw posts from [If Forum Show List or Forum Hide List are in use, this settings will not override, but can amend]';
+$l['asb_thread_show_list_desc'] = '(optional) add a thread id or a comma-separated list of tids to draw posts from [If Forum Show List or Forum Hide List are in use, this setting will not override, but can amend]';
 
 $l['asb_thread_hide_list_title'] = 'Thread Hide List';
-$l['asb_thread_hide_list_desc'] = '(optional) add a thread id or a comma-separated list of tids to be <strong>excluded/hidden</strong> [If Forum Show List or Forum Hide List are in use, this settings <strong>will override and amend</strong>]';
+$l['asb_thread_hide_list_desc'] = '(optional) add a thread id or a comma-separated list of tids to be <strong>excluded/hidden</strong> [If Forum Show List or Forum Hide List are in use, this setting <strong>will override and amend</strong>]';
+
+$l['asb_group_show_list_title'] = 'Usergroup Show List';
+$l['asb_group_show_list_desc'] = '(optional) add a usergroup id or a comma-separated list of gids to show exclusively [If Group Hide List is in use, this setting will not override, but can amend]';
+
+$l['asb_group_hide_list_title'] = 'Usergroup Hide List';
+$l['asb_group_hide_list_desc'] = '(optional) add a usergroup id or a comma-separated list of gids to be <strong>excluded/hidden</strong> [If Usergroup Show List is in use, this setting <strong>will override and amend</strong>]';
 
 $l['asb_important_threads_only_title'] = 'Important Threads Only?';
 $l['asb_important_threads_only_desc'] = "YES to only use 'stickied' threads, NO (default) to use any threads/posts";
@@ -193,6 +199,9 @@ $l['asb_slideshow_desc'] = 'Display images in series with configurable options';
 $l['asb_slideshow_folder_title'] = 'Image Path';
 $l['asb_slideshow_folder_description'] = 'this is the folder that contains the images to display from the forum root. (Example: images OR images/english NOT http://myforum.com/images)';
 
+$l['asb_slideshow_recursive_title'] = 'Recursive?';
+$l['asb_slideshow_recursive_description'] = 'YES to include any images found in subfolders, NO (default) to only display images stored directly in the given folder';
+
 $l['asb_slideshow_rate_title'] = 'Rate';
 $l['asb_slideshow_rate_description'] = 'time in seconds to pause on each image';
 
@@ -208,15 +217,19 @@ $l['asb_slideshow_footer_text_description'] = 'text for footer link, leave blank
 $l['asb_slideshow_footer_url_title'] = 'Footer Link URL';
 $l['asb_slideshow_footer_url_description'] = 'URL for footer link, above setting must have a value before it will be effective';
 
+$l['asb_slideshow_no_images'] = 'No images to show';
+
 // top poster
 $l['asb_top_poster_title'] = 'Top Poster';
 $l['asb_top_poster_desc'] = 'Highlight the user of your forum with the most posts within a given time period';
 
 $l['asb_top_poster_no_one'] = 'no one';
 $l['asb_top_poster_no_posts'] = 'no posts';
+$l['asb_top_poster_no_top_poster'] = 'There is no top poster to display.';
 $l['asb_top_poster_no_avatar'] = 'no avatar';
-$l['asb_top_poster_posts'] = 'posts!';
-$l['asb_top_poster_congrats'] = 'Congratulations to {1}, our current top poster for the last {2} with {3} posts!';
+$l['asb_top_poster_posts'] = 'posts';
+$l['asb_top_poster_post'] = 'post';
+$l['asb_top_poster_congrats'] = 'Congratulations to {1}, our current top poster for the last {2} with {3} {4}!';
 
 $l['asb_top_poster_time_frame_title'] = 'Time Frame';
 $l['asb_top_poster_time_frame_desc'] = 'time to compare for top poster stats';

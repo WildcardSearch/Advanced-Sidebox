@@ -33,6 +33,7 @@ abstract class ExternalModule extends MalleableObject implements ExternalModuleI
 	protected $title = '';
 	protected $description = '';
 	protected $version = 0;
+	protected $public_version = 0;
 	protected $path = '';
 	protected $prefix = '';
 	protected $base_name = '';
