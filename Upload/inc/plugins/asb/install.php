@@ -101,7 +101,7 @@ EOF;
 		"author" => $author,
 		"authorsite" => 'http://www.rantcentralforums.com',
 		"version" => '2.1.1',
-		"compatibility" => '16*',
+		"compatibility" => '16*,18*',
 		"guid" => '870e9163e2ae9b606a789d9f7d4d2462',
 	);
 }
