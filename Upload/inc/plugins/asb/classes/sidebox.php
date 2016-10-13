@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
@@ -27,13 +27,11 @@ class Sidebox extends StorableObject
 	protected $table_name = 'asb_sideboxes';
 
 	/*
-	 * __construct()
-	 *
 	 * called upon creation
 	 *
-	 * @param - $data - (mixed) an associative array corresponding to both the class
+	 * @param mixed an associative array corresponding to both the class
 	 * specs and the database table specs or a database table row ID
-	 * @return: n/a
+	 * @return void
 	 */
 	function __construct($data = '')
 	{
@@ -43,13 +41,11 @@ class Sidebox extends StorableObject
 	}
 
 	/*
-	 * load()
-	 *
 	 * attempts to load the side box's data from the db, or if given no data create a blank object
 	 *
-	 * @param - $data can be an array fetched from the db or
+	 * @param array fetched from the db or
 	 * a valid ID # (__construct will feed 0 if no data is given)
-	 * @return: (bool) true on success, false on fail
+	 * @return bool true on success, false on fail
 	 */
 	public function load($data)
 	{

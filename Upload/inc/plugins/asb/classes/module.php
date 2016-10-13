@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
@@ -39,13 +39,11 @@ abstract class ExternalModule extends MalleableObject implements ExternalModuleI
 	protected $base_name = '';
 
 	/*
-	 * __construct()
-	 *
 	 * attempt to load and validate the module
 	 *
-	 * @param - $name - (string) base name of the module to load
-	 * @param - $path - (string) fully qualified path to the modules
-	 * @return: n/a
+	 * @param string base name of the module to load
+	 * @param string fully qualified path to the modules
+	 * @return void
 	 */
 	public function __construct($module)
 	{
@@ -61,13 +59,11 @@ abstract class ExternalModule extends MalleableObject implements ExternalModuleI
 	}
 
 	/*
-	 * load($name)
-	 *
 	 * attempt to load the module's info
 	 *
-	 * @param - $name - (string) base name of the module to load
+	 * @param string base name of the module to load
 	 *
-	 * @return: (bool) true on success, false on fail
+	 * @return bool true on success, false on fail
 	 */
 	public function load($module)
 	{
@@ -85,14 +81,12 @@ abstract class ExternalModule extends MalleableObject implements ExternalModuleI
 	}
 
 	/*
-	 * run()
-	 *
 	 * safely access the module's function
 	 *
-	 * @param - $function_name - (string)
-	 * @param - $args - (array) any data to pass to the function
-	 * @return: (mixed) the return value of the called module function or
-	 * (bool) false on error
+	 * @param string
+	 * @param array any data to pass to the function
+	 * @return mixed the return value of the called module function or
+	 * bool false on error
 	 */
 	public function run($function_name, $args = '')
 	{
@@ -140,11 +134,9 @@ class Addon_type extends ExternalModule
 	protected $path = ASB_MODULES_DIR;
 
 	/*
-	 * load()
-	 *
 	 * attempts to load a module by name.
 	 *
-	 * @return: (bool) true on success, false on fail
+	 * @return bool true on success, false on fail
 	 */
 	public function load($module)
 	{
@@ -178,11 +170,9 @@ class Addon_type extends ExternalModule
 	}
 
 	/*
-	 * install()
-	 *
 	 * install templates if they exist to allow the add-on module to function correctly
 	 *
-	 * @return: n/a
+	 * @return void
 	 */
 	public function install($cleanup = true)
 	{
@@ -226,15 +216,13 @@ class Addon_type extends ExternalModule
 	}
 
 	/*
-	 * uninstall()
-	 *
 	 * remove any templates used by the module and clean up any boxes created
 	 * using this add-on module
 	 *
-	 * @param - $cleanup - (bool) false instructs the method to leave any side boxes
+	 * @param bool false instructs the method to leave any side boxes
 	 * that use this module behind when uninstalling. this is useful for when we want to
 	 * upgrade an add-on without losing admin's work
-	 * @return: n/a
+	 * @return void
 	 */
 	public function uninstall($cleanup = true)
 	{
@@ -268,12 +256,10 @@ class Addon_type extends ExternalModule
 	}
 
 	/*
-	 * upgrade()
-	 *
 	 * called upon add-on version change to verify module's templates/settings
 	 * discarded templates and ACP settings (from pre-1.4) are removed
 	 *
-	 * @return: n/a
+	 * @return void
 	 */
 	protected function upgrade()
 	{
@@ -319,11 +305,9 @@ class Addon_type extends ExternalModule
 	}
 
 	/*
-	 * remove()
-	 *
 	 * uninstalls (if necessary) and physically deletes the module from the server
 	 *
-	 * @return: (bool) true on success, false on fail
+	 * @return bool true on success, false on fail
 	 */
 	public function remove()
 	{
@@ -338,11 +322,9 @@ class Addon_type extends ExternalModule
 	}
 
 	/*
-	 * remove_children()
-	 *
 	 * delete all the side boxes of this type
 	 *
-	 * @return: n/a
+	 * @return void
 	 */
 	protected function remove_children()
 	{
@@ -354,11 +336,9 @@ class Addon_type extends ExternalModule
 	}
 
 	/*
-	 * update_children()
-	 *
 	 * update settings for side boxes of this type
 	 *
-	 * @return: n/a
+	 * @return void
 	 */
 	protected function update_children()
 	{
@@ -416,11 +396,9 @@ class Addon_type extends ExternalModule
 	}
 
 	/*
-	 * get_cache_version()
-	 *
 	 * version control derived from the work of pavemen in MyBB Publisher
 	 *
-	 * @return: (string) version or (int) 0 on error
+	 * @return string version or (int) 0 on error
 	 */
 	protected function get_cache_version()
 	{
@@ -437,11 +415,9 @@ class Addon_type extends ExternalModule
 	}
 
 	/*
-	 * set_cache_version()
-	 *
 	 * version control derived from the work of pavemen in MyBB Publisher
 	 *
-	 * @return: (bool) true on success, false on fail
+	 * @return bool true on success, false on fail
 	 */
 	protected function set_cache_version()
 	{
@@ -455,11 +431,9 @@ class Addon_type extends ExternalModule
 	}
 
 	/*
-	 * unset_cache_version()
-	 *
 	 * version control derived from the work of pavemen in MyBB Publisher
 	 *
-	 * @return: (bool) true on success, false on fail
+	 * @return bool true on success, false on fail
 	 */
 	protected function unset_cache_version()
 	{
@@ -475,11 +449,9 @@ class Addon_type extends ExternalModule
 	}
 
 	/*
-	 * build_template()
-	 *
 	 * runs template building code for the current module referenced by this object
 	 *
-	 * @return: (mixed) the return value of the called module function or
+	 * @return mixed the return value of the called module function or
 	 * (bool) false on error
 	 */
 	public function build_template($settings, $template_var, $width, $script)
@@ -492,15 +464,13 @@ class Addon_type extends ExternalModule
 	}
 
 	/*
-	 * do_xmlhttp()
-	 *
-	 * @param - $dateline (int) UNIX timestamp representing the last time
+	 * @param int UNIX timestamp representing the last time
 	 * the side box was updated
-	 * @param - $settings (array) the individual side box settings
-	 * @param - $width (int) the width of the column in which the produced
+	 * @param array the individual side box settings
+	 * @param int the width of the column in which the produced
 	 * side box will reside
-	 * @return: (mixed) the return value of the called module function or
-	 * (bool) false on error
+	 * @return mixed the return value of the called module function or
+	 * bool false on error
 	 */
 	public function do_xmlhttp($dateline, $settings, $width)
 	{
@@ -512,10 +482,8 @@ class Addon_type extends ExternalModule
 	}
 
 	/*
-	 * do_settings_load()
-	 *
-	 * @return: (mixed) the return value of the called module function or
-	 * (bool) false on error
+	 * @return mixed the return value of the called module function or
+	 * bool false on error
 	 */
 	public function do_settings_load()
 	{
@@ -523,11 +491,9 @@ class Addon_type extends ExternalModule
 	}
 
 	/*
-	 * do_settings_save()
-	 *
 	 * @param - $settings (array) the individual side box settings
-	 * @return: (mixed) the return value of the called module function or
-	 * (bool) false on error
+	 * @return mixed the return value of the called module function or
+	 * bool false on error
 	 */
 	public function do_settings_save($settings)
 	{

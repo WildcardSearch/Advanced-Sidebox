@@ -28,12 +28,10 @@ abstract class MalleableObject implements MalleableObjectInterface
 	protected $valid = false;
 
 	/*
-	 * get()
-	 *
 	 * retrieves a named property or a list of properties)
 	 *
-	 * @param - $properties - (mixed) an unindexed array of property names or a single property name
-	 * @return: (array) properties and values or a single value
+	 * @param mixed an unindexed array of property names or a single property name
+	 * @return array properties and values or a single value
 	 */
 	public function get($properties)
 	{
@@ -60,13 +58,11 @@ abstract class MalleableObject implements MalleableObjectInterface
 	}
 
 	/*
-	 * set()
-	 *
 	 * sets a single property or multiple properties at once
 	 *
-	 * @param - $properties - (mixed) a keyed array of properties and their values or a single property name
-	 * @param - $value - (mixed) any data type
-	 * @return: (bool) true on success, false on false
+	 * @param mixed a keyed array of properties and their values or a single property name
+	 * @param mixed any data type
+	 * @return bool true on success, false on false
 	 */
 	public function set($properties, $value = '')
 	{
@@ -93,7 +89,7 @@ abstract class MalleableObject implements MalleableObjectInterface
 	 * public function is_valid()
 	 *
 	 * allows access to the protected valid property
-	 * @return: (bool) true for valid, false if not
+	 * @return bool true for valid, false if not
 	 */
 	public function is_valid()
 	{

@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
@@ -62,12 +62,10 @@ echo $help_page;
 exit();
 
 /*
- * asb_help_get_contents()
- *
  * gets the contents of a help document by topic
  *
  * @param - $current is the key name of the active page topic
- * @return: n/a
+ * @return void
  */
 function asb_help_get_contents($current = '')
 {
@@ -93,12 +91,10 @@ EOF;
 }
 
 /*
- * asb_get_links()
- *
  * build the menu links
  *
- * @param - $current is the key name for the active page topic
- * @return: (string) a list of menu links or (bool) false on error
+ * @param string key name for the active page topic
+ * @return string a list of menu links or bool false on error
  */
 function asb_get_links($current = '')
 {
@@ -136,13 +132,11 @@ function asb_get_links($current = '')
 }
 
 /*
- * asb_help_build_page_link()
- *
  * build help page links
  *
  * @param - $links can be a string containing a page topic key name or an array of page topic keys
  * @param - $caption is the label for the produced link(s)
- * @return: (string) link(s) to specified help topic pages
+ * @return string link(s) to specified help topic pages
  */
 function asb_help_build_page_link($links, $caption = '')
 {

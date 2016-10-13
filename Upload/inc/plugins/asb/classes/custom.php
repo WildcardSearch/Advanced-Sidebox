@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
@@ -17,13 +17,11 @@ class Custom_type extends PortableObject
 	protected $table_name = 'asb_custom_sideboxes';
 
 	/*
-	 * __construct()
-	 *
 	 * called upon creation
 	 *
-	 * @param - $data - (mixed) an associative array corresponding to both the class specs
+	 * @param mixed an associative array corresponding to both the class specs
 	 * and the database table specs or a database table row ID
-	 * @return: n/a
+	 * @return void
 	 */
 	public function __construct($data = '')
 	{
@@ -32,13 +30,11 @@ class Custom_type extends PortableObject
 	}
 
 	/*
-	 * load()
-	 *
 	 * attempts to load the side box's data from the db, or if given no data create a blank object
 	 *
-	 * @param - $data can be an array fetched from the db or
-	 * a valid ID # (__construct will feed 0 if no data is given)
-	 * @return: (bool) true on success, false on fail
+	 * @param array fetched from the db or
+	 * int ID # (__construct will feed 0 if no data is given)
+	 * @return bool true on success, false on fail
 	 */
 	public function load($data)
 	{
@@ -51,12 +47,10 @@ class Custom_type extends PortableObject
 	}
 
 	/*
-	 * remove()
-	 *
 	 * removes the custom side box from the database
 	 *
-	 * @param - $no_cleanup is a boolean value and when true will prevent the removal of sideboxes using this custom type
-	 * @return: (bool) true on success, false on fail
+	 * @param bool value and when true will prevent the removal of sideboxes using this custom type
+	 * @return bool true on success, false on fail
 	 */
 	public function remove($no_cleanup = false)
 	{
@@ -69,10 +63,9 @@ class Custom_type extends PortableObject
 	}
 
 	/*
-	 * remove_children()
-	 *
 	 * delete all the side boxes of this type
-	 * @return: n/a
+	 * 
+	 * @return void
 	 */
 	protected function remove_children()
 	{
@@ -84,10 +77,9 @@ class Custom_type extends PortableObject
 	}
 
 	/*
-	 * build_template()
-	 *
 	 * builds the content for the template variable used for this custom box
-	 * @return: (bool) true on success, false on fail
+	 * 
+	 * @return bool true on success, false on fail
 	 */
 	public function build_template($template_variable)
 	{

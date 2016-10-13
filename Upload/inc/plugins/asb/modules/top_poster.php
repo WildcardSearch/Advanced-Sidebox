@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
@@ -14,11 +14,9 @@ if(!defined('IN_MYBB') || !defined('IN_ASB'))
 }
 
 /*
- * asb_top_poster_info()
- *
  * provide info to ASB about the addon
  *
- * @return: (array) the module info
+ * @return array the module info
  */
 function asb_top_poster_info()
 {
@@ -93,12 +91,10 @@ EOF
 }
 
 /*
- * asb_top_poster_build_template()
- *
  * handles display of children of this addon at page load
  *
- * @param - $args - (array) the specific information from the child box
- * @return: (bool) true on success, false on fail/no content
+ * @param array the specific information from the child box
+ * @return bool true on success, false on fail/no content
  */
 function asb_top_poster_build_template($args)
 {

@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
@@ -14,11 +14,9 @@ if(!defined('IN_MYBB') || !defined('IN_ASB'))
 }
 
 /*
- * asb_whosonline_info()
- *
  * provide info to ASB about the addon
  *
- * @return: (array) the module info
+ * @return array the module info
  */
 function asb_whosonline_info()
 {
@@ -115,12 +113,10 @@ EOF
 }
 
 /*
- * asb_whosonline_build_template()
- *
  * handles display of children of this addon at page load
  *
- * @param - $args - (array) the specific information from the child box
- * @return: (bool) true on success, false on fail/no content
+ * @param array the specific information from the child box
+ * @return bool true on success, false on fail/no content
  */
 function asb_whosonline_build_template($args)
 {
@@ -153,12 +149,10 @@ EOF;
 }
 
 /*
- * asb_whosonline_xmlhttp()
- *
  * handles display of children of this addon via AJAX
  *
- * @param - $args - (array) the specific information from the child box
- * @return: n/a
+ * @param array the specific information from the child box
+ * @return void
  */
 function asb_whosonline_xmlhttp($args)
 {
@@ -173,13 +167,11 @@ function asb_whosonline_xmlhttp($args)
 }
 
 /*
- * asb_whosonline_get_online_members()
- *
  * get the members currently online
  *
  * @param - $settings (array) individual side box settings passed to the module
- * @param - $width - (int) the width of the column in which the child is positioned
- * @return: (mixed) a (string) containing the HTML side box markup or
+ * @param int the width of the column in which the child is positioned
+ * @return mixed a (string) containing the HTML side box markup or
  * (bool) false on fail/no content
  */
 function asb_whosonline_get_online_members($settings, $width)
@@ -271,7 +263,7 @@ function asb_whosonline_get_online_members($settings, $width)
 					else
 					{
 						// . . . otherwise force the default avatar.
-						$avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
+						$avatar_filename = "{$theme['imgdir']}/default_avatar.png";
 					}
 
 					$avatar_height_style = " min-height: {$avatar_height}px; max-height: {$avatar_height}px;";

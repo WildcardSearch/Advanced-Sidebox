@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
@@ -8,11 +8,9 @@
  */
 
 /*
- * asb_do_checks()
- *
  * avoid wasted execution by determining when and if code is necessary
  *
- * @return: (bool) true on success, false on fail
+ * @return bool true on success, false on fail
  */
 function asb_do_checks()
 {
@@ -38,11 +36,9 @@ function asb_do_checks()
 }
 
 /*
- * asb_get_excluded_themes()
- *
  * get the tids of any excluded themes
  *
- * @return: (array) the list of excluded themes (bool) false on fail
+ * @return array the list of excluded themes (bool) false on fail
  */
 function asb_get_excluded_themes($sql = false)
 {
@@ -69,11 +65,9 @@ function asb_get_excluded_themes($sql = false)
 }
 
 /*
- * asb_get_cache()
- *
  * retrieve the cache, rebuilding it if necessary
  *
- * @return: (array) the cache data
+ * @return array the cache data
  */
 function asb_get_cache()
 {
@@ -100,12 +94,10 @@ function asb_get_cache()
 }
 
 /*
- * asb_build_cache()
- *
  * build all of the relevant info needed to manage side boxes
  *
- * @param - &$asb - (array) a reference to the asb cache data variable
- * @return: n/a
+ * @param array a reference to the asb cache data variable
+ * @return void
  */
 function asb_build_cache(&$asb)
 {
@@ -224,12 +216,10 @@ function asb_build_cache(&$asb)
 }
 
 /*
- * asb_build_script_filename()
- *
  * add all the parts of the script to build a unique name
  *
- * @param - $this_script - (array) an optional array of script environment info
- * @return: (string) filename marked up for asb
+ * @param array an optional array of script environment info
+ * @return string filename marked up for asb
  */
 function asb_build_script_filename($this_script = '')
 {
@@ -271,14 +261,12 @@ function asb_build_script_filename($this_script = '')
 }
 
 /*
- * asb_get_this_script()
- *
  * get the correct cached script info using the script parameters
  *
- * @param - $asb - (array) the asb cache data
- * @param - $get_all - (bool) true indicates that side boxes and templates
+ * @param array the asb cache data
+ * @param bool true indicates that side boxes and templates
  * should be loaded along with the other info
- * @return: (array) an array of information used to present this script's side boxes
+ * @return array information used to present this script's side boxes
  */
 function asb_get_this_script($asb, $get_all = false)
 {
@@ -329,13 +317,11 @@ function asb_get_this_script($asb, $get_all = false)
 }
 
 /*
- * asb_merge_sidebox_list()
- *
  * merge global and script specific side box lists while maintaining display order
  *
- * @param - $asb - (array) the asb cache data
- * @param - $... - (array) two or more arrays of side box ids => module names
- * @return: (array) an array with the merged and sorted arrays
+ * @param array the asb cache data
+ * @param array two or more arrays of side box ids => module names
+ * @return array an array with the merged and sorted arrays
  */
 function asb_merge_sidebox_list($asb)
 {
@@ -380,12 +366,10 @@ function asb_merge_sidebox_list($asb)
 }
 
 /*
- * asb_check_user_permissions()
- *
  * standard check of all user groups against an allowable list
  *
- * @param - $good_groups - (array) groups allowed to perform the action we are protecting
- * @return: (bool) true if the user is allowed, false if not
+ * @param array groups allowed to perform the action we are protecting
+ * @return bool true if the user is allowed, false if not
  */
 function asb_check_user_permissions($good_groups)
 {
@@ -425,12 +409,10 @@ function asb_check_user_permissions($good_groups)
 }
 
 /*
- * asb_build_sidebox_content()
- *
  * use the sidebox info to produce its template
  *
- * @param - $this_box - (Sidebox object) or (array) of side box data
- * @return: (string) HTML side box <div> markup or (bool) false on error
+ * @param Sidebox object or array of side box data
+ * @return string HTML side box <div> markup or bool false on error
  */
 function asb_build_sidebox_content($this_box)
 {
@@ -486,13 +468,13 @@ EOF;
 			$collapsed_name = "{$box_type}_{$id}_c";
 			if(isset($collapsed[$collapsed_name]) && $collapsed[$collapsed_name] == 'display: show;')
 			{
-				$expcolimage = 'collapse_collapsed.gif';
+				$expcolimage = 'collapse_collapsed.png';
 				$expdisplay = 'display: none;';
 				$expaltext = '[+]';
 			}
 			else
 			{
-				$expcolimage = 'collapse.gif';
+				$expcolimage = 'collapse.png';
 				$expaltext = '[-]';
 			}
 			eval("\$expander = \"" . $templates->get('asb_expander') . "\";");
@@ -517,11 +499,9 @@ EOF;
 }
 
 /*
- * asb_get_all_modules()
- *
  * retrieve any detected modules
  *
- * @return: (array) an array of Addon_type objects
+ * @return array Addon_type objects
  */
 function asb_get_all_modules()
 {
@@ -554,11 +534,9 @@ function asb_get_all_modules()
 }
 
 /*
- * asb_get_all_custom()
- *
  * retrieve all custom boxes
  *
- * @return: (array) of Custom_type objects
+ * @return array Custom_type objects
  */
 function asb_get_all_custom()
 {
@@ -579,12 +557,10 @@ function asb_get_all_custom()
 }
 
 /*
- * asb_get_all_sideboxes()
- *
  * retrieve all side boxes
  *
- * @param - $good_script - (string) optional script filter
- * @return: (array) an array of side box objects
+ * @param string optional script filter
+ * @return array an array of side box objects
  */
 function asb_get_all_sideboxes($good_script = '')
 {
@@ -617,11 +593,9 @@ function asb_get_all_sideboxes($good_script = '')
 }
 
 /*
- * asb_get_all_scripts()
- *
  * retrieve all script definitions
  *
- * @return: (array) of script data arrays
+ * @return array of script data arrays
  */
 function asb_get_all_scripts()
 {
@@ -643,11 +617,9 @@ function asb_get_all_scripts()
 }
 
 /*
- * asb_get_all_themes()
- *
  * rebuilds the theme exclude list ACP setting
  *
- * @return: (string) the <select> HTML or false on error
+ * @return string the <select> HTML or false on error
  */
 function asb_get_all_themes($full = false)
 {

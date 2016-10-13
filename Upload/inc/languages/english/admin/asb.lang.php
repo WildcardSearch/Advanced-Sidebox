@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
@@ -344,5 +344,9 @@ $l['asb_script_deactivate_fail'] = 'The script definition could not be deactivat
 
 // ajax
 $l['asb_ajax_deleting_sidebox'] = 'Deleting . . .';
+$l['asb_ajax_nothing_found'] = 'no {1} detected';
+$l['asb_ajax_actions'] = 'actions';
+$l['asb_ajax_hooks'] = 'hooks';
+$l['asb_ajax_templates'] = 'templates';
 
 ?>

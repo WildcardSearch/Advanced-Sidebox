@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
@@ -18,11 +18,9 @@ require_once MYBB_ROOT . 'inc/plugins/asb/functions_acp.php';
 require_once MYBB_ROOT . 'inc/plugins/asb/install.php';
 
 /*
- * asb_admin()
- *
  * the ACP page router
  *
- * @return: n/a
+ * @return void
  */
 $plugins->add_hook('admin_load', 'asb_admin');
 function asb_admin()
@@ -47,7 +45,7 @@ function asb_admin()
 		$min = '.min';
 	}
 
-	// a few general functions and classes for the ACP side
+	// a few classes for the ACP side
 	require_once MYBB_ROOT . 'inc/plugins/asb/classes/acp.php';
 
 	// URL, link and image markup generator
@@ -83,11 +81,9 @@ function asb_admin()
 }
 
 /*
- * asb_admin_manage_sideboxes()
- *
  * main side box management page - drag and drop and standard controls for side boxes
  *
- * @return: n/a
+ * @return void
  */
 function asb_admin_manage_sideboxes()
 {
@@ -118,12 +114,6 @@ function asb_admin_manage_sideboxes()
 			</div>
 
 EOF;
-
-			// build the JS to enable dragging
-			$module_script .= <<<EOF
-	new Draggable('{$id}', { revert: true });
-
-EOF;
 		}
 	}
 
@@ -145,12 +135,6 @@ EOF;
 			<div id="{$id}" class="draggable custom_type">
 				{$title_link}
 			</div>
-
-EOF;
-
-			// build the js to enable dragging
-			$module_script .= <<<EOF
-	new Draggable('{$id}', { revert: true });
 
 EOF;
 		}
@@ -189,12 +173,8 @@ EOF;
 	// -->
 	</script>
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
-	<script src="../jscripts/scriptaculous.js?load=effects,dragdrop,controls" type="text/javascript"></script>
 	<script type="text/javascript" src="jscripts/peeker.js"></script>
-	<script src="jscripts/imodal.js" type="text/javascript"></script>
-	<link rel="stylesheet" type="text/css" href="styles/default/imodal.css"/>
 	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
-	<script src="jscripts/asb/asb_modal{$min}.js" type="text/javascript"></script>
 	<script src="jscripts/asb/asb_sideboxes{$min}.js" type="text/javascript"></script>
 
 EOF;
@@ -213,36 +193,35 @@ EOF;
 
 	<div id="droppable_container">{$filter_text}
 		<table width="100%" class="back_drop">
-			<tr>
-				<td width="18%" class="column_head">{$lang->asb_addon_modules}</td>
-				<td width="18%" class="column_head">{$lang->asb_custom}</td>
-				<td width="30%" class="column_head">{$lang->asb_position_left}</td>
-				<td width="30%" class="column_head">{$lang->asb_position_right}</td>
-			</tr>
-			<tr>
-				<td id="addon_menu" valign="top" rowspan="2">
-					{$modules}
-				</td>
-				<td id="custom_menu" valign="top" rowspan="2">
-					{$custom_boxes}
-				</td>
-				<td id="left_column" valign="top" class="column forum_column">
-					{$left_boxes}
-				</td>
-				<td id="right_column" valign="top" class="column forum_column">
-					{$right_boxes}
-				</td>
-			</tr>
-			<tr height="45px;">
-				<td id="trash_column" class="column trashcan" colspan="2"></td>
-			</tr>
+			<thead>
+				<tr>
+					<th width="18%" class="column_head">{$lang->asb_addon_modules}</th>
+					<th width="18%" class="column_head">{$lang->asb_custom}</th>
+					<th width="30%" class="column_head">{$lang->asb_position_left}</th>
+					<th width="30%" class="column_head">{$lang->asb_position_right}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr id="topLeft">
+					<td id="addon_menu" valign="top" rowspan="2">
+						{$modules}
+					</td>
+					<td id="custom_menu" valign="top" rowspan="2">
+						{$custom_boxes}
+					</td>
+					<td id="left_column" valign="top" class="column forum_column sortable droppable">
+						{$left_boxes}
+					</td>
+					<td id="right_column" valign="top" class="column forum_column sortable droppable">
+						{$right_boxes}
+					</td>
+				</tr>
+				<tr id="bottomRight" height="45px;">
+					<td id="trash_column" class="column trashcan sortable" colspan="2"></td>
+				</tr>
+			</tbody>
 		</table>
 	</div>
-	<script type="text/javascript">
-	<!--
-{$module_script}
-	// -->
-	</script>
 EOF;
 	// and display it
 	echo($markup);
@@ -252,21 +231,21 @@ EOF;
 }
 
 /*
- * asb_admin_edit_box()
- *
  * handles the modal/JavaScript edit box and also (as a backup) displays a standard form for those with JavaScript disabled
  *
- * @return: n/a
+ * @return void
  */
 function asb_admin_edit_box()
 {
 	global $page, $lang, $mybb, $db, $html, $scripts, $all_scripts, $min;
 
+	$ajax = ($mybb->input['ajax'] == 1);
+
 	$sidebox = new Sidebox($mybb->input['id']);
 	$id = (int) $sidebox->get('id');
 
 	$position = (int) $mybb->input['box_position'];
-	if($mybb->input['ajax'] == 1)
+	if($ajax)
 	{
 		$position = (int) $mybb->input['pos'];
 		if($id)
@@ -295,7 +274,7 @@ function asb_admin_edit_box()
 		else
 		{
 			flash_message($lang->asb_edit_fail_bad_module, 'error');
-			if($mybb->input['ajax'] != 1)
+			if(!$ajax)
 			{
 				admin_redirect($html->url());
 			}
@@ -321,7 +300,11 @@ function asb_admin_edit_box()
 		}
 		else
 		{
-			// or back off if they entered a value
+			/*
+			 * or back off if they entered a value
+			 * (standard, non-modal interface for
+			 * when JS fails or isn't allowed)
+			 */
 			$display_order = (int) $mybb->input['display_order'];
 		}
 		$sidebox->set('display_order', $display_order);
@@ -379,7 +362,7 @@ function asb_admin_edit_box()
 		}
 		elseif($is_custom)
 		{
-			// then use its wrap_content property
+			// use its wrap_content property
 			$sidebox->set('wrap_content', $parent->get('wrap_content'));
 		}
 
@@ -411,7 +394,7 @@ function asb_admin_edit_box()
 		asb_cache_has_changed();
 
 		// AJAX?
-		if($mybb->input['ajax'] != 1)
+		if(!$ajax)
 		{
 			// if in the standard form handle it with a redirect
 			flash_message($lang->asb_save_success, 'success');
@@ -498,19 +481,16 @@ EOF;
 	}
 
 	// AJAX?
-	if($mybb->input['ajax'] == 1)
+	if($ajax)
 	{
 		// the content is much different
 		echo <<<EOF
-<div id="ModalContentContainer">
-	<div class="ModalTitle">
-		{$page_title}
-		<a href="javascript:;" id="modalClose" class="float_right modalClose">&nbsp;</a>
-	</div>
-	<div class="ModalContent">
+<div class="modal" style="width: auto;">
+<script src="jscripts/tabs.js" type="text/javascript"></script>
+<script src="jscripts/asb/asb_modal.js" type="text/javascript"></script>
 
 EOF;
-		$form = new Form('', 'post', 'modal_form');
+		$form = new Form($html->url(array("action" => 'edit_box', "id" => $id, "addon" => $module, "ajax" => '1')), 'post', 'modal_form');
 	}
 	else
 	{
@@ -523,6 +503,7 @@ EOF;
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
 	<script type="text/javascript" src="jscripts/peeker.js"></script>
 	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
+	<script src="jscripts/tabs.js" type="text/javascript"></script>
 
 EOF;
 		$page->output_header("{$lang->asb} - {$page_title}");
@@ -547,7 +528,7 @@ EOF;
 	reset($tabs);
 
 	$observe_onload = false;
-	if($mybb->input['ajax'] != 1)
+	if(!$ajax)
 	{
 		$observe_onload = true;
 	}
@@ -579,7 +560,7 @@ EOF;
 	echo "\n<div id=\"tab_general\">\n";
 	$form_container = new FormContainer('<h3>' . $lang->sprintf($lang->asb_new_sidebox_action, $box_action, $currently_editing) . '</h3>');
 
-	if($mybb->input['ajax'] != 1)
+	if(!$ajax)
 	{
 		// box title
 		$form_container->output_row($lang->asb_custom_title, $current_title, $form->generate_text_box('box_title') . $form->generate_hidden_field('current_title', $sidebox->get('title')), 'box_title', array("id" => 'box_title'));
@@ -616,7 +597,7 @@ EOF;
 	$query = $db->simple_select('usergroups', 'gid, title', "gid != '1'", array('order_by' => 'gid'));
 	while($usergroup = $db->fetch_array($query))
 	{
-		// store them their titles by groud id
+		// store them their titles by group id
 		$options[(int)$usergroup['gid']] = $usergroup['title'];
 	}
 
@@ -688,11 +669,7 @@ EOF;
 
 	if($do_settings)
 	{
-		echo "</div>\n<div id=\"tab_settings\">\n";
-		if($mybb->input['ajax'] == 1)
-		{
-			echo "<div style=\"max-height: 400px; overflow: auto; clear: both;\">\n";
-		}
+		echo "</div>\n<div id=\"tab_settings\" style=\"max-width: 400px; max-height: 250px; overflow: auto; clear: both;\">\n";
 
 		$form_container = new FormContainer($lang->asb_modal_tab_settings_desc);
 
@@ -719,18 +696,16 @@ EOF;
 		$form_container->end();
 
 		$parent->do_settings_load();
-		echo "</div>\n";
 	}
 
-	// AJAX gets a little different wrap-up
-	if($mybb->input['ajax'] == 1)
-	{
-		echo "</div>\n<div class=\"ModalButtonRow\">\n";
+	echo "</div>\n";
 
-		$buttons[] = $form->generate_submit_button($lang->asb_cancel, array('id' => 'modalCancel'));
+	// AJAX gets a little different wrap-up
+	if($ajax)
+	{
+		$buttons[] = $form->generate_submit_button($lang->asb_cancel, array('onclick' => '$.modal.close(); return false;'));
 		$buttons[] = $form->generate_submit_button($lang->asb_save, array('id' => 'modalSubmit'));
 		$form->output_submit_wrapper($buttons);
-		echo "\n</div>\n";
 		$form->end();
 		echo "\n</div>\n";
 	}
@@ -748,11 +723,9 @@ EOF;
 }
 
 /*
- * asb_admin_custom_boxes()
- *
  * handle user-defined box types
  *
- * @return: n/a
+ * @return void
  */
 function asb_admin_custom_boxes()
 {
@@ -921,13 +894,21 @@ function asb_admin_custom_boxes()
 		if($admin_options['codepress'] != 0)
 		{
 			$page->extra_header .= <<<EOF
-	<link type="text/css" href="./jscripts/codepress/languages/codepress-mybb.css" rel="stylesheet" id="cp-lang-style"/>
-	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
-	<script type="text/javascript">
-	<!--
-		CodePress.language = 'mybb';
-	// -->
-	</script>
+	<link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css?ver=1804" rel="stylesheet">
+<script src="./jscripts/codemirror/lib/codemirror.js"></script>
+<script src="./jscripts/codemirror/mode/xml/xml.js"></script>
+<script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
+<script src="./jscripts/codemirror/mode/css/css.js"></script>
+<script src="./jscripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet">
+<script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
+<script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
+<script src="./jscripts/codemirror/addon/search/search.js"></script>
+<script src="./jscripts/codemirror/addon/fold/foldcode.js"></script>
+<script src="./jscripts/codemirror/addon/fold/xml-fold.js"></script>
+<script src="./jscripts/codemirror/addon/fold/foldgutter.js"></script>
+<link href="./jscripts/codemirror/addon/fold/foldgutter.css" rel="stylesheet">
 EOF;
 		}
 
@@ -946,13 +927,13 @@ EOF;
 			$specify_box = '';
 			$sample_content = <<<EOF
 <tr>
-		<td class="trow1">{$lang->asb_sample_content_line1} (HTML)</td>
+		<td class="trow1">{$lang->asb_sample_content_line1}</td>
 	</tr>
 	<tr>
 		<td class="trow2">{$lang->asb_sample_content_line2}</td>
 	</tr>
 	<tr>
-		<td class="trow1"><strong>{$lang->asb_sample_content_line3}</td>
+		<td class="trow1"><strong>{$lang->asb_sample_content_line3}</strong></td>
 	</tr>
 EOF;
 			$this_box->set('content', $sample_content);
@@ -991,7 +972,7 @@ EOF;
 		$form_container->output_row('');
 
 		// content
-		$form_container->output_cell($form->generate_text_area('box_content', $this_box->get('content'), array("id" => 'box_content', 'class' => 'codepress mybb', 'style' => 'width: 100%; height: 240px;')), array("colspan" => 3));
+		$form_container->output_cell($form->generate_text_area('box_content', $this_box->get('content'), array("id" => 'box_content', 'class' => '', 'style' => 'width: 100%; height: 500px;')), array("colspan" => 3));
 		$form_container->output_row('');
 
 		// finish form
@@ -1004,16 +985,17 @@ EOF;
 		{
 			echo <<<EOF
 		<script type="text/javascript">
-		<!--
-			Event.observe('edit_box', 'submit', function() {
-				if ($('box_content_cp')) {
-					var area = $('box_content_cp');
-					area.id = 'box_content';
-					area.value = box_content.getCode();
-					area.disabled = false;
-				}
+			var editor = CodeMirror.fromTextArea(document.getElementById("box_content"), {
+				lineNumbers: true,
+				lineWrapping: true,
+				foldGutter: true,
+				gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+				viewportMargin: Infinity,
+				indentWithTabs: true,
+				indentUnit: 4,
+				mode: "text/html",
+				theme: "mybb"
 			});
-		// -->
 		</script>
 EOF;
 
@@ -1108,11 +1090,9 @@ EOF;
 }
 
 /*
- * asb_admin_manage_scripts()
- *
  * add/edit/delete script info
  *
- * @return: n/a
+ * @return void
  */
 function asb_admin_manage_scripts()
 {
@@ -1251,7 +1231,11 @@ function asb_admin_manage_scripts()
 		{
 			$data = $this_script->get('data');
 
-			$detected_info = asb_detect_script_info($data['filename']);
+			$detected_info = asb_detect_script_info($data['filename'], array(
+				"hook" => $data['hook'],
+				"action" => $data['action'],
+				"template" => $data['template_name'],
+			));
 			$detected_show = '';
 			$button_text = $lang->asb_update;
 			$filename = $data['filename'];
@@ -1265,13 +1249,21 @@ function asb_admin_manage_scripts()
 		if($admin_options['codepress'] != 0)
 		{
 			$page->extra_header .= <<<EOF
-	<link type="text/css" href="./jscripts/codepress/languages/codepress-mybb.css" rel="stylesheet" id="cp-lang-style"/>
-	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
-	<script type="text/javascript">
-	<!--
-		CodePress.language = 'mybb';
-	// -->
-	</script>'
+	<link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
+	<link href="./jscripts/codemirror/theme/mybb.css?ver=1804" rel="stylesheet">
+	<script src="./jscripts/codemirror/lib/codemirror.js"></script>
+	<script src="./jscripts/codemirror/mode/xml/xml.js"></script>
+	<script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
+	<script src="./jscripts/codemirror/mode/css/css.js"></script>
+	<script src="./jscripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+	<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet">
+	<script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
+	<script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
+	<script src="./jscripts/codemirror/addon/search/search.js"></script>
+	<script src="./jscripts/codemirror/addon/fold/foldcode.js"></script>
+	<script src="./jscripts/codemirror/addon/fold/xml-fold.js"></script>
+	<script src="./jscripts/codemirror/addon/fold/foldgutter.js"></script>
+	<link href="./jscripts/codemirror/addon/fold/foldgutter.css" rel="stylesheet">
 EOF;
 		}
 
@@ -1280,7 +1272,12 @@ EOF;
 	<script type="text/javascript" src="jscripts/asb/asb_scripts{$min}.js"></script>
 	<script type="text/javascript">
 	<!--
-		ASB.scripts.setCurrent('{$filename}');
+		ASB.scripts.setup('{$filename}', {
+			nothing_found: '{$lang->asb_ajax_nothing_found}',
+			hooks: '{$lang->asb_ajax_hooks}',
+			actions: '{$lang->asb_ajax_actions}',
+			templates: '{$lang->asb_ajax_templates}',
+		});
 	// -->
 	</script>
 	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
@@ -1316,12 +1313,12 @@ EOF;
 		$form_container->output_row("{$lang->asb_template}:", $lang->asb_template_desc, "{$spinner}<div id=\"template_list\"{$detected_show}>{$detected_info['templates']}</div>" . $form->generate_text_box('template_name', $data['template_name'], array("id" => 'template_name')), '', '', array("id" => 'template_row'));
 		$form_container->output_row("{$lang->asb_hook}:", $lang->asb_hook_desc, "{$spinner}<div id=\"hook_list\"{$detected_show}>{$detected_info['hooks']}</div>" . $form->generate_text_box('hook', $data['hook'], array("id" => 'hook')), '', '', array("id" => 'hook_row'));
 
-		$form_container->output_row($lang->asb_header_search_text, $lang->asb_header_search_text_desc, $form->generate_text_area('find_top', $data['find_top'], array("id" => 'find_top', 'class' => 'codepress mybb', 'style' => 'width: 100%; height: 100px;')), '', '', array("id" => 'header_search'));
-		$form_container->output_row($lang->asb_footer_search_text, $lang->asb_footer_search_text_desc, $form->generate_text_area('find_bottom', $data['find_bottom'], array("id" => 'find_bottom', 'class' => 'codepress mybb', 'style' => 'width: 100%; height: 100px;')) . $form->generate_hidden_field('id', $data['id']) . $form->generate_hidden_field('active', $data['active']) . $form->generate_hidden_field('action', 'manage_scripts') . $form->generate_hidden_field('mode', 'edit'), '', '', array("id" => 'footer_search'));
+		$form_container->output_row($lang->asb_header_search_text, $lang->asb_header_search_text_desc, $form->generate_text_area('find_top', $data['find_top'], array("id" => 'find_top', 'class' => '', 'style' => 'width: 100%;', "rows" => '3')), '', '', array("id" => 'header_search'));
+		$form_container->output_row($lang->asb_footer_search_text, $lang->asb_footer_search_text_desc, $form->generate_text_area('find_bottom', $data['find_bottom'], array("id" => 'find_bottom', 'class' => '', 'style' => 'width: 100%; height: 100px;')) . $form->generate_hidden_field('id', $data['id']) . $form->generate_hidden_field('active', $data['active']) . $form->generate_hidden_field('action', 'manage_scripts') . $form->generate_hidden_field('mode', 'edit'), '', '', array("id" => 'footer_search'));
 
 		$form_container->output_row($lang->asb_replace_template, $lang->asb_replace_template_desc, $form->generate_yes_no_radio('replace_all', $data['replace_all'], true, array("id" => 'replace_all_yes', "class" => 'replace_all'), array("id" => 'replace_all_no', "class" => 'replace_all')), '', '', array("id" => 'replace_all'));
 
-		$form_container->output_row($lang->asb_replacement_content, $lang->asb_replacement_content_desc, $form->generate_text_area('replacement', $data['replacement'], array("id" => 'replacement', 'class' => 'codepress mybb', 'style' => 'width: 100%; height: 240px;')), '', '', array("id" => 'replace_content'));
+		$form_container->output_row($lang->asb_replacement_content, $lang->asb_replacement_content_desc, $form->generate_text_area('replacement', $data['replacement'], array("id" => 'replacement', 'class' => '', 'style' => 'width: 100%; height: 240px;')), '', '', array("id" => 'replace_content'));
 
 		$form_container->end();
 
@@ -1334,31 +1331,26 @@ EOF;
 		{
 			echo <<<EOF
 		<script type="text/javascript">
-		<!--
-			Event.observe('edit_script', 'submit', function() {
-				if ($('find_top_cp')) {
-					var area = $('find_top_cp');
-					area.id = 'find_top';
-					area.value = find_top.getCode();
-					area.disabled = false;
-				}
+			var options = {
+					lineNumbers: true,
+					lineWrapping: true,
+					foldGutter: true,
+					gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+					viewportMargin: Infinity,
+					indentWithTabs: true,
+					indentUnit: 4,
+					mode: "text/html",
+					theme: "mybb"
+				},
+				editorFindTop,
+				editorFindBottom,
+				editorReplacement;
 
-				if ($('find_bottom_cp')) {
-					var area = $('find_bottom_cp');
-					area.id = 'find_bottom';
-					area.value = find_bottom.getCode();
-					area.disabled = false;
-				}
-
-				if ($('replacement_cp')) {
-					var area = $('replacement_cp');
-					area.id = 'replacement';
-					area.value = replacement.getCode();
-					area.disabled = false;
-				}
-			});
-		// -->
+				editorFindTop = CodeMirror.fromTextArea(document.getElementById("find_top"), options).setSize('100%', 80);
+				editorFindBottom = CodeMirror.fromTextArea(document.getElementById("find_bottom"), options).setSize('100%', 80);
+				editorReplacement = CodeMirror.fromTextArea(document.getElementById("replacement"), options).setSize('100%', 300);;
 		</script>
+
 EOF;
 		}
 
@@ -1451,11 +1443,9 @@ EOF;
 }
 
 /*
- * asb_admin_manage_modules()
- *
  * view and delete add-ons
  *
- * @return: n/a
+ * @return void
  */
 function asb_admin_manage_modules()
 {
@@ -1547,11 +1537,9 @@ EOF;
 }
 
 /*
- * asb_admin_xmlhttp()
- *
  * handler for AJAX side box routines
  *
- * @return: n/a
+ * @return void
  */
 function asb_admin_xmlhttp()
 {
@@ -1561,6 +1549,8 @@ function asb_admin_xmlhttp()
 	if($mybb->input['mode'] == 'order')
 	{
 		parse_str($mybb->input['data']);
+
+		${$mybb->input['pos']} = $sidebox;
 
 		if($mybb->input['pos'] == 'trash_column')
 		{
@@ -1646,14 +1636,15 @@ function asb_admin_xmlhttp()
 		// we have to reaffirm our observance of the edit link when it is added/updated
 		$script = <<<EOF
 <script type="text/javascript">
-Event.observe('edit_sidebox_{$id}', 'click', function(event) {
+$("#edit_sidebox_{$id}").click(function(event) {
 	// stop the link from redirecting the user-- set up this way so that if JS is disabled the user goes to a standard form rather than a modal edit form
-	Event.stop(event);
+		event.preventDefault();
 
-	// create the modal edit box dialogue
-	new ASB.Modal({
-		type: 'ajax',
-		url: this.readAttribute('href') + '&ajax=1'
+	$.get($(this).prop("href") + '&ajax=1', function (html) {
+		$(html).appendTo('body').modal({
+			fadeDuration: 250,
+			zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999),
+		});
 	});
 });
 </script>
@@ -1667,16 +1658,21 @@ EOF;
 	 */
 	elseif($mybb->input['mode'] == 'analyze_script' && trim($mybb->input['filename']))
 	{
-		echo(json_encode(asb_detect_script_info($mybb->input['filename'])));
+		$content = asb_detect_script_info($mybb->input['filename'], $mybb->input['selected']);
+		
+		if (!$content) {
+			$content = array("actions", "hooks", "templates");
+		}
+
+		header('Content-type: application/json');
+		echo(json_encode($content));
 	}
 }
 
 /*
- * asb_admin_delete_box()
- *
  * remove a side box (only still around for those without JS . . . like who, idk)
  *
- * @return: n/a
+ * @return void
  */
 function asb_admin_delete_box()
 {
@@ -1702,11 +1698,9 @@ function asb_admin_delete_box()
 }
 
 /*
- * asb_admin_delete_addon()
- *
  * completely remove an add-on module
  *
- * @return: n/a
+ * @return void
  */
 function asb_admin_delete_addon()
 {
@@ -1733,11 +1727,9 @@ function asb_admin_delete_addon()
 }
 
 /*
- * asb_admin_update_theme_select()
- *
  * rebuild the theme exclude list.
  *
- * @return: n/a
+ * @return void
  */
 function asb_admin_update_theme_select()
 {
@@ -1782,11 +1774,9 @@ function asb_admin_update_theme_select()
 }
 
 /*
- * asb_admin_config_settings_change()
- *
  * serialize the theme exclusion list selector
  *
- * @return: n/a
+ * @return void
  */
 $plugins->add_hook('admin_config_settings_change', 'asb_admin_config_settings_change');
 function asb_admin_config_settings_change()
@@ -1808,10 +1798,8 @@ function asb_admin_config_settings_change()
 }
 
 /*
- * asb_admin_action()
- *
  * @param - &$action is an array containing the list of selectable items on the config tab
- * @return: n/a
+ * @return void
  */
 $plugins->add_hook('admin_config_action_handler', 'asb_admin_config_action_handler');
 function asb_admin_config_action_handler(&$action)
@@ -1820,12 +1808,10 @@ function asb_admin_config_action_handler(&$action)
 }
 
 /*
- * asb_admin_menu()
- *
  * Add an entry to the ACP Config page menu
  *
  * @param - &$sub_menu is the menu array we will add a member to
- * @return: n/a
+ * @return void
  */
 $plugins->add_hook('admin_config_menu', 'asb_admin_config_menu');
 function asb_admin_config_menu(&$sub_menu)
@@ -1846,13 +1832,11 @@ function asb_admin_config_menu(&$sub_menu)
 }
 
 /*
- * asb_admin_permissions()
- *
  * Add an entry to admin permissions list
  *
  * @param - &$admin_permissions is the array of permission types
  * we are adding an element to
- * @return: n/a
+ * @return void
  */
 $plugins->add_hook('admin_config_permissions', 'asb_admin_config_permissions');
 function asb_admin_config_permissions(&$admin_permissions)

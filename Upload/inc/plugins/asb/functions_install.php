@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
@@ -8,12 +8,10 @@
  */
 
 /*
- * asb_create_script_info()
- *
  * create the default script information rows (tailored to mimic the previous versions)
  *
- * @param - $return - (bool) true to return an associative array of ScriptInfo objects (no save) / false to simply save
- * @return: (mixed) see above dependency
+ * @param bool true to return an associative array of ScriptInfo objects (no save) / false to simply save
+ * @return mixed see above dependency
  */
 function asb_create_script_info($return = false)
 {
@@ -108,7 +106,7 @@ function asb_create_script_info($return = false)
 EOF
 			,
 			"active" => 1
-		)
+		),
 	);
 
 	if($return == false)
@@ -131,11 +129,9 @@ EOF
 }
 
 /*
- * asb_build_theme_exclude_select()
- *
  * rebuilds the theme exclude list ACP setting
  *
- * @return: (string) the <select> HTML or false on error
+ * @return string the <select> HTML or false on error
  */
 function asb_build_theme_exclude_select()
 {
@@ -175,12 +171,10 @@ EOF;
 /* versioning */
 
 /*
- * asb_get_cache_version()
- *
  * check cached version info
  * derived from the work of pavemen in MyBB Publisher
  *
- * @return: (int) the currently installed version
+ * @return int the currently installed version
  */
 function asb_get_cache_version()
 {
@@ -196,12 +190,10 @@ function asb_get_cache_version()
 }
 
 /*
- * asb_set_cache_version()
- *
  * set cached version info
  * derived from the work of pavemen in MyBB Publisher
  *
- * @return: (bool) true on success
+ * @return bool true on success
  */
 function asb_set_cache_version()
 {
@@ -218,12 +210,10 @@ function asb_set_cache_version()
 }
 
 /*
- * asb_unset_cache_version()
- *
  * remove cached version info
  * derived from the work of pavemen in MyBB Publisher
  *
- * @return: (bool) true on success
+ * @return bool true on success
  */
 function asb_unset_cache_version()
 {
