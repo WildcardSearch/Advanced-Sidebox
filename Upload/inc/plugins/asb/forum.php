@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
@@ -11,12 +11,10 @@
 asb_initialize();
 
 /*
- * asb_start()
- *
  * main implementation of many hooks depending upon THIS_SCRIPT constant and
  * $mybb->input/$_GET vars (see asb_initialize())
  *
- * @return: n/a
+ * @return void
  */
 function asb_start()
 {
@@ -155,11 +153,9 @@ function asb_start()
 }
 
 /*
- * asb_initialize()
- *
  * add the appropriate hooks and caches any templates that will be used
  *
- * @return: n/a
+ * @return void
  */
 function asb_initialize()
 {
@@ -205,11 +201,9 @@ function asb_initialize()
 }
 
 /*
- * asb_usercp_options_end()
- *
  * add a check box to the User CP under Other Options to toggle the side boxes
  *
- * @return: n/a
+ * @return void
  */
 function asb_usercp_options_end()
 {
@@ -254,11 +248,9 @@ EOF;
 }
 
 /*
- * asb_xmlhttp()
- *
  * handle the AJAX refresh for side box modules (replacing asb/xmlhttp.php)
  *
- * @return: n/a
+ * @return void
  */
 function asb_xmlhttp()
 {

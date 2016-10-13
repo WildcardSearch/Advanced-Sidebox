@@ -29,12 +29,10 @@ class WildcardPluginInstaller
 	protected $templategroup_names = array();
 
 	/*
-	 * __construct()
-	 *
 	 * load the installation data and prepare for anything
 	 *
-	 * @param - $path - (string) path to the install data
-	 * @return: n/a
+	 * @param string path to the install data
+	 * @return void
 	 */
 	public function __construct($path)
 	{
@@ -91,11 +89,9 @@ class WildcardPluginInstaller
 	}
 
 	/*
-	 * install()
-	 *
 	 * install all the elements stored in the installation data file
 	 *
-	 * @return: n/a
+	 * @return void
 	 */
 	public function install()
 	{
@@ -106,11 +102,9 @@ class WildcardPluginInstaller
 	}
 
 	/*
-	 * uninstall()
-	 *
 	 * uninstall all elements as provided in the install data
 	 *
-	 * @return: n/a
+	 * @return void
 	 */
 	public function uninstall()
 	{
@@ -124,13 +118,11 @@ class WildcardPluginInstaller
 	}
 
 	/*
-	 * add_table()
-	 *
 	 * create a correctly collated table from an array of options
 	 *
-	 * @param - $table - (string) table name without prefix
-	 * @param - $columns - (array) an associative array of columns
-	 * @return: n/a
+	 * @param string table name without prefix
+	 * @param array an associative array of columns
+	 * @return void
 	 */
 	private function add_table($table, $columns)
 	{
@@ -158,12 +150,10 @@ class WildcardPluginInstaller
 	}
 
 	/*
-	 * add_tables()
-	 *
 	 * create multiple tables from stored info
 	 *
-	 * @param - $tables - (array) an associative array of database tables and their columns
-	 * @return: n/a
+	 * @param array an associative array of database tables and their columns
+	 * @return void
 	 */
 	public function add_tables()
 	{
@@ -187,11 +177,9 @@ class WildcardPluginInstaller
 	}
 
 	/*
-	 * remove_tables()
-	 *
 	 * drop multiple database tables
 	 *
-	 * @return: n/a
+	 * @return void
 	 */
 	public function remove_tables()
 	{
@@ -205,12 +193,10 @@ class WildcardPluginInstaller
 	}
 
 	/*
-	 * add_columns()
-	 *
 	 * add columns in the list to a table (if they do not already exist)
 	 *
-	 * @param - $column_list - (array) an associative array of tables and columns
-	 * @return: n/a
+	 * @param array tables and columns
+	 * @return void
 	 */
 	public function add_columns($columns = '')
 	{
@@ -239,12 +225,10 @@ class WildcardPluginInstaller
 	}
 
 	/*
-	 * remove_columns()
-	 *
 	 * drop multiple listed columns
 	 *
-	 * @param - $column_list - (array) an associative array of tables and columns
-	 * @return: n/a
+	 * @param array tables and columns
+	 * @return void
 	 */
 	public function remove_columns()
 	{
@@ -273,12 +257,10 @@ class WildcardPluginInstaller
 	}
 
 	/*
-	 * add_settinggroups()
-	 *
 	 * create multiple setting groups
 	 *
-	 * @param - $groups - (array) an associative array of setting groups
-	 * @return: an associative array of setting groups and gids
+	 * @param array setting groups
+	 * @return array setting groups and gids
 	 */
 	private function add_settinggroups($groups)
 	{
@@ -307,12 +289,10 @@ class WildcardPluginInstaller
 	}
 
 	/*
-	 * add_settings()
-	 *
 	 * create settings from an array
 	 *
-	 * @param - $settings - (array) an associative array of groups and settings
-	 * @return: n/a
+	 * @param array groups and settings
+	 * @return void
 	 */
 	public function add_settings()
 	{
@@ -354,11 +334,9 @@ class WildcardPluginInstaller
 	}
 
 	/*
-	 * add_template_groups()
-	 *
 	 * create or update the template groups stored in the object
 	 *
-	 * @return: n/a
+	 * @return void
 	 */
 	public function add_template_groups()
 	{
@@ -390,12 +368,10 @@ class WildcardPluginInstaller
 	}
 
 	/*
-	 * add_templates()
-	 *
 	 * create multiple templates from stored info
 	 *
-	 * @param - $templates - (array) an associative array of template data
-	 * @return: n/a
+	 * @param array template data
+	 * @return void
 	 */
 	public function add_templates()
 	{
@@ -441,15 +417,13 @@ class WildcardPluginInstaller
 	}
 
 	/*
-	 * remove_()
-	 *
 	 * removed rows from a named table when values of the named column
 	 * are matched with members of the list
 	 *
-	 * @param - $table - (string) table name without prefix
-	 * @param - $field - (string) field name
-	 * @param - $list - (array) an unindexed array of string values
-	 * @return: n/a
+	 * @param string table name without prefix
+	 * @param string field name
+	 * @param array string values
+	 * @return void
 	 */
 	private function remove_($table, $field, $list)
 	{
@@ -471,12 +445,10 @@ class WildcardPluginInstaller
 	}
 
 	/*
-	 * table_exists()
-	 *
 	 * verify the existence of named table
 	 *
-	 * @param - $table - (string) table name without prefix
-	 * @returns: (bool) true if it exists/false if not
+	 * @param string table name without prefix
+	 * @return bool true if it exists/false if not
 	 */
 	public function table_exists($table)
 	{
@@ -490,10 +462,9 @@ class WildcardPluginInstaller
 	}
 
 	/*
-	 * build_table_list()
-	 *
 	 * build an array of all the tables in the current database
-	 * @returns: (array) an array with keys for the table names and 1 for the values
+	 *
+	 * @return array an array with keys for the table names and 1 for the values
 	 */
 	private function build_table_list()
 	{
@@ -512,13 +483,11 @@ class WildcardPluginInstaller
 	}
 
 	/*
-	 * field_exists()
-	 *
 	 * verify the existence of the named column of the named table
 	 *
-	 * @param - $table - (string) table name without prefix
-	 * @param - $field - (string) field name
-	 * @returns: (bool) true if it exists/false if not
+	 * @param string table name without prefix
+	 * @param string field name
+	 * @return bool true if it exists/false if not
 	 */
 	public function field_exists($table, $field)
 	{
@@ -532,12 +501,10 @@ class WildcardPluginInstaller
 	}
 
 	/*
-	 * build_field_list()
-	 *
 	 * build an array of all the columns of the named table
 	 *
-	 * @param - $table - (string) table name without prefix
-	 * @returns: (array) an array with keys for the field names and 1 for the values
+	 * @param string table name without prefix
+	 * @returns array an array with keys for the field names and 1 for the values
 	 */
 	private function build_field_list($table)
 	{

@@ -1,7 +1,7 @@
-## Advanced-Sidebox 2.1.1
+## Advanced-Sidebox 3.0
 
 <p align="center">
-  <img title="Advanced Sidebox Logo" alt="Advanced Sidebox Logo" src="https://github.com/WildcardSearch/Advanced-Sidebox/wiki/asb_logo_320.png" />
+  <img title="Advanced Sidebox Logo" alt="Advanced Sidebox Logo" src="http://i.imgur.com/4QWLq5V.png" />
 </p>
 
 *A plugin for MyBB forums that displays custom boxes on various forum pages.*

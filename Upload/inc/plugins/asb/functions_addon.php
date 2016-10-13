@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
@@ -8,12 +8,10 @@
  */
 
 /*
- * asb_strip_quotes()
- *
  * strips all quote tags (and their contents) from a post message
  *
- * @param - $message - (string) the unparsed message
- * @return: (string) the message sans quotes
+ * @param string the unparsed message
+ * @return string the message sans quotes
  */
 function asb_strip_quotes($message)
 {
@@ -36,12 +34,10 @@ function asb_strip_quotes($message)
 }
 
 /*
- * asb_strip_url()
- *
  * strip all URLs from the given string
  *
- * @param - $message - (string) the text to cleanse
- * @return: (string) the message less URLs
+ * @param string the text to cleanse
+ * @return string the message less URLs
  */
 function asb_strip_url($message)
 {
@@ -52,14 +48,12 @@ function asb_strip_url($message)
 }
 
 /*
- * asb_build_id_list()
- *
  * build a cleaned list of numeric ids and optionally return it as an SQL IN() function
  *
- * @param - $ids - (mixed) an (int) id or a (string) comma-separated list of ids
- * @param - $field - (string) the field name of the DB table
- * @param - $wrap - (bool) whether to present the id list as an SQL IN() or not
- * @return: (string) an SQL IN() function using the ids provided
+ * @param mixed int id or a string comma-separated list of ids
+ * @param string the field name of the DB table
+ * @param bool whether to present the id list as an SQL IN() or not
+ * @return string an SQL IN() function using the ids provided
  */
 function asb_build_id_list($ids, $field = 'id', $wrap = true)
 {
@@ -108,15 +102,13 @@ EOF;
 }
 
 /*
- * asb_build_SQL_where()
- *
  * build an SQL WHERE clause from an array of conditions and other arguments
  *
- * @param - $conditions - (mixed) an array of (string) conditions or a single (string) condition
- * @param - $op - (string) the operand to use as a separator
- * @param - $prefix - (string) an operand or other prefix can be used here
- * @param - $wrap - (bool) whether to prefix and enclose the conditions in parentheses or not
- * @return: (string) an SQL WHERE clause using the provided info
+ * @param mixed an array of string conditions or a single string condition
+ * @param string the operand to use as a separator
+ * @param string an operand or other prefix can be used here
+ * @param bool whether to prefix and enclose the conditions in parentheses or not
+ * @return string an SQL WHERE clause using the provided info
  */
 function asb_build_SQL_where($conditions, $op = 'AND', $prefix = '', $wrap = true)
 {
@@ -150,14 +142,12 @@ function asb_build_SQL_where($conditions, $op = 'AND', $prefix = '', $wrap = tru
 }
 
 /**
- * asb_get_folder_images()
- *
  * build a list of all the images stored in a particular folder on the server
  *
- * @param - $folder - (string) the unqualified folder name from the root
- * @param - $subfolder - (string) (for recursion) the current subfolder
- * @param - $recursive - (bool) determines where to recurse into subfolders
- * @return: (string) a comma-separated, single-quoted list of file names
+ * @param string the unqualified folder name from the root
+ * @param string (for recursion) the current subfolder
+ * @param bool determines where to recurse into subfolders
+ * @return string a comma-separated, single-quoted list of file names
  */
 function asb_get_folder_images($folder, $subfolder = '', $recursive = false)
 {

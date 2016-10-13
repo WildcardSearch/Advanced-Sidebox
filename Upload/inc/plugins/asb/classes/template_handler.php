@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
@@ -127,7 +127,7 @@ EOF;
 <script type="text/javascript" src="jscripts/asb/asb_xmlhttp{$min}.js"></script>
 <script type="text/javascript">
 <!--
-	Event.observe(window, 'load', function() {
+	$(function() {
 		ASB.ajax.buildUpdaters([ {$extra_scripts} ], { left: {$width_left}, right: {$width_right} }, '{$location}');
 	});
 // -->

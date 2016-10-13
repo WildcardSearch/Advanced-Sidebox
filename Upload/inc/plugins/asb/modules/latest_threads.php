@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
@@ -14,11 +14,9 @@ if(!defined('IN_MYBB') || !defined('IN_ASB'))
 }
 
 /*
- * asb_latest_threads_info()
- *
  * provide info to ASB about the addon
  *
- * @return: (array) the module info
+ * @param array the module info
  */
 function asb_latest_threads_info()
 {
@@ -158,12 +156,10 @@ EOF
 }
 
 /*
- * asb_latest_threads_build_template()
- *
  * handles display of children of this addon at page load
  *
- * @param - $args - (array) the specific information from the child box
- * @return: (bool) true on success, false on fail/no content
+ * @param array the specific information from the child box
+ * @return bool true on success, false on fail/no content
  */
 function asb_latest_threads_build_template($args)
 {
@@ -195,12 +191,10 @@ EOF;
 }
 
 /*
- * asb_latest_threads_xmlhttp()
- *
  * handles display of children of this addon via AJAX
  *
- * @param - $args - (array) the specific information from the child box
- * @return: n/a
+ * @param array the specific information from the child box
+ * @return void
  */
 function asb_latest_threads_xmlhttp($args)
 {
@@ -223,14 +217,12 @@ function asb_latest_threads_xmlhttp($args)
 }
 
 /*
- * latest_threads_get_threadlist()
- *
  * get the latest forum discussions
  *
- * @param - $settings (array) individual side box settings passed to the module
- * @param - $width - (int) the width of the column in which the child is positioned
- * @return: (mixed) a (string) containing the HTML side box markup or
- * (bool) false on fail/no content
+ * @param array individual side box settings passed to the module
+ * @param int the width of the column in which the child is positioned
+ * @mixed string side box markup or
+ * bool false on fail/no content
  */
 function latest_threads_get_threadlist($settings, $width)
 {

@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
@@ -8,12 +8,10 @@
  */
 
 /*
- * asb_build_help_link()
- *
  * produces a link to a particular page in the plugin help system (with icon) specified by topic
  *
- * @param - $topic is the intended page's topic keyword
- * @return: (string) help link HTML
+ * @param string the intended page's topic keyword
+ * @return string help link HTML
  */
 function asb_build_help_link($topic = '')
 {
@@ -29,11 +27,9 @@ function asb_build_help_link($topic = '')
 }
 
 /*
- * asb_build_settings_menu_link()
- *
  * produces a link to the plugin settings with icon
  *
- * @return: (string) settings link HTML
+ * @return string settings link HTML
  */
 function asb_build_settings_menu_link()
 {
@@ -45,12 +41,10 @@ function asb_build_settings_menu_link()
 }
 
 /*
- * asb_output_tabs()
- *
  * Output ACP tabs for our pages
  *
- * @param - $current is the tab currently being viewed
- * @return: n/a
+ * @param string the tab currently being viewed
+ * @return void
  */
 function asb_output_tabs($current)
 {
@@ -99,13 +93,11 @@ function asb_output_tabs($current)
 }
 
 /*
- * asb_output_footer()
- *
  * Output ACP footers for our pages
  *
- * @param - $page_key - (string) the current page key used by the help
+ * @param string the current page key used by the help
  * system and the footer menu
- * @return: n/a
+ * @return void
  */
 function asb_output_footer($page_key)
 {
@@ -116,12 +108,10 @@ function asb_output_footer($page_key)
 }
 
 /*
- * asb_build_footer_menu()
- *
  * build a footer menu specific to each page
  *
- * @param - $page_key is the topic key name for the current page
- * @return: (string) the footer menu HTML
+ * @param string the topic key name for the current page
+ * @return string the footer menu HTML
  */
 function asb_build_footer_menu($page_key = '')
 {
@@ -151,12 +141,10 @@ EOF;
 }
 
 /*
- * asb_build_permissions_table()
+ *  build a popup with a table of side box permission info
  *
- * build a popup with a table of side box permission info
- *
- * @param - $id - (int) the numeric id of the sidebox
- * @return: (string) the permission table HTML
+ * @param int the numeric id of the sidebox
+ * @return string the permission table HTML
  */
 function asb_build_permissions_table($id)
 {
@@ -189,15 +177,13 @@ EOF;
 }
 
 /*
- * asb_build_visibility_rows()
- *
  * build HTML for the script/group table rows
  *
- * @param - $sidebox - (Sidebox object) is the sidebox to build the rows for
- * @param - &$group_count - (int) a reference to the group count
- * @param - &$global (bool) a reference to whether this return indicated global
- * visibility
- * @return: (string) the permission table row HTML
+ * @param Sidebox the sidebox to build the rows for
+ * @param int a reference to the group count
+ * @param bool a reference to whether this return indicated
+ * global visibility
+ * @return string the permission table row HTML
  */
 function asb_build_visibility_rows($sidebox, &$group_count, &$global)
 {
@@ -328,15 +314,13 @@ EOF;
 }
 
 /*
- * asb_build_theme_visibility_list()
- *
  * build HTML for the script/group table rows
  *
- * @param - $sidebox - (Sidebox object) is the sidebox to build the rows for
- * @param - $colspan - (int) a reference to the group count
- * @param - $global (bool) a reference to whether the perm rows return
+ * @param Sidebox the sidebox to build the rows for
+ * @param int reference to the group count
+ * @param bool a reference to whether the perm rows return
  * indicated global visibility
- * @return: (string) the permission table row HTML
+ * @return string the permission table row HTML
  */
 function asb_build_theme_visibility_list($sidebox, $colspan, $global)
 {
@@ -388,12 +372,10 @@ EOF;
 }
 
 /*
- * asb_build_sidebox_info()
- *
- * @param - $sidebox Sidebox type object xD
- * @param - $wrap specifies whether to produce the <div> or just the contents
- * @param - $ajax specifies whether to produce the delete link or not
- * @return: (string) the side box <div>
+ * @param Sidebox type object xD
+ * @param bool specifies whether to produce the <div> or just the contents
+ * @param bool whether to produce the delete link or not
+ * @return string the side box <div>
  */
 function asb_build_sidebox_info($sidebox, $wrap = true, $ajax = false)
 {
@@ -437,7 +419,7 @@ EOF;
 	if($wrap)
 	{
 		$box = <<<EOF
-<div id="sidebox_{$id}" class="sidebox">{$box}</div>
+<div id="sidebox_{$id}" class="sidebox sortable">{$box}</div>
 
 EOF;
 	}
@@ -447,11 +429,9 @@ EOF;
 }
 
 /*
- * asb_cache_has_changed()
- *
  * set the flag so the cache is rebuilt new run
  *
- * @return: n/a
+ * @return void
  */
 function asb_cache_has_changed()
 {
@@ -463,15 +443,13 @@ function asb_cache_has_changed()
 }
 
 /*
- * asb_detect_script_info()
- *
  * searches for hooks, templates and actions and returns a
  * keyed array of select box HTML for any that are found
  *
- * @param - $filename - (string) the file to check
- * @return: (array) script component information
+ * @param string the file to check
+ * @return array script component information
  */
-function asb_detect_script_info($filename)
+function asb_detect_script_info($filename, $selected = array())
 {
 	global $lang;
 
@@ -523,7 +501,9 @@ function asb_detect_script_info($filename)
 		foreach($matches as $match)
 		{
 			// no duplicates and if there is a filter check it
-			if(!in_array($match[1], $$array_name) && (strlen(${$array_name}['filter'] == 0 || strpos($match[1], ${$array_name}['filter']) === false)))
+			if(!in_array($match[1], $$array_name) &&
+				(strlen(${$array_name}['filter'] == 0 ||
+				strpos($match[1], ${$array_name}['filter']) === false)))
 			{
 				${$array_name}[$match[1]] = $match[1];
 			}
@@ -532,6 +512,7 @@ function asb_detect_script_info($filename)
 		// anything to show?
 		if(!empty($$array_name))
 		{
+
 			// sort the results, preserving keys
 			ksort($$array_name);
 
@@ -541,19 +522,25 @@ function asb_detect_script_info($filename)
 			$$array_name = array_reverse($$array_name);
 
 			// store the HTML select box
-			$return_array[$array_name] = '<span style="font-weight: bold;">' . $lang->asb_detected . ' ' . $info[$key]['plural'] . ':</span><br />' . $form->generate_select_box("{$array_name}_options", $$array_name, '', array("id" => "{$key}_selector")) . '<br /><br />';
+			$return_array[$array_name] = '<span style="font-weight: bold;">' . $lang->asb_detected . ' ' . $info[$key]['plural'] . ':</span><br />' . $form->generate_select_box("{$array_name}_options", $$array_name, $selected[$key], array("id" => "{$key}_selector")) . '<br /><br />';
+		} else {
+			$varName = "asb_ajax_{$array_name}";
+			$noContent = $lang->sprintf($lang->asb_ajax_nothing_found, $lang->$varName);
+
+			// store the no content message
+			$return_array[$array_name] = <<<EOF
+<span style="font-style: italic;">{$noContent}</span>
+EOF;
 		}
 	}
 	return $return_array;
 }
 
 /*
- * asb_legacy_custom_import()
- *
  * imports XML files created with ASB 1.x series
  *
- * @param - $tree - (array) as returned by XMLParser
- * @return: n/a
+ * @param array as returned by XMLParser
+ * @return void
  */
 function asb_legacy_custom_import($tree)
 {
@@ -589,12 +576,10 @@ function asb_legacy_custom_import($tree)
 }
 
 /*
- * asb_build_filter_selector()
- *
  * build links for ACP Manage Side Boxes screen
  *
- * @param - $filter is a string containing the script to show or 'all_scripts' to avoid filtering altogether
- * @return: (string) the form HTML
+ * @param string script to show or 'all_scripts' to avoid filtering altogether
+ * @return string the form HTML
  */
 function asb_build_filter_selector($filter)
 {
@@ -615,14 +600,12 @@ function asb_build_filter_selector($filter)
 }
 
 /*
- * asb_build_setting()
- *
  * creates a single setting from an associative array
  *
- * @param - $this_form is a valid object of class DefaultForm
- * @param - $this_form_container is a valid object of class DefaultFormContainer
- * @param - $setting is an associative array for the settings properties
- * @return: n/a
+ * @param DefaultForm
+ * @param DefaultFormContainer
+ * @param array settings properties
+ * @return void
  */
 function asb_build_setting($this_form, $this_form_container, $setting)
 {

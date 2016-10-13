@@ -1,5 +1,5 @@
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
@@ -8,79 +8,65 @@
  * represented on the forum
  */
 
-// thanks to http://www.fluther.com/users/adrianscott/
-var ASB = (function(a) {
+var ASB = (function(a, $) {
 	/**
-	 * initialize()
-	 *
 	 * constructor: sets up the object and starts the timer
 	 *
-	 * @param - $super - (callback) the parent initialize() function, Ajax.Base.initialize()
-	 * @param - container - (string) the id of the container to be updated
-	 * @param - url - (string) the URL of the AJAX server-side routine
-	 * @param - options - (object) various options for the updater
-	 * @return: n/a
+	 * @param string the id of the container to be updated
+	 * @param string the URL of the AJAX server-side routine
+	 * @param object various options for the updater
+	 * @return void
 	 */
-	function initialize($super, container, url, options) {
-		// set up our parent object
-		$super(options);
+	function SideboxUpdater(container, url, options) {
+		this.options = $.extend({}, options || {});
 
 		// now get this instance's overrides and options
-		this.onComplete = this.options.onComplete;
 		this.frequency = (this.options.frequency || 30);
 		this.decay = this.options.decay = (this.options.decay || 1);
-		this.updater = {};
-		this.container = $(container).down('tbody');
-		this.url = url;
+		this.container = $("#" + container).children('tbody');
+		this.options.url = url;
+		this.options.complete = $.proxy(this.updateComplete, this);
 
 		// if the server is on a different timezone, get the offset in seconds
-		this.phpTimeDiff = Math.floor(this.options.parameters.dateline - (new Date().getTime() / 1000));
+		this.phpTimeDiff = Math.floor(this.options.data.dateline - (new Date().getTime() / 1000));
 
 		// initiate the timer
 		this.start();
 	}
 
 	/**
-	 * start()
-	 *
 	 * initiate the timer
 	 *
-	 * @return: n/a
+	 * @return void
 	 */
 	function start() {
-		this.options.onComplete = this.updateComplete.bind(this);
-		this.timer = this.onTimerEvent.bind(this).delay(this.decay * this.frequency);
+		this.timer = setTimeout($.proxy(this.onTimerEvent, this), (this.decay * this.frequency) * 1000);
 	}
 
 	/**
-	 * stop()
-	 *
 	 * halt the timer
 	 *
-	 * @return: n/a
+	 * @return void
 	 */
 	function stop() {
-		this.updater.options.onComplete = undefined;
 		clearTimeout(this.timer);
-		(this.onComplete || Prototype.emptyFunction).apply(this, arguments);
 	}
 
 	/**
-	 * updateComplete()
-	 *
 	 * check the XMLHTTP response and update the side box if there are changes
 	 *
 	 * @param - response - (Response) the XMLHTTP response object
-	 * @return: n/a
+	 * @return void
 	 */
 	function updateComplete(response) {
 		// good response?
-		if (response.responseText && response.responseText != 'nochange') {
+		if (response.responseText &&
+			response.responseText != 'nochange') {
 			// might add this option later
 			this.decay = this.options.decay;
 
 			// update the side box's <tbody>
-			this.container.update(response.responseText);
+			this.container.html(response.responseText);
 
 		} else {
 			// currently does nothing, but left in to add this option
@@ -88,10 +74,10 @@ var ASB = (function(a) {
 		}
 
 		// last update time
-		this.options.parameters.dateline = Math.floor(new Date().getTime() / 1000 + this.phpTimeDiff);
+		this.options.data.dateline = Math.floor(new Date().getTime() / 1000 + this.phpTimeDiff);
 
 		// key up to do it again
-		this.timer = this.onTimerEvent.bind(this).delay(this.decay * this.frequency);
+		this.timer = setTimeout($.proxy(this.onTimerEvent, this), (this.decay * this.frequency) * 1000);
 	}
 
 	/**
@@ -99,36 +85,36 @@ var ASB = (function(a) {
 	 *
 	 * send an AJAX request unless the side box is collapsed
 	 *
-	 * @return: n/a
+	 * @return void
 	 */
 	function onTimerEvent() {
 		// don't update collapsed side boxes (thanks again, Destroy666)
-		if (this.container.offsetWidth <= 0 && this.container.offsetHeight <= 0) {
+		if (this.container.width() <= 0 &&
+			this.container.height() <= 0) {
 			// just reset the timer and get out
-			this.timer = this.onTimerEvent.bind(this).delay(this.decay * this.frequency);
+			this.timer = setTimeout($.proxy(this.onTimerEvent, this), (this.decay * this.frequency) * 1000);
 			return;
 		}
 
 		// and finally, this is what we are doing every {rate} seconds
-		this.updater = new Ajax.Request(this.url, this.options);
+		$.ajax(this.options);
 	}
 
-	SideboxUpdater = Class.create(Ajax.Base, {
-		initialize: initialize,
+	SideboxUpdater.prototype = {
 		start: start,
 		stop: stop,
 		updateComplete: updateComplete,
 		onTimerEvent: onTimerEvent,
-	});
+	};
 
 	/*
 	 * buildUpdaters()
 	 *
 	 * prepare the Updater objects
 	 *
-	 * @param - updaters - (array) an array filled with objects filled with side box details
-	 * @param - widths - (object) widths for both positions
-	 * @return: n/a
+	 * @param array objects filled with side box details
+	 * @param object widths for both positions
+	 * @return void
 	 */
 	function buildUpdaters(updaters, widths, script) {
 		// no objects in the array
@@ -142,7 +128,7 @@ var ASB = (function(a) {
 			// build the element ID
 			this_id = updaters[i].addon + '_main_' + updaters[i].id;
 
-			if (!$(this_id)) {
+			if (!$("#" + this_id)) {
 				continue;
 			}
 
@@ -154,7 +140,8 @@ var ASB = (function(a) {
 
 			// this object will only update when a valid response is received
 			new SideboxUpdater(this_id, 'xmlhttp.php', {
-				parameters: {
+				type: 'get',
+				data: {
 					action: 'asb',
 					id: updaters[i].id,
 					addon: updaters[i].addon,
@@ -162,7 +149,6 @@ var ASB = (function(a) {
 					width: width,
 					script: script,
 				},
-				method: 'get',
 				frequency: updaters[i].rate
 			});
 		}
@@ -173,4 +159,4 @@ var ASB = (function(a) {
 	};
 
 	return a;
-})(ASB || {});
+})(ASB || {}, jQuery);

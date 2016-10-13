@@ -41,11 +41,9 @@ abstract class StorableObject extends MalleableObject implements StorableObjectI
 		);
 
 	/*
-	 * __construct()
-	 *
-	 * @param - $data - (mixed) either (int) representing the db ID/Object ID or
-	 * an associative (array) of the database table row
-	 * @return: n/a
+	 * @param mixed int representing the db ID/Object ID or
+	 * array database table row
+	 * @return void
 	 */
 	public function __construct($data = '')
 	{
@@ -61,11 +59,9 @@ abstract class StorableObject extends MalleableObject implements StorableObjectI
 	}
 
 	/*
-	 * load()
-	 *
-	 * @param - $data - (mixed) either (int) representing the db ID/Object ID or
-	 * an associative (array) of the database table row
-	 * @return: (bool) true on success, false on fail
+	 * @param int ID/Object ID or
+	 * array database table row
+	 * @return bool true on success, false on fail
 	 */
 	public function load($data)
 	{
@@ -103,11 +99,9 @@ abstract class StorableObject extends MalleableObject implements StorableObjectI
 	}
 
 	/*
-	 * save()
-	 *
 	 * stores the objects data in the database
 	 *
-	 * @return: (bool) true on success, false on fail
+	 * @return bool true on success, false on fail
 	 */
 	public function save()
 	{
@@ -169,11 +163,9 @@ abstract class StorableObject extends MalleableObject implements StorableObjectI
 	}
 
 	/*
-	 * remove()
-	 *
 	 * remove the object from the database
 	 *
-	 * @return: (bool) true on success, false on fail
+	 * @return bool true on success, false on fail
 	 */
 	public function remove($no_cleanup = false)
 	{

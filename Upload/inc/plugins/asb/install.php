@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Advanced Sidebox for MyBB 1.6.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
@@ -14,11 +14,9 @@ if(!defined('IN_MYBB') || !defined('IN_ASB'))
 }
 
 /*
- * asb_info()
+ * information about the plugin used by MyBB for display as well as to connect with updates
  *
- * Information about the plugin used by MyBB for display as well as to connect with updates
- *
- * @return: (array) the plugin info
+ * @return array the plugin info
  */
 function asb_info()
 {
@@ -100,18 +98,16 @@ EOF;
 		"website" => 'https://github.com/WildcardSearch/Advanced-Sidebox',
 		"author" => $author,
 		"authorsite" => 'http://www.rantcentralforums.com',
-		"version" => '2.1.1',
-		"compatibility" => '16*',
+		"version" => '3.0',
+		"compatibility" => '18*',
 		"guid" => '870e9163e2ae9b606a789d9f7d4d2462',
 	);
 }
 
 /*
- * asb_is_installed()
- *
  * check to see if the plugin's settings group is installed-- assume the plugin is installed if so
  *
- * @return: (bool) true if installed, false if not
+ * @return bool true if installed, false if not
  */
 function asb_is_installed()
 {
@@ -119,13 +115,11 @@ function asb_is_installed()
 }
 
 /*
- * asb_install()
- *
  * add tables, a column to the mybb_users table (show_sidebox),
  * install the plugin setting group (asb_settings), settings, templates and
  * check for existing modules and install any detected
  *
- * @return: n/a
+ * @return void
  */
 function asb_install()
 {
@@ -158,12 +152,10 @@ function asb_install()
 }
 
 /*
- * asb_activate()
- *
  * handle version control (a la pavemen), upgrade if necessary and
  * change permissions for ASB
  *
- * @return: n/a
+ * @return void
  */
 function asb_activate()
 {
@@ -187,15 +179,6 @@ function asb_activate()
         }
         $installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
 		$installer->install();
-
-		/*
-		 * remove a work-around for the MyBB 1.6.11 language bug
-		 * that was fixed in 1.6.12
-		 */
-		if(version_compare($old_version, '2.0.5', '<'))
-		{
-			@unlink(MYBB_ROOT . 'inc/languages/english/admin/asb_addon.lang.php');
-		}
 
 		/*
 		 * upgrade existing side boxes settings and removed old js files
@@ -250,11 +233,9 @@ function asb_activate()
 }
 
 /*
- * asb_deactivate()
- *
  * simply disables admin permissions for side boxes
  *
- * @return: n/a
+ * @return void
  */
 function asb_deactivate()
 {
@@ -263,13 +244,11 @@ function asb_deactivate()
 }
 
 /*
- * asb_uninstall()
- *
  * drop the table added to the DB and the column added to
  * the mybb_users table (show_sidebox),
  * delete the plugin settings, templates and style sheets
  *
- * @return: n/a
+ * @return void
  */
 function asb_uninstall()
 {
@@ -311,12 +290,10 @@ function asb_uninstall()
  */
 
 /*
- * asb_get_settingsgroup()
- *
  * retrieves the plugin's settings group gid if it exists
  * attempts to cache repeat calls
  *
- * @return: (int) the setting groups id
+ * @return int the setting groups id
  */
 function asb_get_settingsgroup()
 {
@@ -340,12 +317,10 @@ function asb_get_settingsgroup()
 }
 
 /*
- * asb_build_settings_url()
- *
  * builds the url to modify plugin settings if given valid info
  *
- * @param - $gid is an integer representing a valid settings group id
- * @return: (string) the URL to view the setting group
+ * @param int settings group id
+ * @return string the URL to view the setting group
  */
 function asb_build_settings_url($gid)
 {
@@ -356,11 +331,9 @@ function asb_build_settings_url($gid)
 }
 
 /*
- * asb_build_settings_link()
- *
  * builds a link to modify plugin settings if it exists
  *
- * @return: (string) an HTML anchor element pointing to the plugin settings
+ * @return string an HTML anchor element pointing to the plugin settings
  */
 function asb_build_settings_link()
 {
