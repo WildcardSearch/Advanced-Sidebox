@@ -193,7 +193,7 @@ EOF
 			$post_lang = $lang->asb_top_poster_post;
 		}
 
-		$top_poster_avatar_src = "{$theme['imgdir']}/default_avatar.gif";
+		$top_poster_avatar_src = "{$theme['imgdir']}/default_avatar.png";
 		if($user['avatar'] != '')
 		{
 			$top_poster_avatar_src = $user['avatar'];

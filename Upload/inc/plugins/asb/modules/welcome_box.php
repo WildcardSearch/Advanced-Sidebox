@@ -161,7 +161,7 @@ function asb_welcome_box_build_template($args)
 		$avatar_width = (int) ($width / 5);
 
 		// if the user has an avatar then display it, otherwise force the default avatar.
-		$avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
+		$avatar_filename = "{$theme['imgdir']}/default_avatar.png";
 		if($mybb->user['avatar'] != '')
 		{
 			$avatar_filename = $mybb->user['avatar'];

@@ -380,7 +380,7 @@ function latest_threads_get_threadlist($settings, $width)
 			{
 				if(strlen(trim($thread['avatar'])) == 0)
 				{
-					$thread['avatar'] = "{$theme['imgdir']}/default_avatar.gif";
+					$thread['avatar'] = "{$theme['imgdir']}/default_avatar.png";
 				}
 
 				$avatar_width = (int) min($width / 2, max($width / 8, $settings['avatar_width']));
