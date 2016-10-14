@@ -139,7 +139,7 @@ function asb_welcome_box_build_template($args)
 		}
 		else
 		{
-			$lang->asb_welcome_new_announcements = $lang->sprintf($lang->asb_welcome_new_announcements, $newann ? $newann : 'no');
+			$lang->asb_welcome_new_announcements = $lang->sprintf($lang->asb_welcome_new_announcements, $newann ? $newann : '0');
 		}
 		if($newthreads == 1)
 		{
@@ -155,7 +155,7 @@ function asb_welcome_box_build_template($args)
 		}
 		else
 		{
-			$lang->asb_welcome_new_posts = $lang->sprintf($lang->asb_welcome_new_posts, $newposts ? $newposts : 'no');
+			$lang->asb_welcome_new_posts = $lang->sprintf($lang->asb_welcome_new_posts, $newposts ? $newposts : '0');
 		}
 
 		$avatar_width = (int) ($width / 5);
