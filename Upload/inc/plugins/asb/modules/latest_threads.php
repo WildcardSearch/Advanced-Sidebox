@@ -30,7 +30,7 @@ function asb_latest_threads_info()
 	return array(
 		"title" => $lang->asb_latest_threads,
 		"description" => $lang->asb_latest_threads_desc,
-		"version" => '1.1.1',
+		"version" => '1.1.2',
 		"compatibility" => '2.1',
 		"wrap_content" => true,
 		"xmlhttp" => true,
@@ -136,7 +136,7 @@ EOF
 			array(
 				"title" => "asb_latest_threads_gotounread",
 				"template" => <<<EOF
-<a href="{\$thread[\'newpostlink\']}"><img src="{\$theme[\'imgdir\']}/jump.gif" alt="{\$lang->asb_gotounread}" title="{\$lang->asb_gotounread}" /></a>
+<a href="{\$thread[\'newpostlink\']}"><img src="{\$theme[\'imgdir\']}/jump.png" alt="{\$lang->asb_gotounread}" title="{\$lang->asb_gotounread}" /></a>
 EOF
 			),
 			array(
