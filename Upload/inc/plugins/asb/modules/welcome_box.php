@@ -147,7 +147,7 @@ function asb_welcome_box_build_template($args)
 		}
 		else
 		{
-			$lang->asb_welcome_new_threads = $lang->sprintf($lang->asb_welcome_new_threads, $newthreads ? $newthreads : 'no');
+			$lang->asb_welcome_new_threads = $lang->sprintf($lang->asb_welcome_new_threads, $newthreads ? $newthreads : '0');
 		}
 		if($newposts == 1)
 		{
