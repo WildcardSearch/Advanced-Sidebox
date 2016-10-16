@@ -490,7 +490,7 @@ EOF;
 <script src="jscripts/asb/asb_modal.js" type="text/javascript"></script>
 
 EOF;
-		$form = new Form($html->url(array("action" => 'edit_box', "id" => $id, "addon" => $module, "ajax" => '1')), 'post', 'modal_form');
+		$form = new Form($html->url(array("action" => 'edit_box', "id" => $id, "addon" => $module)), 'post', 'modal_form');
 	}
 	else
 	{
@@ -1659,7 +1659,7 @@ EOF;
 	elseif($mybb->input['mode'] == 'analyze_script' && trim($mybb->input['filename']))
 	{
 		$content = asb_detect_script_info($mybb->input['filename'], $mybb->input['selected']);
-		
+
 		if (!$content) {
 			$content = array("actions", "hooks", "templates");
 		}

@@ -17,7 +17,7 @@
 
 		$.ajax({
 			type: "POST",
-			url: $("#modal_form").attr('action'),
+			url: $("#modal_form").attr('action') + "&ajax=1",
 			data: $("#modal_form").serialize(),
 			success: function(data) {
 				$(data).filter("script").each(function(e) {
@@ -26,9 +26,7 @@
 				$.modal.close();
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				alert('error' +
-					"\n\n" +
-					textStatus +
+				alert(textStatus +
 					"\n\n" +
 					errorThrown);
 			},
