@@ -320,7 +320,7 @@ function asb_rand_quote_get_quote($settings, $width)
 	$new_message = str_replace(array('<br />', '/me'), array('', " * {$plain_text_username}"), $parser->parse_message($new_message . ' ', $parser_options));
 
 	// if the user has an avatar then display it, otherwise force the default avatar.
-	$avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
+	$avatar_filename = "{$theme['imgdir']}/default_avatar.png";
 	if($rand_post['avatar'] != '')
 	{
 		$avatar_filename = $rand_post['avatar'];

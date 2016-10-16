@@ -35,7 +35,29 @@ var ASB = (function(a, $) {
 						data: container.sortable("serialize"),
 					},
 					success: function(response) {
-						removeDivs(response.split(','));
+						if (!response) {
+							return;
+						}
+
+						// if the admin session has expired
+						if (typeof response == 'string' &&
+							response.search('value="login"') != -1) {
+							// show them the login page
+							location.reload(true);
+						}
+
+						var ids = response.split(',');
+
+						// clean the input
+						$(ids).each(function(i, id) {
+							ids[i] = parseInt(id);
+						});
+						removeDivs(ids);
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						alert(textStatus +
+							"\n\n" +
+							errorThrown);
 					},
 				});
 			},
@@ -76,12 +98,7 @@ var ASB = (function(a, $) {
 		 */
 		event.preventDefault();
 
-		$.get($(this).prop("href") + '&ajax=1', function (html) {
-			$(html).appendTo('body').modal({
-				fadeDuration: 250,
-				zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999),
-			});
-		});
+		loadModal($(this).prop("href") + '&ajax=1');
 	}
 
 	/**
@@ -96,12 +113,32 @@ var ASB = (function(a, $) {
 		var pos = ($(this).prop("id") == 'left_column') ? 0 : 1,
 			url = 'index.php?module=config-asb&action=edit_box&ajax=1&box=0&addon=' + ui.draggable.prop("id") + '&pos=' + pos;
 
-		$.get(url, function (html) {
-			$(html).appendTo('body').modal({
-				fadeDuration: 250,
-				zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999),
+		loadModal(url);
+	}
+
+	function loadModal(url) {
+		$.get(url,
+			function (html) {
+				if (!html ||
+					html.length == 0) {
+					return;
+				}
+
+				// if the admin session has expired
+				if (typeof html == 'string' &&
+					html.search("errors") != -1 &&
+					html.search("login") != -1) {
+					// redirect to the login page
+					location.reload(true);
+					return;
+				}
+
+				// show the modal
+				$(html).appendTo('body').modal({
+					fadeDuration: 250,
+					zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999),
+				});
 			});
-		});
 	}
 
 	/* side box divs */
@@ -170,7 +207,9 @@ var ASB = (function(a, $) {
 				backgroundColor: '#f00',
 			});
 			sidebox.html(lang.deleting_sidebox);
-			sidebox.fadeOut(800);
+			sidebox.fadeOut(800, function() {
+				$(this).remove();
+			});
 		}
 	}
 

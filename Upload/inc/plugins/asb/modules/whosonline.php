@@ -30,7 +30,7 @@ function asb_whosonline_info()
 	return array(
 		"title" => $lang->asb_wol,
 		"description" => $lang->asb_wol_desc,
-		"version" => '1.4.4',
+		"version" => '1.4.6',
 		"compatibility" => '2.1',
 		"wrap_content" => true,
 		"xmlhttp" => true,
@@ -105,9 +105,15 @@ EOF
 			array(
 				"title" => 'asb_whosonline_memberbit_avatar',
 				"template" => <<<EOF
-<td><a href="{\$mybb->settings[\'bburl\']}/{\$user[\'profilelink\']}">{\$user_avatar}</a></td>
+<td><a href="{\$mybb->settings[\'bburl\']}/{\$user[\'profilelink\']}"><img style="{\$avatar_width_style}{\$avatar_height_style}" src="{\$avatar_filename}" alt="{\$lang->asb_wol_avatar}" title="{\$user[\'username\']}\'s {\$lang->asb_wol_profile}"/></a></td>
 EOF
-			)
+			),
+			array(
+				"title" => 'asb_whosonline_memberbit_see_all',
+				"template" => <<<EOF
+<td><a href="{\$mybb->settings[\'bburl\']}/online.php" title="{\$lang->asb_wol_see_all_title}"><img style="{\$avatar_style}" src="{\$mybb->settings[\'bburl\']}/inc/plugins/asb/images/see_all.gif" alt="{\$lang->asb_wol_see_all_alt}" title="{\$lang->asb_wol_see_all_title}" width="{\$avatar_width}px"/></a></td>
+EOF
+			),
 		)
 	);
 }
@@ -283,10 +289,6 @@ function asb_whosonline_get_online_members($settings, $width)
 						}
 					}
 
-					$user_avatar = <<<EOF
-<img style="{$avatar_width_style}{$avatar_height_style}" src="{$avatar_filename}" alt="{$lang->asb_wol_avatar}" title="{$user['username']}'s {$lang->asb_wol_profile}"/>
-EOF;
-
 					// if this is the last allowable avatar (conforming to ACP settings)
 					if($avatar_count >= (($max_rows * $rowlength) - 1) && $avatar_count)
 					{
@@ -297,9 +299,7 @@ EOF;
 							$enough_already = true;
 
 							// . . . and insert link to the WOL full list
-							$onlinemembers .= <<<EOF
-<a href="{$mybb->settings['bburl']}/online.php" title="{$lang->asb_wol_see_all_title}"><img style="{$avatar_style}" src="{$mybb->settings['bburl']}/inc/plugins/asb/images/see_all.gif" alt="{$lang->asb_wol_see_all_alt}" title="{$lang->asb_wol_see_all_title}" width="{$avatar_width}px"/></a>
-EOF;
+							eval("\$onlinemembers .= \"" . $templates->get('asb_whosonline_memberbit_see_all', 1, 0) . "\";");
 						}
 					}
 					// . . . otherwise, add it to the list

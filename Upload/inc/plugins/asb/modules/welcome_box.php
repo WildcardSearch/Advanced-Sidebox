@@ -139,7 +139,7 @@ function asb_welcome_box_build_template($args)
 		}
 		else
 		{
-			$lang->asb_welcome_new_announcements = $lang->sprintf($lang->asb_welcome_new_announcements, $newann ? $newann : 'no');
+			$lang->asb_welcome_new_announcements = $lang->sprintf($lang->asb_welcome_new_announcements, $newann ? $newann : '0');
 		}
 		if($newthreads == 1)
 		{
@@ -147,7 +147,7 @@ function asb_welcome_box_build_template($args)
 		}
 		else
 		{
-			$lang->asb_welcome_new_threads = $lang->sprintf($lang->asb_welcome_new_threads, $newthreads ? $newthreads : 'no');
+			$lang->asb_welcome_new_threads = $lang->sprintf($lang->asb_welcome_new_threads, $newthreads ? $newthreads : '0');
 		}
 		if($newposts == 1)
 		{
@@ -155,13 +155,13 @@ function asb_welcome_box_build_template($args)
 		}
 		else
 		{
-			$lang->asb_welcome_new_posts = $lang->sprintf($lang->asb_welcome_new_posts, $newposts ? $newposts : 'no');
+			$lang->asb_welcome_new_posts = $lang->sprintf($lang->asb_welcome_new_posts, $newposts ? $newposts : '0');
 		}
 
 		$avatar_width = (int) ($width / 5);
 
 		// if the user has an avatar then display it, otherwise force the default avatar.
-		$avatar_filename = "{$theme['imgdir']}/default_avatar.gif";
+		$avatar_filename = "{$theme['imgdir']}/default_avatar.png";
 		if($mybb->user['avatar'] != '')
 		{
 			$avatar_filename = $mybb->user['avatar'];

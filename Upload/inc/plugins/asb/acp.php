@@ -490,7 +490,7 @@ EOF;
 <script src="jscripts/asb/asb_modal.js" type="text/javascript"></script>
 
 EOF;
-		$form = new Form($html->url(array("action" => 'edit_box', "id" => $id, "addon" => $module, "ajax" => '1')), 'post', 'modal_form');
+		$form = new Form($html->url(array("action" => 'edit_box', "id" => $id, "addon" => $module)), 'post', 'modal_form');
 	}
 	else
 	{
@@ -648,7 +648,7 @@ EOF;
 	}
 
 	// which scripts
-	$form_container->output_row('', $script_warning, $form->generate_select_box('script_select_box[]', $choices, $selected_scripts, array("id" => 'script_select_box', "multiple" => true)));
+	$form_container->output_row('', $script_warning, $form->generate_select_box('script_select_box[]', $choices, $selected_scripts, array("id" => 'script_select_box', "multiple" => true, 'size' => 5)));
 	$form_container->end();
 
 	echo "\n</div>\n<div id=\"tab_themes\" style=\"text-align: center;\">\n";
@@ -664,7 +664,7 @@ EOF;
 	$choices = array("all_themes" => 'All Themes') + asb_get_all_themes();
 
 	// which scripts
-	$form_container->output_row('', '', $form->generate_select_box('theme_select_box[]', $choices, $themes, array("id" => 'theme_select_box', "multiple" => true)));
+	$form_container->output_row('', '', $form->generate_select_box('theme_select_box[]', $choices, $themes, array("id" => 'theme_select_box', "multiple" => true, 'size' => 5)));
 	$form_container->end();
 
 	if($do_settings)
@@ -1659,7 +1659,7 @@ EOF;
 	elseif($mybb->input['mode'] == 'analyze_script' && trim($mybb->input['filename']))
 	{
 		$content = asb_detect_script_info($mybb->input['filename'], $mybb->input['selected']);
-		
+
 		if (!$content) {
 			$content = array("actions", "hooks", "templates");
 		}
