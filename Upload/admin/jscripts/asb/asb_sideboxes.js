@@ -207,7 +207,9 @@ var ASB = (function(a, $) {
 				backgroundColor: '#f00',
 			});
 			sidebox.html(lang.deleting_sidebox);
-			sidebox.fadeOut(800);
+			sidebox.fadeOut(800, function() {
+				$(this).remove();
+			});
 		}
 	}
 
