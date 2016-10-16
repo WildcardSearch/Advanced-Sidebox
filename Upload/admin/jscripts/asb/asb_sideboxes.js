@@ -35,7 +35,29 @@ var ASB = (function(a, $) {
 						data: container.sortable("serialize"),
 					},
 					success: function(response) {
-						removeDivs(response.split(','));
+						if (!response) {
+							return;
+						}
+
+						// if the admin session has expired
+						if (typeof response == 'string' &&
+							response.search('value="login"' != -1)) {
+							// show them the login page
+							location.reload(true);
+						} 
+
+						var ids = response.split(',');
+
+						// clean the input
+						$(ids).each(function(i, id) {
+							ids[i] = parseInt(id);
+						});
+						removeDivs(ids);
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						alert(textStatus +
+							"\n\n" +
+							errorThrown);
 					},
 				});
 			},
