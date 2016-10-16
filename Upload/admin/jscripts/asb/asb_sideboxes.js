@@ -41,7 +41,7 @@ var ASB = (function(a, $) {
 
 						// if the admin session has expired
 						if (typeof response == 'string' &&
-							response.search('value="login"' != -1)) {
+							response.search('value="login"') != -1) {
 							// show them the login page
 							location.reload(true);
 						}
