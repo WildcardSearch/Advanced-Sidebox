@@ -70,7 +70,7 @@ $settings = array(
 		),
 		"settings" => array(
 			"asb_show_empty_boxes" => array(
-				"sid" => 'NULL',
+				"sid" => '0',
 				"name" => 'asb_show_empty_boxes',
 				"title" => $lang->asb_show_empty_boxes . ':',
 				"description" => $db->escape_string($lang->asb_show_empty_boxes_desc),
@@ -79,7 +79,7 @@ $settings = array(
 				"disporder" => '10'
 			),
 			"asb_show_toggle_icons" => array(
-				"sid" => 'NULL',
+				"sid" => '0',
 				"name" => 'asb_show_toggle_icons',
 				"title" => $lang->asb_show_toggle_icons,
 				"description" => '',
@@ -88,7 +88,7 @@ $settings = array(
 				"disporder" => '20'
 			),
 			"asb_show_expanders" => array(
-				"sid" => 'NULL',
+				"sid" => '0',
 				"name" => 'asb_show_expanders',
 				"title" => $lang->asb_show_expanders,
 				"description" => '',
@@ -97,7 +97,7 @@ $settings = array(
 				"disporder" => '30'
 			),
 			"asb_allow_user_disable" => array(
-				"sid" => 'NULL',
+				"sid" => '0',
 				"name" => 'asb_allow_user_disable',
 				"title" => $lang->asb_allow_user_disable,
 				"description" => '',
@@ -106,7 +106,7 @@ $settings = array(
 				"disporder" => '40'
 			),
 			"asb_minify_js" => array(
-				"sid" => 'NULL',
+				"sid" => '0',
 				"name" => 'asb_minify_js',
 				"title" => $lang->asb_minify_js_title,
 				"description" => $lang->asb_minify_js_desc,
@@ -115,7 +115,7 @@ $settings = array(
 				"disporder" => '50'
 			),
 			"asb_exclude_theme" => array(
-				"sid" => 'NULL',
+				"sid" => '0',
 				"name" => 'asb_exclude_theme',
 				"title" => $lang->asb_theme_exclude_list . ':',
 				"description" => $db->escape_string($lang->asb_theme_exclude_list_description . $update_themes_link),
