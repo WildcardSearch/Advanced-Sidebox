@@ -59,11 +59,10 @@ EOF;
 	</li>
 </ul>
 EOF;
-	}
 
-	$button_pic = $mybb->settings['bburl'] . '/inc/plugins/asb/images/donate.gif';
-	$border_pic = $mybb->settings['bburl'] . '/inc/plugins/asb/images/pixel.gif';
-	$asb_description = <<<EOF
+		$button_pic = $mybb->settings['bburl'] . '/inc/plugins/asb/images/donate.gif';
+		$border_pic = $mybb->settings['bburl'] . '/inc/plugins/asb/images/pixel.gif';
+		$asb_description = <<<EOF
 <table width="100%">
 	<tbody>
 		<tr>
@@ -83,6 +82,9 @@ EOF;
 	</tbody>
 </table>
 EOF;
+	} else {
+		$asb_description = $lang->asb_description1;
+	}
 
 	$name = <<<EOF
 <span style="font-familiy: arial; font-size: 1.5em; color: #2B387C; text-shadow: 2px 2px 2px #00006A;">{$lang->asb}</span>
