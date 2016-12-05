@@ -8,8 +8,8 @@
  */
 
 // Include a check for Advanced Sidebox
-if(!defined('IN_MYBB') || !defined('IN_ASB'))
-{
+if (!defined('IN_MYBB') ||
+	!defined('IN_ASB')) {
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
@@ -22,8 +22,7 @@ function asb_top_poster_info()
 {
 	global $lang;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
@@ -101,13 +100,11 @@ function asb_top_poster_build_template($args)
 	extract($args);
 	global $$template_var, $db, $templates, $lang, $theme;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
-	if(!$settings['time_frame'])
-	{
+	if (!$settings['time_frame']) {
 		$settings['time_frame'] = 1;
 	}
 	$timesearch = TIME_NOW - (86400 * $settings['time_frame']);
@@ -120,8 +117,7 @@ function asb_top_poster_build_template($args)
 	$group_where = asb_build_SQL_where($where, ' AND ', ' AND ');
 
 	$group_by = 'p.uid';
-	if($db->type == 'pgsql')
-	{
+	if ($db->type == 'pgsql') {
 		$group_by = $db->build_fields_string('users', 'u.');
 	}
 
@@ -169,33 +165,28 @@ EOF
 	$user = $db->fetch_array($query);
 
 	// if we have a user . . .
-	if($user['poststoday'])
-	{
+	if ($user['poststoday']) {
 		// default to default :p
 		$avatar_width = (int) $width * .83;
-		if((int) $settings['avatar_size'])
-		{
+		if ((int) $settings['avatar_size']) {
 			$avatar_width = (int) $settings['avatar_size'];
 		}
 
 		// default to guest
 		$top_poster = $lang->guest;
-		if($user['uid'])
-		{
+		if ($user['uid']) {
 			$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 			$top_poster = build_profile_link($username, $user['uid']);
 		}
 
 		$top_poster_posts = $user['poststoday'];
 		$post_lang = $lang->asb_top_poster_posts;
-		if($top_poster_posts == 1)
-		{
+		if ($top_poster_posts == 1) {
 			$post_lang = $lang->asb_top_poster_post;
 		}
 
 		$top_poster_avatar_src = "{$theme['imgdir']}/default_avatar.png";
-		if($user['avatar'] != '')
-		{
+		if ($user['avatar'] != '') {
 			$top_poster_avatar_src = $user['avatar'];
 		}
 		eval("\$top_poster_avatar = \"" . $templates->get('asb_top_poster_avatar') . "\";");

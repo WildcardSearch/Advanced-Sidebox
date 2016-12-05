@@ -8,8 +8,8 @@
  */
 
 // disallow direct access to this file for security reasons
-if(!defined('IN_MYBB') || !defined('IN_ASB'))
-{
+if (!defined('IN_MYBB') ||
+	!defined('IN_ASB')) {
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
@@ -22,18 +22,15 @@ function asb_info()
 {
 	global $mybb, $lang;
 
-	if(!$lang->asb)
-	{
+	if (!$lang->asb) {
 		$lang->load('asb');
 	}
 
 	$extra_links = '<br />';
 	$settings_link = asb_build_settings_link();
-	if($settings_link)
-	{
-		if(file_exists(MYBB_ROOT . 'inc/plugins/asb/cleanup.php') &&
-		   file_exists(MYBB_ROOT . 'inc/plugins/adv_sidebox/acp_functions.php'))
-		{
+	if ($settings_link) {
+		if (file_exists(MYBB_ROOT . 'inc/plugins/asb/cleanup.php') &&
+		   file_exists(MYBB_ROOT . 'inc/plugins/adv_sidebox/acp_functions.php')) {
 			$remove_link = <<<EOF
 
 		<li>
@@ -127,15 +124,13 @@ function asb_install()
 {
 	global $lang;
 
-	if(!$lang->asb)
-	{
+	if (!$lang->asb) {
 		$lang->load('asb');
 	}
 
 	// settings tables, templates, groups and setting groups
 	require_once MYBB_ROOT . 'inc/plugins/asb/functions_install.php';
-	if(!class_exists('WildcardPluginInstaller'))
-	{
+	if (!class_exists('WildcardPluginInstaller')) {
 		require_once MYBB_ROOT . 'inc/plugins/asb/classes/installer.php';
 	}
 	$installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
@@ -143,8 +138,7 @@ function asb_install()
 
 	require_once MYBB_ROOT . 'inc/plugins/asb/classes/module.php';
 	$addons = asb_get_all_modules();
-	foreach($addons as $addon)
-	{
+	foreach ($addons as $addon) {
 		$addon->install();
 	}
 
@@ -167,16 +161,13 @@ function asb_activate()
 	// if we just upgraded . . .
 	$old_version = asb_get_cache_version();
 	$info = asb_info();
-	if(version_compare($old_version, $info['version'], '<'))
-	{
+	if (version_compare($old_version, $info['version'], '<')) {
 		global $lang;
-		if(!$lang->asb)
-		{
+		if (!$lang->asb) {
 			$lang->load('asb');
 		}
 
-		if(!class_exists('WildcardPluginInstaller'))
-        {
+		if (!class_exists('WildcardPluginInstaller')) {
             require_once MYBB_ROOT . 'inc/plugins/asb/classes/installer.php';
         }
         $installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
@@ -185,26 +176,21 @@ function asb_activate()
 		/*
 		 * upgrade existing side boxes settings and removed old js files
 		 */
-		if(version_compare($old_version, '2.1', '<'))
-		{
+		if (version_compare($old_version, '2.1', '<')) {
 			require_once MYBB_ROOT . 'inc/plugins/asb/classes/forum.php';
 			$sideboxes = asb_get_all_sideboxes();
-			foreach($sideboxes as $sidebox)
-			{
+			foreach ($sideboxes as $sidebox) {
 				$settings = array();
-				foreach((array) $sidebox->get('settings') as $name => $setting)
-				{
+				foreach ((array) $sidebox->get('settings') as $name => $setting) {
 					$settings[$name] = $setting['value'];
 				}
 				$sidebox->set('settings', $settings);
 				$sidebox->save();
 			}
 
-			for($x = 1; $x < 4; $x++)
-			{
+			for ($x = 1; $x < 4; $x++) {
 				$module_name = 'example';
-				if($x != 1)
-				{
+				if ($x != 1) {
 					$module_name .= $x;
 				}
 
@@ -222,8 +208,7 @@ function asb_activate()
 				'admin/jscripts/asb_scripts.js',
 				'admin/jscripts/asb_sideboxes.js'
 			);
-			foreach($removed_files as $file)
-			{
+			foreach ($removed_files as $file) {
 				@unlink(MYBB_ROOT . $file);
 			}
 		}
@@ -254,8 +239,7 @@ function asb_deactivate()
  */
 function asb_uninstall()
 {
-	if(!defined('IN_ASB_UNINSTALL'))
-	{
+	if (!defined('IN_ASB_UNINSTALL')) {
 		define('IN_ASB_UNINSTALL', true);
 	}
 
@@ -266,18 +250,15 @@ function asb_uninstall()
 	$addons = asb_get_all_modules();
 
 	// if there are add-on modules installed
-	if(is_array($addons))
-	{
+	if (is_array($addons)) {
 		// uninstall them
-		foreach($addons as $addon)
-		{
+		foreach ($addons as $addon) {
 			$addon->uninstall();
 		}
 	}
 
 	require_once MYBB_ROOT . 'inc/plugins/asb/functions_install.php';
-	if(!class_exists('WildcardPluginInstaller'))
-	{
+	if (!class_exists('WildcardPluginInstaller')) {
 		require_once MYBB_ROOT . 'inc/plugins/asb/classes/installer.php';
 	}
 	$installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
@@ -302,13 +283,10 @@ function asb_get_settingsgroup()
 	static $asb_settings_gid;
 
 	// if we have already stored the value
-	if(isset($asb_settings_gid))
-	{
+	if (isset($asb_settings_gid)) {
 		// don't waste a query
 		$gid = (int) $asb_settings_gid;
-	}
-	else
-	{
+	} else {
 		global $db;
 
 		// otherwise we will have to query the db
@@ -326,8 +304,7 @@ function asb_get_settingsgroup()
  */
 function asb_build_settings_url($gid)
 {
-	if($gid)
-	{
+	if ($gid) {
 		return 'index.php?module=config-settings&amp;action=change&amp;gid=' . $gid;
 	}
 }
@@ -341,22 +318,19 @@ function asb_build_settings_link()
 {
 	global $lang;
 
-	if(!$lang->asb)
-	{
+	if (!$lang->asb) {
 		$lang->load('asb');
 	}
 
 	$gid = asb_get_settingsgroup();
 
 	// does the group exist?
-	if($gid)
-	{
+	if ($gid) {
 		// if so build the URL
 		$url = asb_build_settings_url($gid);
 
 		// did we get a URL?
-		if($url)
-		{
+		if ($url) {
 			// if so build the link
 			return "<a href=\"{$url}\" title=\"{$lang->asb_plugin_settings}\">{$lang->asb_plugin_settings}</a>";
 		}

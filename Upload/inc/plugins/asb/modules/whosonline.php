@@ -8,8 +8,8 @@
  */
 
 // Include a check for Advanced Sidebox
-if(!defined('IN_MYBB') || !defined('IN_ASB'))
-{
+if (!defined('IN_MYBB') ||
+	!defined('IN_ASB')) {
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
@@ -22,8 +22,7 @@ function asb_whosonline_info()
 {
 	global $db, $lang, $theme;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
@@ -129,8 +128,7 @@ function asb_whosonline_build_template($args)
 	extract($args);
 	global $$template_var, $lang;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
@@ -138,14 +136,11 @@ function asb_whosonline_build_template($args)
 	$all_onlinemembers = asb_whosonline_get_online_members($settings, $width);
 
 	// if there are members online . . .
-	if($all_onlinemembers)
-	{
+	if ($all_onlinemembers) {
 		// set out template variable to the returned member list and return true
 		$$template_var = $all_onlinemembers;
 		return true;
-	}
-	else
-	{
+	} else {
 		// show the table only if there are threads
 		$$template_var = <<<EOF
 <tr><td class="trow1">{$lang->asb_wol_no_one_online}</td></tr>
@@ -165,8 +160,7 @@ function asb_whosonline_xmlhttp($args)
 	extract($args);
 	$all_onlinemembers = asb_whosonline_get_online_members($settings, $width);
 
-	if($all_onlinemembers)
-	{
+	if ($all_onlinemembers) {
 		return $all_onlinemembers;
 	}
 	return 'nochange';
@@ -175,7 +169,7 @@ function asb_whosonline_xmlhttp($args)
 /*
  * get the members currently online
  *
- * @param - $settings (array) individual side box settings passed to the module
+ * @param array individual side box settings passed to the module
  * @param int the width of the column in which the child is positioned
  * @return mixed a (string) containing the HTML side box markup or
  * (bool) false on fail/no content
@@ -185,8 +179,7 @@ function asb_whosonline_get_online_members($settings, $width)
 	global $db, $mybb, $templates, $lang, $cache, $theme;
 
 	// Load global and custom language phrases
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
@@ -220,138 +213,114 @@ function asb_whosonline_get_online_members($settings, $width)
 		ORDER BY u.username ASC, s.time DESC
 	");
 
-	while($user = $db->fetch_array($query))
-	{
+	while ($user = $db->fetch_array($query)) {
 		// create a key to test if this user is a search bot.
 		$botkey = my_strtolower(str_replace('bot=', '', $user['sid']));
 
-		if($user['uid'] == '0')
-		{
+		if ($user['uid'] == '0') {
 			++$guestcount;
-		}
-		elseif(my_strpos($user['sid'], 'bot=') !== false && $session->bots[$botkey])
-		{
+		} elseif (my_strpos($user['sid'], 'bot=') !== false && $session->bots[$botkey]) {
 			// The user is a search bot.
 			$onlinemembers .= format_name($session->bots[$botkey], $session->botgroup);
 			++$botcount;
-		}
-		else
-		{
+		} else {
 			$all_users[] = $user;
 		}
 	}
 
-	foreach($all_users as $user)
-	{
-		if($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
-		{
+	foreach ($all_users as $user) {
+		if ($doneusers[$user['uid']] < $user['time'] ||
+			!$doneusers[$user['uid']]) {
 			++$membercount;
 
 			$doneusers[$user['uid']] = $user['time'];
 
 			// If the user is logged in anonymously, update the count for that.
-			if($user['invisible'] == 1)
-			{
+			if ($user['invisible'] == 1) {
 				++$anoncount;
 			}
 
-			if((($user['invisible'] == 1 && ($mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])) || $user['invisible'] != 1) && $user['usergroup'] != 7)
-			{
+			if ((($user['invisible'] == 1 &&
+				($mybb->usergroup['canviewwolinvis'] == 1 ||
+				$user['uid'] == $mybb->user['uid'])) ||
+				$user['invisible'] != 1) &&
+				$user['usergroup'] != 7) {
 				$user['profilelink'] = get_profile_link($user['uid']);
 
-				if($settings['show_avatars'])
-				{
+				if ($settings['show_avatars']) {
 					// If the user has an avatar then display it . . .
-					if($user['avatar'] != '')
-					{
+					if ($user['avatar'] != '') {
 						$avatar_filename = $user['avatar'];
-					}
-					else
-					{
+					} else {
 						// . . . otherwise force the default avatar.
 						$avatar_filename = "{$theme['imgdir']}/default_avatar.png";
 					}
 
 					$avatar_height_style = " min-height: {$avatar_height}px; max-height: {$avatar_height}px;";
 					$avatar_width_style = " min-width: {$avatar_width}px; max-width: {$avatar_width}px;";
-					if($settings['asb_avatar_maintain_aspect'])
-					{
+					if ($settings['asb_avatar_maintain_aspect']) {
 						// Check the avatar's dimensions, then constrain it by its largest dimension
 						$avatar_dimensions = explode('|', $user['avatardimensions']);
 
-						if($avatar_dimensions[0] > $avatar_dimensions[1])
-						{
+						if ($avatar_dimensions[0] > $avatar_dimensions[1]) {
 							$avatar_height_style = '';
-						}
-						else
-						{
+						} else {
 							$avatar_width_style = '';
 						}
 					}
 
 					// if this is the last allowable avatar (conforming to ACP settings)
-					if($avatar_count >= (($max_rows * $rowlength) - 1) && $avatar_count)
-					{
+					if ($avatar_count >= (($max_rows * $rowlength) - 1) &&
+						$avatar_count) {
 						// check to see if we've already handled this, if so, do nothing
-						if(!$enough_already)
-						{
+						if (!$enough_already) {
 							// . . . if not, set a flag
 							$enough_already = true;
 
 							// . . . and insert link to the WOL full list
 							eval("\$onlinemembers .= \"" . $templates->get('asb_whosonline_memberbit_see_all', 1, 0) . "\";");
 						}
-					}
 					// . . . otherwise, add it to the list
-					else
-					{
+					} else {
 						eval("\$onlinemembers .= \"" . $templates->get('asb_whosonline_memberbit_avatar', 1, 0) . "\";");
 
 						// If we reach the end of the row, insert a <br />
-						if(($membercount - (($row - 1) * $rowlength)) == $rowlength)
-						{
+						if (($membercount - (($row - 1) * $rowlength)) == $rowlength) {
 							$onlinemembers .= '</tr><tr>';
 							++$row;
 						}
 						++$avatar_count;
 					}
-				}
-				else
-				{
+				} else {
 					$user['username'] = format_name(trim($user['username']), $user['usergroup'], $user['displaygroup']);
 					eval("\$onlinemembers .= \"" . $templates->get('asb_whosonline_memberbit_name', 1, 0) . "\";");
 					$sep = $lang->comma . ' ';
 				}
-			}
-			else
-			{
+			} else {
 				--$membercount;
 			}
 		}
 	}
 
-	if(!$settings['show_avatars'])
-	{
+	if (!$settings['show_avatars']) {
 		$onlinemembers = '<td>' . $onlinemembers . '</td>';
 	}
 	$onlinecount = $membercount + $guestcount + $botcount;
 
 	// If we can see invisible users add them to the count
-	if($mybb->usergroup['canviewwolinvis'] == 1)
-	{
+	if ($mybb->usergroup['canviewwolinvis'] == 1) {
 		$onlinecount += $anoncount;
 	}
 
 	// If we can't see invisible users but the user is an invisible user increment the count by one
-	if($mybb->usergroup['canviewwolinvis'] != 1 && $mybb->user['invisible'] == 1)
-	{
+	if ($mybb->usergroup['canviewwolinvis'] != 1 &&
+		$mybb->user['invisible'] == 1) {
 		++$onlinecount;
 	}
 
 	// Most users online
 	$mostonline = $cache->read('mostonline');
-	if($onlinecount > $mostonline['numusers'])
-	{
+	if ($onlinecount > $mostonline['numusers']) {
 		$time = TIME_NOW;
 		$mostonline['numusers'] = $onlinecount;
 		$mostonline['time'] = $time;
@@ -361,23 +330,17 @@ function asb_whosonline_get_online_members($settings, $width)
 	$recorddate = my_date($mybb->settings['dateformat'], $mostonline['time']);
 	$recordtime = my_date($mybb->settings['timeformat'], $mostonline['time']);
 
-	if($onlinecount == 1)
-	{
+	if ($onlinecount == 1) {
 	  $lang->asb_wol_online_users = $lang->asb_wol_online_user;
-	}
-	else
-	{
+	} else {
 	  $lang->asb_wol_online_users = $lang->sprintf($lang->asb_wol_online_users, $onlinecount);
 	}
 	$lang->asb_wol_online_counts = $lang->sprintf($lang->asb_wol_online_counts, $membercount, $guestcount);
 
-	if($membercount)
-	{
+	if ($membercount) {
 		eval("\$onlinemembers = \"" . $templates->get('asb_whosonline') . "\";");
 		return $onlinemembers;
-	}
-	else
-	{
+	} else {
 		return false;
 	}
 }

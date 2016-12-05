@@ -109,19 +109,14 @@ EOF
 		),
 	);
 
-	if($return == false)
-	{
-		foreach($scripts as $info)
-		{
+	if ($return == false) {
+		foreach ($scripts as $info) {
 			$this_script = new ScriptInfo($info);
 			$this_script->save();
 		}
 		return true;
-	}
-	else
-	{
-		foreach($scripts as $key => $info)
-		{
+	} else {
+		foreach ($scripts as $key => $info) {
 			$ret_scripts[$key] = new ScriptInfo($info);
 		}
 		return $ret_scripts; // upgrade script will save these script defs
@@ -138,8 +133,7 @@ function asb_build_theme_exclude_select()
 	$all_themes = asb_get_all_themes(true);
 
 	$theme_count = min(5, count($all_themes));
-	if($theme_count == 0)
-	{
+	if ($theme_count == 0) {
 		return $theme_select = <<<EOF
 php
 <select name=\"upsetting[asb_exclude_theme][]\" size=\"1\">
@@ -150,8 +144,7 @@ EOF;
 	}
 
 	// Create an option for each theme and insert code to unserialize each option and 'remember' settings
-	foreach($all_themes as $tid => $name)
-	{
+	foreach ($all_themes as $tid => $name) {
 		$name = addcslashes($name, '"');
 		$theme_select .= <<<EOF
 <option value=\"{$tid}\" " . (is_array(unserialize(\$setting['value'])) ? (\$setting['value'] != "" && in_array("{$tid}", unserialize(\$setting['value'])) ? "selected=\"selected\"":""):"") . ">{$name}</option>
@@ -182,8 +175,7 @@ function asb_get_cache_version()
 
 	// get currently installed version, if there is one
 	$asb = $cache->read('asb');
-	if($asb['version'])
-	{
+	if ($asb['version']) {
         return $asb['version'];
 	}
     return 0;

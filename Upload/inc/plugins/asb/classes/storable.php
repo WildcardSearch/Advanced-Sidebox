@@ -26,17 +26,27 @@ interface StorableObjectInterface
  */
 abstract class StorableObject extends MalleableObject implements StorableObjectInterface
 {
-	// doubles as both the objects ID and the ID of the table row
+
+	/*
+	 * @var  int both the object ID and table row ID
+	 */
 	protected $id;
 
-	// an associative array of the database table row
+
+	/*
+	 * @var  array
+	 */
 	protected $data = array();
 
-	// the database table associated with this object
+	/*
+	 * @var  string
+	 */
 	protected $table_name = '';
 
-	protected $no_store = array
-		(
+	/*
+	 * @var  array
+	 */
+	protected $no_store = array(
 			'id', 'valid', 'data', 'table_name', 'no_store'
 		);
 
@@ -48,8 +58,7 @@ abstract class StorableObject extends MalleableObject implements StorableObjectI
 	public function __construct($data = '')
 	{
 		// if there is data
-		if($data)
-		{
+		if ($data) {
 			// attempt to load it and return the results
 			$this->valid = $this->load($data);
 			return;
@@ -66,29 +75,26 @@ abstract class StorableObject extends MalleableObject implements StorableObjectI
 	public function load($data)
 	{
 		// is the data scalar? (and if so, do we have a table name?)
-		if(!is_array($data) && $this->table_name)
-		{
+		if (!is_array($data) &&
+			$this->table_name) {
 			// attempt to load the object by ID
 			global $db;
 			$data = (int) $data;
 			$query = $db->simple_select($this->table_name, '*', "id='{$data}'");
 
 			// if it exists
-			if($db->num_rows($query) == 1)
-			{
+			if ($db->num_rows($query) == 1) {
 				// store it in our passed var
 				$data = $db->fetch_array($query);
 			}
 		}
 
 		// if we have a (hopefully) valid array
-		if(is_array($data) && !empty($data))
-		{
+		if (is_array($data) &&
+			!empty($data)) {
 			// store it in the object
-			foreach($data as $key => $val)
-			{
-				if(property_exists($this, $key))
-				{
+			foreach ($data as $key => $val) {
+				if (property_exists($this, $key)) {
 					$this->$key = $this->data[$key] = $val;
 				}
 			}
@@ -99,61 +105,54 @@ abstract class StorableObject extends MalleableObject implements StorableObjectI
 	}
 
 	/*
-	 * stores the objects data in the database
+	 * stores the object's data in the database
 	 *
 	 * @return bool true on success, false on fail
 	 */
 	public function save()
 	{
 		// if we have a table name stored
-		if($this->table_name)
-		{
+		if ($this->table_name) {
 			global $db;
 
 			$this->data = array();
-			foreach($this as $property => $value)
-			{
-				if(in_array($property, $this->no_store))
-				{
+			foreach ($this as $property => $value) {
+				if (in_array($property, $this->no_store)) {
 					continue;
 				}
 
-				switch(gettype($this->$property))
-				{
-					case 'boolean':
-						$this->data[$property] = (bool) $value;
-						break;
-					case 'integer':
-						$this->data[$property] = (int) $value;
-						break;
-					case 'NULL':
-						$this->data[$property] = NULL;
-						break;
-					case 'double':
-						$this->data[$property] = (float) $value;
-						break;
-					case 'string':
-						$this->data[$property] = $db->escape_string($value);
-						break;
-					case 'array':
-					case 'object':
-					case 'resource':
-						$this->data[$property] = $db->escape_string(json_encode($value));
-						break;
-					default:
-						continue;
+				switch (gettype($this->$property)) {
+				case 'boolean':
+					$this->data[$property] = (bool) $value;
+					break;
+				case 'integer':
+					$this->data[$property] = (int) $value;
+					break;
+				case 'NULL':
+					$this->data[$property] = NULL;
+					break;
+				case 'double':
+					$this->data[$property] = (float) $value;
+					break;
+				case 'string':
+					$this->data[$property] = $db->escape_string($value);
+					break;
+				case 'array':
+				case 'object':
+				case 'resource':
+					$this->data[$property] = $db->escape_string(json_encode($value));
+					break;
+				default:
+					continue;
 				}
 			}
 			$this->data['dateline'] = TIME_NOW;
 
 			// insert or update depending upon the content of ID
-			if($this->id)
-			{
+			if ($this->id) {
 				// return true/false
 				return $db->update_query($this->table_name, $this->data, "id='{$this->id}'");
-			}
-			else
-			{
+			} else {
 				// return the ID on success/false on fail
 				return $this->id = $db->insert_query($this->table_name, $this->data);
 			}
@@ -170,8 +169,8 @@ abstract class StorableObject extends MalleableObject implements StorableObjectI
 	public function remove($no_cleanup = false)
 	{
 		// valid ID and DB info?
-		if($this->id && $this->table_name)
-		{
+		if ($this->id &&
+			$this->table_name) {
 			// nuke it and return true/false
 			global $db;
 			$db->delete_query($this->table_name, "id='{$this->id}'");

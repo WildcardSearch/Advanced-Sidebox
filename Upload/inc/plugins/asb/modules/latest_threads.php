@@ -8,8 +8,8 @@
  */
 
 // Include a check for Advanced Sidebox
-if(!defined('IN_MYBB') || !defined('IN_ASB'))
-{
+if (!defined('IN_MYBB') ||
+	!defined('IN_ASB')) {
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
@@ -22,8 +22,7 @@ function asb_latest_threads_info()
 {
 	global $lang;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
@@ -166,22 +165,18 @@ function asb_latest_threads_build_template($args)
 	extract($args);
 	global $$template_var, $lang;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
 	// get the threads (or at least attempt to)
 	$all_threads = latest_threads_get_threadlist($settings, $width);
 
-	if($all_threads)
-	{
+	if ($all_threads) {
 		// if there are threads, show them
 		$$template_var = $all_threads;
 		return true;
-	}
-	else
-	{
+	} else {
 		// if not, show nothing
 		$$template_var = <<<EOF
 <tr><td class="trow1">{$lang->asb_latest_threads_no_threads}</td></tr>
@@ -204,12 +199,10 @@ function asb_latest_threads_xmlhttp($args)
 	// do a quick check to make sure we don't waste execution
 	$query = $db->simple_select('posts', '*', "dateline > {$dateline}");
 
-	if($db->num_rows($query) > 0)
-	{
+	if ($db->num_rows($query) > 0) {
 		$all_threads = latest_threads_get_threadlist($settings, $width);
 
-		if($all_threads)
-		{
+		if ($all_threads) {
 			return $all_threads;
 		}
 	}
@@ -228,13 +221,11 @@ function latest_threads_get_threadlist($settings, $width)
 {
 	global $db, $mybb, $templates, $lang, $cache, $gotounread, $theme;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
-	if($mybb->user['uid'] == 0)
-	{
+	if ($mybb->user['uid'] == 0) {
 		$query = $db->query("
 			SELECT
 				fid
@@ -245,9 +236,7 @@ function latest_threads_get_threadlist($settings, $width)
 				pid, disporder
 		");
 		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
-	}
-	else
-	{
+	} else {
 		$query = $db->query("
 			SELECT
 				f.fid, fr.dateline AS lastread
@@ -260,12 +249,9 @@ function latest_threads_get_threadlist($settings, $width)
 		");
 	}
 
-	while($forum = $db->fetch_array($query))
-	{
-		if($mybb->user['uid'] == 0)
-		{
-			if($forumsread[$forum['fid']])
-			{
+	while ($forum = $db->fetch_array($query)) {
+		if ($mybb->user['uid'] == 0) {
+			if ($forumsread[$forum['fid']]) {
 				$forum['lastread'] = $forumsread[$forum['fid']];
 			}
 		}
@@ -278,28 +264,24 @@ function latest_threads_get_threadlist($settings, $width)
 
 	// get forums user cannot view
 	$unviewable = get_unviewable_forums(true);
-	if($unviewable)
-	{
+	if ($unviewable) {
 		$unviewwhere = " AND t.fid NOT IN ({$unviewable})";
 	}
 
 	// get inactive forums
 	$inactive = get_inactive_forums();
-	if($inactive)
-	{
+	if ($inactive) {
 		$inactivewhere = " AND t.fid NOT IN ({$inactive})";
 	}
 
 	// new threads only?
-	if((int) $settings['new_threads_only'] > 0)
-	{
+	if ((int) $settings['new_threads_only'] > 0) {
 		// use admin's time limit
 		$thread_time_limit = TIME_NOW - 60 * 60 * 24 * (int) $settings['new_threads_only'];
 		$new_threads = " AND t.dateline > {$thread_time_limit}";
 	}
 
-	if($settings['important_threads_only'])
-	{
+	if ($settings['important_threads_only']) {
 		$important_threads = ' AND NOT t.sticky=0';
 	}
 
@@ -331,38 +313,36 @@ function latest_threads_get_threadlist($settings, $width)
 			0, " . (int) $settings['max_threads']
 	);
 
-	if($db->num_rows($query) == 0)
-	{
+	if ($db->num_rows($query) == 0) {
 		// no content
 		return false;
 	}
 
 	$thread_cache = array();
 
-	while($thread = $db->fetch_array($query))
-	{
+	while ($thread = $db->fetch_array($query)) {
 		$thread_cache[$thread['tid']] = $thread;
 	}
 
 	$thread_ids = implode(",", array_keys($thread_cache));
 
 	// fetch the read threads.
-	if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0)
-	{
+	if ($mybb->user['uid'] &&
+		$mybb->settings['threadreadcut'] > 0) {
 		$query = $db->simple_select('threadsread', 'tid,dateline', "uid='{$mybb->user['uid']}' AND tid IN({$thread_ids})");
-		while($readthread = $db->fetch_array($query))
-		{
+		while ($readthread = $db->fetch_array($query)) {
 			$thread_cache[$readthread['tid']]['lastread'] = $readthread['dateline'];
 		}
 	}
 
-	foreach($thread_cache as $thread)
-	{
+	foreach ($thread_cache as $thread) {
 		$forumpermissions[$thread['fid']] = forum_permissions($thread['fid']);
 
 		// make sure we can view this thread
-		if($forumpermissions[$thread['fid']]['canview'] == 0 || $forumpermissions[$thread['fid']]['canviewthreads'] == 0 || $forumpermissions[$thread['fid']]['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
-		{
+		if ($forumpermissions[$thread['fid']]['canview'] == 0 ||
+			$forumpermissions[$thread['fid']]['canviewthreads'] == 0 ||
+			$forumpermissions[$thread['fid']]['canonlyviewownthreads'] == 1 &&
+			$thread['uid'] != $mybb->user['uid']) {
 			continue;
 		}
 
@@ -370,16 +350,11 @@ function latest_threads_get_threadlist($settings, $width)
 		$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
 
 		// don't link to guest's profiles (they have no profile).
-		if($thread['lastposteruid'] == 0)
-		{
+		if ($thread['lastposteruid'] == 0) {
 			$lastposterlink = $thread['lastposter'];
-		}
-		else
-		{
-			if($settings['last_poster_avatar'])
-			{
-				if(strlen(trim($thread['avatar'])) == 0)
-				{
+		} else {
+			if ($settings['last_poster_avatar']) {
+				if (strlen(trim($thread['avatar'])) == 0) {
 					$thread['avatar'] = "{$theme['imgdir']}/default_avatar.png";
 				}
 
@@ -390,17 +365,14 @@ function latest_threads_get_threadlist($settings, $width)
 EOF;
 				format_name($thread['lastposter'], $thread['usergroup'], $thread['displaygroup']);
 				$lp_template = 'asb_latest_threads_last_poster_avatar';
-			}
-			else
-			{
+			} else {
 				$last_poster_name = format_name($thread['lastposter'], $thread['usergroup'], $thread['displaygroup']);
 				$lp_template = 'asb_latest_threads_last_poster_name';
 			}
 			$lastposterlink = build_profile_link($last_poster_name, $thread['lastposteruid']);
 		}
 
-		if(my_strlen($thread['subject']) > $maxtitlelen)
-		{
+		if (my_strlen($thread['subject']) > $maxtitlelen) {
 			$thread['subject'] = my_substr($thread['subject'], 0, $maxtitlelen) . "...";
 		}
 
@@ -413,44 +385,37 @@ EOF;
 		$gotounread = '';
 		$last_read = 0;
 
-		if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
-		{
+		if ($mybb->settings['threadreadcut'] > 0 &&
+			$mybb->user['uid']) {
 			$forum_read = $readforums[$thread['fid']];
 
 			$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
-			if($forum_read == 0 || $forum_read < $read_cutoff)
-			{
+			if ($forum_read == 0 ||
+				$forum_read < $read_cutoff) {
 				$forum_read = $read_cutoff;
 			}
-		}
-		else
-		{
+		} else {
 			$forum_read = $forumsread[$thread['fid']];
 		}
 
-		if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forum_read)
-		{
-			if($thread['lastread'])
-			{
+		if ($mybb->settings['threadreadcut'] > 0 &&
+			$mybb->user['uid'] &&
+			$thread['lastpost'] > $forum_read) {
+			if ($thread['lastread']) {
 				$last_read = $thread['lastread'];
-			}
-			else
-			{
+			} else {
 				$last_read = $read_cutoff;
 			}
-		}
-		else
-		{
+		} else {
 			$last_read = my_get_array_cookie('threadread', $thread['tid']);
 		}
 
-		if($forum_read > $last_read)
-		{
+		if ($forum_read > $last_read) {
 			$last_read = $forum_read;
 		}
 
-		if($thread['lastpost'] > $last_read && $last_read)
-		{
+		if ($thread['lastpost'] > $last_read &&
+			$last_read) {
 			$thread['newpostlink'] = get_thread_link($thread['tid'], 0, 'newpost');
 			eval("\$gotounread = \"" . $templates->get("asb_latest_threads_gotounread") . "\";");
 			$unreadpost = 1;
@@ -460,8 +425,7 @@ EOF;
 		$altbg = alt_trow();
 	}
 
-	if($threadlist)
-	{
+	if ($threadlist) {
 		return $threadlist;
 	}
 	// no content

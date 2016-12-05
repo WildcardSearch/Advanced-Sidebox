@@ -9,12 +9,18 @@
 
 class ASBTemplateHandler
 {
+	/*
+	 * edits the cached template
+	 *
+	 * @param  array
+	 * @param  int
+	 * @param  array
+	 */
 	static public function edit($boxes, $width, $script)
 	{
 		global $mybb, $lang, $templates, $headerinclude;
 
-		if($mybb->settings['asb_minify_js'])
-		{
+		if ($mybb->settings['asb_minify_js']) {
 			$min = '.min';
 		}
 
@@ -26,8 +32,7 @@ class ASBTemplateHandler
 		$filename = THIS_SCRIPT;
 
 		// if admin wants to show the toggle icons . . .
-		if($mybb->settings['asb_show_toggle_icons'])
-		{
+		if ($mybb->settings['asb_show_toggle_icons']) {
 			// we will need this js
 			$headerinclude .= <<<EOF
 <script type="text/javascript" src="jscripts/asb/asb{$min}.js"></script>
@@ -46,17 +51,13 @@ EOF;
 			$toggle_info['right']['close'] = $toggle_info['left']['open'];
 			$toggle_info['right']['open'] = $toggle_info['left']['close'];
 
-			foreach(array('left', 'right') as $key)
-			{
+			foreach (array('left', 'right') as $key) {
 				// check the cookie
-				if($mybb->cookies["asb_hide_{$key}"] == 1)
-				{
+				if ($mybb->cookies["asb_hide_{$key}"] == 1) {
 					// hide left
 					$show[$key] = $close_style = 'display: none; ';
 					$open_style = '';
-				}
-				else
-				{
+				} else {
 					// show left
 					$close_style = '';
 					$open_style = 'display: none; ';
@@ -75,12 +76,10 @@ EOF;
 			}
 		}
 
-		foreach(array('left', 'right') as $key)
-		{
+		foreach (array('left', 'right') as $key) {
 			// if there is content
 			$var_name = "{$key}_insert";
-			if($$var_name)
-			{
+			if ($$var_name) {
 				$prop_name = "{$key}_content";
 				$width_name = "width_{$key}";
 				$width = $$width_name;
@@ -108,12 +107,11 @@ EOF;
 		eval("\$insert_top = \"" . $templates->get('asb_begin') . "\";");
 		eval("\$insert_bottom = \"" . $templates->get('asb_end') . "\";");
 
-		if(is_array($script['extra_scripts']) && !empty($script['extra_scripts']))
-		{
+		if (is_array($script['extra_scripts']) &&
+			!empty($script['extra_scripts'])) {
 			$sep = '';
 			$dateline = TIME_NOW;
-			foreach($script['extra_scripts'] as $id => $info)
-			{
+			foreach ($script['extra_scripts'] as $id => $info) {
 				// build the JS objects to pass to the custom object builder
 				$extra_scripts .= <<<EOF
 {$sep}{ addon: '{$info['module']}', id: {$id}, position: {$info['position']}, rate: {$info['rate']}, dateline: {$dateline} }
@@ -135,10 +133,9 @@ EOF;
 EOF;
 		}
 
-		if(is_array($script['js'])) {
-			foreach($script['js'] as $script_name) {
-				if(file_exists(MYBB_ROOT . "jscripts/asb/{$script_name}{$min}.js"))
-				{
+		if (is_array($script['js'])) {
+			foreach ($script['js'] as $script_name) {
+				if(file_exists(MYBB_ROOT . "jscripts/asb/{$script_name}{$min}.js")) {
 					$script_name .= $min;
 				}
 				$headerinclude .= <<<EOF
@@ -149,26 +146,21 @@ EOF;
 		}
 
 		// replace everything on the page?
-		if($script['replace_all'] == true)
-		{
+		if ($script['replace_all'] == true) {
 			// if there is content
-			if($script['replacement'])
-			{
+			if ($script['replacement']) {
 				// replace the existing page entirely
 				$templates->cache[$script['template_name']] = str_replace(array('{$asb_left}', '{$asb_right}'), array($insert_top, $insert_bottom), $script['replacement']);
 			}
-		}
 		// outputting to variables? (custom script/Page Manager)
-		elseif($script['eval'])
-		{
+		} elseif($script['eval']) {
 			// globalize our columns
 			global $asb_left, $asb_right;
 
 			// globalize all the add-on template variables
-			if(is_array($script['template_vars']) && !empty($script['template_vars']))
-			{
-				foreach($script['template_vars'] as $var)
-				{
+			if (is_array($script['template_vars']) &&
+				!empty($script['template_vars'])) {
+				foreach ($script['template_vars'] as $var) {
 					global $$var;
 				}
 			}
@@ -176,22 +168,18 @@ EOF;
 			// now eval() their content for the custom script
 			eval("\$asb_left = \"" . str_replace("\\'", "'", addslashes($insert_top)) . "\";");
 			eval("\$asb_right = \"" . str_replace("\\'", "'", addslashes($insert_bottom)) . "\";");
-		}
 		// otherwise we are editing the template in the cache
-		else
-		{
+		} else {
 			// if there are columns stored
-			if($insert_top || $insert_bottom)
-			{
+			if ($insert_top ||
+				$insert_bottom) {
 				// make the edits
 				$find_top_pos = strpos($templates->cache[$script['template_name']], $script['find_top']);
 
-				if($find_top_pos !== false)
-				{
+				if ($find_top_pos !== false) {
 					$find_bottom_pos = strpos($templates->cache[$script['template_name']], $script['find_bottom']);
 
-					if($find_bottom_pos !== false)
-					{
+					if ($find_bottom_pos !== false) {
 						/*
 						 * split the template in 3 parts and splice our columns in after 1 and before 3
 						 * it is important that we function this way so we can work with the

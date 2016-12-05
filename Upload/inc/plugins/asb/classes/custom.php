@@ -9,11 +9,34 @@
 
 class Custom_type extends PortableObject
 {
+	/*
+	 * @var  string
+	 */
 	protected $content;
+
+	/*
+	 * @var  string
+	 */
 	protected $base_name;
+
+	/*
+	 * @var  string
+	 */
 	protected $title;
+
+	/*
+	 * @var  string
+	 */
 	protected $description;
+
+	/*
+	 * @var  bool
+	 */
 	protected $wrap_content = false;
+
+	/*
+	 * @var  string
+	 */
 	protected $table_name = 'asb_custom_sideboxes';
 
 	/*
@@ -38,8 +61,7 @@ class Custom_type extends PortableObject
 	 */
 	public function load($data)
 	{
-		if(parent::load($data))
-		{
+		if (parent::load($data)) {
 			$this->base_name = 'asb_custom_' . $this->id;
 			return true;
 		}
@@ -55,8 +77,7 @@ class Custom_type extends PortableObject
 	public function remove($no_cleanup = false)
 	{
 		// unless specifically requested otherwise clean up
-		if(!$no_cleanup)
-		{
+		if (!$no_cleanup) {
 			$this->remove_children();
 		}
 		return parent::remove();
@@ -64,7 +85,7 @@ class Custom_type extends PortableObject
 
 	/*
 	 * delete all the side boxes of this type
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function remove_children()
@@ -78,7 +99,7 @@ class Custom_type extends PortableObject
 
 	/*
 	 * builds the content for the template variable used for this custom box
-	 * 
+	 *
 	 * @return bool true on success, false on fail
 	 */
 	public function build_template($template_variable)
@@ -90,16 +111,13 @@ class Custom_type extends PortableObject
 		$ret_val = true;
 
 		// if the user doesn't want content then at least make it validate
-		if(strlen($content) == 0)
-		{
+		if (strlen($content) == 0) {
 			$ret_val = false;
 			$content = '
 	<tr>
 		<td></td>
 	</tr>';
-		}
-		else
-		{
+		} else {
 			$content = str_replace("\\'", "'", addslashes($content));
 			eval("\${$template_variable} = \"" . $content . "\";");
 		}

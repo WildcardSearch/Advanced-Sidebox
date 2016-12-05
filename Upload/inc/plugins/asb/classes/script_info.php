@@ -8,49 +8,96 @@
  */
 
 // check dependencies
-if(!class_exists('MalleableObject'))
-{
+if (!class_exists('MalleableObject')) {
 	require_once MYBB_ROOT . 'inc/plugins/asb/classes/malleable.php';
 }
-if(!class_exists('StorableObject'))
-{
+if (!class_exists('StorableObject')) {
 	require_once MYBB_ROOT . 'inc/plugins/asb/classes/storable.php';
 }
-if(!class_exists('PortableObject'))
-{
+if (!class_exists('PortableObject')) {
 	require_once MYBB_ROOT . 'inc/plugins/asb/classes/portable.php';
 }
 
 class ScriptInfo extends PortableObject
 {
+	/*
+	 * @var  string
+	 */
 	protected $title = '';
 
-	// script identity
+	/*
+	 * @var  string
+	 */
 	protected $filename = '';
+
+	/*
+	 * @var  string
+	 */
 	protected $action = '';
+
+	/*
+	 * @var  string
+	 */
 	protected $page = '';
 
-	// dimensions
+	/*
+	 * @var  int
+	 */
 	protected $width_left = 160;
+
+	/*
+	 * @var  int
+	 */
 	protected $width_right = 160;
 
-	// the template and hook to use
+	/*
+	 * @var  string
+	 */
 	protected $template_name = '';
+
+	/*
+	 * @var  string
+	 */
 	protected $hook = '';
 
-	// the search text
+	/*
+	 * @var  string
+	 */
 	protected $find_top = '';
+
+	/*
+	 * @var  string
+	 */
 	protected $find_bottom = '';
 
-	// replacement options
+	/*
+	 * @var  string
+	 */
 	protected $replace_all = false;
+
+	/*
+	 * @var  string
+	 */
 	protected $replacement = '';
+
+	/*
+	 * @var  string
+	 */
 	protected $replacement_template = '';
 
-	// extra properties
+	/*
+	 * @var  bool
+	 */
 	protected $eval = false;
+
+	/*
+	 * @var  bool
+	 */
 	protected $active = false;
 
+	/*
+	 * @var  string
+	 */
 	protected $table_name = 'asb_script_info';
 }
 

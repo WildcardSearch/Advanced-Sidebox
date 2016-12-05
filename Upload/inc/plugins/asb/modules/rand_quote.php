@@ -8,8 +8,8 @@
  */
 
 // Include a check for Advanced Sidebox
-if(!defined('IN_MYBB') || !defined('IN_ASB'))
-{
+if (!defined('IN_MYBB') ||
+	!defined('IN_ASB')) {
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
@@ -22,8 +22,7 @@ function asb_rand_quote_info()
 {
 	global $lang;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
@@ -159,19 +158,15 @@ function asb_rand_quote_build_template($args)
 
 	global $$template_var, $lang;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
 	$this_quote = asb_rand_quote_get_quote($settings, $width);
-	if($this_quote)
-	{
+	if ($this_quote) {
 		$$template_var = $this_quote;
 		return true;
-	}
-	else
-	{
+	} else {
 		// show the table only if there are posts
 		$$template_var = <<<EOF
 		<tr>
@@ -196,8 +191,7 @@ function asb_rand_quote_xmlhttp($args)
 
 	// get a quote and return it
 	$this_quote = asb_rand_quote_get_quote($settings, $width);
-	if($this_quote)
-	{
+	if ($this_quote) {
 		return $this_quote;
 	}
 	return 'nochange';
@@ -215,27 +209,23 @@ function asb_rand_quote_get_quote($settings, $width)
 {
 	global $db, $mybb, $templates, $lang, $theme;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
 	// get forums user cannot view
 	$unviewable = get_unviewable_forums(true);
-	if($unviewable)
-	{
+	if ($unviewable) {
 		$unviewwhere = " AND p.fid NOT IN ({$unviewable})";
 	}
 
 	// get inactive forums
 	$inactive = get_inactive_forums();
-	if($inactive)
-	{
+	if ($inactive) {
 		$inactivewhere = " AND p.fid NOT IN ({$inactive})";
 	}
 
-	if($settings['important_threads_only'])
-	{
+	if ($settings['important_threads_only']) {
 		$important_threads = ' AND NOT t.sticky=0';
 	}
 
@@ -264,8 +254,7 @@ function asb_rand_quote_get_quote($settings, $width)
 	);
 
 	// if there was 1 . . .
-	if($db->num_rows($post_query) == 0)
-	{
+	if ($db->num_rows($post_query) == 0) {
 		return false;
 	}
 
@@ -290,21 +279,17 @@ function asb_rand_quote_get_quote($settings, $width)
 	$title_font_size = (int) ($font_size * .65);
 	$message_font_size = (int) $font_size;
 
-	if(strlen($new_message) < $settings['min_length'])
-	{
-		if($settings['default_text'])
-		{
+	if (strlen($new_message) < $settings['min_length']) {
+		if ($settings['default_text']) {
 			$new_message = $settings['default_text'];
-		}
-		else
-		{
+		} else {
 			// nothing to show
 			return false;
 		}
 	}
 
-	if($settings['max_length'] && strlen($new_message) > $settings['max_length'])
-	{
+	if ($settings['max_length'] &&
+		strlen($new_message) > $settings['max_length']) {
 		$new_message = substr($new_message, 0, $settings['max_length']) . ' . . .';
 	}
 
@@ -321,8 +306,7 @@ function asb_rand_quote_get_quote($settings, $width)
 
 	// if the user has an avatar then display it, otherwise force the default avatar.
 	$avatar_filename = "{$theme['imgdir']}/default_avatar.png";
-	if($rand_post['avatar'] != '')
-	{
+	if ($rand_post['avatar'] != '') {
 		$avatar_filename = $rand_post['avatar'];
 	}
 
@@ -330,13 +314,11 @@ function asb_rand_quote_get_quote($settings, $width)
 
 	eval("\$read_more = \"" . $templates->get('asb_rand_quote_read_more') . "\";");
 
-	if(my_strlen($rand_post['subject']) > 40)
-	{
+	if (my_strlen($rand_post['subject']) > 40) {
 		$rand_post['subject'] = my_substr($rand_post['subject'], 0, 40) . ' . . .';
 	}
 
-	if(substr(strtolower($rand_post['subject']), 0, 3) == 're:')
-	{
+	if (substr(strtolower($rand_post['subject']), 0, 3) == 're:') {
 		$rand_post['subject'] = substr($rand_post['subject'], 3);
 	}
 

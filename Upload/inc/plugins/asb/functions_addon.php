@@ -57,43 +57,34 @@ function asb_strip_url($message)
  */
 function asb_build_id_list($ids, $field = 'id', $wrap = true)
 {
-	if(strlen($ids) == 0)
-	{
+	if (strlen($ids) == 0) {
 		return false;
 	}
 
-	if(strpos($ids, ',') !== false)
-	{
+	if (strpos($ids, ',') !== false) {
 		$id_array = explode(',', $ids);
-		foreach($id_array as $key => $id)
-		{
+		foreach ($id_array as $key => $id) {
 			if((int) $id == 0)
 			{
 				unset($id_array[$key]);
 			}
 		}
 
-		if(count($id_array) > 1)
-		{
+		if (count($id_array) > 1) {
 			$id_list = implode(',', $id_array);
-		}
-		elseif(count($id_array) == 1)
-		{
+		} elseif (count($id_array) == 1) {
 			$id_list = (int) $id_array[key($id_array)];
 		}
-	}
-	else
-	{
+	} else {
 		$id_list = (int) $ids;
 	}
 
-	if(!$id_list)
-	{
+	if (!$id_list) {
 		return false;
 	}
 
-	if($wrap && $field)
-	{
+	if ($wrap &&
+		$field) {
 		$id_list = <<<EOF
 {$field} IN({$id_list})
 EOF;
@@ -112,30 +103,23 @@ EOF;
  */
 function asb_build_SQL_where($conditions, $op = 'AND', $prefix = '', $wrap = true)
 {
-	if(is_array($conditions))
-	{
+	if (is_array($conditions)) {
 		$sep = '';
-		foreach($conditions as $condition)
-		{
-			if($condition)
-			{
+		foreach ($conditions as $condition) {
+			if ($condition) {
 				$where .= $sep . $condition;
 				$sep = " {$op} ";
 			}
 		}
-	}
-	else
-	{
+	} else {
 		$where = $conditions;
 	}
 
-	if(!$where)
-	{
+	if (!$where) {
 		return false;
 	}
 
-	if($wrap)
-	{
+	if ($wrap) {
 		$where = "{$prefix}({$where})";
 	}
 	return $where;
@@ -152,41 +136,34 @@ function asb_build_SQL_where($conditions, $op = 'AND', $prefix = '', $wrap = tru
 function asb_get_folder_images($folder, $subfolder = '', $recursive = false)
 {
 	// bad folder, get out
-	if(!$folder ||
-	   !is_dir(MYBB_ROOT . $folder))
-	{
+	if (!$folder ||
+	   !is_dir(MYBB_ROOT . $folder)) {
 		return false;
 	}
 
 	// make sure the subfolder has a directory separator
-	if($subfolder &&
-	   substr($subfolder, strlen($subfolder) - 1, 1) != '/')
-	{
+	if ($subfolder &&
+	   substr($subfolder, strlen($subfolder) - 1, 1) != '/') {
 		$subfolder .= '/';
 	}
 
 	// cycle through all the files/folders and produce a list
 	$sep = '';
-	foreach(new DirectoryIterator(MYBB_ROOT . $folder) as $file)
-	{
+	foreach (new DirectoryIterator(MYBB_ROOT . $folder) as $file) {
 		// skip navigation folders
-		if($file->isDot())
-		{
+		if ($file->isDot()) {
 			continue;
 		}
 
-		if($file->isDir())
-		{
+		if ($file->isDir()) {
 			// no recursion, just skip this
-			if(!$recursive)
-			{
+			if (!$recursive) {
 				continue;
 			}
 
 			// get the files from this directory
 			$sub_files = asb_get_folder_images($folder . '/' . $file->getFilename(), $subfolder . $file->getFilename(), $recursive);
-			if($sub_files)
-			{
+			if ($sub_files) {
 				$filenames .= "{$sep}{$sub_files}";
 				$sep = ',';
 			}
@@ -195,8 +172,7 @@ function asb_get_folder_images($folder, $subfolder = '', $recursive = false)
 
 		// only certain extensions allowed
 		$extension = pathinfo($file->getFilename(), PATHINFO_EXTENSION);
-		if(!in_array($extension, array('gif', 'png', 'jpg', 'jpeg')))
-		{
+		if (!in_array($extension, array('gif', 'png', 'jpg', 'jpeg'))) {
 			continue;
 		}
 

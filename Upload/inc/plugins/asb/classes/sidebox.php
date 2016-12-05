@@ -9,21 +9,64 @@
 
 class Sidebox extends StorableObject
 {
+	/*
+	 * @var  string
+	 */
 	protected $title;
+
+	/*
+	 * @var  string
+	 */
 	protected $title_link;
+
+	/*
+	 * @var  string
+	 */
 	protected $box_type;
+
+	/*
+	 * @var  int
+	 */
 	protected $position = 0;
+
+	/*
+	 * @var  int
+	 */
 	protected $display_order;
 
+	/*
+	 * @var  bool
+	 */
 	protected $wrap_content = false;
 
+	/*
+	 * @var  array
+	 */
 	protected $scripts = array();
+
+	/*
+	 * @var  array
+	 */
 	protected $groups = array();
+
+	/*
+	 * @var  array
+	 */
 	protected $themes = array();
 
+	/*
+	 * @var  array
+	 */
 	protected $settings = array();
+
+	/*
+	 * @var  bool
+	 */
 	public $has_settings = false;
 
+	/*
+	 * @var  string
+	 */
 	protected $table_name = 'asb_sideboxes';
 
 	/*
@@ -49,12 +92,10 @@ class Sidebox extends StorableObject
 	 */
 	public function load($data)
 	{
-		if($data && parent::load($data))
-		{
-			foreach(array('settings', 'groups', 'scripts', 'themes') as $property)
-			{
-				if($this->$property)
-				{
+		if ($data &&
+			parent::load($data)) {
+			foreach (array('settings', 'groups', 'scripts', 'themes') as $property) {
+				if ($this->$property) {
 					// if so decode them
 					$this->$property = json_decode($this->$property, true);
 				}

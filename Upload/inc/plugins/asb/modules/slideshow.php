@@ -8,8 +8,8 @@
  */
 
 // include a check for Advanced Sidebox
-if(!defined('IN_MYBB') || !defined('IN_ASB'))
-{
+if (!defined('IN_MYBB') ||
+	!defined('IN_ASB')) {
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
@@ -22,8 +22,7 @@ function asb_slideshow_info()
 {
 	global $lang;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
@@ -152,8 +151,7 @@ function asb_slideshow_build_template($args)
 	$fade_rate = (float) $settings['fade_rate'] ? (float) $settings['fade_rate'] : 1;
 
 	$filenames = asb_get_folder_images($folder, '', $settings['recursive']);
-	if(!$filenames)
-	{
+	if (!$filenames) {
 		$$template_var = <<<EOF
 		<tr>
 			<td class="trow1">{$lang->asb_slideshow_no_images}</td>
