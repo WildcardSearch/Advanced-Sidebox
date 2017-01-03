@@ -24,7 +24,9 @@ function asb_create_script_info($return = false)
 			"hook" => 'index_start',
 			"find_top" => '{$header}',
 			"find_bottom" => '{$footer}',
-			"active" => 1
+			"replace_all" => 0,
+			"eval" => 0,
+			"active" => 1,
 		),
 		"forumdisplay" => array(
 			"title" => 'Forum Display',
@@ -35,7 +37,9 @@ function asb_create_script_info($return = false)
 	{$newthread}
 </div>',
 			"find_bottom" => '{$inline_edit_js}',
-			"active" => 1
+			"replace_all" => 0,
+			"eval" => 0,
+			"active" => 1,
 		),
 		"showthread" => array(
 			"title" => 'Show Thread',
@@ -44,7 +48,9 @@ function asb_create_script_info($return = false)
 			"hook" => 'showthread_start',
 			"find_top" => '{$ratethread}',
 			"find_bottom" => '{$footer}',
-			"active" => 1
+			"replace_all" => 0,
+			"eval" => 0,
+			"active" => 1,
 		),
 		"member" => array(
 			"title" => 'Member Profile',
@@ -54,7 +60,9 @@ function asb_create_script_info($return = false)
 			"hook" => 'member_profile_start',
 			"find_top" => '{$header}',
 			"find_bottom" => '{$footer}',
-			"active" => 1
+			"replace_all" => 0,
+			"eval" => 0,
+			"active" => 1,
 		),
 		"memberlist" => array(
 			"title" => 'Member List',
@@ -63,7 +71,9 @@ function asb_create_script_info($return = false)
 			"hook" => 'memberlist_start',
 			"find_top" => '{$multipage}',
 			"find_bottom" => '{$footer}',
-			"active" => 1
+			"replace_all" => 0,
+			"eval" => 0,
+			"active" => 1,
 		),
 		"showteam" => array(
 			"title" => 'Forum Team',
@@ -72,7 +82,9 @@ function asb_create_script_info($return = false)
 			"hook" => 'showteam_start',
 			"find_top" => '{$header}',
 			"find_bottom" => '{$footer}',
-			"active" => 1
+			"replace_all" => 0,
+			"eval" => 0,
+			"active" => 1,
 		),
 		"stats" => array(
 			"title" => 'Statistics',
@@ -81,7 +93,9 @@ function asb_create_script_info($return = false)
 			"hook" => 'stats_start',
 			"find_top" => '{$header}',
 			"find_bottom" => '{$footer}',
-			"active" => 1
+			"replace_all" => 0,
+			"eval" => 0,
+			"active" => 1,
 		),
 		"portal" => array(
 			"title" => 'Portal',
@@ -105,7 +119,8 @@ function asb_create_script_info($return = false)
 </html>
 EOF
 			,
-			"active" => 1
+			"eval" => 0,
+			"active" => 1,
 		),
 	);
 
