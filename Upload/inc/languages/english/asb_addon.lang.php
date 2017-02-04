@@ -235,13 +235,18 @@ $l['asb_top_poster_no_avatar'] = 'no avatar';
 $l['asb_top_poster_posts'] = 'posts';
 $l['asb_top_poster_post'] = 'post';
 $l['asb_top_poster_congrats'] = 'Congratulations to {1}, our current top poster for the last {2} with {3} {4}!';
+$l['asb_top_poster_description'] = 'Top Posters For {1}';
 
 $l['asb_top_poster_time_frame_title'] = 'Time Frame';
 $l['asb_top_poster_time_frame_desc'] = 'time to compare for top poster stats';
 
+$l['asb_top_poster_max_posters_title'] = 'Number Of Top Posters';
+$l['asb_top_poster_max_posters_desc'] = '0 or invalid values default to 1';
+
 $l['asb_top_poster_avatar_size_title'] = 'Avatar Size';
 $l['asb_top_poster_avatar_size_desc'] = 'size in pixels for top poster avatar (leave blank to fill side box minus some padding)';
 
+$l['asb_top_poster_all_time_title'] = 'All Time';
 $l['asb_top_poster_one_day_title'] = 'One Day';
 $l['asb_top_poster_one_week_title'] = 'One Week';
 $l['asb_top_poster_two_weeks_title'] = 'Two Weeks';
@@ -250,6 +255,7 @@ $l['asb_top_poster_three_months_title'] = 'Three Months';
 $l['asb_top_poster_six_months_title'] = 'Six Months';
 $l['asb_top_poster_one_year_title'] = 'One Year';
 
+$l['asb_top_poster_all_time'] = 'all time';
 $l['asb_top_poster_one_day'] = 'day';
 $l['asb_top_poster_one_week'] = 'week';
 $l['asb_top_poster_two_weeks'] = 'two weeks';
@@ -257,5 +263,14 @@ $l['asb_top_poster_one_month'] = 'month';
 $l['asb_top_poster_three_months'] = 'three months';
 $l['asb_top_poster_six_months'] = 'six months';
 $l['asb_top_poster_one_year'] = 'year';
+
+$l['asb_top_poster_all_time_desc'] = 'All Time';
+$l['asb_top_poster_one_day_desc'] = 'The Last Day';
+$l['asb_top_poster_one_week_desc'] = 'The Last Week';
+$l['asb_top_poster_two_weeks_desc'] = 'The Last Two Weeks';
+$l['asb_top_poster_one_month_desc'] = 'The Last Month';
+$l['asb_top_poster_three_months_desc'] = 'The Last Three Months';
+$l['asb_top_poster_six_months_desc'] = 'The Last Six Months';
+$l['asb_top_poster_one_year_desc'] = 'The Last Year';
 
 ?>

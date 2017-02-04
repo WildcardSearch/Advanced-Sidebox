@@ -30,7 +30,7 @@ function asb_top_poster_info()
 		"title" => $lang->asb_top_poster_title,
 		"description" => $lang->asb_top_poster_desc,
 		"wrap_content" => true,
-		"version" => '1.1.4',
+		"version" => '1.2',
 		"compatibility" => '2.1',
 		"settings" => array(
 			"time_frame" => array(
@@ -39,6 +39,7 @@ function asb_top_poster_info()
 				"title" => $lang->asb_top_poster_time_frame_title,
 				"description" => $lang->asb_top_poster_time_frame_desc,
 				"optionscode" => "select
+0={$lang->asb_top_poster_all_time_title}
 1={$lang->asb_top_poster_one_day_title}
 7={$lang->asb_top_poster_one_week_title}
 14={$lang->asb_top_poster_two_weeks_title}
@@ -46,6 +47,13 @@ function asb_top_poster_info()
 90={$lang->asb_top_poster_three_months_title}
 180={$lang->asb_top_poster_six_months_title}
 365={$lang->asb_top_poster_one_year_title}",
+				"value" => '1'
+			),
+			"max_posters" => array(
+				"name" => 'max_posters',
+				"title" => $lang->asb_top_poster_max_posters_title,
+				"description" => $lang->asb_top_poster_max_posters_desc,
+				"optionscode" => 'text',
 				"value" => '1'
 			),
 			"avatar_size" => array(
@@ -72,10 +80,41 @@ function asb_top_poster_info()
 		),
 		"templates" => array(
 			array(
-				"title" => 'asb_top_poster',
+				"title" => 'asb_top_posters_multiple',
+				"template" => <<<EOF
+				<tr>
+					<td class="{\$altbg}">
+						<table cellspacing="0" cellpadding="{\$theme[\'tablespace\']}" width="100%">
+						<tr>
+							<td colspan="2" class="tcat" style="width:25%; font-size: .8em; text-align: center;">
+								{\$top_poster_description}
+							</td>
+						</tr>
+						{\$top_posters}
+						</table>
+					</td>
+				</tr>
+EOF
+			),
+			array(
+				"title" => 'asb_top_posters_single',
 				"template" => <<<EOF
 				<tr style="text-align: center;">
-					<td class="trow1">{\$top_poster_avatar}{\$top_poster_text}</td>
+					<td class="{\$altbg}">{\$top_poster_avatar}{\$top_poster_text}</td>
+				</tr>
+EOF
+			),
+			array(
+				"title" => 'asb_top_poster',
+				"template" => <<<EOF
+				<tr>
+					<td class="{\$altbg}" style="width:25%">
+						{\$top_poster_avatar}
+					</td>
+					<td class="{\$altbg}" style="font-size: 1em;">
+						{\$topposter_name}<br/>
+						{\$top_poster_text}
+					</td>
 				</tr>
 EOF
 			),
@@ -104,10 +143,48 @@ function asb_top_poster_build_template($args)
 		$lang->load('asb_addon');
 	}
 
-	if (!$settings['time_frame']) {
-		$settings['time_frame'] = 1;
+	$limit = (int) $settings['max_posters'];
+	if ($limit == 0) {
+		$limit = 1;
 	}
-	$timesearch = TIME_NOW - (86400 * $settings['time_frame']);
+
+	$time_frame = (int) $settings['time_frame'];
+	$timesearch = TIME_NOW - (86400 * $time_frame);
+
+	// adjust language for time frame
+	switch ($time_frame) {
+	case 0:
+		$top_poster_timeframe = $lang->asb_top_poster_all_time;
+		$top_poster_timeframe_prelude = $lang->asb_top_poster_all_time_desc;
+		break;
+	case 7:
+		$top_poster_timeframe = $lang->asb_top_poster_one_week;
+		$top_poster_timeframe_prelude = $lang->asb_top_poster_one_week_desc;
+		break;
+	case 14:
+		$top_poster_timeframe = $lang->asb_top_poster_two_weeks;
+		$top_poster_timeframe_prelude = $lang->asb_top_poster_two_weeks_desc;
+		break;
+	case 30:
+		$top_poster_timeframe = $lang->asb_top_poster_one_month;
+		$top_poster_timeframe_prelude = $lang->asb_top_poster_one_month_desc;
+		break;
+	case 90:
+		$top_poster_timeframe = $lang->asb_top_poster_three_months;
+		$top_poster_timeframe_prelude = $lang->asb_top_poster_three_months_desc;
+		break;
+	case 180:
+		$top_poster_timeframe = $lang->asb_top_poster_six_months;
+		$top_poster_timeframe_prelude = $lang->asb_top_poster_six_months_desc;
+		break;
+	case 365:
+		$top_poster_timeframe = $lang->asb_top_poster_one_year;
+		$top_poster_timeframe_prelude = $lang->asb_top_poster_one_year_desc;
+		break;
+	default:
+		$top_poster_timeframe = $lang->asb_top_poster_one_day;
+		$top_poster_timeframe_prelude = $lang->asb_top_poster_one_day_desc;
+	}
 
 	// build user group exclusions (if any)
 	$show = asb_build_id_list($settings['group_show_list'], 'u.usergroup');
@@ -121,84 +198,85 @@ function asb_top_poster_build_template($args)
 		$group_by = $db->build_fields_string('users', 'u.');
 	}
 
-	$query = $db->query(<<<EOF
-SELECT u.uid, u.username, u.usergroup, u.displaygroup, u.avatar, COUNT(*) AS poststoday
-FROM {$db->table_prefix}posts p
-LEFT JOIN {$db->table_prefix}users u ON (p.uid=u.uid)
-WHERE p.dateline > {$timesearch}{$group_where}
-GROUP BY {$group_by} ORDER BY poststoday DESC
-LIMIT 1
-EOF
-);
-
-	// some defaults
-	$top_poster = $lang->asb_top_poster_no_one;
-	$top_poster_posts = $lang->asb_top_poster_no_posts;
-	$top_poster_text = $lang->asb_top_poster_no_top_poster;
-	$top_poster_avatar = '';
-	$ret_val = false;
-
-	// adjust language for time frame
-	switch ($settings['time_frame']) {
-	case 7:
-		$top_poster_timeframe = $lang->asb_top_poster_one_week;
-		break;
-	case 14:
-		$top_poster_timeframe = $lang->asb_top_poster_two_weeks;
-		break;
-	case 30:
-		$top_poster_timeframe = $lang->asb_top_poster_one_month;
-		break;
-	case 90:
-		$top_poster_timeframe = $lang->asb_top_poster_three_months;
-		break;
-	case 180:
-		$top_poster_timeframe = $lang->asb_top_poster_six_months;
-		break;
-	case 365:
-		$top_poster_timeframe = $lang->asb_top_poster_one_year;
-		break;
-	default:
-		$top_poster_timeframe = $lang->asb_top_poster_one_day;
+	if ($time_frame > 0) {
+		$query = $db->query("
+		SELECT u.uid, u.username, u.usergroup, u.displaygroup, u.avatar, COUNT(*) AS poststoday
+		FROM {$db->table_prefix}posts p
+		LEFT JOIN {$db->table_prefix}users u ON (p.uid=u.uid)
+		WHERE p.dateline > {$timesearch}{$group_where}
+		GROUP BY {$group_by} ORDER BY poststoday DESC
+		LIMIT {$limit}
+		");
+	} else {
+		$query = $db->simple_select('users', 'uid, avatar, username, postnum, usergroup, displaygroup', "postnum > 0{$group_where}", array('order_by' => 'postnum', 'order_dir' => 'DESC', 'limit' => $limit));
 	}
 
-	$user = $db->fetch_array($query);
+	$altbg = alt_trow();
+	if ($db->num_rows($query) == 0) {
+		// some defaults
+		$top_poster = $lang->asb_top_poster_no_one;
+		$top_poster_posts = $lang->asb_top_poster_no_posts;
+		$top_poster_text = $lang->asb_top_poster_no_top_poster;
+		$top_poster_avatar = '';
+		eval("\$\$template_var = \"" . $templates->get('asb_top_posters_single') . "\";");
+		$ret_val = false;
+	} else {
+		while ($user = $db->fetch_array($query)) {
+			$ret_val = true;
 
-	// if we have a user . . .
-	if ($user['poststoday']) {
-		// default to default :p
-		$avatar_width = (int) $width * .83;
-		if ((int) $settings['avatar_size']) {
-			$avatar_width = (int) $settings['avatar_size'];
+			// default to guest
+			$top_poster = $lang->guest;
+			if ($user['uid']) {
+				$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+				$profile_link = get_profile_link($user['uid']);
+				$top_poster = build_profile_link($username, $user['uid']);
+			}
+
+			$top_poster_posts = $user['poststoday'];
+			if ($time_frame == 0) {
+				$top_poster_posts = $user['postnum'];
+			}
+			$post_lang = $lang->asb_top_poster_posts;
+			if ($top_poster_posts == 1) {
+				$post_lang = $lang->asb_top_poster_post;
+			}
+
+			$top_poster_avatar_src = "{$theme['imgdir']}/default_avatar.png";
+			if ($user['avatar'] != '') {
+				$top_poster_avatar_src = $user['avatar'];
+			}
+
+			$avatar_width = (int) $width * .83;
+
+			$top_poster_description = $lang->sprintf($lang->asb_top_poster_description, $top_poster_timeframe_prelude);
+
+			if ($db->num_rows($query) == 1) {
+				$top_poster_text = $lang->sprintf($lang->asb_top_poster_congrats, $top_poster, $top_poster_timeframe, $top_poster_posts, $post_lang);
+
+				if ((int) $settings['avatar_size']) {
+					$avatar_width = (int) $settings['avatar_size'];
+				}
+				eval("\$top_poster_avatar = \"" . $templates->get('asb_top_poster_avatar') . "\";");
+
+				eval("\$\$template_var = \"" . $templates->get('asb_top_posters_single') . "\";");
+			} else {
+				$top_poster_text = $top_poster . '<br />' . $top_poster_posts;
+
+				$avatar_width = (int) $avatar_width / 3;
+				if ((int) $settings['avatar_size']) {
+					$avatar_width = (int) $settings['avatar_size'];
+				}
+				eval("\$top_poster_avatar = \"" . $templates->get('asb_top_poster_avatar') . "\";");
+
+				eval("\$top_posters .= \"" . $templates->get('asb_top_poster') . "\";");
+			}
+			$altbg = alt_trow();
 		}
 
-		// default to guest
-		$top_poster = $lang->guest;
-		if ($user['uid']) {
-			$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
-			$profile_link = get_profile_link($user['uid']);
-			$top_poster = build_profile_link($username, $user['uid']);
+		if ($db->num_rows($query) > 1) {
+			eval("\$\$template_var .= \"" . $templates->get('asb_top_posters_multiple') . "\";");
 		}
-
-		$top_poster_posts = $user['poststoday'];
-		$post_lang = $lang->asb_top_poster_posts;
-		if ($top_poster_posts == 1) {
-			$post_lang = $lang->asb_top_poster_post;
-		}
-
-		$top_poster_avatar_src = "{$theme['imgdir']}/default_avatar.png";
-		if ($user['avatar'] != '') {
-			$top_poster_avatar_src = $user['avatar'];
-		}
-		eval("\$top_poster_avatar = \"" . $templates->get('asb_top_poster_avatar') . "\";");
-
-		$top_poster_text = $lang->sprintf($lang->asb_top_poster_congrats, $top_poster, $top_poster_timeframe, $top_poster_posts, $post_lang);
-		$ret_val = true;
 	}
-
-	eval("\$\$template_var = \"" . $templates->get('asb_top_poster') . "\";");
-
-	// return true if your box has something to show, or false if it doesn't.
 	return $ret_val;
 }
 
