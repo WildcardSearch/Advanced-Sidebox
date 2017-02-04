@@ -50,6 +50,14 @@ function asb_recent_posts_info()
 				"optionscode" => 'text',
 				"value" => '20'
 			),
+			"max_thread_title_length" => array(
+				"sid" => 'NULL',
+				"name" => 'max_thread_title_length',
+				"title" => $lang->asb_max_thread_title_length_title,
+				"description" => $lang->asb_max_thread_title_length_desc,
+				"optionscode" => 'text',
+				"value" => '40'
+			),
 			"forum_show_list" => array(
 				"sid" => 'NULL',
 				"name" => 'forum_show_list',
@@ -268,12 +276,14 @@ function recent_posts_get_postlist($settings)
 			$post_author = build_profile_link($post_author_name, $post['uid']);
 		}
 
-		if (my_strlen($post['subject']) > $maxtitlelen) {
-			$post['subject'] = my_substr($post['subject'], 0, $maxtitlelen) . '...';
-		}
-
 		if (substr(strtolower($post['subject']), 0, 3) == 're:') {
 			$post['subject'] = substr($post['subject'], 3);
+		}
+
+		$max_len = (int) $settings['max_thread_title_length'];
+		if ($max_len > 0 &&
+			my_strlen($post['subject']) > $max_len) {
+			$post['subject'] = my_substr($post['subject'], 0, $max_len) . $lang->asb_recent_posts_title_ellipsis;
 		}
 
 		$post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
@@ -283,8 +293,9 @@ function recent_posts_get_postlist($settings)
 		$pattern = "|[[\/\!]*?[^\[\]]*?]|si";
 		$post_excerpt = strip_tags(str_replace('<br />', '', asb_strip_url(preg_replace($pattern, '$1', $post['message']))));
 
-		if (strlen($post_excerpt) > $settings['max_length']) {
-			$post_excerpt = substr($post_excerpt, 0, $settings['max_length']) . ' . . .';
+		if ($settings['max_length'] &&
+			strlen($post_excerpt) > $settings['max_length']) {
+			$post_excerpt = my_substr($post_excerpt, 0, $settings['max_length']) . $lang->asb_recent_posts_ellipsis;
 		}
 
 		eval("\$postlist .= \"" . $templates->get("asb_recent_posts_post") . "\";");

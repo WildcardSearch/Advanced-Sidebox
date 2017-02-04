@@ -42,6 +42,14 @@ function asb_latest_threads_info()
 				"optionscode" => 'text',
 				"value" => '20'
 			),
+			"max_thread_title_length" => array(
+				"sid" => 'NULL',
+				"name" => 'max_thread_title_length',
+				"title" => $lang->asb_max_thread_title_length_title,
+				"description" => $lang->asb_max_thread_title_length_desc,
+				"optionscode" => 'text',
+				"value" => '40'
+			),
 			"forum_show_list" => array(
 				"sid" => 'NULL',
 				"name" => 'forum_show_list',
@@ -295,7 +303,6 @@ function latest_threads_get_threadlist($settings, $width)
 	$query_where = $new_threads . $important_threads . $unviewwhere . $inactivewhere . asb_build_SQL_where($where, ' AND ', ' AND ');
 
 	$altbg = alt_trow();
-	$maxtitlelen = 48;
 	$threadlist = '';
 
 	// query for the latest forum discussions
@@ -378,8 +385,10 @@ EOF;
 			}
 		}
 
-		if (my_strlen($thread['subject']) > $maxtitlelen) {
-			$thread['subject'] = my_substr($thread['subject'], 0, $maxtitlelen) . "...";
+		$max_len = (int) $settings['max_thread_title_length'];
+		if ($max_len > 0 &&
+			my_strlen($thread['subject']) > $max_len) {
+			$thread['subject'] = my_substr($thread['subject'], 0, $max_len) . $lang->asb_latest_threads_ellipsis;
 		}
 
 		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));

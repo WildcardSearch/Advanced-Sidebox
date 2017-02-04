@@ -9,6 +9,8 @@
 
 $l['asb_addon'] = 'Addon';
 
+$l['asb_recent_posts_ellipsis'] = $l['asb_recent_posts_title_ellipsis'] = $l['asb_latest_threads_ellipsis'] = '...';
+
 // default settings
 $l['asb_xmlhttp_on_title'] = 'AJAX Update?';
 $l['asb_xmlhttp_on_description'] = 'time (in seconds) between updates (0 to disable AJAX)';
@@ -33,6 +35,9 @@ $l['asb_group_hide_list_desc'] = '(optional) add a usergroup id or a comma-separ
 
 $l['asb_important_threads_only_title'] = 'Important Threads Only?';
 $l['asb_important_threads_only_desc'] = "YES to only use 'stickied' threads, NO (default) to use any threads/posts";
+
+$l['asb_max_thread_title_length_title'] = 'Thread Title Length Limit';
+$l['asb_max_thread_title_length_desc'] = 'enter nothing or 0 to show the full title, or enter the maximal number of characters to display (default 40)';
 
 // welcome
 $l['asb_welcome'] = 'Welcome';
@@ -135,7 +140,7 @@ $l['asb_recent_posts_max_title'] = 'Post Limit';
 $l['asb_recent_posts_max_description'] = 'maximal number of posts to display';
 
 $l['asb_recent_posts_max_length_title'] = 'Maximum Post Length';
-$l['asb_recent_posts_max_length_description'] = 'maximum length of excerpt to show in characters';
+$l['asb_recent_posts_max_length_description'] = 'enter nothing or 0 to show the full post message, or enter the maximal number of characters to display (default 20)';
 
 $l['asb_recent_posts_no_posts'] = 'There are no posts to display.';
 
