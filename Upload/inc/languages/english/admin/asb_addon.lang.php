@@ -127,7 +127,7 @@ $l['asb_last_poster_avatar_title'] = 'Last Poster Avatar?';
 $l['asb_last_poster_avatar_desc'] = 'YES to show the avatar of the last poster, NO to show formatted user name';
 
 $l['asb_avatar_width_title'] = 'Avatar Width';
-$l['asb_avatar_width_desc'] = 'width in pixels IF showing avatars';
+$l['asb_avatar_width_desc'] = 'enter digits (ie. "40") to specifiy width in pixels, or digits followed by "%" (ie. "40%") to specifiy width in percentage of the side box width &mdash; this settings has no effect unless Last Poster Avatar is set to YES';
 
 $l['asb_new_threads_only_title'] = 'New Threads Only?';
 $l['asb_new_threads_only_desc'] = 'enter nothing or 0 to show all threads with new posts (default), or enter the amount of days to show only threads created within that time';

@@ -246,6 +246,10 @@ function asb_top_poster_build_template($args)
 				$top_poster_avatar_src = $user['avatar'];
 			}
 
+			$settings['avatar_size'] = trim($settings['avatar_size']);
+			if (my_strpos($settings['avatar_size'], '%') == my_strlen($settings['avatar_size']) - 1) {
+				$settings['avatar_size'] = (int) $width * (my_substr($settings['avatar_size'], 0, my_strlen($settings['avatar_size']) - 1) / 100);
+			}
 			$avatar_width = (int) $width * .83;
 
 			$top_poster_description = $lang->sprintf($lang->asb_top_poster_description, $top_poster_timeframe_prelude);

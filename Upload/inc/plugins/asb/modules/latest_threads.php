@@ -360,6 +360,10 @@ function latest_threads_get_threadlist($settings, $width)
 			$thread['avatar'] = "{$theme['imgdir']}/default_avatar.png";
 		}
 
+		$settings['avatar_width'] = trim($settings['avatar_width']);
+		if (my_strpos($settings['avatar_width'], '%') == my_strlen($settings['avatar_width']) - 1) {
+			$settings['avatar_width'] = (int) $width * (my_substr($settings['avatar_width'], 0, my_strlen($settings['avatar_width']) - 1) / 100);
+		}
 		$avatar_width = (int) min($width / 2, max($width / 8, $settings['avatar_width']));
 		$avatar = <<<EOF
 <img src="{$thread['avatar']}" alt="{$thread['last_post']}" title="{$thread['lastposter']}'s profile" style="width: {$avatar_width}px;"/>
