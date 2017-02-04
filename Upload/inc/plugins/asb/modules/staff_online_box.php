@@ -42,6 +42,20 @@ function asb_staff_online_box_info()
 				"optionscode" => 'text',
 				"value" => '5'
 			),
+			"group_show_list" => array(
+				"name" => 'group_show_list',
+				"title" => $lang->asb_group_show_list_title,
+				"description" => $lang->asb_group_show_list_desc,
+				"optionscode" => 'text',
+				"value" => ''
+			),
+			"group_hide_list" => array(
+				"name" => 'group_hide_list',
+				"title" => $lang->asb_group_hide_list_title,
+				"description" => $lang->asb_group_hide_list_desc,
+				"optionscode" => 'text',
+				"value" => ''
+			),
 			"xmlhttp_on" => array(
 				"sid" => 'NULL',
 				"name" => 'xmlhttp_on',
@@ -158,8 +172,15 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 	$usergroups = array();
 	$users = array();
 
+	// build user group exclusions (if any)
+	$show = asb_build_id_list($settings['group_show_list'], 'gid');
+	$hide = asb_build_id_list($settings['group_hide_list'], 'gid');
+	$where['show'] = asb_build_SQL_where($show, ' OR ');
+	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
+	$group_where = asb_build_SQL_where($where, ' AND ', ' AND ');
+
 	// get all the groups admin has specified should be shown on showteam.php
-	$query = $db->simple_select('usergroups', 'gid, title, usertitle, image', 'showforumteam=1', array('order_by' => 'disporder'));
+	$query = $db->simple_select('usergroups', 'gid, title, usertitle, image', "showforumteam=1{$group_where}", array('order_by' => 'disporder'));
 	while ($usergroup = $db->fetch_array($query)) {
 		// store them in our array
 		$usergroups[$usergroup['gid']] = $usergroup;
