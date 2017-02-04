@@ -33,6 +33,18 @@ function asb_do_checks()
 		$mybb->user['show_sidebox'] == 0) {
 		return false;
 	}
+
+	/*
+	 * if this is a mobile device, and admin has
+	 * disabled side boxes for mobile...
+	 *
+	 * credit: http://stackoverflow.com/users/1304523/justin-docanto
+	 */
+	if ($mybb->settings['asb_disable_for_mobile'] &&
+		preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"])) {
+		return false;
+	}
+
 	return true;
 }
 

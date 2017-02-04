@@ -122,7 +122,16 @@ $settings = array(
 				"optionscode" => $db->escape_string(asb_build_theme_exclude_select()),
 				"value" => '',
 				"disporder" => '60'
-			)
+			),
+			"asb_disable_for_mobile" => array(
+				"sid" => '0',
+				"name" => 'asb_disable_for_mobile',
+				"title" => $lang->asb_disable_for_mobile_title . ':',
+				"description" => $lang->asb_disable_for_mobile_description,
+				"optionscode" => 'yesno',
+				"value" => '0',
+				"disporder" => '70'
+			),
 		)
 	)
 );
