@@ -176,6 +176,7 @@ EOF
 		$top_poster = $lang->guest;
 		if ($user['uid']) {
 			$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+			$profile_link = get_profile_link($user['uid']);
 			$top_poster = build_profile_link($username, $user['uid']);
 		}
 

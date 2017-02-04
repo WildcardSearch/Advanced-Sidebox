@@ -349,27 +349,33 @@ function latest_threads_get_threadlist($settings, $width)
 		$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
 		$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
 
+		if (strlen(trim($thread['avatar'])) == 0) {
+			$thread['avatar'] = "{$theme['imgdir']}/default_avatar.png";
+		}
+
+		$avatar_width = (int) min($width / 2, max($width / 8, $settings['avatar_width']));
+		$avatar = <<<EOF
+<img src="{$thread['avatar']}" alt="{$thread['last_post']}" title="{$thread['lastposter']}'s profile" style="width: {$avatar_width}px;"/>
+EOF;
+
+		$formatted_name = format_name($thread['lastposter'], $thread['usergroup'], $thread['displaygroup']);
+
+		$lastposter_profile_link = get_profile_link($thread['lastposteruid']);
+
+		$formatted_name_profile_link = build_profile_link($formatted_name, $thread['lastposteruid']);
+
+		$avatar_profile_link = build_profile_link($avatar, $thread['lastposteruid']);
+
 		// don't link to guest's profiles (they have no profile).
 		if ($thread['lastposteruid'] == 0) {
 			$lastposterlink = $thread['lastposter'];
 		} else {
+			$lp_template = 'asb_latest_threads_last_poster_name';
+			$lastposterlink = $formatted_name_profile_link;
 			if ($settings['last_poster_avatar']) {
-				if (strlen(trim($thread['avatar'])) == 0) {
-					$thread['avatar'] = "{$theme['imgdir']}/default_avatar.png";
-				}
-
-				$avatar_width = (int) min($width / 2, max($width / 8, $settings['avatar_width']));
-
-				$last_poster_name = <<<EOF
-<img src="{$thread['avatar']}" alt="{$thread['last_post']}" title="{$thread['lastposter']}'s profile" style="width: {$avatar_width}px;"/>
-EOF;
-				format_name($thread['lastposter'], $thread['usergroup'], $thread['displaygroup']);
+				$lastposterlink = $avatar_profile_link;
 				$lp_template = 'asb_latest_threads_last_poster_avatar';
-			} else {
-				$last_poster_name = format_name($thread['lastposter'], $thread['usergroup'], $thread['displaygroup']);
-				$lp_template = 'asb_latest_threads_last_poster_name';
 			}
-			$lastposterlink = build_profile_link($last_poster_name, $thread['lastposteruid']);
 		}
 
 		if (my_strlen($thread['subject']) > $maxtitlelen) {
