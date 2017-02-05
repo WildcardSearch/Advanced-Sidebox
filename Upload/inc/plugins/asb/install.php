@@ -13,10 +13,10 @@ if (!defined('IN_MYBB') ||
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
-/*
+/**
  * information about the plugin used by MyBB for display as well as to connect with updates
  *
- * @return array the plugin info
+ * @return array plugin info
  */
 function asb_info()
 {
@@ -97,13 +97,13 @@ EOF;
 		"website" => 'https://github.com/WildcardSearch/Advanced-Sidebox',
 		"author" => $author,
 		"authorsite" => 'http://www.rantcentralforums.com',
-		"version" => '3.1',
+		"version" => ASB_VERSION,
 		"compatibility" => '18*',
 		"guid" => '870e9163e2ae9b606a789d9f7d4d2462',
 	);
 }
 
-/*
+/**
  * check to see if the plugin's settings group is installed-- assume the plugin is installed if so
  *
  * @return bool true if installed, false if not
@@ -113,7 +113,7 @@ function asb_is_installed()
 	return asb_get_settingsgroup();
 }
 
-/*
+/**
  * add tables, a column to the mybb_users table (show_sidebox),
  * install the plugin setting group (asb_settings), settings, templates and
  * check for existing modules and install any detected
@@ -131,12 +131,12 @@ function asb_install()
 	// settings tables, templates, groups and setting groups
 	require_once MYBB_ROOT . 'inc/plugins/asb/functions_install.php';
 	if (!class_exists('WildcardPluginInstaller')) {
-		require_once MYBB_ROOT . 'inc/plugins/asb/classes/installer.php';
+		require_once MYBB_ROOT . 'inc/plugins/asb/classes/WildcardPluginInstaller.php';
 	}
 	$installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
 	$installer->install();
 
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/module.php';
+	require_once MYBB_ROOT . 'inc/plugins/asb/classes/SideboxExternalModule.php';
 	$addons = asb_get_all_modules();
 	foreach ($addons as $addon) {
 		$addon->install();
@@ -147,7 +147,7 @@ function asb_install()
 	@unlink(MYBB_ROOT . 'inc/plugins/adv_sidebox.php');
 }
 
-/*
+/**
  * handle version control (a la pavemen), upgrade if necessary and
  * change permissions for ASB
  *
@@ -160,15 +160,14 @@ function asb_activate()
 
 	// if we just upgraded . . .
 	$old_version = asb_get_cache_version();
-	$info = asb_info();
-	if (version_compare($old_version, $info['version'], '<')) {
+	if (version_compare($old_version, ASB_VERSION, '<')) {
 		global $lang;
 		if (!$lang->asb) {
 			$lang->load('asb');
 		}
 
 		if (!class_exists('WildcardPluginInstaller')) {
-            require_once MYBB_ROOT . 'inc/plugins/asb/classes/installer.php';
+            require_once MYBB_ROOT . 'inc/plugins/asb/classes/WildcardPluginInstaller.php';
         }
         $installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
 		$installer->install();
@@ -194,7 +193,7 @@ function asb_activate()
 					$module_name .= $x;
 				}
 
-				$module = new Addon_type($module_name);
+				$module = new SideboxExternalModule($module_name);
 				$module->remove();
 			}
 
@@ -211,6 +210,22 @@ function asb_activate()
 			foreach ($removed_files as $file) {
 				@unlink(MYBB_ROOT . $file);
 			}
+		} elseif (version_compare($old_version, '3.1', '<')) {
+			$removed_files = array(
+				'inc/plugins/asb/classes/installer.php',
+				'inc/plugins/asb/classes/malleable.php',
+				'inc/plugins/asb/classes/portable.php',
+				'inc/plugins/asb/classes/storable.php',
+				'inc/plugins/asb/classes/sidebox.php',
+				'inc/plugins/asb/classes/custom.php',
+				'inc/plugins/asb/classes/module.php',
+				'inc/plugins/asb/classes/html_generator.php',
+				'inc/plugins/asb/classes/script_info.php',
+				'inc/plugins/asb/classes/template_handler.php',
+			);
+			foreach ($removed_files as $file) {
+				@unlink(MYBB_ROOT . $file);
+			}
 		}
 	}
 	asb_set_cache_version();
@@ -219,8 +234,8 @@ function asb_activate()
 	change_admin_permission('config', 'asb');
 }
 
-/*
- * simply disables admin permissions for side boxes
+/**
+ * disable admin permissions
  *
  * @return void
  */
@@ -230,7 +245,7 @@ function asb_deactivate()
 	change_admin_permission('config', 'asb', -1);
 }
 
-/*
+/**
  * drop the table added to the DB and the column added to
  * the mybb_users table (show_sidebox),
  * delete the plugin settings, templates and style sheets
@@ -245,7 +260,7 @@ function asb_uninstall()
 
 	global $mybb;
 
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/module.php';
+	require_once MYBB_ROOT . 'inc/plugins/asb/classes/SideboxExternalModule.php';
 	// remove the modules first
 	$addons = asb_get_all_modules();
 
@@ -259,7 +274,7 @@ function asb_uninstall()
 
 	require_once MYBB_ROOT . 'inc/plugins/asb/functions_install.php';
 	if (!class_exists('WildcardPluginInstaller')) {
-		require_once MYBB_ROOT . 'inc/plugins/asb/classes/installer.php';
+		require_once MYBB_ROOT . 'inc/plugins/asb/classes/WildcardPluginInstaller.php';
 	}
 	$installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
 	$installer->uninstall();
@@ -272,11 +287,11 @@ function asb_uninstall()
  * settings
  */
 
-/*
+/**
  * retrieves the plugin's settings group gid if it exists
  * attempts to cache repeat calls
  *
- * @return int the setting groups id
+ * @return int gid
  */
 function asb_get_settingsgroup()
 {
@@ -296,11 +311,11 @@ function asb_get_settingsgroup()
 	return $gid;
 }
 
-/*
+/**
  * builds the url to modify plugin settings if given valid info
  *
- * @param int settings group id
- * @return string the URL to view the setting group
+ * @param  int settings group id
+ * @return string url
  */
 function asb_build_settings_url($gid)
 {
@@ -309,10 +324,10 @@ function asb_build_settings_url($gid)
 	}
 }
 
-/*
+/**
  * builds a link to modify plugin settings if it exists
  *
- * @return string an HTML anchor element pointing to the plugin settings
+ * @return string html
  */
 function asb_build_settings_link()
 {

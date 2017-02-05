@@ -8,15 +8,15 @@
 
 class HTMLGenerator
 {
-	/*
-	 * @var  string default URL for links,
+	/**
+	 * @var string default URL for links,
 	 * can be set in __construct() by the plugin ACP
 	 * page but can be changed in-line if needed
 	 */
 	public $base_url = 'index.php';
 
-	/*
-	 * @var  array allowed $_GET/$mybb->input
+	/**
+	 * @var array allowed $_GET/$mybb->input
 	 * variable names, add custom keys in
 	 * __construct() or in-line
 	 */
@@ -28,11 +28,11 @@ class HTMLGenerator
 		'uid',
 		'tid',
 		'page',
-		'my_post_key'
+		'my_post_key',
 	);
 
-	/*
-	 * @var  array
+	/**
+	 * @var array
 	 */
 	public $allowed_img_properties = array(
 		'id',
@@ -41,11 +41,11 @@ class HTMLGenerator
 		'alt',
 		'style',
 		'class',
-		'onclick'
+		'onclick',
 	);
 
-	/*
-	 * @var  array
+	/**
+	 * @var array
 	 */
 	public $allowed_link_properties = array(
 		'id',
@@ -53,13 +53,14 @@ class HTMLGenerator
 		'title',
 		'style',
 		'class',
-		'onclick'
+		'onclick',
 	);
 
-	/*
-	 * @param string the base URL for all links and URLs
-	 * @param mixed a string key name or an array of key names to allow
+	/**
+	 * constructor
 	 *
+	 * @param  string the base URL for all links and URLs
+	 * @param  string|array 1+ key names
 	 * @return void
 	 */
 	public function __construct($url = '', $extra_keys = '')
@@ -84,12 +85,12 @@ class HTMLGenerator
 		}
 	}
 
-	/*
+	/**
 	 * builds a URL from standard options array
 	 *
-	 * @param array keyed to standard URL options
-	 * @param string overrides the default URL base if present
-	 * @param bool override URL encoded ampersand (for JS mostly)
+	 * @param  array keyed to standard URL options
+	 * @param  string overrides the default URL base if present
+	 * @param  bool override URL encoded ampersand (for JS mostly)
 	 * @return string URL
 	 */
 	public function url($options = array(), $base_url = '', $encoded = true)
@@ -122,12 +123,12 @@ class HTMLGenerator
 		return $url;
 	}
 
-	/*
+	/**
 	 * builds an HTML anchor from the provided options
 	 *
-	 * @param string the address
-	 * @param string the title of the link
-	 * @param array options to effect the HTML output
+	 * @param  string the address
+	 * @param  string the title of the link
+	 * @param  array options to effect the HTML output
 	 * @return string HTML anchor
 	 */
 	public function link($url = '', $caption = '', $options = '', $icon_options = array())
@@ -154,11 +155,11 @@ EOF;
 EOF;
 	}
 
-	/*
+	/**
 	 * generate HTML <img> mark-up
 	 *
-	 * @param string image source attribute
-	 * @param array a keyed array of options to be generated
+	 * @param  string image source attribute
+	 * @param  array a keyed array of options to be generated
 	 * @return string HTML image
 	 */
 	public function img($url, $options = array())
@@ -170,9 +171,11 @@ EOF;
 EOF;
 	}
 
-	/*
-	 * @param array keyed array of properties
-	 * @param array unindexed array of allowable property names
+	/**
+	 * build HTML property list
+	 *
+	 * @param  array keyed array of properties
+	 * @param  array unindexed array of allowable property names
 	 * @return string a list of properties
 	 */
 	protected function build_property_list($options = array(), $allowed = array())

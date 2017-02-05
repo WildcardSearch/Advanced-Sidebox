@@ -13,10 +13,10 @@ if (!defined('IN_MYBB') ||
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
-/*
+/**
  * provide info to ASB about the addon
  *
- * @return array the module info
+ * @return array module info
  */
 function asb_rand_quote_info()
 {
@@ -40,7 +40,7 @@ function asb_rand_quote_info()
 				"title" => $lang->asb_forum_show_list_title,
 				"description" => $lang->asb_forum_show_list_desc,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 			"forum_hide_list" => array(
 				"sid" => 'NULL',
@@ -48,7 +48,7 @@ function asb_rand_quote_info()
 				"title" => $lang->asb_forum_hide_list_title,
 				"description" => $lang->asb_forum_hide_list_desc,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 			"thread_show_list" => array(
 				"sid" => 'NULL',
@@ -56,7 +56,7 @@ function asb_rand_quote_info()
 				"title" => $lang->asb_thread_show_list_title,
 				"description" => $lang->asb_thread_show_list_desc,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 			"thread_hide_list" => array(
 				"sid" => 'NULL',
@@ -64,7 +64,7 @@ function asb_rand_quote_info()
 				"title" => $lang->asb_thread_hide_list_title,
 				"description" => $lang->asb_thread_hide_list_desc,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 			"min_length" => array(
 				"sid" => 'NULL',
@@ -72,7 +72,7 @@ function asb_rand_quote_info()
 				"title" => $lang->asb_random_quotes_min_quote_length_title,
 				"description" => $lang->asb_random_quotes_min_quote_length_desc,
 				"optionscode" => 'text',
-				"value" => '20'
+				"value" => '20',
 			),
 			"max_length" => array(
 				"sid" => 'NULL',
@@ -80,7 +80,7 @@ function asb_rand_quote_info()
 				"title" => $lang->asb_random_quotes_max_quote_length_title,
 				"description" => $lang->asb_random_quotes_max_quote_length,
 				"optionscode" => 'text',
-				"value" => '160'
+				"value" => '160',
 			),
 			"default_text" => array(
 				"sid" => 'NULL',
@@ -88,7 +88,7 @@ function asb_rand_quote_info()
 				"title" => $lang->asb_random_quotes_default_text_title,
 				"description" => $lang->asb_random_quotes_default_text_desc,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 			"important_threads_only" => array(
 				"sid" => 'NULL',
@@ -96,7 +96,7 @@ function asb_rand_quote_info()
 				"title" => $lang->asb_important_threads_only_title,
 				"description" => $lang->asb_important_threads_only_desc,
 				"optionscode" => 'yesno',
-				"value" => '0'
+				"value" => '0',
 			),
 			"xmlhttp_on" => array(
 				"sid" => 'NULL',
@@ -104,8 +104,8 @@ function asb_rand_quote_info()
 				"title" => $lang->asb_xmlhttp_on_title,
 				"description" => $lang->asb_xmlhttp_on_description,
 				"optionscode" => 'text',
-				"value" => '0'
-			)
+				"value" => '0',
+			),
 		),
 		"discarded_templates" => array(
 			'rand_quote_sidebox',
@@ -141,16 +141,16 @@ EOF
 					</td>
 				</tr>
 EOF
-			)
-		)
+			),
+		),
 	);
 }
 
-/*
+/**
  * handles display of children of this addon at page load
  *
- * @param array the specific information from the child box
- * @return bool true on success, false on fail/no content
+ * @param  array information from child box
+ * @return bool success/fail
  */
 function asb_rand_quote_build_template($args)
 {
@@ -179,10 +179,10 @@ EOF;
 	}
 }
 
-/*
+/**
  * handles display of children of this addon via AJAX
  *
- * @param array the specific information from the child box
+ * @param  array info from child box
  * @return void
  */
 function asb_rand_quote_xmlhttp($args)
@@ -197,13 +197,12 @@ function asb_rand_quote_xmlhttp($args)
 	return 'nochange';
 }
 
-/*
+/**
  * get random quotes
  *
- * @param array individual side box settings passed to the module
- * @param int the width of the column in which the child is positioned
- * @return string containing the HTML side box markup or
- * bool false on fail/no content
+ * @param  array settings
+ * @param  int column width
+ * @return string|bool html or success/fail
  */
 function asb_rand_quote_get_quote($settings, $width)
 {

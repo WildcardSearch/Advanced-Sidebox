@@ -13,10 +13,10 @@ if (!defined('IN_MYBB') ||
 	die('You need MyBB and Advanced Sidebox installed and properly initialized to use this script.');
 }
 
-/*
+/**
  * provide info to ASB about the addon
  *
- * @return array the module info
+ * @return array module info
  */
 function asb_staff_online_box_info()
 {
@@ -40,21 +40,21 @@ function asb_staff_online_box_info()
 				"title" => $lang->asb_staff_online_max_staff_title,
 				"description" => $lang->asb_staff_online_max_staff_desc,
 				"optionscode" => 'text',
-				"value" => '5'
+				"value" => '5',
 			),
 			"group_show_list" => array(
 				"name" => 'group_show_list',
 				"title" => $lang->asb_group_show_list_title,
 				"description" => $lang->asb_group_show_list_desc,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 			"group_hide_list" => array(
 				"name" => 'group_hide_list',
 				"title" => $lang->asb_group_hide_list_title,
 				"description" => $lang->asb_group_hide_list_desc,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 			"xmlhttp_on" => array(
 				"sid" => 'NULL',
@@ -62,7 +62,7 @@ function asb_staff_online_box_info()
 				"title" => $lang->asb_xmlhttp_on_title,
 				"description" => $lang->asb_xmlhttp_on_description,
 				"optionscode" => 'text',
-				"value" => '0'
+				"value" => '0',
 			)
 		),
 		"discarded_templates" => array(
@@ -92,16 +92,16 @@ function asb_staff_online_box_info()
 					</td>
 				</tr>
 EOF
-			)
-		)
+			),
+		),
 	);
 }
 
-/*
+/**
  * handles display of children of this addon at page load
  *
- * @param array the specific information from the child box
- * @return bool true on success, false on fail/no content
+ * @param  array info from child box
+ * @return bool success/fail
  */
 function asb_staff_online_box_build_template($args)
 {
@@ -127,10 +127,10 @@ EOF;
 	}
 }
 
-/*
+/**
  * handles display of children of this addon via AJAX
  *
- * @param array the specific information from the child box
+ * @param  array info from child box
  * @return void
  */
 function asb_staff_online_box_xmlhttp($args)
@@ -144,13 +144,12 @@ function asb_staff_online_box_xmlhttp($args)
 	return 'nochange';
 }
 
-/*
+/**
  * get staff members currently online
  *
- * @param individual side box settings passed to the module
- * @param int the width of the column in which the child is positioned
- * @return string containing the HTML side box markup or
- * bool false on fail/no content
+ * @param  array settings
+ * @param  int column width
+ * @return string|bool html or false
  */
 function asb_staff_online_box_get_online_staff($settings, $width)
 {

@@ -10,7 +10,7 @@
 // only add the necessary hooks and templates
 asb_initialize();
 
-/*
+/**
  * main implementation of many hooks depending upon THIS_SCRIPT constant and
  * $mybb->input/$_GET vars (see asb_initialize())
  *
@@ -77,7 +77,7 @@ function asb_start()
 			}
 
 			// then load the object
-			$sidebox = new Sidebox($asb['sideboxes'][$id]);
+			$sidebox = new SideboxObject($asb['sideboxes'][$id]);
 
 			// can the user view this side box?
 			if (!asb_check_user_permissions($sidebox->get('groups'))) {
@@ -97,21 +97,21 @@ function asb_start()
 			$template_var = "{$module_name}_{$id}";
 
 			// attempt to load the box as an add-on module
-			$module = new Addon_type($module_name);
+			$module = new SideboxExternalModule($module_name);
 
 			// if it is valid, then the side box was created using an
 			// add-on module, so we can proceed
-			if ($module->is_valid()) {
+			if ($module->isValid()) {
 				// build the template. pass settings, template variable
 				// name and column width
 				$result = $module->build_template($sidebox->get('settings'), $template_var, $width[$pos], get_current_location());
 			// if it doesn't verify as an add-on, try it as a custom box
 			} elseif (isset($asb['custom'][$module_name]) &&
 				is_array($asb['custom'][$module_name])) {
-				$custom = new Custom_type($asb['custom'][$module_name]);
+				$custom = new CustomSidebox($asb['custom'][$module_name]);
 
 				// if it validates, then build it, otherwise there was an error
-				if ($custom->is_valid()) {
+				if ($custom->isValid()) {
 					// build the custom box template
 					$result = $custom->build_template($template_var);
 				}
@@ -135,12 +135,201 @@ function asb_start()
 		}
 	}
 
-	// load the template handler class definition and make the edits
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/template_handler.php';
-	ASBTemplateHandler::edit($boxes, $width, $this_script);
+	// make the edits
+	asb_edit_template($boxes, $width, $this_script);
 }
 
-/*
+/**
+ * edit the appropriate template
+ *
+ * @param  array side boxes
+ * @param  array left and right width
+ * @param  array current script definition
+ * @return void
+ */
+function asb_edit_template($boxes, $width, $script)
+{
+	global $mybb, $lang, $templates, $headerinclude;
+
+	if ($mybb->settings['asb_minify_js']) {
+		$min = '.min';
+	}
+
+	$left_insert = $boxes[0];
+	$right_insert = $boxes[1];
+	$width_left = $width[0];
+	$width_right = $width[1];
+	$toggles = $show = array();
+	$filename = THIS_SCRIPT;
+
+	// if admin wants to show the toggle icons . . .
+	if ($mybb->settings['asb_show_toggle_icons']) {
+		// we will need this js
+		$headerinclude .= <<<EOF
+<script type="text/javascript" src="jscripts/asb/asb{$min}.js"></script>
+EOF;
+
+		$toggle_info['left'] = array(
+			"close" => array(
+				"img" => 'inc/plugins/asb/images/left_arrow.png',
+				"alt" => '&lt;'
+			),
+			"open" => array(
+				"img" => 'inc/plugins/asb/images/right_arrow.png',
+				"alt" => '&gt;'
+			)
+		);
+		$toggle_info['right']['close'] = $toggle_info['left']['open'];
+		$toggle_info['right']['open'] = $toggle_info['left']['close'];
+
+		foreach (array('left', 'right') as $key) {
+			// check the cookie
+			if ($mybb->cookies["asb_hide_{$key}"] == 1) {
+				// hide left
+				$show[$key] = $close_style = 'display: none; ';
+				$open_style = '';
+			} else {
+				// show left
+				$close_style = '';
+				$open_style = 'display: none; ';
+			}
+
+			// produce the link
+			$open_image = $toggle_info[$key]['open']['img'];
+			$close_image = $toggle_info[$key]['close']['img'];
+			$open_alt = $toggle_info[$key]['open']['alt'];
+			$close_alt = $toggle_info[$key]['close']['alt'];
+			$column_id = "asb_hide_column_{$key}";
+			$closed_id = "asb_{$key}_close";
+			$open_id = "asb_{$key}_open";
+
+			eval("\$toggles[\$key] = \"" . $templates->get('asb_toggle_icon') . "\";");
+		}
+	}
+
+	foreach (array('left', 'right') as $key) {
+		// if there is content
+		$var_name = "{$key}_insert";
+		if ($$var_name) {
+			$prop_name = "{$key}_content";
+			$width_name = "width_{$key}";
+			$width = $$width_name;
+			$show_column = $show[$key];
+			$column_id = "asb_{$key}_column_id";
+			$insert_name = "{$key}_insert";
+			$sideboxes = $$insert_name;
+
+			eval("\$content_pad = \"" . $templates->get('asb_content_pad') . "\";");
+			eval("\$content = \"" . $templates->get('asb_sidebox_column') . "\";");
+
+			$toggle_left = $toggle_right = '';
+			$toggle_name = "toggle_{$key}";
+			$$toggle_name = $toggles[$key];
+
+			// finally set $POSITION_content for ::make_edits()
+			$$prop_name = <<<EOF
+
+		<!-- start: ASB {$key} column -->{$toggle_left}
+		{$content}
+		<!-- end: ASB {$key} column -->{$toggle_right}
+EOF;
+		}
+	}
+	eval("\$insert_top = \"" . $templates->get('asb_begin') . "\";");
+	eval("\$insert_bottom = \"" . $templates->get('asb_end') . "\";");
+
+	if (is_array($script['extra_scripts']) &&
+		!empty($script['extra_scripts'])) {
+		$sep = '';
+		$dateline = TIME_NOW;
+		foreach ($script['extra_scripts'] as $id => $info) {
+			// build the JS objects to pass to the custom object builder
+			$extra_scripts .= <<<EOF
+{$sep}{ addon: '{$info['module']}', id: {$id}, position: {$info['position']}, rate: {$info['rate']}, dateline: {$dateline} }
+EOF;
+			$sep = ", ";
+		}
+
+		$location = get_current_location();
+		$headerinclude .= <<<EOF
+
+<script type="text/javascript" src="jscripts/asb/asb_xmlhttp{$min}.js"></script>
+<script type="text/javascript">
+<!--
+$(function() {
+	ASB.ajax.buildUpdaters([ {$extra_scripts} ], { left: {$width_left}, right: {$width_right} }, '{$location}');
+});
+// -->
+</script>
+EOF;
+	}
+
+	if (is_array($script['js'])) {
+		foreach ($script['js'] as $script_name) {
+			if(file_exists(MYBB_ROOT . "jscripts/asb/{$script_name}{$min}.js")) {
+				$script_name .= $min;
+			}
+			$headerinclude .= <<<EOF
+
+<script type="text/javascript" src="jscripts/asb/{$script_name}.js"></script>
+EOF;
+		}
+	}
+
+	// replace everything on the page?
+	if ($script['replace_all'] == true) {
+		// if there is content
+		if ($script['replacement']) {
+			// replace the existing page entirely
+			$templates->cache[$script['template_name']] = str_replace(array('{$asb_left}', '{$asb_right}'), array($insert_top, $insert_bottom), $script['replacement']);
+		}
+	// outputting to variables? (custom script/Page Manager)
+	} elseif($script['eval']) {
+		// globalize our columns
+		global $asb_left, $asb_right;
+
+		// globalize all the add-on template variables
+		if (is_array($script['template_vars']) &&
+			!empty($script['template_vars'])) {
+			foreach ($script['template_vars'] as $var) {
+				global $$var;
+			}
+		}
+
+		// now eval() their content for the custom script
+		eval("\$asb_left = \"" . str_replace("\\'", "'", addslashes($insert_top)) . "\";");
+		eval("\$asb_right = \"" . str_replace("\\'", "'", addslashes($insert_bottom)) . "\";");
+	// otherwise we are editing the template in the cache
+	} else {
+		// if there are columns stored
+		if ($insert_top ||
+			$insert_bottom) {
+			// make the edits
+			$find_top_pos = strpos($templates->cache[$script['template_name']], $script['find_top']);
+
+			if ($find_top_pos !== false) {
+				$find_bottom_pos = strpos($templates->cache[$script['template_name']], $script['find_bottom']);
+
+				if ($find_bottom_pos !== false) {
+					/*
+					 * split the template in 3 parts and splice our columns in after 1 and before 3
+					 * it is important that we function this way so we can work with the
+					  * FIRST instance of the search text (find_top and find_bottom) rather
+					  * than replacing multiple found instances
+					 */
+					$templates->cache[$script['template_name']] =
+						substr($templates->cache[$script['template_name']], 0, $find_top_pos + strlen($script['find_top'])) .
+						$insert_top .
+						substr($templates->cache[$script['template_name']], $find_top_pos + strlen($script['find_top']), $find_bottom_pos - ($find_top_pos + strlen($script['find_top']))) .
+						$insert_bottom .
+						substr($templates->cache[$script['template_name']], $find_bottom_pos);
+				}
+			}
+		}
+	}
+}
+
+/**
  * add the appropriate hooks and caches any templates that will be used
  *
  * @return void
@@ -187,7 +376,7 @@ function asb_initialize()
 	$templatelist .= ',asb_begin,asb_end,asb_sidebox_column,asb_wrapped_sidebox,asb_toggle_icon,asb_content_pad,asb_expander' . $template_list;
 }
 
-/*
+/**
  * add a check box to the User CP under Other Options to toggle the side boxes
  *
  * @return void
@@ -231,7 +420,7 @@ EOF;
     $templates->cache['usercp_options'] = str_replace($find, $usercp_option, $templates->cache['usercp_options']);
 }
 
-/*
+/**
  * handle the AJAX refresh for side box modules (replacing asb/xmlhttp.php)
  *
  * @return void
@@ -249,12 +438,12 @@ function asb_xmlhttp()
 	require_once MYBB_ROOT . 'inc/plugins/asb/classes/xmlhttp.php';
 
 	// attempt to load the module and side box requested
-	$module = new Addon_type($mybb->input['addon']);
-	$sidebox = new Sidebox($mybb->input['id']);
+	$module = new SideboxExternalModule($mybb->input['addon']);
+	$sidebox = new SideboxObject($mybb->input['id']);
 
 	// we need both objects to continue
-	if ($module->is_valid() &&
-		$sidebox->is_valid()) {
+	if ($module->isValid() &&
+		$sidebox->isValid()) {
 		// then call the module's AJAX method and echo its return value
 		echo($module->do_xmlhttp($mybb->input['dateline'], $sidebox->get('settings'), $mybb->input['width'], $mybb->input['script']));
 	}

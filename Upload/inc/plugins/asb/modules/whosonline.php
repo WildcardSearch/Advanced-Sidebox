@@ -13,10 +13,10 @@ if (!defined('IN_MYBB') ||
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
-/*
+/**
  * provide info to ASB about the addon
  *
- * @return array the module info
+ * @return array module info
  */
 function asb_whosonline_info()
 {
@@ -40,7 +40,7 @@ function asb_whosonline_info()
 				"title" => $lang->asb_show_avatars_title,
 				"description" => $lang->asb_show_avatars_desc,
 				"optionscode" => 'yesno',
-				"value" => '1'
+				"value" => '1',
 			),
 			"asb_avatar_per_row" => array(
 				"sid" => 'NULL',
@@ -48,7 +48,7 @@ function asb_whosonline_info()
 				"title" => $lang->asb_wol_num_avatars_per_row_title,
 				"description" => $lang->asb_wol_num_avatars_per_row_desc,
 				"optionscode" => 'text',
-				"value" => '4'
+				"value" => '4',
 			),
 			"asb_avatar_max_rows" => array(
 				"sid" => 'NULL',
@@ -56,7 +56,7 @@ function asb_whosonline_info()
 				"title" => $lang->asb_wol_avatar_max_rows_title,
 				"description" => $lang->asb_wol_avatar_max_rows_desc,
 				"optionscode" => 'text',
-				"value" => '3'
+				"value" => '3',
 			),
 			"asb_avatar_maintain_aspect" => array(
 				"sid" => 'NULL',
@@ -64,7 +64,7 @@ function asb_whosonline_info()
 				"title" => $lang->asb_wol_avatar_maintain_aspect_title,
 				"description" => $lang->asb_wol_avatar_maintain_aspect_desc,
 				"optionscode" => 'yesno',
-				"value" => '0'
+				"value" => '0',
 			),
 			"xmlhttp_on" => array(
 				"sid" => 'NULL',
@@ -72,7 +72,7 @@ function asb_whosonline_info()
 				"title" => $lang->asb_xmlhttp_on_title,
 				"description" => $lang->asb_xmlhttp_on_description,
 				"optionscode" => 'text',
-				"value" => '0'
+				"value" => '0',
 			)
 		),
 		"templates" => array(
@@ -113,15 +113,15 @@ EOF
 <td><a href="{\$mybb->settings[\'bburl\']}/online.php" title="{\$lang->asb_wol_see_all_title}"><img style="{\$avatar_style}" src="{\$mybb->settings[\'bburl\']}/inc/plugins/asb/images/see_all.gif" alt="{\$lang->asb_wol_see_all_alt}" title="{\$lang->asb_wol_see_all_title}" width="{\$avatar_width}px"/></a></td>
 EOF
 			),
-		)
+		),
 	);
 }
 
-/*
+/**
  * handles display of children of this addon at page load
  *
- * @param array the specific information from the child box
- * @return bool true on success, false on fail/no content
+ * @param  array info from child box
+ * @return bool success/fail
  */
 function asb_whosonline_build_template($args)
 {
@@ -149,10 +149,10 @@ EOF;
 	}
 }
 
-/*
+/**
  * handles display of children of this addon via AJAX
  *
- * @param array the specific information from the child box
+ * @param  array information from child box
  * @return void
  */
 function asb_whosonline_xmlhttp($args)
@@ -166,13 +166,12 @@ function asb_whosonline_xmlhttp($args)
 	return 'nochange';
 }
 
-/*
+/**
  * get the members currently online
  *
- * @param array individual side box settings passed to the module
- * @param int the width of the column in which the child is positioned
- * @return mixed a (string) containing the HTML side box markup or
- * (bool) false on fail/no content
+ * @param  array settings
+ * @param  int column width
+ * @return string|bool html or false
  */
 function asb_whosonline_get_online_members($settings, $width)
 {

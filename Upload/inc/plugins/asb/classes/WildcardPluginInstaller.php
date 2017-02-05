@@ -11,87 +11,87 @@
 
 class WildcardPluginInstaller
 {
-	/*
-	 * @const  version
+	/**
+	 * @const version
 	 */
-	const VERSION = '1.2';
+	const VERSION = '1.2.1';
 
-	/*
+	/**
 	 * @var object a copy of the MyBB db object
 	 */
 	private $db;
 
-	/*
+	/**
 	 * @var array the table data
 	 */
 	protected $tables = array();
 
-	/*
+	/**
 	 * @var array the table names
 	 */
-	protected $table_names = array();
+	protected $tableNames = array();
 
-	/*
+	/**
 	 * @var array the column data
 	 */
 	protected $columns = array();
 
-	/*
+	/**
 	 * @var array the settings data
 	 */
 	protected $settings = array();
 
-	/*
+	/**
 	 * @var array the setting names
 	 */
-	protected $setting_names = array();
+	protected $settingNames = array();
 
-	/*
+	/**
 	 * @var array the setting group data
 	 */
 	protected $settinggroups = array();
 
-	/*
+	/**
 	 * @var array the setting group names
 	 */
-	protected $settinggroup_names = array();
+	protected $settingGroupNames = array();
 
-	/*
+	/**
 	 * @var array the template data
 	 */
 	protected $templates = array();
 
-	/*
+	/**
 	 * @var array the template names
 	 */
-	protected $template_names = array();
+	protected $templateNames = array();
 
-	/*
+	/**
 	 * @var array the template group data
 	 */
 	protected $templategroups = array();
 
-	/*
+	/**
 	 * @var array the template group names
 	 */
-	protected $templategroup_names = array();
+	protected $templategroupNames = array();
 
-	/*
+	/**
 	 * @var array the template data
 	 */
-	protected $style_sheets = array();
+	protected $styleSheets = array();
 
-	/*
+	/**
 	 * @var array the template names
 	 */
-	protected $style_sheet__names = array();
+	protected $styleSheetNames = array();
 
-	/*
+	/**
 	 * @var array the image data
 	 */
 	protected $images = array();
 
-	/*
+	/**
 	 * load the installation data and prepare for anything
 	 *
 	 * @param  string path to the install data
@@ -106,7 +106,7 @@ class WildcardPluginInstaller
 
 		global $lang, $db;
 		require_once $path;
-		foreach (array('tables', 'columns', 'settings', 'templates', 'images', 'style_sheets') as $key) {
+		foreach (array('tables', 'columns', 'settings', 'templates', 'images', 'styleSheets') as $key) {
 			if (!is_array($$key) ||
 				empty($$key)) {
 				continue;
@@ -114,25 +114,25 @@ class WildcardPluginInstaller
 
 			$this->$key = $$key;
 			switch ($key) {
-			case 'style_sheets':
+			case 'styleSheets':
 				// stylesheets need the extension appended
-				foreach (array_keys($style_sheets) as $name) {
-					$this->style_sheet_names[] = $name . '.css';
+				foreach (array_keys($styleSheets) as $name) {
+					$this->styleSheetNames[] = $name . '.css';
 				}
 				break;
 			case 'settings':
-				$this->settinggroup_names = array_keys($settings);
+				$this->settingGroupNames = array_keys($settings);
 				foreach ($settings as $group => $info) {
 					foreach ($info['settings'] as $name => $setting) {
-						$this->setting_names[] = $name;
+						$this->settingNames[] = $name;
 					}
 				}
 				break;
 			case 'templates':
-				$this->templategroup_names = array_keys($templates);
+				$this->templategroupNames = array_keys($templates);
 				foreach ($templates as $group => $info) {
 					foreach ($info['templates'] as $name => $template) {
-						$this->template_names[] = $name;
+						$this->templateNames[] = $name;
 					}
 				}
 				break;
@@ -141,7 +141,7 @@ class WildcardPluginInstaller
 				break;
 			default:
 				$singular = substr($key, 0, strlen($key) - 1);
-				$property = "{$singular}_names";
+				$property = "{$singular}Names";
 				$this->$property = array_keys($$key);
 				break;
 			}
@@ -151,46 +151,46 @@ class WildcardPluginInstaller
 		$this->db = $db;
 	}
 
-	/*
+	/**
 	 * install all the elements stored in the installation data file
 	 *
 	 * @return void
 	 */
 	public function install()
 	{
-		$this->add_tables();
-		$this->add_columns();
-		$this->add_settings();
-		$this->add_templates();
-		$this->add_style_sheets();
-		$this->add_images();
+		$this->addTables();
+		$this->addColumns();
+		$this->addSettings();
+		$this->addTemplates();
+		$this->addStyleSheets();
+		$this->addImages();
 	}
 
-	/*
+	/**
 	 * uninstall all elements as provided in the install data
 	 *
 	 * @return void
 	 */
 	public function uninstall()
 	{
-		$this->remove_tables();
-		$this->remove_columns();
-		$this->remove_('settinggroups', 'name', $this->settinggroup_names);
-		$this->remove_('settings', 'name', $this->setting_names);
-		$this->remove_('templategroups', 'prefix', $this->templategroup_names);
-		$this->remove_('templates', 'title', $this->template_names);
-		$this->remove_style_sheets();
+		$this->removeTables();
+		$this->removeColumns();
+		$this->remove('settinggroups', 'name', $this->settingGroupNames);
+		$this->remove('settings', 'name', $this->settingNames);
+		$this->remove('templategroups', 'prefix', $this->templategroupNames);
+		$this->remove('templates', 'title', $this->templateNames);
+		$this->removeStyleSheets();
 		rebuild_settings();
 	}
 
-	/*
+	/**
 	 * create a correctly collated table from an array of options
 	 *
 	 * @param  string table name without prefix
 	 * @param  array the columns
 	 * @return void
 	 */
-	private function add_table($table, $columns)
+	private function addTable($table, $columns)
 	{
 		static $collation;
 		if (!isset($collation) ||
@@ -200,26 +200,26 @@ class WildcardPluginInstaller
 		}
 
 		// build the column list
-		$sep = $column_list = '';
+		$sep = $columnList = '';
 		foreach ($columns as $title => $definition) {
-			$column_list .= "{$sep}{$title} {$definition}";
+			$columnList .= "{$sep}{$title} {$definition}";
 			$sep = ',';
 		}
 
 		// create the table if it doesn't already exist
-		if (!$this->table_exists($table)) {
+		if (!$this->tableExists($table)) {
 			$table =  TABLE_PREFIX . $table;
-			$this->db->write_query("CREATE TABLE {$table} ({$column_list}) ENGINE={$this->db->table_type}{$collation};");
+			$this->db->write_query("CREATE TABLE {$table} ({$columnList}) ENGINE={$this->db->table_type}{$collation};");
 		}
 	}
 
-	/*
+	/**
 	 * create multiple tables from stored info
 	 *
 	 * @param  array database tables and their columns
 	 * @return void
 	 */
-	public function add_tables()
+	public function addTables()
 	{
 		if (!is_array($this->tables) ||
 			empty($this->tables)) {
@@ -227,66 +227,66 @@ class WildcardPluginInstaller
 		}
 
 		foreach ($this->tables as $table => $columns) {
-			if ($this->table_exists($table)) {
+			if ($this->tableExists($table)) {
 				// if it already exists, just check that all the columns are present (and add them if not)
-				$this->add_columns(array($table => $columns));
+				$this->addColumns(array($table => $columns));
 			} else {
-				$this->add_table($table, $columns);
+				$this->addTable($table, $columns);
 			}
 		}
 	}
 
-	/*
+	/**
 	 * drop multiple database tables
 	 *
 	 * @return void
 	 */
-	public function remove_tables()
+	public function removeTables()
 	{
-		if (!is_array($this->table_names) ||
-			empty($this->table_names)) {
+		if (!is_array($this->tableNames) ||
+			empty($this->tableNames)) {
 			return;
 		}
 
-		$drop_list = implode(', ' . TABLE_PREFIX, $this->table_names);
-		$this->db->drop_table($drop_list);
+		$dropList = implode(', ' . TABLE_PREFIX, $this->tableNames);
+		$this->db->drop_table($dropList);
 	}
 
-	/*
+	/**
 	 * add columns in the list to a table (if they do not already exist)
 	 *
-	 * @param array tables and columns
+	 * @param  array tables and columns
 	 * @return void
 	 */
-	public function add_columns($columns = '')
+	public function addColumns($columns = '')
 	{
 		if (!is_array($columns) ||
 			empty($columns)) {
 			$columns = $this->columns;
 		}
 
-		foreach ($columns as $table => $all_columns) {
-			$sep = $added_columns = '';
-			foreach ($all_columns as $title => $definition) {
-				if (!$this->field_exists($table, $title)) {
-					$added_columns .= "{$sep}{$title} {$definition}";
+		foreach ($columns as $table => $allColumns) {
+			$sep = $addedColumns = '';
+			foreach ($allColumns as $title => $definition) {
+				if (!$this->fieldExists($table, $title)) {
+					$addedColumns .= "{$sep}{$title} {$definition}";
 					$sep = ', ADD ';
 				}
 			}
-			if (strlen($added_columns) > 0) {
+			if (strlen($addedColumns) > 0) {
 				// trickery, again
-				$this->db->add_column($table, $added_columns, '');
+				$this->db->add_column($table, $addedColumns, '');
 			}
 		}
 	}
 
-	/*
+	/**
 	 * drop multiple listed columns
 	 *
-	 * @param array an associative array of tables and columns
+	 * @param  array tables and columns
 	 * @return void
 	 */
-	public function remove_columns()
+	public function removeColumns()
 	{
 		if (!is_array($this->columns) ||
 			empty($this->columns)) {
@@ -294,34 +294,34 @@ class WildcardPluginInstaller
 		}
 
 		foreach ($this->columns as $table => $columns) {
-			$sep = $dropped_columns = '';
+			$sep = $droppedColumns = '';
 			foreach ($columns as $title => $definition) {
-				if ($this->field_exists($table, $title)) {
-					$dropped_columns .= "{$sep}{$title}";
+				if ($this->fieldExists($table, $title)) {
+					$droppedColumns .= "{$sep}{$title}";
 					$sep = ', DROP ';
 				}
 			}
-			if (strlen($dropped_columns) > 0) {
+			if (strlen($droppedColumns) > 0) {
 				// tricky, tricky xD
-				$result = $this->db->drop_column($table, $dropped_columns);
+				$result = $this->db->drop_column($table, $droppedColumns);
 			}
 		}
 	}
 
-	/*
+	/**
 	 * create multiple setting groups
 	 *
-	 * @param  array an associative array of setting groups
+	 * @param  array setting groups
 	 * @return array setting groups and gids
 	 */
-	private function add_settinggroups($groups)
+	private function addSettingGroups($groups)
 	{
 		if (!is_array($groups) ||
 			empty($groups)) {
 			return false;
 		}
 
-		$insert_array = $gids = array();
+		$insertArray = $gids = array();
 		foreach ($groups as $name => $group) {
 			$query = $this->db->simple_select('settinggroups', 'gid', "name='{$name}'");
 			if ($this->db->num_rows($query) > 0) {
@@ -336,13 +336,13 @@ class WildcardPluginInstaller
 		return $gids;
 	}
 
-	/*
+	/**
 	 * create settings from an array
 	 *
-	 * @param  array an associative array of groups and settings
+	 * @param  array groups and settings
 	 * @return void
 	 */
-	public function add_settings()
+	public function addSettings()
 	{
 		if (!is_array($this->settings) ||
 			empty($this->settings)) {
@@ -350,10 +350,10 @@ class WildcardPluginInstaller
 		}
 
 		foreach ($this->settings as $group => $data) {
-			$gids = $this->add_settinggroups(array($group => $data['group']));
+			$gids = $this->addSettingGroups(array($group => $data['group']));
 			$gid = $gids[$group];
 
-			$insert_array = array();
+			$insertArray = array();
 			foreach ($data['settings'] as $name => $setting) {
 				$setting['gid'] = $gid;
 				// does the setting already exist?
@@ -365,29 +365,29 @@ class WildcardPluginInstaller
 					unset($setting['value']);
 					$this->db->update_query('settings', $setting, "name='{$name}'");
 				} else {
-					$insert_array[] = $setting;
+					$insertArray[] = $setting;
 				}
 			}
-			if (!empty($insert_array)) {
-				$this->db->insert_query_multiple('settings', $insert_array);
+			if (!empty($insertArray)) {
+				$this->db->insert_query_multiple('settings', $insertArray);
 			}
 		}
 		rebuild_settings();
 	}
 
-	/*
+	/**
 	 * create or update the template groups stored in the object
 	 *
 	 * @return void
 	 */
-	public function add_template_groups()
+	public function addTemplateGroups()
 	{
 		if (!is_array($this->templates) ||
 			empty($this->templates)) {
 			return;
 		}
 
-		$insert_array = $update_array = array();
+		$insertArray = $update_array = array();
 
 		foreach ($this->templates as $prefix => $data) {
 			$query = $this->db->simple_select('templategroups', 'gid', "prefix='{$prefix}'");
@@ -395,35 +395,35 @@ class WildcardPluginInstaller
 				$gid = (int) $this->db->fetch_field($query, 'gid');
 				$this->db->update_query('templategroups', $data['group'], "gid='{$gid}'");
 			} else {
-				$insert_array[] = $data['group'];
+				$insertArray[] = $data['group'];
 			}
 		}
 
-		if (!empty($insert_array)) {
-			$this->db->insert_query_multiple('templategroups', $insert_array);
+		if (!empty($insertArray)) {
+			$this->db->insert_query_multiple('templategroups', $insertArray);
 		}
 	}
 
-	/*
+	/**
 	 * create multiple templates from stored info
 	 *
 	 * @return void
 	 */
-	public function add_templates()
+	public function addTemplates()
 	{
 		if (!is_array($this->templates) ||
 			empty($this->templates)) {
 			return;
 		}
 
-		$this->add_template_groups();
+		$this->addTemplateGroups();
 
-		$insert_array = array();
+		$insertArray = array();
 		foreach ($this->templates as $group => $data) {
 			foreach ($data['templates'] as $title => $template) {
 				$title = $this->db->escape_string($title);
 				$template = $this->db->escape_string($template);
-				$template_array = array(
+				$templateArray = array(
 					"title" => $title,
 					"template" => $template,
 					"sid" => -2,
@@ -434,32 +434,32 @@ class WildcardPluginInstaller
 				$query = $this->db->simple_select('templates', 'tid', "title='{$title}' AND sid IN('-2', '-1')");
 				if ($this->db->num_rows($query) > 0) {
 					$tid = (int) $this->db->fetch_field($query, 'tid');
-					$this->db->update_query('templates', $template_array, "tid='{$tid}'");
+					$this->db->update_query('templates', $templateArray, "tid='{$tid}'");
 				} else {
-					$insert_array[] = $template_array;
+					$insertArray[] = $templateArray;
 				}
 			}
 		}
 
-		if (!empty($insert_array)) {
-			$this->db->insert_query_multiple('templates', $insert_array);
+		if (!empty($insertArray)) {
+			$this->db->insert_query_multiple('templates', $insertArray);
 		}
 	}
 
-	/*
+	/**
 	 * add any listed style sheets
 	 *
 	 * @return void
 	 */
-	public function add_style_sheets()
+	public function addStyleSheets()
 	{
-		if (!is_array($this->style_sheets) ||
-			empty($this->style_sheets)) {
+		if (!is_array($this->styleSheets) ||
+			empty($this->styleSheets)) {
 			return;
 		}
 
 		global $config;
-		foreach ($this->style_sheets as $name => $data) {
+		foreach ($this->styleSheets as $name => $data) {
 			$attachedto = $data['attachedto'];
 			if (is_array($data['attachedto'])) {
 				$attachedto = array();
@@ -477,7 +477,7 @@ class WildcardPluginInstaller
 			}
 
 			$name = $this->db->escape_string($name) . '.css';
-			$stylesheet = array(
+			$styleSheet = array(
 				'name' => $name,
 				'tid' => 1,
 				'attachedto' => $this->db->escape_string($attachedto),
@@ -488,75 +488,77 @@ class WildcardPluginInstaller
 
 			// update any children
 			$this->db->update_query('themestylesheets', array(
-				"attachedto" => $stylesheet['attachedto']
+				"attachedto" => $styleSheet['attachedto']
 			), "name='{$name}'");
 
 			// now update/insert the master stylesheet
-			$query = $this->db->simple_select('themestylesheets', 'sid', "tid='1' AND cachefile='{$name}'");
+			$query = $this->db->simple_select('themestylesheets', 'sid', "tid='1' AND name='{$name}'");
 			$sid = (int) $this->db->fetch_field($query, 'sid');
 
 			if ($sid) {
-				$this->db->update_query('themestylesheets', $stylesheet, "sid='{$sid}'");
+				$this->db->update_query('themestylesheets', $styleSheet, "sid='{$sid}'");
 			} else {
-				$sid = $this->db->insert_query('themestylesheets', $stylesheet);
-				$stylesheet['sid'] = (int) $sid;
+				$sid = $this->db->insert_query('themestylesheets', $styleSheet);
+				$styleSheet['sid'] = (int) $sid;
 			}
 
 			// now cache the actual files
 			require_once MYBB_ROOT . "{$config['admin_dir']}/inc/functions_themes.php";
-			cache_stylesheet(1, $data['cachefile'], $data['stylesheet']);
 
-			// and update the list
-			update_theme_stylesheet_list(1);
+			if(!cache_stylesheet(1, $data['cachefile'], $data['stylesheet']))
+			{
+				$this->db->update_query("themestylesheets", array('cachefile' => "css.php?stylesheet={$sid}"), "sid='{$sid}'", 1);
+			}
+
+			// and update the CSS file list
+			update_theme_stylesheet_list(1, false, true);
 		}
 	}
 
-	/*
-	 * remove_style_sheets()
-	 *
+	/**
 	 * completely remove any style sheets in install_data.php
 	 *
-	 * @return: n/a
+	 * @return void
 	 */
-	public function remove_style_sheets()
+	public function removeStyleSheets()
 	{
-		if (empty($this->style_sheet_names) ||
-			!is_array($this->style_sheet_names)) {
+		if (empty($this->styleSheetNames) ||
+			!is_array($this->styleSheetNames)) {
 			return;
 		}
 
 		global $config;
 
 		// get a list and form the WHERE clause
-		$ss_list = "'" . implode("','", $this->style_sheet_names) . "'";
-		$where = "name={$ss_list}";
-		if (count($this->style_sheet_names) > 1) {
-			$where = "name IN({$ss_list})";
+		$styleSheetList = "'" . implode("','", $this->styleSheetNames) . "'";
+		$where = "name={$styleSheetList}";
+		if (count($this->styleSheetNames) > 1) {
+			$where = "name IN({$styleSheetList})";
 		}
 
 		// find the master and any children
 		$query = $this->db->simple_select('themestylesheets', 'tid,name', $where);
 
 		// delete them all from the server
-		while ($stylesheet = $this->db->fetch_array($query)) {
-			@unlink(MYBB_ROOT."cache/themes/{$stylesheet['tid']}_{$stylesheet['name']}");
-			@unlink(MYBB_ROOT."cache/themes/theme{$stylesheet['tid']}/{$stylesheet['name']}");
+		while ($styleSheet = $this->db->fetch_array($query)) {
+			@unlink(MYBB_ROOT."cache/themes/{$styleSheet['tid']}_{$styleSheet['name']}");
+			@unlink(MYBB_ROOT."cache/themes/theme{$styleSheet['tid']}/{$styleSheet['name']}");
 		}
 
 		// then delete them from the database
 		$this->db->delete_query('themestylesheets', $where);
 
-		// now remove them from the list
+		// now remove them from the CSS file list
 		require_once MYBB_ROOT . "{$config['admin_dir']}/inc/functions_themes.php";
-		update_theme_stylesheet_list(1);
+		update_theme_stylesheet_list(1, false, true);
 	}
 
-	/*
+	/**
 	 * copy default images to each theme
 	 *
 	 * @return void
 	 */
-	public function add_images()
+	public function addImages()
 	{
 		if (!is_array($this->images) ||
 		   empty($this->images) ||
@@ -565,10 +567,10 @@ class WildcardPluginInstaller
 		}
 
 		// if there is a sub-folder for images, make sure it has a trailing slash
-		$main_folder = $this->images['folder'];
-		if ($main_folder &&
-		   !substr($main_folder, 1, 1) !== '/') {
-			$main_folder = "/{$main_folder}";
+		$mainFolder = $this->images['folder'];
+		if ($mainFolder &&
+		   !substr($mainFolder, 1, 1) !== '/') {
+			$mainFolder = "/{$mainFolder}";
 		}
 
 		// handle ACP images
@@ -587,9 +589,9 @@ class WildcardPluginInstaller
 				if (@!file_exists("{$path}/main.css") ||
 				   (!is_dir("{$path}/images") &&
 				   !mkdir("{$path}/images", 0777, true)) ||
-				   ($main_folder &&
-				    !is_dir("{$path}/images{$main_folder}") &&
-				    !mkdir("{$path}/images{$main_folder}", 0777, true))) {
+				   ($mainFolder &&
+				    !is_dir("{$path}/images{$mainFolder}") &&
+				    !mkdir("{$path}/images{$mainFolder}", 0777, true))) {
 					continue;
 				}
 
@@ -601,9 +603,9 @@ class WildcardPluginInstaller
 					}
 
 					// don't overwrite or upgrades will kill custom images
-					$full_path = MYBB_ADMIN_DIR . "/styles/{$foldername}/images{$main_folder}/{$details['folder']}{$filename}";
-					if (!file_exists($full_path)) {
-						file_put_contents($full_path, base64_decode($details['image']));
+					$fullPath = MYBB_ADMIN_DIR . "/styles/{$foldername}/images{$mainFolder}/{$details['folder']}{$filename}";
+					if (!file_exists($fullPath)) {
+						file_put_contents($fullPath, base64_decode($details['image']));
 					}
 				}
 			}
@@ -614,55 +616,55 @@ class WildcardPluginInstaller
 			global $mybb, $db;
 
 			// get all the theme folders
-			$all_dirs = array();
+			$allDirectories = array();
 			$query = $db->simple_select('themes', 'pid, properties');
 			while ($theme = $db->fetch_array($query)) {
 				$properties = unserialize($theme['properties']);
-				$all_dirs[$properties['imgdir']] = $properties['imgdir'];
+				$allDirectories[$properties['imgdir']] = $properties['imgdir'];
 			}
 
-			foreach ($all_dirs as $dir) {
+			foreach ($allDirectories as $dir) {
 				// make sure our folders exist
 				$path = MYBB_ROOT . $dir;
 				if (!is_dir($path) ||
-				   ($main_folder &&
-				    !is_dir("{$path}{$main_folder}") &&
-				    !mkdir("{$path}{$main_folder}", 0777, true))) {
+				   ($mainFolder &&
+				    !is_dir("{$path}{$mainFolder}") &&
+				    !mkdir("{$path}{$mainFolder}", 0777, true))) {
 					continue;
 				}
 
 				foreach ($this->images['forum'] as $filename => $details) {
 					// if this attribute is set, install the images in language directory
 					if ($details['lang']) {
-						$full_path = "{$path}/{$mybb->settings['bblanguage']}/{$filename}";
+						$fullPath = "{$path}/{$mybb->settings['bblanguage']}/{$filename}";
 					} else {
 						// if there is a sub-folder ensure that it has a trailing slash
 						if ($details['folder'] &&
 							substr($details['folder'], strlen($details['folder']) - 1, 1) != '/') {
 							$details['folder'] .= '/';
 						}
-						$full_path = "{$path}{$main_folder}/{$details['folder']}{$filename}";
+						$fullPath = "{$path}{$mainFolder}/{$details['folder']}{$filename}";
 					}
 
 					// don't overwrite or upgrades will kill custom images
-					if (!file_exists($full_path)) {
-						file_put_contents($full_path, base64_decode($details['image']));
+					if (!file_exists($fullPath)) {
+						file_put_contents($fullPath, base64_decode($details['image']));
 					}
 				}
 			}
 		}
 	}
 
-	/*
-	 * removed rows from a named table when values of the named column
-	 * are matched with members of the list
+	/**
+	 * removed rows from a named table when values of the
+	 * named column are matched with members of the list
 	 *
 	 * @param  string table name without prefix
 	 * @param  string field name
 	 * @param  array string values
 	 * @return void
 	 */
-	private function remove_($table, $field, $list)
+	private function remove($table, $field, $list)
 	{
 		if (!is_array($list)) {
 			$list = array($list);
@@ -672,35 +674,35 @@ class WildcardPluginInstaller
 			return;
 		}
 
-		if ($this->table_exists($table) &&
-			$this->field_exists($table, $field)) {
+		if ($this->tableExists($table) &&
+			$this->fieldExists($table, $field)) {
 			$delete_list = "'" . implode("','", $list) . "'";
 			$this->db->delete_query($table, "{$field} IN ({$delete_list})");
 		}
 	}
 
-	/*
+	/**
 	 * verify the existence of named table
 	 *
 	 * @param  string table name without prefix
 	 * @return bool true if it exists, false if not
 	 */
-	public function table_exists($table)
+	public function tableExists($table)
 	{
-		static $table_list;
+		static $tableList;
 
-		if (!isset($table_list)) {
-			$table_list = $this->build_table_list();
+		if (!isset($tableList)) {
+			$tableList = $this->buildTableList();
 		}
-		return isset($table_list[$this->db->table_prefix . $table]);
+		return isset($tableList[$this->db->table_prefix . $table]);
 	}
 
-	/*
+	/**
 	 * build an array of all the tables in the current database
 	 *
 	 * @return array keys for the table names and 1 for the values
 	 */
-	private function build_table_list()
+	private function buildTableList()
 	{
 		global $config;
 
@@ -709,45 +711,45 @@ class WildcardPluginInstaller
 			FROM `{$config['database']['database']}`
 		");
 
-		$table_list = array();
+		$tableList = array();
 		while ($row = $this->db->fetch_array($query)) {
-			$table_list[array_pop($row)] = 1;
+			$tableList[array_pop($row)] = 1;
 		}
-		return $table_list;
+		return $tableList;
 	}
 
-	/*
+	/**
 	 * verify the existence of the named column of the named table
 	 *
 	 * @param  string table name without prefix
 	 * @param  string field name
 	 * @return bool true if it exists/false if not
 	 */
-	public function field_exists($table, $field)
+	public function fieldExists($table, $field)
 	{
-		static $field_list;
+		static $fieldList;
 
-		if (!isset($field_list[$table])) {
-			$field_list[$table] = $this->build_field_list($table);
+		if (!isset($fieldList[$table])) {
+			$fieldList[$table] = $this->buildFieldList($table);
 		}
-		return isset($field_list[$table][$field]);
+		return isset($fieldList[$table][$field]);
 	}
 
-	/*
+	/**
 	 * build an array of all the columns of the named table
 	 *
 	 * @param  string table name without prefix
 	 * @return array keys for the field names and 1 for the values
 	 */
-	private function build_field_list($table)
+	private function buildFieldList($table)
 	{
-		$field_list = array();
+		$fieldList = array();
 
-		$field_info = $this->db->show_fields_from($table);
-		foreach ($field_info as $info) {
-			$field_list[$info['Field']] = 1;
+		$fieldInfo = $this->db->show_fields_from($table);
+		foreach ($fieldInfo as $info) {
+			$fieldList[$info['Field']] = 1;
 		}
-		return $field_list;
+		return $fieldList;
 	}
 }
 

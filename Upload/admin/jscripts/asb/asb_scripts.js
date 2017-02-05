@@ -7,12 +7,12 @@
  */
 
 var ASB = (function(a, $) {
-	var current = '',
+	var current = "",
 		lang = {
-			nothing_found: 'nothing found',
-			hooks: 'hooks',
-			actions: 'actions',
-			templates: 'templates',
+			nothing_found: "nothing found",
+			hooks: "hooks",
+			actions: "actions",
+			templates: "templates",
 		};
 
 	/**
@@ -31,20 +31,20 @@ var ASB = (function(a, $) {
 		new Peeker($(".replace_all"), $("#footer_search"), /0/, true);
 
 		// if we are eval()ing, hide all the inputs that are unnecessary
-		new Peeker($(".eval"), $("#template_row "), /0/, true);
+		new Peeker($(".eval"), $("#template_row"), /0/, true);
 		new Peeker($(".eval"), $("#header_search"), /0/, true);
 		new Peeker($(".eval"), $("#footer_search"), /0/, true);
 		new Peeker($(".eval"), $("#replace_all"), /0/, true);
 		new Peeker($(".eval"), $("#replace_content"), /0/, true);
 
-		if ($('#replace_all_yes').prop("checked")) {
+		if ($("#replace_all_yes").prop("checked")) {
 			$("#header_search").hide();
 			$("#footer_search").hide();
 		} else {
 			$("#replace_content").hide();
 		}
 
-		if ($('#eval_yes').prop("checked")) {
+		if ($("#eval_yes").prop("checked")) {
 			$("#header_search").hide();
 			$("#footer_search").hide();
 			$("#template_row").hide();
@@ -52,7 +52,7 @@ var ASB = (function(a, $) {
 			$("#replace_content").hide();
 		}
 
-		// watch the 'detected' selectors and send the chosen
+		// watch the "detected" selectors and send the chosen
 		// item to the appropriate text box
 		observeInputs();
 
@@ -61,50 +61,50 @@ var ASB = (function(a, $) {
 		 * attempt to detect hooks, template and URL attributes
 		 * (page, action)and display them as selectable lists
 		 */
-		$('#filename').blur(update);
+		$("#filename").blur(update);
 	}
 
 	/**
 	 * show the spinners and launch the detection request
 	 *
-	 * @param Event the blur event object
+	 * @param  Event the blur event object
 	 * @return void
 	 */
 	function update(event) {
 		// if nothing has changed, get out
 		if (this.value == current ||
-			this.value == '') {
+			this.value == "") {
 			return;
 		}
 
 		// otherwise, update the current script
 		current = this.value;
 
-		// hide the 'detected' selectors
-		$('#hook_list').hide();
-		$('#template_list').hide();
-		$('#action_list').hide();
+		// hide the "detected" selectors
+		$("#hook_list").hide();
+		$("#template_list").hide();
+		$("#action_list").hide();
 
 		// show all the spinners
-		$('div.ajax_spinners').show();
+		$("div.ajax_spinners").show();
 
 		$.ajax({
-			type: 'post',
-			url: 'index.php',
+			type: "post",
+			url: "index.php",
 			data: {
-				module: 'config-asb',
-				action: 'xmlhttp',
-				mode: 'analyze_script',
+				module: "config-asb",
+				action: "xmlhttp",
+				mode: "analyze_script",
 				filename: this.value,
 				selected: {
-					hook: $('#hook').val(),
-					template: $('#template_name').val(),
-					action: $('#action').val(),
+					hook: $("#hook").val(),
+					template: $("#template_name").val(),
+					action: $("#action").val(),
 				},
 			},
 			success: showResults,
 			error: function(jqXHR, textStatus, errorThrown) {
-				alert('error' +
+				alert("error" +
 					"\n\n" +
 					textStatus +
 					"\n\n" +
@@ -116,12 +116,12 @@ var ASB = (function(a, $) {
 	/**
 	 * hide the spinners and build the select elements
 	 *
-	 * @param Response the XMLHTTP response object
+	 * @param  Response the XMLHTTP response object
 	 * @return void
 	 */
 	function showResults(info) {
 		// hide all the spinners
-		$('div.ajax_spinners').hide();
+		$("div.ajax_spinners").hide();
 
 		// any response at all means something to show
 		if (!info) {
@@ -133,18 +133,18 @@ var ASB = (function(a, $) {
 		 * show detected items or a message that there
 		 * was nothing to show
 		 */
-		$.each(['hook', 'template', 'action'], function(i, k) {
+		$.each(["hook", "template", "action"], function(i, k) {
 			// make the plural version
-			var ks = k + 's',
+			var ks = k + "s",
 				// the no content message
-				html = '<span style="font-style: italic;">' + lang.nothing_found.replace('{1}', lang[ks]) + '</span>';
+				html = '<span style="font-style: italic;">' + lang.nothing_found.replace("{1}", lang[ks]) + "</span>";
 
 			// if there is info...
 			if (info[ks]) {
 				// ...overwrite the no content message
 				html = info[ks];
 			}
-			$('#' + k + '_list').html(html).show();
+			$("#" + k + "_list").html(html).show();
 		});
 
 		// re-do our observation of the selectors now that they have been rebuilt
@@ -154,37 +154,37 @@ var ASB = (function(a, $) {
 	/**
 	 * insert the chosen item from the select elements into the appropriate input
 	 *
-	 * @param Response the XMLHTTP response object
+	 * @param  Response the XMLHTTP response object
 	 * @return void
 	 */
 	function observeInputs() {
-		if ($('#hook_selector')) {
-			$('#hook_selector').change(function(event) {
+		if ($("#hook_selector")) {
+			$("#hook_selector").change(function(event) {
 				var val = this.value;
 				if (val == 0) {
-					val = '';
+					val = "";
 				}
-				$('#hook').val(val);
+				$("#hook").val(val);
 			});
 		}
 
-		if ($('#template_selector')) {
-			$('#template_selector').change(function(event) {
+		if ($("#template_selector")) {
+			$("#template_selector").change(function(event) {
 				var val = this.value;
 				if (val == 0) {
-					val = '';
+					val = "";
 				}
-				$('#template_name').val(val);
+				$("#template_name").val(val);
 			});
 		}
 
-		if ($('#action_selector')) {
-			$('#action_selector').change(function(event) {
+		if ($("#action_selector")) {
+			$("#action_selector").change(function(event) {
 				var val = this.value;
 				if (val == 0) {
-					val = '';
+					val = "";
 				}
-				$('#action').val(val);
+				$("#action").val(val);
 			});
 		}
 	}
@@ -193,11 +193,11 @@ var ASB = (function(a, $) {
 	 * store the script currently being edited and
 	 * get the local language
 	 *
-	 * @param String the current file name
+	 * @param  String the current file name
 	 * @return void
 	 */
 	function setup(value, language) {
-		current = value || '';
+		current = value || "";
 		$.extend(lang, language || {});
 	}
 

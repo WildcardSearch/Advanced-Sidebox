@@ -41,11 +41,11 @@ var ASB = (function(a, $) {
 		// set up the container
 		this.container = $("#" + container);
 		this.container.css({
-			width: this.options.size + 'px',
-			height: this.startHeight + 'px',
-			marginLeft: 'auto',
-			marginRight: 'auto',
-			position: 'relative',
+			width: this.options.size + "px",
+			height: this.startHeight + "px",
+			marginLeft: "auto",
+			marginRight: "auto",
+			position: "relative",
 		});
 
 		// no images, no have slide show
@@ -62,13 +62,13 @@ var ASB = (function(a, $) {
 		}
 
 		// create the main image holder, set it up and insert it into the container
-		this.mainImage = $('<img/>', {
+		this.mainImage = $("<img/>", {
 			src: this.getCurrentImage(),
 		}).css({
-			display: 'none',
-			position: 'absolute',
-			left: '0px',
-			top: '0px',
+			display: "none",
+			position: "absolute",
+			left: "0px",
+			top: "0px",
 		});
 		this.container.append(this.mainImage);
 
@@ -112,7 +112,7 @@ var ASB = (function(a, $) {
 	 */
 	function getCurrentImage() {
 		return this.options.folder ?
-				this.options.folder + '/' + this.options.images[this.current] :
+				this.options.folder + "/" + this.options.images[this.current] :
 				this.options.images[this.current];
 	}
 
@@ -148,13 +148,13 @@ var ASB = (function(a, $) {
 		 * clone the main image and display it off-screen in order to
 		 * get the correct size
 		 */
-		this.clone = $('<img/>', {
+		this.clone = $("<img/>", {
 			src: this.mainImage.prop("src"),
 		}).css({
-			position: 'absolute',
-			display: 'block',
+			position: "absolute",
+			display: "block",
 		});
-		$('body').append(this.clone);
+		$("body").append(this.clone);
 
 		this.clone.load($.proxy(this.resize, this)).each(function() {
 			if (this.complete) {
@@ -244,8 +244,8 @@ var ASB = (function(a, $) {
 	 */
 	function resizeImage(el) {
 		style = {
-			height: this.cloneHeight + 'px',
-			width: this.cloneWidth + 'px',
+			height: this.cloneHeight + "px",
+			width: this.cloneWidth + "px",
 			left: parseInt((this.options.size / 2) - (this.cloneWidth / 2)) + "px",
 			top: parseInt((this.startHeight / 2) - (this.cloneHeight / 2)) + "px",
 		};

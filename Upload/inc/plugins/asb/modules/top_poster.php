@@ -13,10 +13,10 @@ if (!defined('IN_MYBB') ||
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
-/*
+/**
  * provide info to ASB about the addon
  *
- * @return array the module info
+ * @return array module info
  */
 function asb_top_poster_info()
 {
@@ -47,35 +47,35 @@ function asb_top_poster_info()
 90={$lang->asb_top_poster_three_months_title}
 180={$lang->asb_top_poster_six_months_title}
 365={$lang->asb_top_poster_one_year_title}",
-				"value" => '1'
+				"value" => '1',
 			),
 			"max_posters" => array(
 				"name" => 'max_posters',
 				"title" => $lang->asb_top_poster_max_posters_title,
 				"description" => $lang->asb_top_poster_max_posters_desc,
 				"optionscode" => 'text',
-				"value" => '1'
+				"value" => '1',
 			),
 			"avatar_size" => array(
 				"name" => 'avatar_size',
 				"title" => $lang->asb_top_poster_avatar_size_title,
 				"description" => $lang->asb_top_poster_avatar_size_desc,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 			"group_show_list" => array(
 				"name" => 'group_show_list',
 				"title" => $lang->asb_group_show_list_title,
 				"description" => $lang->asb_group_show_list_desc,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 			"group_hide_list" => array(
 				"name" => 'group_hide_list',
 				"title" => $lang->asb_group_hide_list_title,
 				"description" => $lang->asb_group_hide_list_desc,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 		),
 		"templates" => array(
@@ -128,10 +128,10 @@ EOF
 	);
 }
 
-/*
+/**
  * handles display of children of this addon at page load
  *
- * @param array the specific information from the child box
+ * @param  array info from child box
  * @return bool true on success, false on fail/no content
  */
 function asb_top_poster_build_template($args)

@@ -13,10 +13,10 @@ if (!defined('IN_MYBB') ||
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
-/*
+/**
  * provide info to ASB about the addon
  *
- * @return array the module info
+ * @return array module info
  */
 function asb_statistics_info()
 {
@@ -39,7 +39,7 @@ function asb_statistics_info()
 				"title" => $lang->asb_stats_format_usernames_title,
 				"description" => $lang->asb_stats_format_usernames_desc,
 				"optionscode" => 'yesno',
-				"value" => '0'
+				"value" => '0',
 			),
 		),
 		"templates" => array(
@@ -58,16 +58,16 @@ function asb_statistics_info()
 					</td>
 				</tr>
 EOF
-			)
-		)
+			),
+		),
 	);
 }
 
-/*
+/**
  * handles display of children of this addon at page load
  *
- * @param array the specific information from the child box
- * @return bool true on success, false on fail/no content
+ * @param  array info from child box
+ * @return bool success/fail
  */
 function asb_statistics_build_template($args)
 {

@@ -7,207 +7,110 @@
  * this file contains an object wrapper for external PHP modules
  */
 
-if(!class_exists('MalleableObject'))
-{
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/malleable.php';
-}
-
-/*
- * standard interface for external PHP modules
- *
- * can be used to wrap any external PHP module for secure loading,
- * validation and execution of its functions
- */
-interface ExternalModuleInterface
-{
-	public function load($name);
-	public function run($function_name, $args = '');
-}
-
-/*
- * a standard wrapper for external PHP routines built upon the
- * MalleableObject abstract class and abiding by ExternalModuleInterface
- */
-abstract class ExternalModule extends MalleableObject implements ExternalModuleInterface
-{
-	protected $title = '';
-	protected $description = '';
-	protected $version = 0;
-	protected $public_version = 0;
-	protected $path = '';
-	protected $prefix = '';
-	protected $base_name = '';
-
-	/*
-	 * attempt to load and validate the module
-	 *
-	 * @param string base name of the module to load
-	 * @param string fully qualified path to the modules
-	 * @return void
-	 */
-	public function __construct($module)
-	{
-		// if there is data
-		if ($module) {
-			// attempt to load it and return the results
-			$this->valid = $this->load($module);
-			return;
-		}
-		// new object
-		$this->valid = false;
-	}
-
-	/*
-	 * attempt to load the module's info
-	 *
-	 * @param string base name of the module to load
-	 *
-	 * @return bool true on success, false on fail
-	 */
-	public function load($module)
-	{
-		// good info?
-		if ($module &&
-			$this->path &&
-			$this->prefix) {
-			// store the unique name
-			$this->base_name = trim($module);
-
-			// store the info
-			$info = $this->run('info');
-			return $this->set($info);
-		}
-		return false;
-	}
-
-	/*
-	 * safely access the module's function
-	 *
-	 * @param string
-	 * @param array any data to pass to the function
-	 * @return mixed the return value of the called module function or
-	 * bool false on error
-	 */
-	public function run($function_name, $args = '')
-	{
-		$function_name = trim($function_name);
-		if ($function_name &&
-			$this->base_name &&
-			$this->path &&
-			$this->prefix) {
-			$fullpath = "{$this->path}/{$this->base_name}.php";
-			if (file_exists($fullpath)) {
-				require_once $fullpath;
-
-				$this_function = "{$this->prefix}_{$this->base_name}_{$function_name}";
-				if (function_exists($this_function)) {
-					return $this_function($args);
-				}
-			}
-		}
-		return false;
-	}
+if (!class_exists('ExternalModule')) {
+	require_once MYBB_ROOT . 'inc/plugins/asb/classes/ExternalModule.php';
 }
 
 /*
  * ExternalModule extended for add-on modules
  */
-class Addon_type extends ExternalModule
+class SideboxExternalModule extends ExternalModule
 {
-	/*
-	 * @var  string
+	/**
+	 * @var string
 	 */
 	protected $author = 'Wildcard';
 
-	/*
-	 * @var  string
+	/**
+	 * @var string
 	 */
 	protected $author_site = '';
 
-	/*
-	 * @var  string
+	/**
+	 * @var string
 	 */
 	protected $module_site = 'https://github.com/WildcardSearch/Advanced-Sidebox';
 
-	/*
-	 * @var  array
+	/**
+	 * @var array
 	 */
 	protected $settings = array();
 
-	/*
-	 * @var  bool
+	/**
+	 * @var bool
 	 */
 	public $has_settings = false;
 
-	/*
-	 * @var  array
+	/**
+	 * @var array
 	 */
 	protected $scripts = array();
 
-	/*
-	 * @var  bool
+	/**
+	 * @var bool
 	 */
 	public $has_scripts = false;
 
-	/*
-	 * @var  array
+	/**
+	 * @var array
 	 */
 	protected $templates = array();
 
-	/*
-	 * @var  bool
+	/**
+	 * @var bool
 	 */
 	public $xmlhttp = false;
 
-	/*
-	 * @var  bool
+	/**
+	 * @var bool
 	 */
 	protected $is_installed = false;
 
-	/*
-	 * @var  bool
+	/**
+	 * @var bool
 	 */
 	protected $is_upgraded = false;
 
-	/*
-	 * @var  mixed
+	/**
+	 * @var mixed
 	 */
 	protected $old_version = 0;
 
-	/*
-	 * @var  string
+	/**
+	 * @var string
 	 */
 	protected $version = '0';
 
-	/*
-	 * @var  string
+	/**
+	 * @var string
 	 */
 	protected $compatibility = '0';
 
-	/*
-	 * @var  array
+	/**
+	 * @var array
 	 */
 	protected $discarded_templates = array();
 
-	/*
-	 * @var  bool
+	/**
+	 * @var bool
 	 */
 	protected $wrap_content = false;
 
-	/*
-	 * @var  string
+	/**
+	 * @var string
 	 */
 	protected $prefix = 'asb';
 
-	/*
-	 * @var  string
+	/**
+	 * @var string
 	 */
 	protected $path = ASB_MODULES_DIR;
 
-	/*
+	/**
 	 * attempts to load a module by name.
 	 *
-	 * @return bool true on success, false on fail
+	 * @param  string base name
+	 * @return bool success/fail
 	 */
 	public function load($module)
 	{
@@ -237,9 +140,10 @@ class Addon_type extends ExternalModule
 		return true;
 	}
 
-	/*
+	/**
 	 * install templates if they exist to allow the add-on module to function correctly
 	 *
+	 * @param  bool remove install data before beginning?
 	 * @return void
 	 */
 	public function install($cleanup = true)
@@ -277,13 +181,11 @@ class Addon_type extends ExternalModule
 		}
 	}
 
-	/*
+	/**
 	 * remove any templates used by the module and clean up any boxes created
 	 * using this add-on module
 	 *
-	 * @param bool false instructs the method to leave any side boxes
-	 * that use this module behind when uninstalling. this is useful for when we want to
-	 * upgrade an add-on without losing admin's work
+	 * @param  bool leave side boxes that use this module?
 	 * @return void
 	 */
 	public function uninstall($cleanup = true)
@@ -313,7 +215,7 @@ class Addon_type extends ExternalModule
 		}
 	}
 
-	/*
+	/**
 	 * called upon add-on version change to verify module's templates/settings
 	 * discarded templates and ACP settings (from pre-1.4) are removed
 	 *
@@ -357,10 +259,10 @@ class Addon_type extends ExternalModule
 		$this->is_installed = true;
 	}
 
-	/*
+	/**
 	 * uninstalls (if necessary) and physically deletes the module from the server
 	 *
-	 * @return bool true on success, false on fail
+	 * @return bool success/fail
 	 */
 	public function remove()
 	{
@@ -368,13 +270,13 @@ class Addon_type extends ExternalModule
 		$this->uninstall();
 
 		// nuke it
-		$filename = "{$this->path}/{$this->base_name}.php";
+		$filename = "{$this->path}/{$this->baseName}.php";
 		@unlink($filename);
 
 		return !file_exists($filename);
 	}
 
-	/*
+	/**
 	 * delete all the side boxes of this type
 	 *
 	 * @return void
@@ -384,11 +286,11 @@ class Addon_type extends ExternalModule
 		global $db;
 
 		// delete all boxes of this type in use
-		$module = $db->escape_string(strtolower($this->base_name));
+		$module = $db->escape_string(strtolower($this->baseName));
 		$db->delete_query('asb_sideboxes', "LOWER(box_type)='{$module}'");
 	}
 
-	/*
+	/**
 	 * update settings for side boxes of this type
 	 *
 	 * @return void
@@ -398,7 +300,7 @@ class Addon_type extends ExternalModule
 		global $db;
 
 		// get all boxes of this type in use
-		$module = $db->escape_string(strtolower($this->base_name));
+		$module = $db->escape_string(strtolower($this->baseName));
 		$query = $db->simple_select('asb_sideboxes', '*', "LOWER(box_type)='{$module}'");
 		if ($db->num_rows($query) == 0) {
 			// this module has no children so we are done
@@ -407,10 +309,10 @@ class Addon_type extends ExternalModule
 
 		// loop through all the children
 		while ($data = $db->fetch_array($query)) {
-			// create a new Sidebox object from the data
-			$sidebox = new Sidebox($data);
+			// create a new SideboxObject from the data
+			$sidebox = new SideboxObject($data);
 
-			if (!$sidebox->is_valid()) {
+			if (!$sidebox->isValid()) {
 				// something went wrong and this box has no ID
 				// if we continue, we'll be creating a side box when we save
 				// so . . . don't ;)
@@ -441,10 +343,10 @@ class Addon_type extends ExternalModule
 		}
 	}
 
-	/*
+	/**
 	 * version control derived from the work of pavemen in MyBB Publisher
 	 *
-	 * @return string version or (int) 0 on error
+	 * @return string|int version or 0
 	 */
 	protected function get_cache_version()
 	{
@@ -454,15 +356,15 @@ class Addon_type extends ExternalModule
 		$asb = $cache->read('asb');
 
 		if (is_array($asb['addon_versions'])) {
-			return $asb['addon_versions'][$this->base_name]['version'];
+			return $asb['addon_versions'][$this->baseName]['version'];
 		}
 		return 0;
 	}
 
-	/*
+	/**
 	 * version control derived from the work of pavemen in MyBB Publisher
 	 *
-	 * @return bool true on success, false on fail
+	 * @return bool true
 	 */
 	protected function set_cache_version()
 	{
@@ -470,33 +372,32 @@ class Addon_type extends ExternalModule
 
 		//update version cache to latest
 		$asb = $cache->read('asb');
-		$asb['addon_versions'][$this->base_name]['version'] = $this->version;
+		$asb['addon_versions'][$this->baseName]['version'] = $this->version;
 		$cache->update('asb', $asb);
 		return true;
 	}
 
-	/*
+	/**
 	 * version control derived from the work of pavemen in MyBB Publisher
 	 *
-	 * @return bool true on success, false on fail
+	 * @return bool true
 	 */
 	protected function unset_cache_version()
 	{
 		global $cache;
 
 		$asb = $cache->read('asb');
-		if (isset($asb['addon_versions'][$this->base_name])) {
-			unset($asb['addon_versions'][$this->base_name]);
+		if (isset($asb['addon_versions'][$this->baseName])) {
+			unset($asb['addon_versions'][$this->baseName]);
 		}
 		$cache->update('asb', $asb);
 		return true;
 	}
 
-	/*
+	/**
 	 * runs template building code for the current module referenced by this object
 	 *
-	 * @return mixed the return value of the called module function or
-	 * (bool) false on error
+	 * @return mixed|bool return value of function or false
 	 */
 	public function build_template($settings, $template_var, $width, $script)
 	{
@@ -506,14 +407,13 @@ class Addon_type extends ExternalModule
 		return $this->run('build_template', $args);
 	}
 
-	/*
-	 * @param int UNIX timestamp representing the last time
-	 * the side box was updated
-	 * @param array the individual side box settings
-	 * @param int the width of the column in which the produced
-	 * side box will reside
-	 * @return mixed the return value of the called module function or
-	 * bool false on error
+	/**
+	 * run the modules XMLHTTP function
+	 *
+	 * @param  int UNIX timestamp representing last update
+	 * @param  array settings
+	 * @param  int column width
+	 * @return mixed|bool return value of function or false
 	 */
 	public function do_xmlhttp($dateline, $settings, $width)
 	{
@@ -523,19 +423,21 @@ class Addon_type extends ExternalModule
 		return $this->run('xmlhttp', $args);
 	}
 
-	/*
-	 * @return mixed the return value of the called module function or
-	 * bool false on error
+	/**
+	 * run the module's setting_load function
+	 *
+	 * @return mixed|bool return value of function or false
 	 */
 	public function do_settings_load()
 	{
 		return $this->run('settings_load', $settings);
 	}
 
-	/*
-	 * @param - $settings (array) the individual side box settings
-	 * @return mixed the return value of the called module function or
-	 * bool false on error
+	/**
+	 * run the module's do_settings_save function
+	 *
+	 * @param  array settings
+	 * @return mixed|bool return value of function or false
 	 */
 	public function do_settings_save($settings)
 	{

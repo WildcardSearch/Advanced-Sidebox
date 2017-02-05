@@ -4,55 +4,47 @@
  * StorableObject Class Structure
  */
 
-/*
- * StorableObjectInterface
- *
+/**
  * standard interface for database storage/retrieval
  */
 interface StorableObjectInterface
 {
 	public function load($data);
 	public function save();
-	public function remove($no_cleanup = false);
+	public function remove($noCleanup = false);
 }
 
-/*
+/**
  * standard object for db storage/retrieval
- *
- * provides a generic wrapper for any object that can be stored/retrieved
- * in/from the DB inherits property manipulation methods from
- * MalleableObject and abides by both the inherited MalleableObjectInterface
- * and StorableObjectInterface interfaces
  */
 abstract class StorableObject extends MalleableObject implements StorableObjectInterface
 {
-
-	/*
-	 * @var  int both the object ID and table row ID
+	/**
+	 * @var int
 	 */
 	protected $id;
 
-
-	/*
-	 * @var  array
+	/**
+	 * @var array
 	 */
 	protected $data = array();
 
-	/*
-	 * @var  string
+	/**
+	 * @var string
 	 */
-	protected $table_name = '';
+	protected $tableName = '';
 
 	/*
-	 * @var  array
+	 * @var array
 	 */
-	protected $no_store = array(
-			'id', 'valid', 'data', 'table_name', 'no_store'
-		);
+	protected $noStore = array(
+		'id', 'valid', 'data', 'tableName', 'noStore'
+	);
 
-	/*
-	 * @param mixed int representing the db ID/Object ID or
-	 * array database table row
+	/**
+	 * constructor
+	 *
+	 * @param  array|int data or id
 	 * @return void
 	 */
 	public function __construct($data = '')
@@ -67,20 +59,21 @@ abstract class StorableObject extends MalleableObject implements StorableObjectI
 		$this->valid = false;
 	}
 
-	/*
-	 * @param int ID/Object ID or
-	 * array database table row
-	 * @return bool true on success, false on fail
+	/**
+	 * load the object from the database
+	 *
+	 * @param  array|int data or id
+	 * @return bool success/fail
 	 */
 	public function load($data)
 	{
 		// is the data scalar? (and if so, do we have a table name?)
 		if (!is_array($data) &&
-			$this->table_name) {
+			$this->tableName) {
 			// attempt to load the object by ID
 			global $db;
 			$data = (int) $data;
-			$query = $db->simple_select($this->table_name, '*', "id='{$data}'");
+			$query = $db->simple_select($this->tableName, '*', "id='{$data}'");
 
 			// if it exists
 			if ($db->num_rows($query) == 1) {
@@ -104,20 +97,20 @@ abstract class StorableObject extends MalleableObject implements StorableObjectI
 		return false;
 	}
 
-	/*
-	 * stores the object's data in the database
+	/**
+	 * stores the objects data in the database
 	 *
-	 * @return bool true on success, false on fail
+	 * @return mixed|bool return of db wrapper or false
 	 */
 	public function save()
 	{
 		// if we have a table name stored
-		if ($this->table_name) {
+		if ($this->tableName) {
 			global $db;
 
 			$this->data = array();
 			foreach ($this as $property => $value) {
-				if (in_array($property, $this->no_store)) {
+				if (in_array($property, $this->noStore)) {
 					continue;
 				}
 
@@ -151,30 +144,29 @@ abstract class StorableObject extends MalleableObject implements StorableObjectI
 			// insert or update depending upon the content of ID
 			if ($this->id) {
 				// return true/false
-				return $db->update_query($this->table_name, $this->data, "id='{$this->id}'");
+				return $db->update_query($this->tableName, $this->data, "id='{$this->id}'");
 			} else {
 				// return the ID on success/false on fail
-				return $this->id = $db->insert_query($this->table_name, $this->data);
+				return $this->id = $db->insert_query($this->tableName, $this->data);
 			}
 		}
 		// fail
 		return false;
 	}
 
-	/*
+	/**
 	 * remove the object from the database
 	 *
-	 * @return bool true on success, false on fail
+	 * @return mixed|bool return of db wrapper or false
 	 */
-	public function remove($no_cleanup = false)
+	public function remove($noCleanup = false)
 	{
 		// valid ID and DB info?
 		if ($this->id &&
-			$this->table_name) {
+			$this->tableName) {
 			// nuke it and return true/false
 			global $db;
-			$db->delete_query($this->table_name, "id='{$this->id}'");
-			return true;
+			return $db->delete_query($this->tableName, "id='{$this->id}'");
 		}
 		return false;
 	}

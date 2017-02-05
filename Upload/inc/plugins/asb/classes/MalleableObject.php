@@ -4,49 +4,45 @@
  * MalleableObject Class Structure
  */
 
-/*
- * MalleableObjectInterface
- *
- * for any object that has properties to be set or retrieved
+/**
  * provides standard data methods and validation for inheritance
 */
 interface MalleableObjectInterface
 {
 	public function get($properties);
 	public function set($properties, $value = '');
-	public function is_valid();
+	public function isValid();
 }
 
-/*
- * MalleableObject
- *
- * for any object that has properties to be set or retrieved
+/**
  * provides standard data methods and validation for inheritance
  */
 abstract class MalleableObject implements MalleableObjectInterface
 {
-	/*
-	 * @var  bool
+	/**
+	 * @var bool
 	 */
 	protected $valid = false;
 
-	/*
-	 * retrieves a named property or a list of properties)
+	/**
+	 * retrieves a named property or a list of properties
 	 *
-	 * @param mixed an unindexed array of property names or a single property name
-	 * @return array properties and values or a single value
+	 * @param  array|string property names or a single name
+	 * @return array|mixed properties and values or a single value
 	 */
 	public function get($properties)
 	{
 		if (is_array($properties)) {
-			$return_array = array();
+			$returnArray = array();
 			foreach ($properties as $property) {
 				if (property_exists($this, $property)) {
-					$return_array[$property] = $this->$property;
+					$returnArray[$property] = $this->$property;
 				}
 			}
-			return $return_array;
-		} else {
+			return $returnArray;
+		}
+		else
+		{
 			if (property_exists($this, $properties)) {
 				return $this->$properties;
 			}
@@ -54,12 +50,12 @@ abstract class MalleableObject implements MalleableObjectInterface
 		}
 	}
 
-	/*
+	/**
 	 * sets a single property or multiple properties at once
 	 *
-	 * @param mixed a keyed array of properties and their values or a single property name
-	 * @param mixed any data type
-	 * @return bool true on success, false on false
+	 * @param  array|string propertie(s)
+	 * @param  mixed the property value
+	 * @return bool success/fail
 	 */
 	public function set($properties, $value = '')
 	{
@@ -70,20 +66,21 @@ abstract class MalleableObject implements MalleableObjectInterface
 				}
 			}
 			return true;
-		} elseif (strlen($properties) > 0 && isset($value)) {
+		} elseif (strlen($properties) > 0 &&
+			property_exists($this, $properties) &&
+			isset($value)) {
 			$this->$properties = $value;
 			return true;
 		}
 		return false;
 	}
 
-	/*
-	 * public function is_valid()
-	 *
+	/**
 	 * allows access to the protected valid property
-	 * @return bool true for valid, false if not
+	 *
+	 * @return bool the valid property value
 	 */
-	public function is_valid()
+	public function isValid()
 	{
 		return $this->valid;
 	}

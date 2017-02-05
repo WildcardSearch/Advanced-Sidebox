@@ -7,10 +7,10 @@
  * functions for the forum-side
  */
 
-/*
+/**
  * avoid wasted execution by determining when and if code is necessary
  *
- * @return bool true on success, false on fail
+ * @return bool success/fail
  */
 function asb_do_checks()
 {
@@ -48,10 +48,10 @@ function asb_do_checks()
 	return true;
 }
 
-/*
+/**
  * get the tids of any excluded themes
  *
- * @return array the list of excluded themes (bool) false on fail
+ * @return array|bool excluded themes or false
  */
 function asb_get_excluded_themes($sql = false)
 {
@@ -73,10 +73,10 @@ function asb_get_excluded_themes($sql = false)
 	return $retval;
 }
 
-/*
+/**
  * retrieve the cache, rebuilding it if necessary
  *
- * @return array the cache data
+ * @return array cache data
  */
 function asb_get_cache()
 {
@@ -102,10 +102,10 @@ function asb_get_cache()
 	return $asb;
 }
 
-/*
+/**
  * build all of the relevant info needed to manage side boxes
  *
- * @param array a reference to the asb cache data variable
+ * @param  array cache data variable
  * @return void
  */
 function asb_build_cache(&$asb)
@@ -169,7 +169,7 @@ function asb_build_cache(&$asb)
 		foreach ($scripts as $filename) {
 			// side box from a module?
 			if (isset($addons[$module]) &&
-				$addons[$module] instanceof Addon_type) {
+				$addons[$module] instanceof SideboxExternalModule) {
 				// store the module name and all the template vars used
 				$asb['scripts'][$filename]['sideboxes'][$pos][$id] = $module;
 				$asb['scripts'][$filename]['template_vars'][$id] = "{$module}_{$id}";
@@ -204,7 +204,7 @@ function asb_build_cache(&$asb)
 				}
 			// side box from a custom box?
 			} else if(isset($custom[$module]) &&
-				$custom[$module] instanceof Custom_type) {
+				$custom[$module] instanceof CustomSidebox) {
 				// store the pointer
 				$asb['scripts'][$filename]['sideboxes'][$pos][$id] = $module;
 				$asb['scripts'][$filename]['template_vars'][$id] = "{$module}_{$id}";
@@ -216,10 +216,10 @@ function asb_build_cache(&$asb)
 	}
 }
 
-/*
+/**
  * add all the parts of the script to build a unique name
  *
- * @param array an optional array of script environment info
+ * @param  array script environment info
  * @return string filename marked up for asb
  */
 function asb_build_script_filename($this_script = '')
@@ -257,13 +257,13 @@ function asb_build_script_filename($this_script = '')
 	return $filename;
 }
 
-/*
+/**
  * get the correct cached script info using the script parameters
  *
- * @param array the asb cache data
- * @param bool true indicates that side boxes and templates
- * should be loaded along with the other info
- * @return array information used to present this script's side boxes
+ * @param  array asb cache data
+ * @param  bool true indicates that side boxes and templates
+ * 	should be loaded along with the other info
+ * @return array script info
  */
 function asb_get_this_script($asb, $get_all = false)
 {
@@ -310,11 +310,11 @@ function asb_get_this_script($asb, $get_all = false)
 	return $return_array;
 }
 
-/*
+/**
  * merge global and script specific side box lists while maintaining display order
  *
- * @param array the asb cache data
- * @param array two or more arrays of side box ids => module names
+ * @param  array asb cache data
+ * @param  array two or more arrays of side box ids => module names
  * @return array an array with the merged and sorted arrays
  */
 function asb_merge_sidebox_list($asb)
@@ -353,11 +353,11 @@ function asb_merge_sidebox_list($asb)
 	return $return_array;
 }
 
-/*
+/**
  * standard check of all user groups against an allowable list
  *
- * @param array groups allowed to perform the action we are protecting
- * @return bool true if the user is allowed, false if not
+ * @param  array allowed groups
+ * @return bool allowed/not
  */
 function asb_check_user_permissions($good_groups)
 {
@@ -392,16 +392,16 @@ function asb_check_user_permissions($good_groups)
 	return !empty($test_array);
 }
 
-/*
+/**
  * use the sidebox info to produce its template
  *
- * @param Sidebox object or array of side box data
- * @return string HTML side box <div> markup or bool false on error
+ * @param  SideboxObject|array side box
+ * @return string|bool html or false
  */
 function asb_build_sidebox_content($this_box)
 {
 	// need good info
-	if ($this_box instanceof Sidebox) {
+	if ($this_box instanceof SideboxObject) {
 		$data = $this_box->get('data');
 	} else if(is_array($this_box) && !empty($this_box)) {
 		$data = $this_box;
@@ -469,10 +469,10 @@ EOF;
 	return false;
 }
 
-/*
+/**
  * retrieve any detected modules
  *
- * @return array Addon_type objects
+ * @return array SideboxExternalModule
  */
 function asb_get_all_modules()
 {
@@ -493,20 +493,20 @@ function asb_get_all_modules()
 			continue;
 		}
 
-		// extract the base_name from the module file name
+		// extract the baseName from the module file name
 		$filename = $file->getFilename();
 		$module = substr($filename, 0, strlen($filename) - 4);
 
 		// attempt to load the module
-		$return_array[$module] = new Addon_type($module);
+		$return_array[$module] = new SideboxExternalModule($module);
 	}
 	return $return_array;
 }
 
-/*
+/**
  * retrieve all custom boxes
  *
- * @return array Custom_type objects
+ * @return array CustomSidebox
  */
 function asb_get_all_custom()
 {
@@ -518,17 +518,17 @@ function asb_get_all_custom()
 	$query = $db->simple_select('asb_custom_sideboxes');
 	if ($db->num_rows($query) > 0) {
 		while ($data = $db->fetch_array($query)) {
-			$return_array['asb_custom_' . $data['id']] = new Custom_type($data);
+			$return_array['asb_custom_' . $data['id']] = new CustomSidebox($data);
 		}
 	}
 	return $return_array;
 }
 
-/*
+/**
  * retrieve all side boxes
  *
- * @param string optional script filter
- * @return array an array of side box objects
+ * @param  string script filter
+ * @return array SideboxObject
  */
 function asb_get_all_sideboxes($good_script = '')
 {
@@ -540,7 +540,7 @@ function asb_get_all_sideboxes($good_script = '')
 	$query = $db->simple_select('asb_sideboxes', '*', '', array("order_by" => 'display_order', "order_dir" => 'ASC'));
 	if ($db->num_rows($query) > 0) {
 		while ($data = $db->fetch_array($query)) {
-			$sidebox = new Sidebox($data);
+			$sidebox = new SideboxObject($data);
 
 			if ($good_script) {
 				$scripts = $sidebox->get('scripts');
@@ -557,10 +557,10 @@ function asb_get_all_sideboxes($good_script = '')
 	return $return_array;
 }
 
-/*
+/**
  * retrieve all script definitions
  *
- * @return array of script data arrays
+ * @return array script data
  */
 function asb_get_all_scripts()
 {
@@ -579,10 +579,10 @@ function asb_get_all_scripts()
 	return $return_array;
 }
 
-/*
+/**
  * rebuilds the theme exclude list ACP setting
  *
- * @return string the <select> HTML or false on error
+ * @return string|bool html or false
  */
 function asb_get_all_themes($full = false)
 {

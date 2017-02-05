@@ -13,10 +13,10 @@ if (!defined('IN_MYBB') ||
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
-/*
+/**
  * provide info to ASB about the addon
  *
- * @param array the module info
+ * @return array module info
  */
 function asb_latest_threads_info()
 {
@@ -40,7 +40,7 @@ function asb_latest_threads_info()
 				"title" => $lang->asb_max_threads_title,
 				"description" => $lang->asb_max_threads_desc,
 				"optionscode" => 'text',
-				"value" => '20'
+				"value" => '20',
 			),
 			"max_thread_title_length" => array(
 				"sid" => 'NULL',
@@ -48,7 +48,7 @@ function asb_latest_threads_info()
 				"title" => $lang->asb_max_thread_title_length_title,
 				"description" => $lang->asb_max_thread_title_length_desc,
 				"optionscode" => 'text',
-				"value" => '40'
+				"value" => '40',
 			),
 			"forum_show_list" => array(
 				"sid" => 'NULL',
@@ -56,7 +56,7 @@ function asb_latest_threads_info()
 				"title" => $lang->asb_forum_show_list_title,
 				"description" => $lang->asb_forum_show_list_desc,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 			"forum_hide_list" => array(
 				"sid" => 'NULL',
@@ -64,7 +64,7 @@ function asb_latest_threads_info()
 				"title" => $lang->asb_forum_hide_list_title,
 				"description" => $lang->asb_forum_hide_list_desc,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 			"thread_show_list" => array(
 				"sid" => 'NULL',
@@ -72,7 +72,7 @@ function asb_latest_threads_info()
 				"title" => $lang->asb_thread_show_list_title,
 				"description" => $lang->asb_thread_show_list_desc,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 			"thread_hide_list" => array(
 				"sid" => 'NULL',
@@ -80,7 +80,7 @@ function asb_latest_threads_info()
 				"title" => $lang->asb_thread_hide_list_title,
 				"description" => $lang->asb_thread_hide_list_desc,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 			"last_poster_avatar" => array(
 				"sid" => 'NULL',
@@ -88,7 +88,7 @@ function asb_latest_threads_info()
 				"title" => $lang->asb_last_poster_avatar_title,
 				"description" => $lang->asb_last_poster_avatar_desc,
 				"optionscode" => 'yesno',
-				"value" => '0'
+				"value" => '0',
 			),
 			"avatar_width" => array(
 				"sid" => 'NULL',
@@ -96,7 +96,7 @@ function asb_latest_threads_info()
 				"title" => $lang->asb_avatar_width_title,
 				"description" => $lang->asb_avatar_width_desc,
 				"optionscode" => 'text',
-				"value" => '30'
+				"value" => '30',
 			),
 			"new_threads_only" => array(
 				"sid" => 'NULL',
@@ -104,7 +104,7 @@ function asb_latest_threads_info()
 				"title" => $lang->asb_new_threads_only_title,
 				"description" => $lang->asb_new_threads_only_desc,
 				"optionscode" => 'text',
-				"value" => '0'
+				"value" => '0',
 			),
 			"important_threads_only" => array(
 				"sid" => 'NULL',
@@ -112,7 +112,7 @@ function asb_latest_threads_info()
 				"title" => $lang->asb_important_threads_only_title,
 				"description" => $lang->asb_important_threads_only_desc,
 				"optionscode" => 'yesno',
-				"value" => '0'
+				"value" => '0',
 			),
 			"xmlhttp_on" => array(
 				"sid" => 'NULL',
@@ -120,8 +120,8 @@ function asb_latest_threads_info()
 				"title" => $lang->asb_xmlhttp_on_title,
 				"description" => $lang->asb_xmlhttp_on_description,
 				"optionscode" => 'text',
-				"value" => '0'
-			)
+				"value" => '0',
+			),
 		),
 		"templates" => array(
 			array(
@@ -157,16 +157,16 @@ EOF
 				"template" => <<<EOF
 {\$lastposterlink}<br /><a href="{\$thread[\'lastpostlink\']}" title="{\$lang->asb_latest_threads_lastpost}">{\$lang->asb_latest_threads_lastpost}</a>
 EOF
-			)
-		)
+			),
+		),
 	);
 }
 
-/*
+/**
  * handles display of children of this addon at page load
  *
- * @param array the specific information from the child box
- * @return bool true on success, false on fail/no content
+ * @param  array information from child box
+ * @return bool success/fail
  */
 function asb_latest_threads_build_template($args)
 {
@@ -193,10 +193,10 @@ EOF;
 	}
 }
 
-/*
+/**
  * handles display of children of this addon via AJAX
  *
- * @param array the specific information from the child box
+ * @param  array information from child box
  * @return void
  */
 function asb_latest_threads_xmlhttp($args)
@@ -217,13 +217,12 @@ function asb_latest_threads_xmlhttp($args)
 	return 'nochange';
 }
 
-/*
+/**
  * get the latest forum discussions
  *
- * @param array individual side box settings passed to the module
- * @param int the width of the column in which the child is positioned
- * @mixed string side box markup or
- * bool false on fail/no content
+ * @param  array settings
+ * @param  int column width
+ * @return string|bool html or success/fail
  */
 function latest_threads_get_threadlist($settings, $width)
 {

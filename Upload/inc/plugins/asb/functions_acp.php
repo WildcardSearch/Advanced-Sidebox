@@ -4,14 +4,14 @@
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
- * this file contains the functions used in ACP and depends upon html_generator.php
+ * this file contains the functions used in ACP and depends upon HTMLGenerator.php
  */
 
-/*
+/**
  * produces a link to a particular page in the plugin help system (with icon) specified by topic
  *
- * @param string the intended page's topic keyword
- * @return string help link HTML
+ * @param  string topic keyword
+ * @return string html
  */
 function asb_build_help_link($topic = '')
 {
@@ -25,10 +25,10 @@ function asb_build_help_link($topic = '')
 	return $html->link($help_url, $lang->asb_help, array("id" => 'help_link', "style" => 'font-weight: bold;', "icon" => "{$mybb->settings['bburl']}/inc/plugins/asb/images/help.gif", "title" => $lang->asb_help), array("id" => 'help_link_icon', "alt" => '?', "title" => $lang->asb_help, "style" => 'margin-bottom: -3px;'));
 }
 
-/*
+/**
  * produces a link to the plugin settings with icon
  *
- * @return string settings link HTML
+ * @return string html
  */
 function asb_build_settings_menu_link()
 {
@@ -39,10 +39,10 @@ function asb_build_settings_menu_link()
 	return $settings_link;
 }
 
-/*
+/**
  * Output ACP tabs for our pages
  *
- * @param string the tab currently being viewed
+ * @param  string current tab
  * @return void
  */
 function asb_output_tabs($current)
@@ -89,11 +89,10 @@ function asb_output_tabs($current)
 	$page->output_nav_tabs($sub_tabs, $current);
 }
 
-/*
- * Output ACP footers for our pages
+/**
+ * output ACP footers for our pages
  *
- * @param string the current page key used by the help
- * system and the footer menu
+ * @param  string current page
  * @return void
  */
 function asb_output_footer($page_key)
@@ -104,11 +103,11 @@ function asb_output_footer($page_key)
 	$page->output_footer();
 }
 
-/*
+/**
  * build a footer menu specific to each page
  *
- * @param string the topic key name for the current page
- * @return string the footer menu HTML
+ * @param  string topic key
+ * @return string html
  */
 function asb_build_footer_menu($page_key = '')
 {
@@ -136,11 +135,11 @@ function asb_build_footer_menu($page_key = '')
 EOF;
 }
 
-/*
+/**
  *  build a popup with a table of side box permission info
  *
- * @param int the numeric id of the sidebox
- * @return string the permission table HTML
+ * @param  int id
+ * @return string html
  */
 function asb_build_permissions_table($id)
 {
@@ -150,9 +149,9 @@ function asb_build_permissions_table($id)
 
 	global $lang, $all_scripts;
 
-	$sidebox = new Sidebox($id);
+	$sidebox = new SideboxObject($id);
 
-	if (!$sidebox->is_valid()) {
+	if (!$sidebox->isValid()) {
 		return $lang->asb_invalid_sidebox;
 	}
 
@@ -169,14 +168,13 @@ function asb_build_permissions_table($id)
 EOF;
 }
 
-/*
+/**
  * build HTML for the script/group table rows
  *
- * @param Sidebox the sidebox to build the rows for
- * @param int a reference to the group count
- * @param bool a reference to whether this return indicated
- * global visibility
- * @return string the permission table row HTML
+ * @param  SideboxObject
+ * @param  int group count
+ * @param  bool global visibility
+ * @return string html
  */
 function asb_build_visibility_rows($sidebox, &$group_count, &$global)
 {
@@ -287,14 +285,13 @@ EOF;
 EOF;
 }
 
-/*
+/**
  * build HTML for the script/group table rows
  *
- * @param Sidebox the sidebox to build the rows for
- * @param int reference to the group count
- * @param bool a reference to whether the perm rows return
- * indicated global visibility
- * @return string the permission table row HTML
+ * @param  SideboxObject
+ * @param  int group count
+ * @param  bool global visibility
+ * @return string html
  */
 function asb_build_theme_visibility_list($sidebox, $colspan, $global)
 {
@@ -338,16 +335,16 @@ EOF;
 EOF;
 }
 
-/*
- * @param Sidebox type object xD
- * @param bool specifies whether to produce the <div> or just the contents
- * @param bool whether to produce the delete link or not
- * @return string the side box <div>
+/**
+ * @param  SideboxObject
+ * @param  bool wrap in div?
+ * @param  bool produce delete link?
+ * @return string html
  */
 function asb_build_sidebox_info($sidebox, $wrap = true, $ajax = false)
 {
 	// must be a valid object
-	if ($sidebox instanceof Sidebox == false) {
+	if ($sidebox instanceof SideboxObject == false) {
 		return false;
 	}
 
@@ -392,7 +389,7 @@ EOF;
 	return $box;
 }
 
-/*
+/**
  * set the flag so the cache is rebuilt new run
  *
  * @return void
@@ -406,11 +403,12 @@ function asb_cache_has_changed()
 	$cache->update('asb', $asb);
 }
 
-/*
+/**
  * searches for hooks, templates and actions and returns a
  * keyed array of select box HTML for any that are found
  *
- * @param string the file to check
+ * @param  string
+ * @param  array
  * @return array script component information
  */
 function asb_detect_script_info($filename, $selected = array())
@@ -493,10 +491,10 @@ EOF;
 	return $return_array;
 }
 
-/*
+/**
  * imports XML files created with ASB 1.x series
  *
- * @param array as returned by XMLParser
+ * @param  array
  * @return void
  */
 function asb_legacy_custom_import($tree)
@@ -531,11 +529,11 @@ function asb_legacy_custom_import($tree)
 	return $error;
 }
 
-/*
+/**
  * build links for ACP Manage Side Boxes screen
  *
- * @param string script to show or 'all_scripts' to avoid filtering altogether
- * @return string the form HTML
+ * @param  string script to show or 'all_scripts' to avoid filtering altogether
+ * @return string html
  */
 function asb_build_filter_selector($filter)
 {
@@ -555,12 +553,12 @@ function asb_build_filter_selector($filter)
 	return $form->end();
 }
 
-/*
+/**
  * creates a single setting from an associative array
  *
- * @param DefaultForm
- * @param DefaultFormContainer
- * @param array settings properties
+ * @param  DefaultForm
+ * @param  DefaultFormContainer
+ * @param  array setting properties
  * @return void
  */
 function asb_build_setting($this_form, $this_form_container, $setting)

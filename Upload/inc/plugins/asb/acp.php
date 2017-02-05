@@ -17,7 +17,7 @@ define('ASB_URL', 'index.php?module=config-asb');
 require_once MYBB_ROOT . 'inc/plugins/asb/functions_acp.php';
 require_once MYBB_ROOT . 'inc/plugins/asb/install.php';
 
-/*
+/**
  * the ACP page router
  *
  * @return void
@@ -71,7 +71,7 @@ function asb_admin()
 	exit();
 }
 
-/*
+/**
  * main side box management page - drag and drop and standard controls for side boxes
  *
  * @return void
@@ -86,11 +86,11 @@ function asb_admin_manage_sideboxes()
 	if (is_array($addons)) {
 		// display them
 		foreach ($addons as $module) {
-			if (!$module->is_valid()) {
+			if (!$module->isValid()) {
 				continue;
 			}
 
-			$id = $box_type = $module->get('base_name');
+			$id = $box_type = $module->get('baseName');
 			$title = $module->get('title');
 			$title_url = $html->url(array("action" => 'edit_box', "addon" => $box_type));
 			$title_link = $html->link($title_url, $title, array("class" => 'add_box_link', "title" => $lang->asb_add_new_sidebox));
@@ -111,7 +111,7 @@ EOF;
 	if (is_array($custom)) {
 		// display them
 		foreach ($custom as $module) {
-			$id = $box_type = $module->get('base_name');
+			$id = $box_type = $module->get('baseName');
 			$title = $module->get('title');
 			$title_url = $html->url(array("action" => 'edit_box', "addon" => $box_type));
 			$title_link = $html->link($title_url, $title, array("class" => 'add_box_link', "title" => $lang->asb_add_new_sidebox));
@@ -210,7 +210,7 @@ EOF;
 	asb_output_footer('manage_sideboxes');
 }
 
-/*
+/**
  * handles the modal/JavaScript edit box and also (as a backup) displays a standard form for those with JavaScript disabled
  *
  * @return void
@@ -221,7 +221,7 @@ function asb_admin_edit_box()
 
 	$ajax = ($mybb->input['ajax'] == 1);
 
-	$sidebox = new Sidebox($mybb->input['id']);
+	$sidebox = new SideboxObject($mybb->input['id']);
 	$id = (int) $sidebox->get('id');
 
 	$position = (int) $mybb->input['box_position'];
@@ -236,15 +236,15 @@ function asb_admin_edit_box()
 	$custom_title = 0;
 
 	$module = $mybb->input['addon'];
-	$parent = new Addon_type($module);
-	if (!$parent->is_valid()) {
+	$parent = new SideboxExternalModule($module);
+	if (!$parent->isValid()) {
 		// did this box come from a custom static box?
 		$variable_array = explode('_', $module);
 		$custom_id = $variable_array[count($variable_array) - 1];
 
-		$parent = new Custom_type($custom_id);
+		$parent = new CustomSidebox($custom_id);
 
-		if ($parent->is_valid()) {
+		if ($parent->isValid()) {
 			$is_custom = true;
 		} else {
 			flash_message($lang->asb_edit_fail_bad_module, 'error');
@@ -639,7 +639,7 @@ EOF;
 	}
 }
 
-/*
+/**
  * handle user-defined box types
  *
  * @return void
@@ -654,8 +654,8 @@ function asb_admin_custom_boxes()
 			admin_redirect($html->url(array("action" => 'custom_boxes')));
 		}
 
-		$this_custom = new Custom_type($mybb->input['id']);
-		if (!$this_custom->is_valid()) {
+		$this_custom = new CustomSidebox($mybb->input['id']);
+		if (!$this_custom->isValid()) {
 			flash_message($lang->asb_custom_export_error, 'error');
 			admin_redirect($html->url(array("action" => 'custom_boxes')));
 		}
@@ -672,7 +672,7 @@ function asb_admin_custom_boxes()
 		}
 
 		// nuke it
-		$this_custom = new Custom_type($mybb->input['id']);
+		$this_custom = new CustomSidebox($mybb->input['id']);
 
 		// success?
 		if (!$this_custom->remove()) {
@@ -737,9 +737,9 @@ function asb_admin_custom_boxes()
 					flash_message($results, 'error');
 					admin_redirect($html->url(array("action" => 'custom_boxes')));
 				}
-				$custom = new Custom_type($results);
+				$custom = new CustomSidebox($results);
 			} else {
-				$custom = new Custom_type;
+				$custom = new CustomSidebox;
 				if (!$custom->import($contents)) {
 					flash_message($lang->asb_custom_import_fail_generic, 'error');
 					admin_redirect($html->url(array("action" => 'custom_boxes')));
@@ -760,7 +760,7 @@ function asb_admin_custom_boxes()
 					flash_message($lang->asb_custom_box_save_failure_no_content, 'error');
 					admin_redirect($html->url(array("action" => 'custom_boxes')));
 				}
-				$this_custom = new Custom_type((int) $mybb->input['id']);
+				$this_custom = new CustomSidebox((int) $mybb->input['id']);
 
 				// get the info
 				$this_custom->set('title', $mybb->input['box_name']);
@@ -807,7 +807,7 @@ function asb_admin_custom_boxes()
 EOF;
 		}
 
-		$this_box = new Custom_type((int) $mybb->input['id']);
+		$this_box = new CustomSidebox((int) $mybb->input['id']);
 
 		$action = $lang->asb_add_custom;
 		if ($this_box->get('id')) {
@@ -975,7 +975,7 @@ EOF;
 	asb_output_footer('custom');
 }
 
-/*
+/**
  * add/edit/delete script info
  *
  * @return void
@@ -984,7 +984,7 @@ function asb_admin_manage_scripts()
 {
 	global $mybb, $db, $page, $lang, $html, $min;
 
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/script_info.php';
+	require_once MYBB_ROOT . 'inc/plugins/asb/classes/ScriptInfo.php';
 
 	$page->add_breadcrumb_item($lang->asb, $html->url());
 
@@ -1093,7 +1093,7 @@ function asb_admin_manage_scripts()
 		$filename = '';
 
 		$action = $lang->asb_edit_script;
-		if ($this_script->is_valid()) {
+		if ($this_script->isValid()) {
 			$data = $this_script->get('data');
 
 			$detected_info = asb_detect_script_info($data['filename'], array(
@@ -1299,7 +1299,7 @@ EOF;
 	}
 }
 
-/*
+/**
  * view and delete add-ons
  *
  * @return void
@@ -1332,7 +1332,7 @@ EOF;
 	if (!empty($addons) &&
 		is_array($addons)) {
 		foreach ($addons as $this_module) {
-			$data = $this_module->get(array('title', 'description', 'base_name', 'author', 'author_site', 'module_site', 'version', 'public_version', 'compatibility'));
+			$data = $this_module->get(array('title', 'description', 'baseName', 'author', 'author_site', 'module_site', 'version', 'public_version', 'compatibility'));
 
 			$out_of_date = '';
 			if (!$data['compatibility'] ||
@@ -1366,10 +1366,10 @@ EOF;
 			$table->construct_cell($author);
 
 			// options pop-up
-			$popup = new PopupMenu('module_' . $data['base_name'], $lang->asb_options);
+			$popup = new PopupMenu('module_' . $data['baseName'], $lang->asb_options);
 
 			// delete
-			$popup->add_item($lang->asb_delete, $html->url(array("action" => 'delete_addon', "addon" => $data['base_name'])), "return confirm('{$lang->asb_modules_del_warning}');");
+			$popup->add_item($lang->asb_delete, $html->url(array("action" => 'delete_addon', "addon" => $data['baseName'])), "return confirm('{$lang->asb_modules_del_warning}');");
 
 			// pop-up cell
 			$table->construct_cell($popup->fetch(), array("width" => '10%'));
@@ -1387,7 +1387,7 @@ EOF;
 	asb_output_footer('addons');
 }
 
-/*
+/**
  * handler for AJAX side box routines
  *
  * @return void
@@ -1412,10 +1412,10 @@ function asb_admin_xmlhttp()
 			// loop through them all
 			$ids = array();
 			foreach ($trash_column as $id) {
-				$sidebox = new Sidebox($id);
+				$sidebox = new SideboxObject($id);
 				$sidebox->remove();
 
-				// return the removed side boxes id to the Sidebox object (so that the div can be destroyed as well)
+				// return the removed side boxes id to the SideboxObject object (so that the div can be destroyed as well)
 				$ids[] = $id;
 			}
 			asb_cache_has_changed();
@@ -1441,7 +1441,7 @@ function asb_admin_xmlhttp()
 		// loop through all the side boxes in this column
 		foreach ($this_column as $id) {
 			$has_changed = false;
-			$sidebox = new Sidebox($id);
+			$sidebox = new SideboxObject($id);
 			$this_order = (int) ($disp_order * 10);
 			++$disp_order;
 
@@ -1469,7 +1469,7 @@ function asb_admin_xmlhttp()
 	// this routine allows the side box's visibility tool tip and links to be handled by JS after the side box is created
 	} elseif($mybb->input['mode'] == 'build_info' && (int) $mybb->input['id'] > 0) {
 		$id = (int) $mybb->input['id'];
-		$sidebox = new Sidebox($id);
+		$sidebox = new SideboxObject($id);
 
 		// we have to reaffirm our observance of the edit link when it is added/updated
 		$script = <<<EOF
@@ -1506,8 +1506,8 @@ EOF;
 	}
 }
 
-/*
- * remove a side box (only still around for those without JS . . . like who, idk)
+/**
+ * remove a side box (only still around for those without JS...like who, idk)
  *
  * @return void
  */
@@ -1520,7 +1520,7 @@ function asb_admin_delete_box()
 		admin_redirect($html->url());
 	}
 
-	$sidebox = new Sidebox($mybb->input['id']);
+	$sidebox = new SideboxObject($mybb->input['id']);
 	if (!$sidebox->remove()) {
 		flash_message($lang->asb_delete_box_failure, 'error');
 	} else {
@@ -1530,7 +1530,7 @@ function asb_admin_delete_box()
 	admin_redirect($html->url());
 }
 
-/*
+/**
  * completely remove an add-on module
  *
  * @return void
@@ -1546,7 +1546,7 @@ function asb_admin_delete_addon()
 		admin_redirect($html->url(array("action" => 'manage_modules')));
 	}
 
-	$this_module = new Addon_type($mybb->input['addon']);
+	$this_module = new SideboxExternalModule($mybb->input['addon']);
 	if (!$this_module->remove()) {
 		flash_message($lang->asb_delete_addon_failure, 'error');
 	} else {
@@ -1556,7 +1556,7 @@ function asb_admin_delete_addon()
 	admin_redirect($html->url(array("action" => 'manage_modules')));
 }
 
-/*
+/**
  * rebuild the theme exclude list.
  *
  * @return void
@@ -1597,7 +1597,7 @@ function asb_admin_update_theme_select()
 	admin_redirect(asb_build_settings_url($gid));
 }
 
-/*
+/**
  * serialize the theme exclusion list selector
  *
  * @return void
@@ -1620,8 +1620,8 @@ function asb_admin_config_settings_change()
 	}
 }
 
-/*
- * @param - &$action is an array containing the list of selectable items on the config tab
+/**
+ * @param  array items on the config tab
  * @return void
  */
 $plugins->add_hook('admin_config_action_handler', 'asb_admin_config_action_handler');
@@ -1630,10 +1630,10 @@ function asb_admin_config_action_handler(&$action)
 	$action['asb'] = array('active' => 'asb');
 }
 
-/*
- * Add an entry to the ACP Config page menu
+/**
+ * add an entry to the ACP Config page menu
  *
- * @param - &$sub_menu is the menu array we will add a member to
+ * @param  array menu
  * @return void
  */
 $plugins->add_hook('admin_config_menu', 'asb_admin_config_menu');
@@ -1653,11 +1653,10 @@ function asb_admin_config_menu(&$sub_menu)
 	);
 }
 
-/*
- * Add an entry to admin permissions list
+/**
+ * add an entry to admin permissions list
  *
- * @param - &$admin_permissions is the array of permission types
- * we are adding an element to
+ * @param  array permission types
  * @return void
  */
 $plugins->add_hook('admin_config_permissions', 'asb_admin_config_permissions');

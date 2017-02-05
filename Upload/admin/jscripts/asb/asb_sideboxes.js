@@ -20,18 +20,18 @@ var ASB = (function(a, $) {
 		});
 
 		$(".sortable").sortable({
-			connectWith: '.column',
+			connectWith: ".column",
 			update: function(e, ui) {
 				var container = $(this);
 
 				$.ajax({
-					type: 'post',
-					url: 'index.php',
+					type: "post",
+					url: "index.php",
 					data: {
-						module: 'config-asb',
-						action: 'xmlhttp',
-						mode: 'order',
-						pos: container.prop('id'),
+						module: "config-asb",
+						action: "xmlhttp",
+						mode: "order",
+						pos: container.prop("id"),
 						data: container.sortable("serialize"),
 					},
 					success: function(response) {
@@ -40,13 +40,13 @@ var ASB = (function(a, $) {
 						}
 
 						// if the admin session has expired
-						if (typeof response == 'string' &&
+						if (typeof response == "string" &&
 							response.search('value="login"') != -1) {
 							// show them the login page
 							location.reload(true);
 						}
 
-						var ids = response.split(',');
+						var ids = response.split(",");
 
 						// clean the input
 						$(ids).each(function(i, id) {
@@ -64,8 +64,8 @@ var ASB = (function(a, $) {
 		}).disableSelection();
 
 		$(".droppable").droppable({
-			accept: '.draggable',
-			hoverClass: 'hover',
+			accept: ".draggable",
+			hoverClass: "hover",
 			drop: create,
 		});
 
@@ -73,10 +73,10 @@ var ASB = (function(a, $) {
 		$("a[id^='edit_sidebox_']").click(edit);
 
 		// remove the delete icon as we have the trash column
-		$('.del_icon').remove();
+		$(".del_icon").remove();
 
 		// replace all the links with their titles
-		$('.add_box_link').each(function(i, e) {
+		$(".add_box_link").each(function(i, e) {
 			e.replaceWith($(e).html());
 		});
 	}
@@ -86,7 +86,7 @@ var ASB = (function(a, $) {
 	/**
 	 * open a modal dialog to edit the chosen side box
 	 *
-	 * @param Event the click event object
+	 * @param  Event the click event object
 	 * @return void
 	 */
 	function edit(event) {
@@ -98,7 +98,7 @@ var ASB = (function(a, $) {
 		 */
 		event.preventDefault();
 
-		loadModal($(this).prop("href") + '&ajax=1');
+		loadModal($(this).prop("href") + "&ajax=1");
 	}
 
 	/**
@@ -110,12 +110,18 @@ var ASB = (function(a, $) {
 	 */
 	function create(e, ui) {
 		// sort by position
-		var pos = ($(this).prop("id") == 'left_column') ? 0 : 1,
-			url = 'index.php?module=config-asb&action=edit_box&ajax=1&box=0&addon=' + ui.draggable.prop("id") + '&pos=' + pos;
+		var pos = ($(this).prop("id") == "left_column") ? 0 : 1,
+			url = "index.php?module=config-asb&action=edit_box&ajax=1&box=0&addon=" + ui.draggable.prop("id") + "&pos=" + pos;
 
 		loadModal(url);
 	}
 
+	/**
+	 * open a modal
+	 *
+	 * @param  String
+	 * @return void
+	 */
 	function loadModal(url) {
 		$.get(url,
 			function (html) {
@@ -125,7 +131,7 @@ var ASB = (function(a, $) {
 				}
 
 				// if the admin session has expired
-				if (typeof html == 'string' &&
+				if (typeof html == "string" &&
 					html.search("errors") != -1 &&
 					html.search("login") != -1) {
 					// redirect to the login page
@@ -134,9 +140,9 @@ var ASB = (function(a, $) {
 				}
 
 				// show the modal
-				$(html).appendTo('body').modal({
+				$(html).appendTo("body").modal({
 					fadeDuration: 250,
-					zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999),
+					zIndex: (typeof modal_zindex !== "undefined" ? modal_zindex : 9999),
 				});
 			});
 	}
@@ -146,9 +152,9 @@ var ASB = (function(a, $) {
 	/**
 	 * create a simple side box div to be completed by updateDiv
 	 *
-	 * @param int the side box's database id
-	 * @param string the side box's title
-	 * @param string the id attribute of the column
+	 * @param  int id
+	 * @param  string title
+	 * @param  string column id
 	 * @return void
 	 */
 	function createDiv(id, title, columnId) {
@@ -156,37 +162,37 @@ var ASB = (function(a, $) {
 			return;
 		}
 
-		$("#" + columnId).append($('<div/>', {
-			id: 'sidebox_' + id,
-			class: 'sidebox'
+		$("#" + columnId).append($("<div/>", {
+			id: "sidebox_" + id,
+			"class": "sidebox",
 		}).html(title));
 	}
 
 	/**
 	 * update a side box's div with new info
 	 *
-	 * @param int the side box's database id
+	 * @param  int id
 	 * @return void
 	 */
 	function updateDiv(id) {
-		var sideboxId = '#sidebox_' + id;
+		var sideboxId = "#sidebox_" + id;
 		if (!$(sideboxId)) {
 			return;
 		}
 
-		$(sideboxId).load('index.php', {
-			module: 'config-asb',
-			action: 'xmlhttp',
-			mode: 'build_info',
+		$(sideboxId).load("index.php", {
+			module: "config-asb",
+			action: "xmlhttp",
+			mode: "build_info",
 			id: id,
-			ajax: '1',
+			ajax: "1",
 		});
 	}
 
 	/**
 	 * delete one or more side box div elements by id
 	 *
-	 * @param Array an array of integer ids
+	 * @param  Array ids
 	 * @return void
 	 */
 	function removeDivs(ids) {
@@ -196,7 +202,7 @@ var ASB = (function(a, $) {
 
 		var i, sideboxId, sidebox;
 		for (i = 0; i < ids.length; i++) {
-			sideboxId = '#sidebox_' + ids[i];
+			sideboxId = "#sidebox_" + ids[i];
 			if (!$(sideboxId)) {
 				continue;
 			}
@@ -204,7 +210,7 @@ var ASB = (function(a, $) {
 			// change the text and fade the <div> out
 			sidebox = $(sideboxId);
 			sidebox.css({
-				backgroundColor: '#f00',
+				backgroundColor: "#f00",
 			});
 			sidebox.html(lang.deleting_sidebox);
 			sidebox.fadeOut(800, function() {
