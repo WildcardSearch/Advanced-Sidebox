@@ -175,7 +175,7 @@ function asb_slideshow_build_template($args)
 	$shuffle = $settings['shuffle'] ? 'true' : 'false';
 	$folder = $settings['folder'];
 	$rate = (int) $settings['rate'] ? (int) $settings['rate'] : 10;
-	$fade_rate = (float) $settings['fade_rate'] ? (float) $settings['fade_rate'] : 1;
+	$fade_rate = (float) $settings['fade_rate'] ? (int) ($settings['fade_rate'] * 1000) : 400;
 
 	$filenames = asb_get_folder_images($folder, '', $settings['recursive']);
 	if (!$filenames) {

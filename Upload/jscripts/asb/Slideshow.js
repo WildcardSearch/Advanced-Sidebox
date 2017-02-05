@@ -24,7 +24,7 @@ var ASB = (function(a, $) {
 		this.options = {
 			rate: 10,
 			shuffle: false,
-			fadeRate: 1,
+			fadeRate: 400,
 			size: 100,
 			maxWidth: 0,
 			maxHeight: 0,
