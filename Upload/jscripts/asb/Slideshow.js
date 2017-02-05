@@ -17,7 +17,7 @@ var ASB = (function(a, $) {
 	 * @return void
 	 */
 	function Slideshow(container, options) {
-		if (!$(container)) {
+		if (!$("#" + container).length) {
 			return;
 		}
 
@@ -26,21 +26,30 @@ var ASB = (function(a, $) {
 			shuffle: false,
 			fadeRate: 1,
 			size: 100,
+			maxWidth: 0,
+			maxHeight: 0,
+			maintainHeight: 1,
 		};
 		$.extend(this.options, options || {});
+
+		this.startHeight = this.options.size;
+		if (this.options.maxHeight > 0 &&
+			this.options.maintainHeight) {
+			this.startHeight = this.options.maxHeight;
+		}
 
 		// set up the container
 		this.container = $("#" + container);
 		this.container.css({
 			width: this.options.size + 'px',
-			height: this.options.size + 'px',
+			height: this.startHeight + 'px',
 			marginLeft: 'auto',
 			marginRight: 'auto',
 			position: 'relative',
 		});
 
 		// no images, no have slide show
-		if (!this.options.images ||
+		if (typeof this.options.images === "undefined" ||
 			this.options.images.length == 0) {
 			return;
 		}
@@ -58,7 +67,6 @@ var ASB = (function(a, $) {
 		}).css({
 			display: 'none',
 			position: 'absolute',
-			width: this.options.size + 'px',
 			left: '0px',
 			top: '0px',
 		});
@@ -178,14 +186,50 @@ var ASB = (function(a, $) {
 		// maintain the ratio and resize if necessary
 		if (height > width) {
 			ratio = height / width;
+
 			this.cloneWidth = parseInt(this.options.size / ratio);
 			this.cloneHeight = this.options.size;
+
+			if (this.options.maxWidth > 0 &&
+				this.cloneWidth > this.options.maxWidth) {
+				this.cloneWidth = this.options.maxWidth;
+				this.cloneHeight = parseInt(this.options.maxWidth * ratio);
+			}
+
+			if (this.options.maxHeight > 0 &&
+				this.cloneHeight > this.options.maxHeight) {
+				this.cloneWidth = parseInt(this.options.maxHeight / ratio);
+				this.cloneHeight = this.options.maxHeight;
+			}
 		} else if (width > height) {
 			ratio = width / height;
+
 			this.cloneWidth = this.options.size;
 			this.cloneHeight = parseInt(this.options.size / ratio);
+
+			if (this.options.maxWidth > 0 &&
+				this.cloneWidth > this.options.maxWidth) {
+				this.cloneWidth = this.options.maxWidth;
+				this.cloneHeight = parseInt(this.options.maxWidth / ratio);
+			}
+
+			if (this.options.maxHeight > 0 &&
+				this.cloneHeight > this.options.maxHeight) {
+				this.cloneWidth = parseInt(this.options.maxHeight * ratio);
+				this.cloneHeight = this.options.maxHeight;
+			}
 		} else {
 			this.cloneHeight = this.cloneWidth = this.options.size;
+
+			if (this.options.maxWidth > 0 &&
+				this.cloneWidth > this.options.maxWidth) {
+				this.cloneHeight = this.cloneWidth = this.options.maxWidth;
+			}
+
+			if (this.options.maxHeight > 0 &&
+				this.cloneHeight > this.options.maxHeight) {
+				this.cloneWidth = this.cloneHeight = this.options.maxHeight;
+			}
 		}
 
 		this.clone.remove();
@@ -199,12 +243,20 @@ var ASB = (function(a, $) {
 	 * @return Object the DOM Element Object
 	 */
 	function resizeImage(el) {
-		el.css({
+		style = {
 			height: this.cloneHeight + 'px',
 			width: this.cloneWidth + 'px',
-			left: parseInt((this.options.size / 2) - (this.cloneWidth / 2)) + 'px',
-			top: parseInt((this.options.size / 2) - (this.cloneHeight / 2)) + 'px',
-		});
+			left: parseInt((this.options.size / 2) - (this.cloneWidth / 2)) + "px",
+			top: parseInt((this.startHeight / 2) - (this.cloneHeight / 2)) + "px",
+		};
+
+		if (!this.options.maintainHeight) {
+			this.container.css("height", this.cloneHeight + "px");
+			style.top = "0px";
+		}
+
+		el.css(style);
+
 		return el;
 	}
 
