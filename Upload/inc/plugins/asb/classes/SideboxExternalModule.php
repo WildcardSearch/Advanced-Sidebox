@@ -120,7 +120,7 @@ class SideboxExternalModule extends ExternalModule
 		}
 
 		if (!$this->compatibility ||
-			version_compare('2.1', $this->compatibility, '<')) {
+			version_compare('2.1', $this->compatibility, '>')) {
 			return false;
 		}
 

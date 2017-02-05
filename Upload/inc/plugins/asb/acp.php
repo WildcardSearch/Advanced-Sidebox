@@ -1336,7 +1336,7 @@ EOF;
 
 			$out_of_date = '';
 			if (!$data['compatibility'] ||
-				version_compare('2.1', $data['compatibility'], '<')) {
+				version_compare('2.1', $data['compatibility'], '>')) {
 				$out_of_date = <<<EOF
 <br /><span style="color: red;">{$lang->asb_module_out_of_date}</span>
 EOF;
