@@ -110,7 +110,7 @@ EOF
 			array(
 				"title" => 'asb_whosonline_memberbit_see_all',
 				"template" => <<<EOF
-<td><a href="{\$mybb->settings[\'bburl\']}/online.php" title="{\$lang->asb_wol_see_all_title}"><img style="{\$avatar_style}" src="{\$mybb->settings[\'bburl\']}/inc/plugins/asb/images/see_all.gif" alt="{\$lang->asb_wol_see_all_alt}" title="{\$lang->asb_wol_see_all_title}" width="{\$avatar_width}px"/></a></td>
+<td><a href="{\$mybb->settings[\'bburl\']}/online.php" title="{\$lang->asb_wol_see_all_title}"><img style="{\$avatar_style}" src="{\$theme[\'imgdir\']}/asb/see_all.png" alt="{\$lang->asb_wol_see_all_alt}" title="{\$lang->asb_wol_see_all_title}" width="{\$avatar_width}px"/></a></td>
 EOF
 			),
 		),

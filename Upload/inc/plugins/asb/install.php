@@ -20,7 +20,7 @@ if (!defined('IN_MYBB') ||
  */
 function asb_info()
 {
-	global $mybb, $lang;
+	global $mybb, $lang, $cp_style;
 
 	if (!$lang->asb) {
 		$lang->load('asb');
@@ -40,7 +40,7 @@ EOF;
 		}
 
 		$settings_link = <<<EOF
-	<li style="list-style-image: url(../inc/plugins/asb/images/settings.gif)">
+	<li style="list-style-image: url(styles/{$cp_style}/images/asb/settings.png)">
 		{$settings_link}
 	</li>
 EOF;
@@ -48,17 +48,17 @@ EOF;
 		$extra_links = <<<EOF
 <ul>
 	{$settings_link}
-	<li style="list-style-image: url(../inc/plugins/asb/images/manage.gif)">
+	<li style="list-style-image: url(styles/{$cp_style}/images/asb/manage.png)">
 		<a href="{$url}" title="{$lang->asb_manage_sideboxes}">{$lang->asb_manage_sideboxes}</a>
 	</li>{$remove_link}
-	<li style="list-style-image: url(../inc/plugins/asb/images/help.gif)">
+	<li style="list-style-image: url(styles/{$cp_style}/images/asb/help.png)">
 		<a href="javascript:void()" onclick="window.open('{$mybb->settings['bburl']}/inc/plugins/asb/help/index.php?topic=install', 'mywindowtitle', 'width=840, height=520, scrollbars=yes')" title="{$lang->asb_help}">{$lang->asb_help}</a>
 	</li>
 </ul>
 EOF;
 
-		$button_pic = $mybb->settings['bburl'] . '/inc/plugins/asb/images/donate.gif';
-		$border_pic = $mybb->settings['bburl'] . '/inc/plugins/asb/images/pixel.gif';
+		$button_pic = "styles/{$cp_style}/images/asb/donate.png";
+		$border_pic = "styles/{$cp_style}/images/asb/pixel.png";
 		$asb_description = <<<EOF
 <table width="100%">
 	<tbody>
@@ -67,7 +67,7 @@ EOF;
 				{$lang->asb_description1}<br/><br/>{$lang->asb_description2}{$extra_links}
 			</td>
 			<td style="text-align: center;">
-				<img src="{$mybb->settings['bburl']}/inc/plugins/asb/images/asb_logo_80.png" alt="{$lang->asb_logo}" title="{$lang->asb_logo}"/><br /><br />
+				<img src="styles/{$cp_style}/images/asb/logo.png" alt="{$lang->asb_logo}" title="{$lang->asb_logo}"/><br /><br />
 				<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 					<input type="hidden" name="cmd" value="_s-xclick">
 					<input type="hidden" name="hosted_button_id" value="VA5RFLBUC4XM4">
@@ -226,6 +226,9 @@ function asb_activate()
 			foreach ($removed_files as $file) {
 				@unlink(MYBB_ROOT . $file);
 			}
+
+			@my_rmdir_recursive(MYBB_ROOT . 'inc/plugins/asb/images');
+			@rmdir(MYBB_ROOT . 'inc/plugins/asb/images');
 		}
 	}
 	asb_set_cache_version();

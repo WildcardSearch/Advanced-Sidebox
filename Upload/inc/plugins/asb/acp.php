@@ -78,7 +78,7 @@ function asb_admin()
  */
 function asb_admin_manage_sideboxes()
 {
-	global $mybb, $db, $page, $lang, $html, $scripts, $all_scripts, $min;
+	global $mybb, $db, $page, $lang, $html, $scripts, $all_scripts, $min, $cp_style;
 
 	$addons = asb_get_all_modules();
 
@@ -197,7 +197,7 @@ EOF;
 					</td>
 				</tr>
 				<tr id="bottomRight" height="45px;">
-					<td id="trash_column" class="column trashcan sortable" colspan="2"></td>
+					<td id="trash_column" class="column trashcan sortable" colspan="2" style="background: #f4f4f4 url(styles/{$cp_style}/images/asb/trashcan_bg.png) no-repeat center;"></td>
 				</tr>
 			</tbody>
 		</table>
@@ -646,7 +646,7 @@ EOF;
  */
 function asb_admin_custom_boxes()
 {
-	global $lang, $mybb, $db, $page, $html, $min;
+	global $lang, $mybb, $db, $page, $html, $min, $cp_style;
 
 	if ($mybb->input['mode'] == 'export') {
 		if ((int) $mybb->input['id'] == 0) {
@@ -906,7 +906,7 @@ EOF;
 	asb_output_tabs('asb_custom');
 
 	$new_box_url = $html->url(array("action" => 'custom_boxes', "mode" => 'edit'));
-	$new_box_link = $html->link($new_box_url, $lang->asb_add_custom_box_types, array("style" => 'font-weight: bold;', "title" => $lang->asb_add_custom_box_types, "icon" => "{$mybb->settings['bburl']}/inc/plugins/asb/images/add.png"), array("alt" => '+', "style" => 'margin-bottom: -3px;', "title" => $lang->asb_add_custom_box_types));
+	$new_box_link = $html->link($new_box_url, $lang->asb_add_custom_box_types, array("style" => 'font-weight: bold;', "title" => $lang->asb_add_custom_box_types, "icon" => "styles/{$cp_style}/images/asb/add.png"), array("alt" => '+', "style" => 'margin-bottom: -3px;', "title" => $lang->asb_add_custom_box_types));
 	echo($new_box_link . '<br /><br />');
 
 	$table = new Table;
@@ -982,7 +982,7 @@ EOF;
  */
 function asb_admin_manage_scripts()
 {
-	global $mybb, $db, $page, $lang, $html, $min;
+	global $mybb, $db, $page, $lang, $html, $min, $cp_style;
 
 	require_once MYBB_ROOT . 'inc/plugins/asb/classes/ScriptInfo.php';
 
@@ -1231,7 +1231,7 @@ EOF;
 		asb_output_tabs('asb_scripts');
 
 		$new_script_url = $html->url(array("action" => 'manage_scripts', "mode" => 'edit'));
-		$new_script_link = $html->link($new_script_url, $lang->asb_add_new_script, array("style" => 'font-weight: bold;', "title" => $lang->asb_add_new_script, "icon" => "{$mybb->settings['bburl']}/inc/plugins/asb/images/add.png"), array("alt" => '+', "title" => $lang->asb_add_new_script, "style" => 'margin-bottom: -3px;'));
+		$new_script_link = $html->link($new_script_url, $lang->asb_add_new_script, array("style" => 'font-weight: bold;', "title" => $lang->asb_add_new_script, "icon" => "styles/{$cp_style}/images/asb/add.png"), array("alt" => '+', "title" => $lang->asb_add_new_script, "style" => 'margin-bottom: -3px;'));
 		echo($new_script_link . '<br /><br />');
 
 		$table = new Table;

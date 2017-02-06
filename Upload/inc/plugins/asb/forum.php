@@ -149,7 +149,7 @@ function asb_start()
  */
 function asb_edit_template($boxes, $width, $script)
 {
-	global $mybb, $lang, $templates, $headerinclude;
+	global $mybb, $lang, $templates, $headerinclude, $theme;
 
 	if ($mybb->settings['asb_minify_js']) {
 		$min = '.min';
@@ -171,11 +171,11 @@ EOF;
 
 		$toggle_info['left'] = array(
 			"close" => array(
-				"img" => 'inc/plugins/asb/images/left_arrow.png',
+				"img" => "{$theme['imgdir']}/asb/left_arrow.png",
 				"alt" => '&lt;'
 			),
 			"open" => array(
-				"img" => 'inc/plugins/asb/images/right_arrow.png',
+				"img" => "{$theme['imgdir']}/asb/right_arrow.png",
 				"alt" => '&gt;'
 			)
 		);

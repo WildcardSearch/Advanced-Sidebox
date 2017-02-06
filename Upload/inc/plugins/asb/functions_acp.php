@@ -15,14 +15,14 @@
  */
 function asb_build_help_link($topic = '')
 {
-	global $mybb, $lang, $html;
+	global $mybb, $lang, $html, $cp_style;
 
 	if (!$topic) {
 		$topic = 'manage_sideboxes';
 	}
 
 	$help_url = $html->url(array("topic" => $topic), "{$mybb->settings['bburl']}/inc/plugins/asb/help/index.php");
-	return $html->link($help_url, $lang->asb_help, array("id" => 'help_link', "style" => 'font-weight: bold;', "icon" => "{$mybb->settings['bburl']}/inc/plugins/asb/images/help.gif", "title" => $lang->asb_help), array("id" => 'help_link_icon', "alt" => '?', "title" => $lang->asb_help, "style" => 'margin-bottom: -3px;'));
+	return $html->link($help_url, $lang->asb_help, array("id" => 'help_link', "style" => 'font-weight: bold;', "icon" => "styles/{$cp_style}/images/asb/help.png", "title" => $lang->asb_help), array("id" => 'help_link_icon', "alt" => '?', "title" => $lang->asb_help, "style" => 'margin-bottom: -3px;'));
 }
 
 /**
@@ -32,10 +32,10 @@ function asb_build_help_link($topic = '')
  */
 function asb_build_settings_menu_link()
 {
-	global $mybb, $lang, $html;
+	global $mybb, $lang, $html, $cp_style;
 
 	$settings_url = asb_build_settings_url(asb_get_settingsgroup());
-	$settings_link = $html->link($settings_url, $lang->asb_plugin_settings, array("icon" => "{$mybb->settings['bburl']}/inc/plugins/asb/images/settings.gif", "style" => 'font-weight: bold;', "title" => $lang->asb_plugin_settings), array("alt" => 'S', "style" => 'margin-bottom: -3px;'));
+	$settings_link = $html->link($settings_url, $lang->asb_plugin_settings, array("icon" => "styles/{$cp_style}/images/asb/settings.png", "style" => 'font-weight: bold;', "title" => $lang->asb_plugin_settings), array("alt" => 'S', "style" => 'margin-bottom: -3px;'));
 	return $settings_link;
 }
 
@@ -348,7 +348,7 @@ function asb_build_sidebox_info($sidebox, $wrap = true, $ajax = false)
 		return false;
 	}
 
-	global $html, $scripts, $all_scripts, $lang;
+	global $html, $scripts, $all_scripts, $lang, $cp_style;
 
 	$title = $sidebox->get('title');
 	$id = $sidebox->get('id');
@@ -361,20 +361,20 @@ function asb_build_sidebox_info($sidebox, $wrap = true, $ajax = false)
 	// edit link
 	$edit_link = $html->url(array("action" => 'edit_box', "id" => $id, "addon" => $module, "pos" => $pos));
 	$edit_icon = <<<EOF
-<a href="{$edit_link}" class="info_icon" id="edit_sidebox_{$id}" title="{$lang->asb_edit}"><img src="../inc/plugins/asb/images/edit.png" height="18" width="18" alt="{$lang->asb_edit}"/></a>
+<a href="{$edit_link}" class="info_icon" id="edit_sidebox_{$id}" title="{$lang->asb_edit}"><img src="styles/{$cp_style}/images/asb/edit.png" height="18" width="18" alt="{$lang->asb_edit}"/></a>
 EOF;
 
 	// delete link (only used if JS is disabled)
 	if (!$ajax) {
 		$delete_link = $html->url(array("action" => 'delete_box', "id" => $id));
 		$delete_icon = <<<EOF
-<a href="{$delete_link}" class="del_icon" title="{$lang->asb_delete}"><img src="../inc/plugins/asb/images/delete.png" height="18" width="18" alt="{$lang->asb_delete}"/></a>
+<a href="{$delete_link}" class="del_icon" title="{$lang->asb_delete}"><img src="styles/{$cp_style}/images/asb/delete.png" height="18" width="18" alt="{$lang->asb_delete}"/></a>
 EOF;
 	}
 
 	// the content
 	$box = <<<EOF
-<span class="tooltip"><img class="info_icon" src="../inc/plugins/asb/images/visibility.png" alt="Information" height="18" width="18"/>{$visibility}</span>{$edit_icon}{$delete_icon}{$title}
+<span class="tooltip"><img class="info_icon" src="styles/{$cp_style}/images/asb/visibility.png" alt="Information" height="18" width="18"/>{$visibility}</span>{$edit_icon}{$delete_icon}{$title}
 EOF;
 
 	// the <div> (if applicable)

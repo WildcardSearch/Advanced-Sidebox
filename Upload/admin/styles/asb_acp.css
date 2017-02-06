@@ -99,18 +99,17 @@ div.draggable {
 }
 
 .column.hover {
-	background: #f4f4f4 url(../../inc/plugins/asb/images/column_bg.png);
 	border: 3px dashed #333;
 }
 
 .trashcan {
 	width: 99%;
-	background: #f4f4f4 url(../../inc/plugins/asb/images/trashcan_bg.png) no-repeat center;
+	background: #f4f4f4;
 	min-height: 80px;
 }
 
 .forum_column {
-	background: #f4f4f4 url(../../inc/plugins/asb/images/column_bg.png);
+	background: #f4f4f4;
 	width: 225px;
 	min-height: 300px;
 }
