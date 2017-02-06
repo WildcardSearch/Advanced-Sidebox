@@ -129,7 +129,9 @@ class SideboxExternalModule extends ExternalModule
 		$this->old_version = $this->get_cache_version();
 
 		// if this module needs to be upgraded . . .
-		if (version_compare($this->old_version, $this->version, '<') &&
+		if (isset($this->old_version) &&
+			$this->old_version &&
+			version_compare($this->old_version, $this->version, '<') &&
 			!defined('IN_ASB_UNINSTALL')) {
 			// get-r-done
 			$this->upgrade();
@@ -355,7 +357,9 @@ class SideboxExternalModule extends ExternalModule
 		// get currently installed version, if there is one
 		$asb = $cache->read('asb');
 
-		if (is_array($asb['addon_versions'])) {
+		if (is_array($asb['addon_versions']) &&
+			isset($asb['addon_versions'][$this->baseName]) &&
+			isset($asb['addon_versions'][$this->baseName]['version']) {
 			return $asb['addon_versions'][$this->baseName]['version'];
 		}
 		return 0;

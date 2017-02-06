@@ -160,7 +160,9 @@ function asb_activate()
 
 	// if we just upgraded . . .
 	$old_version = asb_get_cache_version();
-	if (version_compare($old_version, ASB_VERSION, '<')) {
+	if (isset($old_version) &&
+		$old_version &&
+		version_compare($old_version, ASB_VERSION, '<')) {
 		global $lang;
 		if (!$lang->asb) {
 			$lang->load('asb');
