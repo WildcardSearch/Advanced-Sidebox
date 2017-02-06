@@ -7,54 +7,93 @@
  * this file contains an object wrapper for individual side boxes
  */
 
-class Sidebox extends StorableObject
+class SideboxObject extends StorableObject
 {
+	/**
+	 * @var string
+	 */
 	protected $title;
+
+	/**
+	 * @var string
+	 */
 	protected $title_link;
+
+	/**
+	 * @var string
+	 */
 	protected $box_type;
+
+	/**
+	 * @var int
+	 */
 	protected $position = 0;
+
+	/**
+	 * @var int
+	 */
 	protected $display_order;
 
+	/**
+	 * @var bool
+	 */
 	protected $wrap_content = false;
 
+	/**
+	 * @var array
+	 */
 	protected $scripts = array();
+
+	/**
+	 * @var array
+	 */
 	protected $groups = array();
+
+	/**
+	 * @var array
+	 */
 	protected $themes = array();
 
+	/**
+	 * @var array
+	 */
 	protected $settings = array();
+
+	/**
+	 * @var bool
+	 */
 	public $has_settings = false;
 
-	protected $table_name = 'asb_sideboxes';
+	/**
+	 * @var string
+	 */
+	protected $tableName = 'asb_sideboxes';
 
-	/*
-	 * called upon creation
+	/**
+	 * constructor
 	 *
-	 * @param mixed an associative array corresponding to both the class
-	 * specs and the database table specs or a database table row ID
+	 * @param  array|int data or id
 	 * @return void
 	 */
 	function __construct($data = '')
 	{
-		$this->no_store[] = 'groups_array';
-		$this->no_store[] = 'has_settings';
+		$this->noStore[] = 'groups_array';
+		$this->noStore[] = 'has_settings';
 		parent::__construct($data);
 	}
 
-	/*
-	 * attempts to load the side box's data from the db, or if given no data create a blank object
+	/**
+	 * create a sidebox/load a side box
 	 *
-	 * @param array fetched from the db or
-	 * a valid ID # (__construct will feed 0 if no data is given)
+	 * @param  array|int data or id
 	 * @return bool true on success, false on fail
 	 */
 	public function load($data)
 	{
-		if($data && parent::load($data))
-		{
-			foreach(array('settings', 'groups', 'scripts', 'themes') as $property)
-			{
-				if($this->$property)
-				{
+		if ($data &&
+			parent::load($data)) {
+			foreach (array('settings', 'groups', 'scripts', 'themes') as $property) {
+				if ($this->$property) {
 					// if so decode them
 					$this->$property = json_decode($this->$property, true);
 				}

@@ -7,29 +7,23 @@
  * this file contains a class list for forum cache building
  */
 
-if(!class_exists('MalleableObject'))
-{
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/malleable.php';
+if (!class_exists('MalleableObject')) {
+	require_once MYBB_ROOT . 'inc/plugins/asb/classes/MalleableObject.php';
 }
-if(!class_exists('StorableObject'))
-{
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/storable.php';
+if (!class_exists('StorableObject')) {
+	require_once MYBB_ROOT . 'inc/plugins/asb/classes/StorableObject.php';
 }
-if(!class_exists('PortableObject'))
-{
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/portable.php';
+if (!class_exists('PortableObject')) {
+	require_once MYBB_ROOT . 'inc/plugins/asb/classes/PortableObject.php';
 }
-if(!class_exists('Sidebox'))
-{
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/sidebox.php';
+if (!class_exists('SideboxObject')) {
+	require_once MYBB_ROOT . 'inc/plugins/asb/classes/SideboxObject.php';
 }
-if(!class_exists('Custom_type'))
-{
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/custom.php';
+if (!class_exists('CustomSidebox')) {
+	require_once MYBB_ROOT . 'inc/plugins/asb/classes/CustomSidebox.php';
 }
-if(!class_exists('Addon_type'))
-{
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/module.php';
+if (!class_exists('SideboxExternalModule')) {
+	require_once MYBB_ROOT . 'inc/plugins/asb/classes/SideboxExternalModule.php';
 }
 
 ?>

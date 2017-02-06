@@ -12,9 +12,9 @@ var ASB = (function(a, $) {
 	/**
 	 * constructor: sets up the object and starts the timer
 	 *
-	 * @param string the id of the container to be updated
-	 * @param string the URL of the AJAX server-side routine
-	 * @param object various options for the updater
+	 * @param  string container id
+	 * @param  string url
+	 * @param  object options
 	 * @return void
 	 */
 	function SideboxUpdater(container, url, options) {
@@ -23,7 +23,7 @@ var ASB = (function(a, $) {
 		// now get this instance's overrides and options
 		this.frequency = (this.options.frequency || 30);
 		this.decay = this.options.decay = (this.options.decay || 1);
-		this.container = $("#" + container).children('tbody');
+		this.container = $("#" + container).children("tbody");
 		this.options.url = url;
 		this.options.complete = $.proxy(this.updateComplete, this);
 
@@ -55,13 +55,13 @@ var ASB = (function(a, $) {
 	/**
 	 * check the XMLHTTP response and update the side box if there are changes
 	 *
-	 * @param - response - (Response) the XMLHTTP response object
+	 * @param  Response
 	 * @return void
 	 */
 	function updateComplete(response) {
 		// good response?
 		if (response.responseText &&
-			response.responseText != 'nochange') {
+			response.responseText != "nochange") {
 			// might add this option later
 			this.decay = this.options.decay;
 
@@ -81,8 +81,6 @@ var ASB = (function(a, $) {
 	}
 
 	/**
-	 * onTimerEvent()
-	 *
 	 * send an AJAX request unless the side box is collapsed
 	 *
 	 * @return void
@@ -107,13 +105,11 @@ var ASB = (function(a, $) {
 		onTimerEvent: onTimerEvent,
 	};
 
-	/*
-	 * buildUpdaters()
-	 *
+	/**
 	 * prepare the Updater objects
 	 *
-	 * @param array objects filled with side box details
-	 * @param object widths for both positions
+	 * @param  array options
+	 * @param  object widths for both positions
 	 * @return void
 	 */
 	function buildUpdaters(updaters, widths, script) {
@@ -123,10 +119,10 @@ var ASB = (function(a, $) {
 			return;
 		}
 
-		var this_id = '', width = 0;
+		var this_id = "", width = 0;
 		for (var i = 0; i < updaters.length; i++) {
 			// build the element ID
-			this_id = updaters[i].addon + '_main_' + updaters[i].id;
+			this_id = updaters[i].addon + "_main_" + updaters[i].id;
 
 			if (!$("#" + this_id)) {
 				continue;
@@ -139,10 +135,10 @@ var ASB = (function(a, $) {
 			}
 
 			// this object will only update when a valid response is received
-			new SideboxUpdater(this_id, 'xmlhttp.php', {
-				type: 'get',
+			new SideboxUpdater(this_id, "xmlhttp.php", {
+				type: "get",
 				data: {
-					action: 'asb',
+					action: "asb",
 					id: updaters[i].id,
 					addon: updaters[i].addon,
 					dateline: updaters[i].dateline,

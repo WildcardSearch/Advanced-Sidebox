@@ -7,15 +7,15 @@
  * this file contains extra functions for install.php
  */
 
-/*
+/**
  * create the default script information rows (tailored to mimic the previous versions)
  *
- * @param bool true to return an associative array of ScriptInfo objects (no save) / false to simply save
- * @return mixed see above dependency
+ * @param  bool return associative array?
+ * @return array|true see above dependency
  */
 function asb_create_script_info($return = false)
 {
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/script_info.php';
+	require_once MYBB_ROOT . 'inc/plugins/asb/classes/ScriptInfo.php';
 	$scripts = array(
 		"index" => array(
 			"title" => 'Index',
@@ -124,37 +124,31 @@ EOF
 		),
 	);
 
-	if($return == false)
-	{
-		foreach($scripts as $info)
-		{
+	if ($return == false) {
+		foreach ($scripts as $info) {
 			$this_script = new ScriptInfo($info);
 			$this_script->save();
 		}
 		return true;
-	}
-	else
-	{
-		foreach($scripts as $key => $info)
-		{
+	} else {
+		foreach ($scripts as $key => $info) {
 			$ret_scripts[$key] = new ScriptInfo($info);
 		}
 		return $ret_scripts; // upgrade script will save these script defs
 	}
 }
 
-/*
+/**
  * rebuilds the theme exclude list ACP setting
  *
- * @return string the <select> HTML or false on error
+ * @return string|bool html or false
  */
 function asb_build_theme_exclude_select()
 {
 	$all_themes = asb_get_all_themes(true);
 
 	$theme_count = min(5, count($all_themes));
-	if($theme_count == 0)
-	{
+	if ($theme_count == 0) {
 		return $theme_select = <<<EOF
 php
 <select name=\"upsetting[asb_exclude_theme][]\" size=\"1\">
@@ -165,8 +159,7 @@ EOF;
 	}
 
 	// Create an option for each theme and insert code to unserialize each option and 'remember' settings
-	foreach($all_themes as $tid => $name)
-	{
+	foreach ($all_themes as $tid => $name) {
 		$name = addcslashes($name, '"');
 		$theme_select .= <<<EOF
 <option value=\"{$tid}\" " . (is_array(unserialize(\$setting['value'])) ? (\$setting['value'] != "" && in_array("{$tid}", unserialize(\$setting['value'])) ? "selected=\"selected\"":""):"") . ">{$name}</option>
@@ -185,7 +178,7 @@ EOF;
 
 /* versioning */
 
-/*
+/**
  * check cached version info
  * derived from the work of pavemen in MyBB Publisher
  *
@@ -197,14 +190,13 @@ function asb_get_cache_version()
 
 	// get currently installed version, if there is one
 	$asb = $cache->read('asb');
-	if($asb['version'])
-	{
+	if ($asb['version']) {
         return $asb['version'];
 	}
     return 0;
 }
 
-/*
+/**
  * set cached version info
  * derived from the work of pavemen in MyBB Publisher
  *
@@ -214,17 +206,14 @@ function asb_set_cache_version()
 {
 	global $cache;
 
-	// get version from this plugin file
-	$asb_info = asb_info();
-
 	// update version cache to latest
 	$asb = $cache->read('asb');
-	$asb['version'] = $asb_info['version'];
+	$asb['version'] = ASB_VERSION;
 	$cache->update('asb', $asb);
     return true;
 }
 
-/*
+/**
  * remove cached version info
  * derived from the work of pavemen in MyBB Publisher
  *

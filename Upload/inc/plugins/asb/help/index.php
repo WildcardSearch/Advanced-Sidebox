@@ -30,13 +30,10 @@ $links_array = array(
 );
 
 // if we have a topic . . .
-if(isset($_GET['topic']))
-{
+if (isset($_GET['topic'])) {
 	// store it
 	$current = $_GET['topic'];
-}
-else
-{
+} else {
 	// otherwise blank means the main page
 	$current = '';
 }
@@ -46,13 +43,10 @@ $links = asb_get_links($current);
 $help_contents = asb_help_get_contents($current);
 
 // is the template intact?
-if(file_exists('pages/help_template.php'))
-{
+if (file_exists('pages/help_template.php')) {
 	// if so require it
 	require_once 'pages/help_template.php';
-}
-else
-{
+} else {
 	// if not then compromise and just give them the help contents
 	$help_page = $help_contents;
 }
@@ -72,8 +66,7 @@ function asb_help_get_contents($current = '')
 	global $page_title, $links_array;
 
 	$filename = 'pages/' . $current . '.php';
-	if(file_exists($filename))
-	{
+	if (file_exists($filename)) {
 		// if so require ir
 		require_once $filename;
 		return $help_content;
@@ -104,16 +97,12 @@ function asb_get_links($current = '')
 	$links = '';
 
 	// loop through each and create the link
-	foreach($links_array as $topic => $link_title)
-	{
+	foreach ($links_array as $topic => $link_title) {
 		// if this is the current topic
-		if($topic == $current)
-		{
+		if ($topic == $current) {
 			// no link
 			$links .= "<tr title=\"{$link_title}\" class='active_link'><td>{$link_title}</td></tr>";
-		}
-		else
-		{
+		} else {
 			// link
 			$links .= "<tr class='inactive_link' onclick=\"document.location = '?topic={$topic}';\"><td><a href=\"?topic={$topic}\" title=\"{$link_title}\">{$link_title}</a></td></tr>";
 		}
@@ -123,8 +112,7 @@ function asb_get_links($current = '')
 	$links .= "<tr class='inactive_link' onclick=\"window.close();\"><td><a href=\"javascript:void()\" onclick=\"window.close()\" title=\"close window\">Close Window</a></td>";
 
 	// if there are links (which there certainly will be)
-	if($links)
-	{
+	if ($links) {
 		// return them
 		return '<div><table width="100%" class="menu" border="1">' . $links . '</table></div>';
 	}
@@ -146,24 +134,18 @@ function asb_help_build_page_link($links, $caption = '')
 	$all_links = '';
 
 	// if we have links . . .
-	if(!$links)
-	{
+	if (!$links) {
 		return false;
 	}
 
-	if(is_array($links))
-	{
+	if (is_array($links)) {
 		// loop through each topic key
-		foreach($links as $topic)
-		{
+		foreach ($links as $topic) {
 			// adding to the list?
-			if($all_links)
-			{
+			if ($all_links) {
 				// comma separator
 				$separator = '<strong>,</strong>&nbsp;';
-			}
-			else
-			{
+			} else {
 				// first link
 				$separator = '&nbsp;';
 			}
@@ -171,23 +153,19 @@ function asb_help_build_page_link($links, $caption = '')
 			// produce the HTML
 			$all_links .= "{$separator}<a href=\"?topic={$topic}\" title=\"" . $links_array[$topic] . "\">" . $links_array[$topic] . "</a>";
 		}
-	}
-	else
-	{
+	} else {
 		// no array, just one link
 		$all_links = "&nbsp;<a href=\"?topic={$links}\" title=\"" . $links_array[$links] . "\">" . $links_array[$links] . "</a>";
 	}
 
 	// links to show?
-	if(!$all_links)
-	{
+	if (!$all_links) {
 		// no links
 		return false;
 	}
 
 	// is there a caption?
-	if($caption)
-	{
+	if ($caption) {
 		// if so use it
 		return "<strong>{$caption}</strong>{$all_links}";
 	}

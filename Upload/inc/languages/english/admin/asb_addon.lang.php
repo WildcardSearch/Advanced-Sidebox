@@ -9,6 +9,8 @@
 
 $l['asb_addon'] = 'Addon';
 
+$l['asb_recent_posts_ellipsis'] = $l['asb_recent_posts_title_ellipsis'] = $l['asb_latest_threads_ellipsis'] = '...';
+
 // default settings
 $l['asb_xmlhttp_on_title'] = 'AJAX Update?';
 $l['asb_xmlhttp_on_description'] = 'time (in seconds) between updates (0 to disable AJAX)';
@@ -26,13 +28,16 @@ $l['asb_thread_hide_list_title'] = 'Thread Hide List';
 $l['asb_thread_hide_list_desc'] = '(optional) add a thread id or a comma-separated list of tids to be <strong>excluded/hidden</strong> [If Forum Show List or Forum Hide List are in use, this setting <strong>will override and amend</strong>]';
 
 $l['asb_group_show_list_title'] = 'Usergroup Show List';
-$l['asb_group_show_list_desc'] = '(optional) add a usergroup id or a comma-separated list of gids to show exclusively [If Group Hide List is in use, this setting will not override, but can amend]';
+$l['asb_group_show_list_desc'] = '(optional) add a usergroup id or a comma-separated list of gids to show exclusively [If Usergroup Hide List is in use, this setting will not override, but can amend]';
 
 $l['asb_group_hide_list_title'] = 'Usergroup Hide List';
 $l['asb_group_hide_list_desc'] = '(optional) add a usergroup id or a comma-separated list of gids to be <strong>excluded/hidden</strong> [If Usergroup Show List is in use, this setting <strong>will override and amend</strong>]';
 
 $l['asb_important_threads_only_title'] = 'Important Threads Only?';
 $l['asb_important_threads_only_desc'] = "YES to only use 'stickied' threads, NO (default) to use any threads/posts";
+
+$l['asb_max_thread_title_length_title'] = 'Thread Title Length Limit';
+$l['asb_max_thread_title_length_desc'] = 'enter nothing or 0 to show the full title, or enter the maximal number of characters to display (default 40)';
 
 // welcome
 $l['asb_welcome'] = 'Welcome';
@@ -122,7 +127,7 @@ $l['asb_last_poster_avatar_title'] = 'Last Poster Avatar?';
 $l['asb_last_poster_avatar_desc'] = 'YES to show the avatar of the last poster, NO to show formatted user name';
 
 $l['asb_avatar_width_title'] = 'Avatar Width';
-$l['asb_avatar_width_desc'] = 'width in pixels IF showing avatars';
+$l['asb_avatar_width_desc'] = 'enter digits (ie. "40") to specifiy width in pixels, or digits followed by "%" (ie. "40%") to specifiy width in percentage of the side box width &mdash; this settings has no effect unless Last Poster Avatar is set to YES';
 
 $l['asb_new_threads_only_title'] = 'New Threads Only?';
 $l['asb_new_threads_only_desc'] = 'enter nothing or 0 to show all threads with new posts (default), or enter the amount of days to show only threads created within that time';
@@ -135,7 +140,7 @@ $l['asb_recent_posts_max_title'] = 'Post Limit';
 $l['asb_recent_posts_max_description'] = 'maximal number of posts to display';
 
 $l['asb_recent_posts_max_length_title'] = 'Maximum Post Length';
-$l['asb_recent_posts_max_length_description'] = 'maximum length of excerpt to show in characters';
+$l['asb_recent_posts_max_length_description'] = 'enter nothing or 0 to show the full post message, or enter the maximal number of characters to display (default 20)';
 
 $l['asb_recent_posts_no_posts'] = 'There are no posts to display.';
 
@@ -217,6 +222,15 @@ $l['asb_slideshow_footer_text_description'] = 'text for footer link, leave blank
 $l['asb_slideshow_footer_url_title'] = 'Footer Link URL';
 $l['asb_slideshow_footer_url_description'] = 'URL for footer link, above setting must have a value before it will be effective';
 
+$l['asb_slideshow_max_width_title'] = 'Maximum Width';
+$l['asb_slideshow_max_width_description'] = 'enter 0 or nothing to fill the side box (default), or enter the maximum width in pixels';
+
+$l['asb_slideshow_max_height_title'] = 'Maximum Height';
+$l['asb_slideshow_max_height_description'] = 'enter 0 or nothing to fill the side box (default), or enter the maximum height in pixels';
+
+$l['asb_slideshow_maintain_height_title'] = 'Maintain Height?';
+$l['asb_slideshow_maintain_height_description'] = 'YES to keep the sidebox the same height throughout (default), or NO to resize the size box with each image';
+
 $l['asb_slideshow_no_images'] = 'No images to show';
 
 // top poster
@@ -230,13 +244,18 @@ $l['asb_top_poster_no_avatar'] = 'no avatar';
 $l['asb_top_poster_posts'] = 'posts';
 $l['asb_top_poster_post'] = 'post';
 $l['asb_top_poster_congrats'] = 'Congratulations to {1}, our current top poster for the last {2} with {3} {4}!';
+$l['asb_top_poster_description'] = 'Top Posters For {1}';
 
 $l['asb_top_poster_time_frame_title'] = 'Time Frame';
 $l['asb_top_poster_time_frame_desc'] = 'time to compare for top poster stats';
 
+$l['asb_top_poster_max_posters_title'] = 'Number Of Top Posters';
+$l['asb_top_poster_max_posters_desc'] = '0 or invalid values default to 1';
+
 $l['asb_top_poster_avatar_size_title'] = 'Avatar Size';
 $l['asb_top_poster_avatar_size_desc'] = 'size in pixels for top poster avatar (leave blank to fill side box minus some padding)';
 
+$l['asb_top_poster_all_time_title'] = 'All Time';
 $l['asb_top_poster_one_day_title'] = 'One Day';
 $l['asb_top_poster_one_week_title'] = 'One Week';
 $l['asb_top_poster_two_weeks_title'] = 'Two Weeks';
@@ -245,6 +264,7 @@ $l['asb_top_poster_three_months_title'] = 'Three Months';
 $l['asb_top_poster_six_months_title'] = 'Six Months';
 $l['asb_top_poster_one_year_title'] = 'One Year';
 
+$l['asb_top_poster_all_time'] = 'all time';
 $l['asb_top_poster_one_day'] = 'day';
 $l['asb_top_poster_one_week'] = 'week';
 $l['asb_top_poster_two_weeks'] = 'two weeks';
@@ -252,5 +272,14 @@ $l['asb_top_poster_one_month'] = 'month';
 $l['asb_top_poster_three_months'] = 'three months';
 $l['asb_top_poster_six_months'] = 'six months';
 $l['asb_top_poster_one_year'] = 'year';
+
+$l['asb_top_poster_all_time_desc'] = 'All Time';
+$l['asb_top_poster_one_day_desc'] = 'The Last Day';
+$l['asb_top_poster_one_week_desc'] = 'The Last Week';
+$l['asb_top_poster_two_weeks_desc'] = 'The Last Two Weeks';
+$l['asb_top_poster_one_month_desc'] = 'The Last Month';
+$l['asb_top_poster_three_months_desc'] = 'The Last Three Months';
+$l['asb_top_poster_six_months_desc'] = 'The Last Six Months';
+$l['asb_top_poster_one_year_desc'] = 'The Last Year';
 
 ?>

@@ -8,22 +8,21 @@
  */
 
 // Include a check for Advanced Sidebox
-if(!defined('IN_MYBB') || !defined('IN_ASB'))
-{
+if (!defined('IN_MYBB') ||
+	!defined('IN_ASB')) {
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
-/*
+/**
  * provide info to ASB about the addon
  *
- * @return array the module info
+ * @return array module info
  */
 function asb_rand_quote_info()
 {
 	global $lang;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
@@ -41,7 +40,7 @@ function asb_rand_quote_info()
 				"title" => $lang->asb_forum_show_list_title,
 				"description" => $lang->asb_forum_show_list_desc,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 			"forum_hide_list" => array(
 				"sid" => 'NULL',
@@ -49,7 +48,7 @@ function asb_rand_quote_info()
 				"title" => $lang->asb_forum_hide_list_title,
 				"description" => $lang->asb_forum_hide_list_desc,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 			"thread_show_list" => array(
 				"sid" => 'NULL',
@@ -57,7 +56,7 @@ function asb_rand_quote_info()
 				"title" => $lang->asb_thread_show_list_title,
 				"description" => $lang->asb_thread_show_list_desc,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 			"thread_hide_list" => array(
 				"sid" => 'NULL',
@@ -65,7 +64,7 @@ function asb_rand_quote_info()
 				"title" => $lang->asb_thread_hide_list_title,
 				"description" => $lang->asb_thread_hide_list_desc,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 			"min_length" => array(
 				"sid" => 'NULL',
@@ -73,7 +72,7 @@ function asb_rand_quote_info()
 				"title" => $lang->asb_random_quotes_min_quote_length_title,
 				"description" => $lang->asb_random_quotes_min_quote_length_desc,
 				"optionscode" => 'text',
-				"value" => '20'
+				"value" => '20',
 			),
 			"max_length" => array(
 				"sid" => 'NULL',
@@ -81,7 +80,7 @@ function asb_rand_quote_info()
 				"title" => $lang->asb_random_quotes_max_quote_length_title,
 				"description" => $lang->asb_random_quotes_max_quote_length,
 				"optionscode" => 'text',
-				"value" => '160'
+				"value" => '160',
 			),
 			"default_text" => array(
 				"sid" => 'NULL',
@@ -89,7 +88,7 @@ function asb_rand_quote_info()
 				"title" => $lang->asb_random_quotes_default_text_title,
 				"description" => $lang->asb_random_quotes_default_text_desc,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 			"important_threads_only" => array(
 				"sid" => 'NULL',
@@ -97,7 +96,7 @@ function asb_rand_quote_info()
 				"title" => $lang->asb_important_threads_only_title,
 				"description" => $lang->asb_important_threads_only_desc,
 				"optionscode" => 'yesno',
-				"value" => '0'
+				"value" => '0',
 			),
 			"xmlhttp_on" => array(
 				"sid" => 'NULL',
@@ -105,8 +104,8 @@ function asb_rand_quote_info()
 				"title" => $lang->asb_xmlhttp_on_title,
 				"description" => $lang->asb_xmlhttp_on_description,
 				"optionscode" => 'text',
-				"value" => '0'
-			)
+				"value" => '0',
+			),
 		),
 		"discarded_templates" => array(
 			'rand_quote_sidebox',
@@ -142,16 +141,16 @@ EOF
 					</td>
 				</tr>
 EOF
-			)
-		)
+			),
+		),
 	);
 }
 
-/*
+/**
  * handles display of children of this addon at page load
  *
- * @param array the specific information from the child box
- * @return bool true on success, false on fail/no content
+ * @param  array information from child box
+ * @return bool success/fail
  */
 function asb_rand_quote_build_template($args)
 {
@@ -159,19 +158,15 @@ function asb_rand_quote_build_template($args)
 
 	global $$template_var, $lang;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
 	$this_quote = asb_rand_quote_get_quote($settings, $width);
-	if($this_quote)
-	{
+	if ($this_quote) {
 		$$template_var = $this_quote;
 		return true;
-	}
-	else
-	{
+	} else {
 		// show the table only if there are posts
 		$$template_var = <<<EOF
 		<tr>
@@ -184,10 +179,10 @@ EOF;
 	}
 }
 
-/*
+/**
  * handles display of children of this addon via AJAX
  *
- * @param array the specific information from the child box
+ * @param  array info from child box
  * @return void
  */
 function asb_rand_quote_xmlhttp($args)
@@ -196,46 +191,40 @@ function asb_rand_quote_xmlhttp($args)
 
 	// get a quote and return it
 	$this_quote = asb_rand_quote_get_quote($settings, $width);
-	if($this_quote)
-	{
+	if ($this_quote) {
 		return $this_quote;
 	}
 	return 'nochange';
 }
 
-/*
+/**
  * get random quotes
  *
- * @param array individual side box settings passed to the module
- * @param int the width of the column in which the child is positioned
- * @return string containing the HTML side box markup or
- * bool false on fail/no content
+ * @param  array settings
+ * @param  int column width
+ * @return string|bool html or success/fail
  */
 function asb_rand_quote_get_quote($settings, $width)
 {
 	global $db, $mybb, $templates, $lang, $theme;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
 	// get forums user cannot view
 	$unviewable = get_unviewable_forums(true);
-	if($unviewable)
-	{
+	if ($unviewable) {
 		$unviewwhere = " AND p.fid NOT IN ({$unviewable})";
 	}
 
 	// get inactive forums
 	$inactive = get_inactive_forums();
-	if($inactive)
-	{
+	if ($inactive) {
 		$inactivewhere = " AND p.fid NOT IN ({$inactive})";
 	}
 
-	if($settings['important_threads_only'])
-	{
+	if ($settings['important_threads_only']) {
 		$important_threads = ' AND NOT t.sticky=0';
 	}
 
@@ -264,8 +253,7 @@ function asb_rand_quote_get_quote($settings, $width)
 	);
 
 	// if there was 1 . . .
-	if($db->num_rows($post_query) == 0)
-	{
+	if ($db->num_rows($post_query) == 0) {
 		return false;
 	}
 
@@ -290,21 +278,17 @@ function asb_rand_quote_get_quote($settings, $width)
 	$title_font_size = (int) ($font_size * .65);
 	$message_font_size = (int) $font_size;
 
-	if(strlen($new_message) < $settings['min_length'])
-	{
-		if($settings['default_text'])
-		{
+	if (strlen($new_message) < $settings['min_length']) {
+		if ($settings['default_text']) {
 			$new_message = $settings['default_text'];
-		}
-		else
-		{
+		} else {
 			// nothing to show
 			return false;
 		}
 	}
 
-	if($settings['max_length'] && strlen($new_message) > $settings['max_length'])
-	{
+	if ($settings['max_length'] &&
+		strlen($new_message) > $settings['max_length']) {
 		$new_message = substr($new_message, 0, $settings['max_length']) . ' . . .';
 	}
 
@@ -321,8 +305,7 @@ function asb_rand_quote_get_quote($settings, $width)
 
 	// if the user has an avatar then display it, otherwise force the default avatar.
 	$avatar_filename = "{$theme['imgdir']}/default_avatar.png";
-	if($rand_post['avatar'] != '')
-	{
+	if ($rand_post['avatar'] != '') {
 		$avatar_filename = $rand_post['avatar'];
 	}
 
@@ -330,13 +313,11 @@ function asb_rand_quote_get_quote($settings, $width)
 
 	eval("\$read_more = \"" . $templates->get('asb_rand_quote_read_more') . "\";");
 
-	if(my_strlen($rand_post['subject']) > 40)
-	{
+	if (my_strlen($rand_post['subject']) > 40) {
 		$rand_post['subject'] = my_substr($rand_post['subject'], 0, 40) . ' . . .';
 	}
 
-	if(substr(strtolower($rand_post['subject']), 0, 3) == 're:')
-	{
+	if (substr(strtolower($rand_post['subject']), 0, 3) == 're:') {
 		$rand_post['subject'] = substr($rand_post['subject'], 3);
 	}
 

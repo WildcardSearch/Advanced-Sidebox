@@ -8,22 +8,21 @@
  */
 
 // Include a check for Advanced Sidebox
-if(!defined('IN_MYBB') || !defined('IN_ASB'))
-{
+if (!defined('IN_MYBB') ||
+	!defined('IN_ASB')) {
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
-/*
+/**
  * provide info to ASB about the addon
  *
- * @return array the module info
+ * @return array module info
  */
 function asb_private_messages_info()
 {
 	global $lang;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
@@ -41,8 +40,8 @@ function asb_private_messages_info()
 				"title" => $lang->asb_xmlhttp_on_title,
 				"description" => $lang->asb_xmlhttp_on_description,
 				"optionscode" => 'text',
-				"value" => '0'
-			)
+				"value" => '0',
+			),
 		),
 		"templates" => array(
 			array(
@@ -56,36 +55,32 @@ function asb_private_messages_info()
 					</td>
 				</tr>
 EOF
-			)
-		)
+			),
+		),
 	);
 }
 
-/*
+/**
  * handles display of children of this addon at page load
  *
- * @param array the specific information from the child box
- * @return bool true on success, false on fail/no content
+ * @param  array info from child box
+ * @return bool success/fail
  */
 function asb_private_messages_build_template($args)
 {
 	extract($args);
 	global $$template_var, $lang; // <-- important!
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
 	$pmessages = asb_private_messages_get_messages();
 
-	if($pmessages)
-	{
+	if ($pmessages) {
 		$$template_var = $pmessages;
 		return true;
-	}
-	else
-	{
+	} else {
 		$pm_message = $lang->sprintf($lang->asb_pms_user_disabled_pms, "<a href=\"{$mybb->settings['bburl']}/usercp.php?action=options\">{$lang->welcome_usercp}</a>");
 		$$template_var = <<<EOF
 	<tr>
@@ -96,10 +91,10 @@ EOF;
 	}
 }
 
-/*
+/**
  * handles display of children of this addon via AJAX
  *
- * @param array the specific information from the child box
+ * @param  array info from child box
  * @return void
  */
 function asb_private_messages_xmlhttp($args)
@@ -109,63 +104,51 @@ function asb_private_messages_xmlhttp($args)
 
 	$query = $db->simple_select('privatemessages', '*', "dateline > {$dateline} AND toid='{$mybb->user['uid']}'");
 
-	if($db->num_rows($query) > 0)
-	{
+	if ($db->num_rows($query) > 0) {
 		$pmessages = asb_private_messages_get_messages();
 
-		if($pmessages)
-		{
+		if ($pmessages) {
 			return $pmessages;
 		}
 	}
 	return 'nochange';
 }
 
-/*
+/**
  * get the user's private messages
  *
- * @return string containing the HTML side box markup or
- * bool false on fail/no content
+ * @return string|bool html or success/fail
  */
 function asb_private_messages_get_messages()
 {
 	global $db, $mybb, $templates, $lang;
 
 	// Load global and custom language phrases
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
-	if($mybb->user['uid'] == 0)
-	{
+	if ($mybb->user['uid'] == 0) {
 		// guest
 		$pmessages = $lang->sprintf("<tr><td class='trow1'>{$lang->asb_pms_no_messages}</td></tr>","<a href=\"{$mybb->settings['bburl']}/member.php?action=login\">{$lang->asb_pms_login}</a>", "<a href=\"{$mybb->settings['bburl']}/member.php?action=register\">{$lang->asb_pms_register}</a>");
 		$ret_val = false;
-	}
-	else
-	{
+	} else {
 		// has the user disabled pms?
-		if($mybb->user['receivepms'])
-		{
+		if ($mybb->user['receivepms']) {
 			// does admin allow pms?
-			if(!$mybb->usergroup['canusepms'] || !$mybb->settings['enablepms'])
-			{
+			if (!$mybb->usergroup['canusepms'] ||
+				!$mybb->settings['enablepms']) {
 				// if not tell them
 				$pmessages = $lang->sprintf("<tr><td class='trow1'>{$lang->asb_pms_disabled_by_admin}</td></tr>", "<a href=\"{$mybb->settings['bburl']}/usercp.php?action=options\">{$lang->welcome_usercp}</a>");
 				$ret_val = false;
-			}
-			else
-			{
+			} else {
 				// if so show the user their PM info
 				$username = build_profile_link(format_name($mybb->user['username'], $mybb->user['usergroup'], $mybb->user['displaygroup']), $mybb->user['uid']);
 				$lang->asb_pms_received_new = $lang->sprintf($lang->asb_pms_received_new, $username, $mybb->user['pms_unread']);
 
 				eval("\$" . pmessages . " = \"" . $templates->get("asb_pms") . "\";");
 			}
-		}
-		else
-		{
+		} else {
 			// user has disabled PMs
 			$pmessages = '';
 		}

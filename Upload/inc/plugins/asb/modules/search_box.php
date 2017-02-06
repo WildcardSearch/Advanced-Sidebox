@@ -8,22 +8,21 @@
  */
 
 // Include a check for Advanced Sidebox
-if(!defined('IN_MYBB') || !defined('IN_ASB'))
-{
+if (!defined('IN_MYBB') ||
+	!defined('IN_ASB')) {
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
-/*
+/**
  * provide info to ASB about the addon
  *
- * @return array the module info
+ * @return array module info
  */
 function asb_search_box_info()
 {
 	global $lang;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
@@ -64,16 +63,16 @@ function asb_search_box_info()
 					</td>
 				</tr>
 EOF
-			)
-		)
+			),
+		),
 	);
 }
 
-/*
+/**
  * handles display of children of this addon at page load
  *
- * @param array the specific information from the child box
- * @return bool true on success, false on fail/no content
+ * @param  array info from child box
+ * @return bool sucess/fail
  */
 function asb_search_box_build_template($args)
 {
@@ -83,8 +82,7 @@ function asb_search_box_build_template($args)
 	global $mybb, $templates, $lang, $gobutton;
 
 	// Load global and custom language phrases
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 

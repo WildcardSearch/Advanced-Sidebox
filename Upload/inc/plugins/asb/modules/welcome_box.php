@@ -8,22 +8,21 @@
  */
 
 // Include a check for Advanced Sidebox
-if(!defined("IN_MYBB") || !defined("IN_ASB"))
-{
+if (!defined("IN_MYBB") ||
+	!defined("IN_ASB")) {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-/*
+/**
  * provide info to ASB about the addon
  *
- * @return array the module info
+ * @return array module info
  */
 function asb_welcome_box_info()
 {
 	global $lang;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
@@ -69,15 +68,15 @@ EOF
 					<input type="submit" class="button" name="loginsubmit" value="{\$lang->login}"/>
 				</form>
 EOF
-			)
-		)
+			),
+		),
 	);
 }
 
-/*
+/**
  * handles display of children of this addon at page load
  *
- * @param array the specific information from the child box
+ * @param  array info from child box
  * @return bool true on success, false on fail/no content
  */
 function asb_welcome_box_build_template($args)
@@ -86,27 +85,22 @@ function asb_welcome_box_build_template($args)
 	global $$template_var, $db, $mybb, $templates, $lang, $lastvisit, $theme, $user_avatar;
 
 	// Load global and custom language phrases
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
-	if($mybb->user['uid'] != 0)
-	{
+	if ($mybb->user['uid'] != 0) {
 		// Get number of new posts, threads, announcements
 		$query = $db->simple_select("posts", "COUNT(pid) AS newposts", "visible=1 AND dateline>'" . $mybb->user['lastvisit'] . "' $unviewwhere");
 		$newposts = $db->fetch_field($query, 'newposts');
-		if($newposts)
-		{
+		if ($newposts) {
 			// If there aren't any new posts, there is no point in wasting two more queries
 			$query = $db->simple_select('threads', 'COUNT(tid) AS newthreads', "visible=1 AND dateline>'{$mybb->user['lastvisit']}' {$unviewwhere}");
 			$newthreads = $db->fetch_field($query, 'newthreads');
 
 			$announcementsfids = explode(',', $mybb->settings['portal_announcementsfid']);
-			if(is_array($announcementsfids))
-			{
-				foreach($announcementsfids as $fid)
-				{
+			if (is_array($announcementsfids)) {
+				foreach ($announcementsfids as $fid) {
 					$fid_array[] = intval($fid);
 				}
 
@@ -115,46 +109,33 @@ function asb_welcome_box_build_template($args)
 				$newann = $db->fetch_field($query, 'newann');
 			}
 
-			if(!$newthreads)
-			{
+			if (!$newthreads) {
 				$newthreads = 0;
 			}
 
-			if(!$newann)
-			{
+			if (!$newann) {
 				$newann = 0;
 			}
-		}
-		else
-		{
+		} else {
 			$newposts = 0;
 			$newthreads = 0;
 			$newann = 0;
 		}
 
 		// Make the text
-		if($newann == 1)
-		{
+		if ($newann == 1) {
 			$lang->asb_welcome_new_announcements = $lang->asb_welcome_new_announcement;
-		}
-		else
-		{
+		} else {
 			$lang->asb_welcome_new_announcements = $lang->sprintf($lang->asb_welcome_new_announcements, $newann ? $newann : '0');
 		}
-		if($newthreads == 1)
-		{
+		if ($newthreads == 1) {
 			$lang->asb_welcome_new_threads = $lang->asb_welcome_new_thread;
-		}
-		else
-		{
+		} else {
 			$lang->asb_welcome_new_threads = $lang->sprintf($lang->asb_welcome_new_threads, $newthreads ? $newthreads : '0');
 		}
-		if($newposts == 1)
-		{
+		if ($newposts == 1) {
 			$lang->asb_welcome_new_posts = $lang->asb_welcome_new_post;
-		}
-		else
-		{
+		} else {
 			$lang->asb_welcome_new_posts = $lang->sprintf($lang->asb_welcome_new_posts, $newposts ? $newposts : '0');
 		}
 
@@ -162,8 +143,7 @@ function asb_welcome_box_build_template($args)
 
 		// if the user has an avatar then display it, otherwise force the default avatar.
 		$avatar_filename = "{$theme['imgdir']}/default_avatar.png";
-		if($mybb->user['avatar'] != '')
-		{
+		if ($mybb->user['avatar'] != '') {
 			$avatar_filename = $mybb->user['avatar'];
 		}
 
@@ -172,9 +152,7 @@ function asb_welcome_box_build_template($args)
 EOF;
 
 		eval("\$welcometext = \"" . $templates->get("asb_welcome_membertext") . "\";");
-	}
-	else
-	{
+	} else {
 		$lang->asb_welcome_guest_welcome_registration = $lang->sprintf($lang->asb_welcome_guest_welcome_registration, $mybb->settings['bburl'] . '/member.php?action=register');
 		$mybb->user['username'] = $lang->guest;
 		switch ($mybb->settings['username_method']) {

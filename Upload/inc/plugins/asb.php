@@ -8,25 +8,22 @@
  */
 
 // disallow direct access to this file for security reasons
-if(!defined('IN_MYBB'))
-{
+if (!defined('IN_MYBB')) {
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
 // for modules
 define('IN_ASB', true);
 define('ASB_MODULES_DIR', MYBB_ROOT . 'inc/plugins/asb/modules');
+define('ASB_VERSION', '3.1');
 
 // some basic functions used everywhere
 require_once MYBB_ROOT . 'inc/plugins/asb/functions.php';
 
 // load the install/admin routines only if in ACP.
-if(defined('IN_ADMINCP'))
-{
+if (defined('IN_ADMINCP')) {
     require_once MYBB_ROOT . 'inc/plugins/asb/acp.php';
-}
-else
-{
+} else {
 	require_once MYBB_ROOT . 'inc/plugins/asb/forum.php';
 }
 

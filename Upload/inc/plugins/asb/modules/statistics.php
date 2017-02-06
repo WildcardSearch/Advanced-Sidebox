@@ -8,22 +8,21 @@
  */
 
 // Include a check for Advanced Sidebox
-if(!defined('IN_MYBB') || !defined('IN_ASB'))
-{
+if (!defined('IN_MYBB') ||
+	!defined('IN_ASB')) {
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
-/*
+/**
  * provide info to ASB about the addon
  *
- * @return array the module info
+ * @return array module info
  */
 function asb_statistics_info()
 {
 	global $lang;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
@@ -40,7 +39,7 @@ function asb_statistics_info()
 				"title" => $lang->asb_stats_format_usernames_title,
 				"description" => $lang->asb_stats_format_usernames_desc,
 				"optionscode" => 'yesno',
-				"value" => '0'
+				"value" => '0',
 			),
 		),
 		"templates" => array(
@@ -59,16 +58,16 @@ function asb_statistics_info()
 					</td>
 				</tr>
 EOF
-			)
-		)
+			),
+		),
 	);
 }
 
-/*
+/**
  * handles display of children of this addon at page load
  *
- * @param array the specific information from the child box
- * @return bool true on success, false on fail/no content
+ * @param  array info from child box
+ * @return bool success/fail
  */
 function asb_statistics_build_template($args)
 {
@@ -76,8 +75,7 @@ function asb_statistics_build_template($args)
 	global $$template_var, $mybb, $cache, $templates, $lang;
 
 	// Load global and custom language phrases
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
@@ -88,15 +86,11 @@ function asb_statistics_build_template($args)
 	$statistics['numusers'] = my_number_format($statistics['numusers']);
 
 	$newestmember = "<strong>{$lang->asb_stats_no_one}</strong>";
-	if($statistics['lastusername'])
-	{
-		if($settings['format_username'])
-		{
+	if ($statistics['lastusername']) {
+		if ($settings['format_username']) {
 			$last_user = get_user($statistics['lastuid']);
 			$last_username = format_name($last_user['username'], $last_user['usergroup'], $last_user['displaygroup']);
-		}
-		else
-		{
+		} else {
 			$last_username = $statistics['lastusername'];
 		}
 		$newestmember = build_profile_link($last_username, $statistics['lastuid']);

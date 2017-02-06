@@ -7,7 +7,7 @@
  * with ajax, and eval return scripts
  */
 
-(function($) {
+!function($) {
 	function init() {
 		$("#modalSubmit").click(submitForm);
 	}
@@ -17,7 +17,7 @@
 
 		$.ajax({
 			type: "POST",
-			url: $("#modal_form").attr('action') + "&ajax=1",
+			url: $("#modal_form").attr("action") + "&ajax=1",
 			data: $("#modal_form").serialize(),
 			success: function(data) {
 				$(data).filter("script").each(function(e) {
@@ -34,4 +34,4 @@
 	}
 
 	$(init);
-})(jQuery);
+}(jQuery);

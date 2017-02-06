@@ -25,20 +25,17 @@ $removed_folders = array(
 );
 
 // delete the old adv_sidebox_xxx files and folders
-foreach($removed_files as $filename)
-{
+foreach ($removed_files as $filename) {
 	$fullpath = MYBB_ROOT . $filename;
 
-	if(file_exists($fullpath) && !is_dir($fullpath))
-	{
+	if (file_exists($fullpath) &&
+		!is_dir($fullpath)) {
 		@unlink($fullpath);
 	}
 }
-foreach($removed_folders as $folder)
-{
+foreach ($removed_folders as $folder) {
 	$fullpath = MYBB_ROOT . $folder;
-	if(is_dir($fullpath))
-	{
+	if (is_dir($fullpath)) {
 		@my_rmdir_recursive($fullpath);
 		@rmdir($fullpath);
 	}

@@ -8,22 +8,21 @@
  */
 
 // include a check for Advanced Sidebox
-if(!defined('IN_MYBB') || !defined('IN_ASB'))
-{
+if (!defined('IN_MYBB') ||
+	!defined('IN_ASB')) {
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
-/*
+/**
  * provide info to ASB about the addon
  *
- * @return array the module info
+ * @return array module info
  */
 function asb_slideshow_info()
 {
 	global $lang;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
@@ -31,7 +30,7 @@ function asb_slideshow_info()
 		"title" => $lang->asb_slideshow,
 		"description" => $lang->asb_slideshow_desc,
 		"wrap_content" => true,
-		"version" => '1.0.1',
+		"version" => '1.1',
 		"compatibility" => '2.1',
 		"scripts" => array(
 			'Slideshow',
@@ -43,7 +42,7 @@ function asb_slideshow_info()
 				"title" => $lang->asb_slideshow_folder_title,
 				"description" => $lang->asb_slideshow_folder_description,
 				"optionscode" => 'text',
-				"value" => 'images'
+				"value" => 'images',
 			),
 			"recursive" => array(
 				"sid" => 'NULL',
@@ -51,7 +50,7 @@ function asb_slideshow_info()
 				"title" => $lang->asb_slideshow_recursive_title,
 				"description" => $lang->asb_slideshow_recursive_description,
 				"optionscode" => 'yesno',
-				"value" => '0'
+				"value" => '0',
 			),
 			"rate" => array(
 				"sid" => 'NULL',
@@ -59,7 +58,7 @@ function asb_slideshow_info()
 				"title" => $lang->asb_slideshow_rate_title,
 				"description" => $lang->asb_slideshow_rate_description,
 				"optionscode" => 'text',
-				"value" => '10'
+				"value" => '10',
 			),
 			"shuffle" => array(
 				"sid" => 'NULL',
@@ -67,7 +66,7 @@ function asb_slideshow_info()
 				"title" => $lang->asb_slideshow_shuffle_title,
 				"description" => $lang->asb_slideshow_shuffle_description,
 				"optionscode" => 'yesno',
-				"value" => '1'
+				"value" => '1',
 			),
 			"fade_rate" => array(
 				"sid" => 'NULL',
@@ -75,7 +74,7 @@ function asb_slideshow_info()
 				"title" => $lang->asb_slideshow_fade_rate_title,
 				"description" => $lang->asb_slideshow_fade_rate_description,
 				"optionscode" => 'text',
-				"value" => '1'
+				"value" => '1',
 			),
 			"footer_text" => array(
 				"sid" => 'NULL',
@@ -83,7 +82,7 @@ function asb_slideshow_info()
 				"title" => $lang->asb_slideshow_footer_text_title,
 				"description" => $lang->asb_slideshow_footer_text_description,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
 			),
 			"footer_url" => array(
 				"sid" => 'NULL',
@@ -91,7 +90,31 @@ function asb_slideshow_info()
 				"title" => $lang->asb_slideshow_footer_url_title,
 				"description" => $lang->asb_slideshow_footer_url_description,
 				"optionscode" => 'text',
-				"value" => ''
+				"value" => '',
+			),
+			"max_width" => array(
+				"sid" => 'NULL',
+				"name" => 'max_width',
+				"title" => $lang->asb_slideshow_max_width_title,
+				"description" => $lang->asb_slideshow_max_width_description,
+				"optionscode" => 'text',
+				"value" => '',
+			),
+			"max_height" => array(
+				"sid" => 'NULL',
+				"name" => 'max_height',
+				"title" => $lang->asb_slideshow_max_height_title,
+				"description" => $lang->asb_slideshow_max_height_description,
+				"optionscode" => 'text',
+				"value" => '',
+			),
+			"maintain_height" => array(
+				"sid" => 'NULL',
+				"name" => 'maintain_height',
+				"title" => $lang->asb_slideshow_maintain_height_title,
+				"description" => $lang->asb_slideshow_maintain_height_description,
+				"optionscode" => 'yesno',
+				"value" => '1',
 			),
 		),
 		"templates" => array(
@@ -110,6 +133,9 @@ function asb_slideshow_info()
 								size: {\$width},
 								rate: {\$rate},
 								fadeRate: {\$fade_rate},
+								maxWidth: {\$max_width},
+								maxHeight: {\$max_height},
+								maintainHeight: {\$maintain_height},
 							});
 						// -->
 						</script>
@@ -134,11 +160,11 @@ EOF
 	);
 }
 
-/*
+/**
  * handles display of children of this addon at page load
  *
- * @param array the specific information from the child box
- * @return bool true on success, false on fail/no content
+ * @param  array info from child box
+ * @return bool success/fail
  */
 function asb_slideshow_build_template($args)
 {
@@ -149,11 +175,10 @@ function asb_slideshow_build_template($args)
 	$shuffle = $settings['shuffle'] ? 'true' : 'false';
 	$folder = $settings['folder'];
 	$rate = (int) $settings['rate'] ? (int) $settings['rate'] : 10;
-	$fade_rate = (float) $settings['fade_rate'] ? (float) $settings['fade_rate'] : 1;
+	$fade_rate = (float) $settings['fade_rate'] ? (int) ($settings['fade_rate'] * 1000) : 400;
 
 	$filenames = asb_get_folder_images($folder, '', $settings['recursive']);
-	if(!$filenames)
-	{
+	if (!$filenames) {
 		$$template_var = <<<EOF
 		<tr>
 			<td class="trow1">{$lang->asb_slideshow_no_images}</td>
@@ -165,6 +190,10 @@ EOF;
 	if ($settings['footer_text'] && $settings['footer_url']) {
 		eval ("\$footer = \"" . $templates->get('asb_slideshow_footer') . "\";");
 	}
+
+	$max_width = (int) $settings['max_width'];
+	$max_height = (int) $settings['max_height'];
+	$maintain_height = (int) $settings['maintain_height'];
 
 	$width = $width * .9;
 	eval("\$\$template_var = \"" . $templates->get('asb_slideshow') . "\";");

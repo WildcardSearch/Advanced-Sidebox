@@ -17,30 +17,39 @@ var ASB = (function(a, $) {
 	 * @return void
 	 */
 	function Slideshow(container, options) {
-		if (!$(container)) {
+		if (!$("#" + container).length) {
 			return;
 		}
 
 		this.options = {
 			rate: 10,
 			shuffle: false,
-			fadeRate: 1,
+			fadeRate: 400,
 			size: 100,
+			maxWidth: 0,
+			maxHeight: 0,
+			maintainHeight: 1,
 		};
 		$.extend(this.options, options || {});
+
+		this.startHeight = this.options.size;
+		if (this.options.maxHeight > 0 &&
+			this.options.maintainHeight) {
+			this.startHeight = this.options.maxHeight;
+		}
 
 		// set up the container
 		this.container = $("#" + container);
 		this.container.css({
-			width: this.options.size + 'px',
-			height: this.options.size + 'px',
-			marginLeft: 'auto',
-			marginRight: 'auto',
-			position: 'relative',
+			width: this.options.size + "px",
+			height: this.startHeight + "px",
+			marginLeft: "auto",
+			marginRight: "auto",
+			position: "relative",
 		});
 
 		// no images, no have slide show
-		if (!this.options.images ||
+		if (typeof this.options.images === "undefined" ||
 			this.options.images.length == 0) {
 			return;
 		}
@@ -53,14 +62,13 @@ var ASB = (function(a, $) {
 		}
 
 		// create the main image holder, set it up and insert it into the container
-		this.mainImage = $('<img/>', {
+		this.mainImage = $("<img/>", {
 			src: this.getCurrentImage(),
 		}).css({
-			display: 'none',
-			position: 'absolute',
-			width: this.options.size + 'px',
-			left: '0px',
-			top: '0px',
+			display: "none",
+			position: "absolute",
+			left: "0px",
+			top: "0px",
 		});
 		this.container.append(this.mainImage);
 
@@ -104,7 +112,7 @@ var ASB = (function(a, $) {
 	 */
 	function getCurrentImage() {
 		return this.options.folder ?
-				this.options.folder + '/' + this.options.images[this.current] :
+				this.options.folder + "/" + this.options.images[this.current] :
 				this.options.images[this.current];
 	}
 
@@ -140,13 +148,13 @@ var ASB = (function(a, $) {
 		 * clone the main image and display it off-screen in order to
 		 * get the correct size
 		 */
-		this.clone = $('<img/>', {
+		this.clone = $("<img/>", {
 			src: this.mainImage.prop("src"),
 		}).css({
-			position: 'absolute',
-			display: 'block',
+			position: "absolute",
+			display: "block",
 		});
-		$('body').append(this.clone);
+		$("body").append(this.clone);
 
 		this.clone.load($.proxy(this.resize, this)).each(function() {
 			if (this.complete) {
@@ -178,14 +186,50 @@ var ASB = (function(a, $) {
 		// maintain the ratio and resize if necessary
 		if (height > width) {
 			ratio = height / width;
+
 			this.cloneWidth = parseInt(this.options.size / ratio);
 			this.cloneHeight = this.options.size;
+
+			if (this.options.maxWidth > 0 &&
+				this.cloneWidth > this.options.maxWidth) {
+				this.cloneWidth = this.options.maxWidth;
+				this.cloneHeight = parseInt(this.options.maxWidth * ratio);
+			}
+
+			if (this.options.maxHeight > 0 &&
+				this.cloneHeight > this.options.maxHeight) {
+				this.cloneWidth = parseInt(this.options.maxHeight / ratio);
+				this.cloneHeight = this.options.maxHeight;
+			}
 		} else if (width > height) {
 			ratio = width / height;
+
 			this.cloneWidth = this.options.size;
 			this.cloneHeight = parseInt(this.options.size / ratio);
+
+			if (this.options.maxWidth > 0 &&
+				this.cloneWidth > this.options.maxWidth) {
+				this.cloneWidth = this.options.maxWidth;
+				this.cloneHeight = parseInt(this.options.maxWidth / ratio);
+			}
+
+			if (this.options.maxHeight > 0 &&
+				this.cloneHeight > this.options.maxHeight) {
+				this.cloneWidth = parseInt(this.options.maxHeight * ratio);
+				this.cloneHeight = this.options.maxHeight;
+			}
 		} else {
 			this.cloneHeight = this.cloneWidth = this.options.size;
+
+			if (this.options.maxWidth > 0 &&
+				this.cloneWidth > this.options.maxWidth) {
+				this.cloneHeight = this.cloneWidth = this.options.maxWidth;
+			}
+
+			if (this.options.maxHeight > 0 &&
+				this.cloneHeight > this.options.maxHeight) {
+				this.cloneWidth = this.cloneHeight = this.options.maxHeight;
+			}
 		}
 
 		this.clone.remove();
@@ -199,12 +243,20 @@ var ASB = (function(a, $) {
 	 * @return Object the DOM Element Object
 	 */
 	function resizeImage(el) {
-		el.css({
-			height: this.cloneHeight + 'px',
-			width: this.cloneWidth + 'px',
-			left: parseInt((this.options.size / 2) - (this.cloneWidth / 2)) + 'px',
-			top: parseInt((this.options.size / 2) - (this.cloneHeight / 2)) + 'px',
-		});
+		style = {
+			height: this.cloneHeight + "px",
+			width: this.cloneWidth + "px",
+			left: parseInt((this.options.size / 2) - (this.cloneWidth / 2)) + "px",
+			top: parseInt((this.startHeight / 2) - (this.cloneHeight / 2)) + "px",
+		};
+
+		if (!this.options.maintainHeight) {
+			this.container.css("height", this.cloneHeight + "px");
+			style.top = "0px";
+		}
+
+		el.css(style);
+
 		return el;
 	}
 

@@ -8,22 +8,21 @@
  */
 
 // this file may not be executed from outside of script
-if(!defined('IN_MYBB') || !defined('IN_ASB'))
-{
+if (!defined('IN_MYBB') ||
+	!defined('IN_ASB')) {
 	die('You need MyBB and Advanced Sidebox installed and properly initialized to use this script.');
 }
 
-/*
+/**
  * provide info to ASB about the addon
  *
- * @return array the module info
+ * @return array module info
  */
 function asb_staff_online_box_info()
 {
 	global $lang;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
@@ -41,7 +40,21 @@ function asb_staff_online_box_info()
 				"title" => $lang->asb_staff_online_max_staff_title,
 				"description" => $lang->asb_staff_online_max_staff_desc,
 				"optionscode" => 'text',
-				"value" => '5'
+				"value" => '5',
+			),
+			"group_show_list" => array(
+				"name" => 'group_show_list',
+				"title" => $lang->asb_group_show_list_title,
+				"description" => $lang->asb_group_show_list_desc,
+				"optionscode" => 'text',
+				"value" => '',
+			),
+			"group_hide_list" => array(
+				"name" => 'group_hide_list',
+				"title" => $lang->asb_group_hide_list_title,
+				"description" => $lang->asb_group_hide_list_desc,
+				"optionscode" => 'text',
+				"value" => '',
 			),
 			"xmlhttp_on" => array(
 				"sid" => 'NULL',
@@ -49,7 +62,7 @@ function asb_staff_online_box_info()
 				"title" => $lang->asb_xmlhttp_on_title,
 				"description" => $lang->asb_xmlhttp_on_description,
 				"optionscode" => 'text',
-				"value" => '0'
+				"value" => '0',
 			)
 		),
 		"discarded_templates" => array(
@@ -79,36 +92,32 @@ function asb_staff_online_box_info()
 					</td>
 				</tr>
 EOF
-			)
-		)
+			),
+		),
 	);
 }
 
-/*
+/**
  * handles display of children of this addon at page load
  *
- * @param array the specific information from the child box
- * @return bool true on success, false on fail/no content
+ * @param  array info from child box
+ * @return bool success/fail
  */
 function asb_staff_online_box_build_template($args)
 {
 	extract($args);
 	global $$template_var, $lang;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
 	$all_online_staff = asb_staff_online_box_get_online_staff($settings, $width);
 
-	if($all_online_staff)
-	{
+	if ($all_online_staff) {
 		$$template_var = $all_online_staff;
 		return true;
-	}
-	else
-	{
+	} else {
 		$$template_var = <<<EOF
 	<tr>
 		<td class="trow1">{$lang->asb_staff_online_no_staff_online}</td>
@@ -118,10 +127,10 @@ EOF;
 	}
 }
 
-/*
+/**
  * handles display of children of this addon via AJAX
  *
- * @param array the specific information from the child box
+ * @param  array info from child box
  * @return void
  */
 function asb_staff_online_box_xmlhttp($args)
@@ -129,27 +138,24 @@ function asb_staff_online_box_xmlhttp($args)
 	extract($args);
 	$all_online_staff = asb_staff_online_box_get_online_staff($settings, $width);
 
-	if($all_online_staff)
-	{
+	if ($all_online_staff) {
 		return $all_online_staff;
 	}
 	return 'nochange';
 }
 
-/*
+/**
  * get staff members currently online
  *
- * @param individual side box settings passed to the module
- * @param int the width of the column in which the child is positioned
- * @return string containing the HTML side box markup or
- * bool false on fail/no content
+ * @param  array settings
+ * @param  int column width
+ * @return string|bool html or false
  */
 function asb_staff_online_box_get_online_staff($settings, $width)
 {
 	global $db, $mybb, $templates, $lang, $cache, $theme;
 
-	if(!$lang->asb_addon)
-	{
+	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
@@ -157,8 +163,7 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 	$max_rows = (int) $settings['max_staff'];
 
 	// if max_rows is set to 0 then show nothing
-	if(!$max_rows)
-	{
+	if (!$max_rows) {
 		return false;
 	}
 
@@ -166,10 +171,16 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 	$usergroups = array();
 	$users = array();
 
+	// build user group exclusions (if any)
+	$show = asb_build_id_list($settings['group_show_list'], 'gid');
+	$hide = asb_build_id_list($settings['group_hide_list'], 'gid');
+	$where['show'] = asb_build_SQL_where($show, ' OR ');
+	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
+	$group_where = asb_build_SQL_where($where, ' AND ', ' AND ');
+
 	// get all the groups admin has specified should be shown on showteam.php
-	$query = $db->simple_select('usergroups', 'gid, title, usertitle, image', 'showforumteam=1', array('order_by' => 'disporder'));
-	while($usergroup = $db->fetch_array($query))
-	{
+	$query = $db->simple_select('usergroups', 'gid, title, usertitle, image', "showforumteam=1{$group_where}", array('order_by' => 'disporder'));
+	while ($usergroup = $db->fetch_array($query)) {
 		// store them in our array
 		$usergroups[$usergroup['gid']] = $usergroup;
 	}
@@ -178,8 +189,7 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 	$groups_in = implode(',', array_keys($usergroups));
 
 	// if there were no groups . . .
-	if(!$groups_in)
-	{
+	if (!$groups_in) {
 		// there is nothing to show
 		return false;
 	}
@@ -201,23 +211,18 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 	");
 
 	// loop through our users
-	while($user = $db->fetch_array($query))
-	{
+	while ($user = $db->fetch_array($query)) {
 		// if displaygroup is not 0 (display primary group) . . .
-		if($user['displaygroup'] != 0)
-		{
+		if ($user['displaygroup'] != 0) {
 			// then use this group
 			$group = $user['displaygroup'];
-		}
-		else
-		{
+		} else {
 			// otherwise use the primary group
 			$group = $user['usergroup'];
 		}
 
 		// if this user group is in a staff group then add the info to the list
-		if($usergroups[$group])
-		{
+		if ($usergroups[$group]) {
 			$usergroups[$group]['user_list'][$user['uid']] = $user;
 		}
 	}
@@ -227,11 +232,9 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 	$counter = 1;
 
 	// loop through each user group
-	foreach($usergroups as $usergroup)
-	{
+	foreach ($usergroups as $usergroup) {
 		// if there are no users or we have reached our limit . . .
-		if(!isset($usergroup['user_list']) || $counter > $max_rows)
-		{
+		if (!isset($usergroup['user_list']) || $counter > $max_rows) {
 			// skip an iteration
 			continue;
 		}
@@ -240,11 +243,9 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 		$bgcolor = '';
 
 		// loop through all users
-		foreach($usergroup['user_list'] as $user)
-		{
+		foreach ($usergroup['user_list'] as $user) {
 			// if we are over our limit
-			if($counter > $max_rows)
-			{
+			if ($counter > $max_rows) {
 				// don't add any more
 				continue;
 			}
@@ -255,8 +256,7 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 
 			// if the user has an avatar then display it, otherwise force the default avatar.
 			$staff_avatar_filename = "{$theme['imgdir']}/default_avatar.png";
-			if($user['avatar'] != '')
-			{
+			if ($user['avatar'] != '') {
 				$staff_avatar_filename = $user['avatar'];
 			}
 
@@ -275,8 +275,7 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 
 			// if the user's group has a badge image . . .
 			$staff_badge = "{$staff_badge_alt}";
-			if($usergroup['image'])
-			{
+			if ($usergroup['image']) {
 				// store it (if nothing is store alt property will display group default usertitle)
 				$staff_badge_filename = $usergroup['image'];
 
@@ -297,13 +296,10 @@ EOF;
 	}
 
 	// if there were staff members online . . .
-	if($online_staff)
-	{
+	if ($online_staff) {
 		// show them
 		return $online_staff;
-	}
-	else
-	{
+	} else {
 		// otherwise apologize profusely
 		return false;
 	}
