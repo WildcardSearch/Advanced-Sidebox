@@ -359,7 +359,7 @@ class SideboxExternalModule extends ExternalModule
 
 		if (is_array($asb['addon_versions']) &&
 			isset($asb['addon_versions'][$this->baseName]) &&
-			isset($asb['addon_versions'][$this->baseName]['version']) {
+			isset($asb['addon_versions'][$this->baseName]['version'])) {
 			return $asb['addon_versions'][$this->baseName]['version'];
 		}
 		return 0;
