@@ -203,15 +203,15 @@ function asb_build_visibility_rows($sidebox, &$group_count, &$global)
 	if (empty($scripts)) {
 		if (empty($groups)) {
 			$global = true;
-			return "<tr><td class=\"vis_info\">{$lang->asb_globally_visible}</td></tr>";
+			return "<tr><td>{$lang->asb_globally_visible}</td></tr>";
 		} elseif (isset($groups[0]) && strlen($groups[0]) == 0) {
-			return "<tr><td class=\"vis_info\">{$lang->asb_all_scripts_deactivated}</td></tr>";
+			return "<tr><td>{$lang->asb_all_scripts_deactivated}</td></tr>";
 		} else {
 			$scripts = $all_scripts;
 		}
 	} elseif (isset($scripts[0]) &&
 		strlen($scripts[0]) == 0) {
-		return "<tr><td class=\"vis_info\">{$lang->asb_all_scripts_deactivated}</td></tr>";
+		return "<tr><td>{$lang->asb_all_scripts_deactivated}</td></tr>";
 	}
 
 	$group_headers = '';
@@ -225,9 +225,9 @@ EOF;
 	$script_rows = '';
 	foreach ($all_scripts as $script => $script_title) {
 		$script_title_full = '';
-		if (strlen($script_title) > 8) {
+		if (strlen($script_title) > 15) {
 			$script_title_full = $script_title;
-			$script_title = substr($script_title, 0, 8) . '. . .';
+			$script_title = substr($script_title, 0, 15) . '...';
 		}
 
 		$script_rows .= <<<EOF

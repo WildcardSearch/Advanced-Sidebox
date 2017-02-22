@@ -6,148 +6,102 @@
  * this file contains style information for the ACP pages
  */
 
-/*
- * footer menu
- */
-.asb_label {
-	background: #EBF3FF;
-	color: #333;
-	font-weight: bold;
-	width: 98%;
-	margin: auto auto;
-	padding: 15px 5px;
-	border: 1px solid #85B1EE;
-	text-align: center;
-	left: 2px;
-}
+/* sidebox management */
 
-.asb_label a:hover,
-a:active {
-	color: #333;
-}
-
-.asb_label img {
-	margin-bottom: -3px;
-}
-
-/*
- * main drag and drop interface
- */
-div#droppable_container {
+div.container {
 	width: 100%;
-	background: #85B1EE;
+	background: #ffffff;
 }
+
+table.content {
+	text-align: center;
+	width: 100%;
+	table-layout: fixed;
+	border-collapse: collapse;
+}
+
+/* components */
 
 div.draggable {
 	z-index: 50;
 }
 
-.box_type,
-.box_type a {
-	color: #f4f4f4;
+.custom_type, .box_type, .sidebox {
+	cursor: move;
+	font-size: 12px;
+	padding: 3px;
+	margin: 2px 1px;
+
+	-webkit-user-select: none; /* Safari*/
+	-khtml-user-select: none; /* Konqueror */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Chrome and Opera */
+
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
 }
 
 .box_type {
-	width: 93%;
-	cursor: move;
-	background: #0451a6;
-	border: 2px outset #0451a6;
-	text-align: center;
+	background: #99e6ff;
+	border: 1px solid #0086b3;
+	/* text-align: center;
 	line-height: 15px;
-	font-weight: bold;
-	padding: 5px;
-	text-shadow: 3px 3px 3px #070772;
-}
-
-.custom_type,
-.custom_type a {
-	color: #451869;
+	text-shadow: 3px 3px 3px #070772; */
 }
 
 .custom_type {
-	width: 93%;
-	cursor: move;
-	background: #dce171;
-	border: 2px outset #dce171;
+	background: #ffffbf;
+	border: 1px solid #b3b300;
+	/* width: 93%;
 	text-align: center;
 	line-height: 15px;
-	font-weight: bold;
-	padding: 5px;
-	text-shadow: 3px 3px 3px #5a642f;
+	text-shadow: 3px 3px 3px #5a642f; */
 }
 
 .sidebox {
-	width: 96%;
-	cursor: move;
-	border: 2px outset #489544;
-	text-align: center;
+	background: #bfffbf;
+	border: 1px solid #00b300;
 	line-height: 25px;
-	background: #489544;
-	color: #e3e6fd;
-	font-weight: bold;
-	padding: 5px;
-	text-shadow: 3px 3px 3px #285326;
+	color: #000000;
 	position: relative;
 }
 
 .column {
-	background: #f4f4f4;
-	border: 3px solid #8b8b8b;
+	border: 1px solid #aaaaaa;
 }
 
-.column.hover {
-	border: 3px dashed #333;
+td.hover {
+	background: #eeeeee;
 }
 
 .trashcan {
-	width: 99%;
-	background: #f4f4f4;
 	min-height: 80px;
 }
 
 .forum_column {
-	background: #f4f4f4;
 	width: 225px;
 	min-height: 300px;
 }
 
 #addon_menu {
-	width: 160px;
-	height: 100%;
-	border: 3px solid #8b8b8b;
-	background: #f4f4f4;
-	position: relative;
-	min-height: 80px;
+	border: 1px solid #aaaaaa;
 }
 
 #custom_menu {
-	width: 160px;
-	height: 100%;
-	border: 3px solid #8b8b8b;
-	background: #f4f4f4;
-	position: relative;
+	border: 1px solid #aaaaaa;
 }
 
 .column_head {
-	background: #4096ff;
+	background: #aaaaaa;
 	color: #333;
 	font-size: 1.5em;
-	font-weight: bold;
-	font-familiy: Arial;
-	text-align: center;
-	text-shadow: 2px 2px 2px #0053b9;
 }
 
-.back_drop {
-	text-align: center;
-	table-layout: fixed;
-	word-wrap: break-word;
-}
-
-/* TOOL TIPS */
+/* visibility chart */
 
 .tooltip {
-	border-bottom: 1px dotted #000000;
 	color: #000000;
 	outline: none;
 	cursor: help;
@@ -155,32 +109,23 @@ div.draggable {
 	position: relative;
 }
 
-.tooltip span.info {
-	margin-left: -999em;
+.tooltip span {
+	display: none;
 	position: absolute;
+	top: 0px;
+	left: -300px;
+	width: 300px;
+
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
 }
 
 .tooltip:hover span {
-	border-radius: 5px 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
-	-webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
-	-moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
-	font-family: Calibri, Tahoma, Geneva, sans-serif;
-	position: absolute;
-	top: 1.5em;
-	left: -235px;
-	margin-left: 0;
-	width: 235px;
-}
-
-.classic {
-	padding: 0.8em 1em;
+	display: inline;
 }
 
 .custom {
-	padding: 0.5em 0.8em 0.8em 2em;
 	z-index: 99;
 }
 
@@ -188,18 +133,9 @@ div.draggable {
 	background: transparent;
 }
 
-.classic {
-	background: #FFFFAA;
-	border: 1px solid #FFAD33;
-}
-
 .info {
-	background: #D6E8FF;
-	border: 1px solid #2BB0D7;
-}
-
-.vis_info {
-	background: #D6E8FF;
+	background: #99ccff;
+	border: 1px solid #7396ff;
 }
 
 .info_icon {
@@ -214,29 +150,28 @@ div.draggable {
 	padding: 4px;
 }
 
-/* VISIBILITY TABLE */
-
 .box_info {
-	background: #85B1EE;
+	background: #cccccc;
 	color: #333;
-	border: 4px solid #444444;
+	border: 1px solid #888888;
 }
 
-box_info td {
+.box_info td {
 	width: 10px;
 	height: 10px;
 }
 
 .script_header {
-	background: #4096ff;
+	background: #ffffff;
 	color: #000;
 
 	height: 10px;
-	width: 60px;
+	text-align: right;
+	padding-right: 10px;
 }
 
 .group_header {
-	background: #4096ff;
+	background: #ffffff;
 	color: #000;
 }
 
@@ -251,38 +186,30 @@ th.script_header {
 }
 
 td.on {
-	background: #000959;
+	background: #cfffbf;
 }
 
 td.off {
-	background: #f4f4f4;
+	background: #ffffff;
 }
 
-.filter_link {
-	border: 2px solid #85B1EE;
-	color: #000;
-	padding: 5px;
-	width: 8%;
+/* footer menu */
+
+.asb_label {
+	color: #333;
+	font-weight: bold;
+	margin: auto auto;
+	padding: 5px 0px;
+	border: 1px solid #aaaaaa;
 	text-align: center;
+
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
 }
 
-.inactive {
-	background: #9DC2F2;
-}
-
-.active	{
-	background: #F2F2F2;
-}
-
-.filter_link:hover,
-.filter_link:hover a	{
-	background: #02426c;
-	color: #F2F2F2;
+.asb_label a:hover,
+.asb_label a:active {
+	color: #333;
 	text-decoration: none;
-	cursor: pointer;
-}
-
-#link_bank {
-	width: 100%;
-	border-collapse: collapse;
 }

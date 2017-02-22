@@ -171,8 +171,8 @@ EOF;
 	// build the display
 	$markup = <<<EOF
 
-	<div id="droppable_container">{$filter_text}
-		<table width="100%" class="back_drop">
+	<div class="container">{$filter_text}
+		<table width="100%" class="content">
 			<thead>
 				<tr>
 					<th width="18%" class="column_head">{$lang->asb_addon_modules}</th>
@@ -182,7 +182,7 @@ EOF;
 				</tr>
 			</thead>
 			<tbody>
-				<tr id="topLeft">
+				<tr>
 					<td id="addon_menu" valign="top" rowspan="2">
 						{$modules}
 					</td>
