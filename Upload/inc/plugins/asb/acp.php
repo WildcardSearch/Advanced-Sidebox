@@ -153,7 +153,7 @@ EOF;
 	lang.deleting_sidebox = "{$lang->asb_ajax_deleting_sidebox}";
 	// -->
 	</script>
-	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
 	<script type="text/javascript" src="jscripts/peeker.js"></script>
 	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 	<script src="jscripts/asb/asb_sideboxes{$min}.js" type="text/javascript"></script>
@@ -171,8 +171,8 @@ EOF;
 	// build the display
 	$markup = <<<EOF
 
-	<div id="droppable_container">{$filter_text}
-		<table width="100%" class="back_drop">
+	<div class="container">{$filter_text}
+		<table width="100%" class="content">
 			<thead>
 				<tr>
 					<th width="18%" class="column_head">{$lang->asb_addon_modules}</th>
@@ -182,7 +182,7 @@ EOF;
 				</tr>
 			</thead>
 			<tbody>
-				<tr id="topLeft">
+				<tr>
 					<td id="addon_menu" valign="top" rowspan="2">
 						{$modules}
 					</td>
@@ -217,7 +217,7 @@ EOF;
  */
 function asb_admin_edit_box()
 {
-	global $page, $lang, $mybb, $db, $html, $scripts, $all_scripts, $min;
+	global $page, $lang, $mybb, $db, $html, $scripts, $all_scripts, $min, $cp_style;
 
 	$ajax = ($mybb->input['ajax'] == 1);
 
@@ -439,7 +439,7 @@ EOF;
 
 		// add a little CSS
 		$page->extra_header .= <<<EOF
-	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
 	<script type="text/javascript" src="jscripts/peeker.js"></script>
 	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 	<script src="jscripts/tabs.js" type="text/javascript"></script>
@@ -833,7 +833,7 @@ EOF;
 		}
 
 		$page->extra_header .= <<<EOF
-	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
 	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 EOF;
 
@@ -897,7 +897,7 @@ EOF;
 	}
 
 	$page->extra_header .= <<<EOF
-	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
 	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 EOF;
 
@@ -1144,7 +1144,7 @@ EOF;
 		});
 	// -->
 	</script>
-	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
 	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 
 EOF;
@@ -1221,7 +1221,7 @@ EOF;
 		asb_output_footer('edit_scripts');
 	} else {
 		$page->extra_header .= <<<EOF
-	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
 	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 
 EOF;
@@ -1306,10 +1306,10 @@ EOF;
  */
 function asb_admin_manage_modules()
 {
-	global $lang, $mybb, $db, $page, $html, $min;
+	global $lang, $mybb, $db, $page, $html, $min, $cp_style;
 
 	$page->extra_header .= <<<EOF
-	<link rel="stylesheet" type="text/css" href="styles/asb_acp.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
 	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 
 EOF;

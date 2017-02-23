@@ -17,6 +17,12 @@ var ASB = (function(a, $) {
 	function init() {
 		$(".draggable").draggable({
 			revert: true,
+			start: function(e, ui) {
+				ui.helper.css("z-index", 999);
+			},
+			stop: function(e, ui) {
+				ui.helper.css("z-index", 50);
+			},
 		});
 
 		$(".sortable").sortable({

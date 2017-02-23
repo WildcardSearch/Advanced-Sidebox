@@ -18,9 +18,7 @@ if (!class_exists('WildcardPluginInstaller')) {
 $installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
 $installer->install();
 
-/*
- * upgrade existing side boxes settings and remove old js files
- */
+/* < 2.1 */
 if (version_compare($asbOldVersion, '2.1', '<')) {
 	require_once MYBB_ROOT . 'inc/plugins/asb/classes/forum.php';
 	$sideboxes = asb_get_all_sideboxes();
@@ -56,6 +54,7 @@ if (version_compare($asbOldVersion, '2.1', '<')) {
 	foreach ($removed_files as $file) {
 		@unlink(MYBB_ROOT . $file);
 	}
+/* < 3.1 */
 } elseif (version_compare($asbOldVersion, '3.1', '<')) {
 	$removed_files = array(
 		'inc/plugins/asb/classes/installer.php',
@@ -75,6 +74,9 @@ if (version_compare($asbOldVersion, '2.1', '<')) {
 
 	@my_rmdir_recursive(MYBB_ROOT . 'inc/plugins/asb/images');
 	@rmdir(MYBB_ROOT . 'inc/plugins/asb/images');
+/* < 3.1.1 */
+} elseif (version_compare($asbOldVersion, '3.1.1', '<')) {
+	@unlink(MYBB_ADMIN_DIR . 'styles/asb_acp.css');
 }
 
 ?>
