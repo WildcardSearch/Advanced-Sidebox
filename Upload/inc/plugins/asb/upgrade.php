@@ -18,6 +18,8 @@ if (!class_exists('WildcardPluginInstaller')) {
 $installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
 $installer->install();
 
+$removedAdminFolders = $removedForumFolders = $removedAdminFiles = $removedForumFiles = array();
+
 /* < 2.1 */
 if (version_compare($asbOldVersion, '2.1', '<')) {
 	require_once MYBB_ROOT . 'inc/plugins/asb/classes/forum.php';
@@ -43,20 +45,20 @@ if (version_compare($asbOldVersion, '2.1', '<')) {
 
 	asb_cache_has_changed();
 
-	$removed_files = array(
+	$removedForumFiles = array(
 		'jscripts/asb.js',
 		'jscripts/asb_xmlhttp.js',
-		'admin/jscripts/asb.js',
-		'admin/jscripts/asb_modal.js',
-		'admin/jscripts/asb_scripts.js',
-		'admin/jscripts/asb_sideboxes.js'
 	);
-	foreach ($removed_files as $file) {
-		@unlink(MYBB_ROOT . $file);
-	}
+
+	$removedAdminFiles = array(
+		'jscripts/asb.js',
+		'jscripts/asb_modal.js',
+		'jscripts/asb_scripts.js',
+		'jscripts/asb_sideboxes.js',
+	);
 /* < 3.1 */
 } elseif (version_compare($asbOldVersion, '3.1', '<')) {
-	$removed_files = array(
+	$removedForumFiles = array_merge($removedForumFiles, array(
 		'inc/plugins/asb/classes/installer.php',
 		'inc/plugins/asb/classes/malleable.php',
 		'inc/plugins/asb/classes/portable.php',
@@ -67,16 +69,45 @@ if (version_compare($asbOldVersion, '2.1', '<')) {
 		'inc/plugins/asb/classes/html_generator.php',
 		'inc/plugins/asb/classes/script_info.php',
 		'inc/plugins/asb/classes/template_handler.php',
-	);
-	foreach ($removed_files as $file) {
-		@unlink(MYBB_ROOT . $file);
-	}
+	));
 
-	@my_rmdir_recursive(MYBB_ROOT . 'inc/plugins/asb/images');
-	@rmdir(MYBB_ROOT . 'inc/plugins/asb/images');
+	$removedForumFolders[] = 'inc/plugins/asb/images';
 /* < 3.1.1 */
 } elseif (version_compare($asbOldVersion, '3.1.1', '<')) {
-	@unlink(MYBB_ADMIN_DIR . 'styles/asb_acp.css');
+	$removedAdminFiles[] = 'styles/asb_acp.css';
+/* < 3.1.2 */
+} elseif (version_compare($asbOldVersion, '3.1.2', '<')) {
+	$removedForumFolders[] = 'inc/plugins/asb/help';
+	$removedAdminFiles = array_merge($removedAdminFiles, array(
+		'jscripts/asb/asb.js',
+		'jscripts/asb/asb.min.js',
+	));
+}
+
+if (!empty($removedForumFiles)) {
+	foreach ($removedForumFiles as $file) {
+		@unlink(MYBB_ROOT . $file);
+	}
+}
+
+if (!empty($removedForumFolders)) {
+	foreach ($removedForumFolders as $folder) {
+		@my_rmdir_recursive(MYBB_ROOT . $folder);
+		@rmdir(MYBB_ROOT . $folder);
+	}
+}
+
+if (!empty($removedAdminFiles)) {
+	foreach ($removedAdminFiles as $file) {
+		@unlink(MYBB_ADMIN_DIR . $file);
+	}
+}
+
+if (!empty($removedAdminFolders)) {
+	foreach ($removedAdminFolders as $folder) {
+		@my_rmdir_recursive(MYBB_ADMIN_DIR . $folder);
+		@rmdir(MYBB_ADMIN_DIR . $folder);
+	}
 }
 
 ?>
