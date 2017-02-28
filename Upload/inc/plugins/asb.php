@@ -15,7 +15,7 @@ if (!defined('IN_MYBB')) {
 // for modules
 define('IN_ASB', true);
 define('ASB_MODULES_DIR', MYBB_ROOT . 'inc/plugins/asb/modules');
-define('ASB_VERSION', '3.1.1');
+define('ASB_VERSION', '3.1.2');
 
 // some basic functions used everywhere
 require_once MYBB_ROOT . 'inc/plugins/asb/functions.php';
