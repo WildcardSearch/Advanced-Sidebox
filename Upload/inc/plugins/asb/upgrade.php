@@ -56,8 +56,10 @@ if (version_compare($asbOldVersion, '2.1', '<')) {
 		'jscripts/asb_scripts.js',
 		'jscripts/asb_sideboxes.js',
 	);
+}
+
 /* < 3.1 */
-} elseif (version_compare($asbOldVersion, '3.1', '<')) {
+if (version_compare($asbOldVersion, '3.1', '<')) {
 	$removedForumFiles = array_merge($removedForumFiles, array(
 		'inc/plugins/asb/classes/installer.php',
 		'inc/plugins/asb/classes/malleable.php',
@@ -72,11 +74,16 @@ if (version_compare($asbOldVersion, '2.1', '<')) {
 	));
 
 	$removedForumFolders[] = 'inc/plugins/asb/images';
+}
+
 /* < 3.1.1 */
-} elseif (version_compare($asbOldVersion, '3.1.1', '<')) {
+if (version_compare($asbOldVersion, '3.1.1', '<')) {
 	$removedAdminFiles[] = 'styles/asb_acp.css';
+
+}
+
 /* < 3.1.2 */
-} elseif (version_compare($asbOldVersion, '3.1.2', '<')) {
+if (version_compare($asbOldVersion, '3.1.2', '<')) {
 	$removedForumFolders[] = 'inc/plugins/asb/help';
 	$removedAdminFiles = array_merge($removedAdminFiles, array(
 		'jscripts/asb/asb.js',
