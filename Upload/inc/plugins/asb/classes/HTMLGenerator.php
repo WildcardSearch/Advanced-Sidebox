@@ -54,6 +54,7 @@ class HTMLGenerator
 		'style',
 		'class',
 		'onclick',
+		'target',
 	);
 
 	/**

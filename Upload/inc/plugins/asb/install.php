@@ -52,7 +52,7 @@ EOF;
 		<a href="{$url}" title="{$lang->asb_manage_sideboxes}">{$lang->asb_manage_sideboxes}</a>
 	</li>{$remove_link}
 	<li style="list-style-image: url(styles/{$cp_style}/images/asb/help.png)">
-		<a href="javascript:void()" onclick="window.open('{$mybb->settings['bburl']}/inc/plugins/asb/help/index.php?topic=install', 'mywindowtitle', 'width=840, height=520, scrollbars=yes')" title="{$lang->asb_help}">{$lang->asb_help}</a>
+		<a href="https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help-Installation" title="{$lang->asb_help}">{$lang->asb_help}</a>
 	</li>
 </ul>
 EOF;

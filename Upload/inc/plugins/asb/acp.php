@@ -155,7 +155,6 @@ EOF;
 	</script>
 	<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
 	<script type="text/javascript" src="jscripts/peeker.js"></script>
-	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 	<script src="jscripts/asb/asb_sideboxes{$min}.js" type="text/javascript"></script>
 
 EOF;
@@ -441,7 +440,6 @@ EOF;
 		$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
 	<script type="text/javascript" src="jscripts/peeker.js"></script>
-	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 	<script src="jscripts/tabs.js" type="text/javascript"></script>
 
 EOF;
@@ -834,7 +832,6 @@ EOF;
 
 		$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
-	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 EOF;
 
 		$page->add_breadcrumb_item($lang->asb_custom_boxes, $html->url(array("action" => 'custom_boxes')));
@@ -898,7 +895,6 @@ EOF;
 
 	$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
-	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 EOF;
 
 	$page->add_breadcrumb_item($lang->asb_custom_boxes);
@@ -1145,7 +1141,6 @@ EOF;
 	// -->
 	</script>
 	<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
-	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 
 EOF;
 
@@ -1222,7 +1217,6 @@ EOF;
 	} else {
 		$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
-	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 
 EOF;
 
@@ -1310,7 +1304,6 @@ function asb_admin_manage_modules()
 
 	$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
-	<script src="jscripts/asb/asb{$min}.js" type="text/javascript"></script>
 
 EOF;
 

@@ -21,8 +21,31 @@ function asb_build_help_link($topic = '')
 		$topic = 'manage_sideboxes';
 	}
 
-	$help_url = $html->url(array("topic" => $topic), "{$mybb->settings['bburl']}/inc/plugins/asb/help/index.php");
-	return $html->link($help_url, $lang->asb_help, array("id" => 'help_link', "style" => 'font-weight: bold;', "icon" => "styles/{$cp_style}/images/asb/help.png", "title" => $lang->asb_help), array("id" => 'help_link_icon', "alt" => '?', "title" => $lang->asb_help, "style" => 'margin-bottom: -3px;'));
+	switch ($topic) {
+	case 'manage_sideboxes':
+		$url = 'https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help-Managing-Sideboxes';
+		break;
+	case 'edit_box':
+		$url = 'https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help-Add-New-Side-Box';
+		break;
+	case 'edit_custom':
+		$url = 'https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help-Add-New-Custom-Box';
+		break;
+	case 'custom':
+		$url = 'https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help-Custom-Boxes';
+		break;
+	case 'edit_scripts':
+		$url = 'https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help-Add-New-Script-Definition';
+		break;
+	case 'manage_scripts':
+		$url = 'https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help-Managing-Scripts';
+		break;
+	case 'addons':
+		$url = 'https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help-Managing-Modules';
+		break;
+	}
+
+	return $html->link($url, $lang->asb_help, array("target" => '_blank', "style" => 'font-weight: bold;', "icon" => "styles/{$cp_style}/images/asb/help.png", "title" => $lang->asb_help), array("alt" => '?', "title" => $lang->asb_help, "style" => 'margin-bottom: -3px;'));
 }
 
 /**
