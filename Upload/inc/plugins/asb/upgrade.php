@@ -7,7 +7,7 @@
  * this file contains upgrade functionality
  */
 
-global $lang, $asbOldVersion;
+global $lang, $asbOldVersion, $db;
 if (!$lang->asb) {
 	$lang->load('asb');
 }
@@ -89,6 +89,11 @@ if (version_compare($asbOldVersion, '3.1.2', '<')) {
 		'jscripts/asb/asb.js',
 		'jscripts/asb/asb.min.js',
 	));
+}
+
+/* < 3.1.4 */
+if (version_compare($asbOldVersion, '3.1.4', '<')) {
+	$db->modify_column('asb_sideboxes', 'title', 'TEXT');
 }
 
 if (!empty($removedForumFiles)) {
