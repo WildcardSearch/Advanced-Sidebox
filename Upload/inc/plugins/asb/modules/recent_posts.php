@@ -286,7 +286,7 @@ function recent_posts_get_postlist($settings)
 		}
 
 		$post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
-		$post['link'] = get_thread_link($post['tid']) . "&amp;pid={$post['pid']}#pid{$post['pid']}";
+		$post['link'] = get_post_link($post['pid'], $post['tid']) . "#pid{$post['pid']}";
 
 		// we just need the text and smilies (we'll parse them after we check length)
 		$pattern = "|[[\/\!]*?[^\[\]]*?]|si";

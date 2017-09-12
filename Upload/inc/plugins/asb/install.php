@@ -20,7 +20,7 @@ if (!defined('IN_MYBB') ||
  */
 function asb_info()
 {
-	global $mybb, $lang, $cp_style;
+	global $mybb, $lang, $cp_style, $cache;
 
 	if (!$lang->asb) {
 		$lang->load('asb');
@@ -39,18 +39,29 @@ function asb_info()
 EOF;
 		}
 
+		// only show Manage Sideboxes link if active
+		$plugin_list = $cache->read('plugins');
+		$manage_link = '';
+		if (!empty($plugin_list['active']) &&
+			is_array($plugin_list['active']) &&
+			in_array('asb', $plugin_list['active'])) {
+			$url = ASB_URL;
+			$manage_link = <<<EOF
+	<li style="list-style-image: url(styles/{$cp_style}/images/asb/manage.png)">
+		<a href="{$url}" title="{$lang->asb_manage_sideboxes}">{$lang->asb_manage_sideboxes}</a>
+	</li>
+EOF;
+		}
+
 		$settings_link = <<<EOF
 	<li style="list-style-image: url(styles/{$cp_style}/images/asb/settings.png)">
 		{$settings_link}
 	</li>
 EOF;
-		$url = ASB_URL;
 		$extra_links = <<<EOF
 <ul>
 	{$settings_link}
-	<li style="list-style-image: url(styles/{$cp_style}/images/asb/manage.png)">
-		<a href="{$url}" title="{$lang->asb_manage_sideboxes}">{$lang->asb_manage_sideboxes}</a>
-	</li>{$remove_link}
+	{$manage_link}{$remove_link}
 	<li style="list-style-image: url(styles/{$cp_style}/images/asb/help.png)">
 		<a href="https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help-Installation" title="{$lang->asb_help}">{$lang->asb_help}</a>
 	</li>
