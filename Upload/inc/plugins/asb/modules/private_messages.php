@@ -84,7 +84,7 @@ function asb_private_messages_build_template($args)
 		$pm_message = $lang->sprintf($lang->asb_pms_user_disabled_pms, "<a href=\"{$mybb->settings['bburl']}/usercp.php?action=options\">{$lang->welcome_usercp}</a>");
 		$$template_var = <<<EOF
 	<tr>
-		<td class='trow1'>{$pm_message}>/td>
+		<td class='trow1'>{$pm_message}</td>
 	</tr>
 EOF;
 		return false;
