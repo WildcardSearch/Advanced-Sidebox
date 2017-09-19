@@ -110,7 +110,7 @@ EOF;
 		"authorsite" => 'http://www.rantcentralforums.com',
 		"version" => ASB_VERSION,
 		"compatibility" => '18*',
-		"guid" => '870e9163e2ae9b606a789d9f7d4d2462',
+		"codename" => 'asb',
 	);
 }
 
