@@ -42,9 +42,6 @@ function asb_admin()
 		$min = '.min';
 	}
 
-	// a few classes for the ACP side
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/acp.php';
-
 	// URL, link and image markup generator
 	$html = new HTMLGenerator(ASB_URL, array('addon', 'pos', 'topic', 'ajax'));
 
@@ -979,8 +976,6 @@ EOF;
 function asb_admin_manage_scripts()
 {
 	global $mybb, $db, $page, $lang, $html, $min, $cp_style;
-
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/ScriptInfo.php';
 
 	$page->add_breadcrumb_item($lang->asb, $html->url());
 

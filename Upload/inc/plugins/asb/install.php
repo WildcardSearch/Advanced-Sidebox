@@ -141,13 +141,9 @@ function asb_install()
 
 	// settings tables, templates, groups and setting groups
 	require_once MYBB_ROOT . 'inc/plugins/asb/functions_install.php';
-	if (!class_exists('WildcardPluginInstaller')) {
-		require_once MYBB_ROOT . 'inc/plugins/asb/classes/WildcardPluginInstaller.php';
-	}
 	$installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
 	$installer->install();
 
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/SideboxExternalModule.php';
 	$addons = asb_get_all_modules();
 	foreach ($addons as $addon) {
 		$addon->install();
@@ -210,7 +206,6 @@ function asb_uninstall()
 
 	global $mybb;
 
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/SideboxExternalModule.php';
 	// remove the modules first
 	$addons = asb_get_all_modules();
 
@@ -223,9 +218,6 @@ function asb_uninstall()
 	}
 
 	require_once MYBB_ROOT . 'inc/plugins/asb/functions_install.php';
-	if (!class_exists('WildcardPluginInstaller')) {
-		require_once MYBB_ROOT . 'inc/plugins/asb/classes/WildcardPluginInstaller.php';
-	}
 	$installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
 	$installer->uninstall();
 

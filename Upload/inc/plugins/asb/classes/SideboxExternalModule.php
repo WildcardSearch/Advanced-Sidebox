@@ -7,10 +7,6 @@
  * this file contains an object wrapper for external PHP modules
  */
 
-if (!class_exists('ExternalModule')) {
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/ExternalModule.php';
-}
-
 /*
  * ExternalModule extended for add-on modules
  */

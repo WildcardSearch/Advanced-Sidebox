@@ -17,6 +17,9 @@ define('IN_ASB', true);
 define('ASB_MODULES_DIR', MYBB_ROOT . 'inc/plugins/asb/modules');
 define('ASB_VERSION', '3.1.4');
 
+// register custom class autoloader
+spl_autoload_register('classAutoLoad');
+
 // some basic functions used everywhere
 require_once MYBB_ROOT . 'inc/plugins/asb/functions.php';
 
@@ -25,6 +28,19 @@ if (defined('IN_ADMINCP')) {
     require_once MYBB_ROOT . 'inc/plugins/asb/acp.php';
 } else {
 	require_once MYBB_ROOT . 'inc/plugins/asb/forum.php';
+}
+
+ /**
+  * class autoloader
+  *
+  * @param string the name of the class to load
+  */
+function classAutoLoad($className) {
+	$path = MYBB_ROOT . "inc/plugins/asb/classes/{$className}.php";
+
+	if (file_exists($path)) {
+		require_once $path;
+	}
 }
 
 ?>
