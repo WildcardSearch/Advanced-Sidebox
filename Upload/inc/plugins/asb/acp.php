@@ -655,7 +655,7 @@ function asb_admin_custom_boxes()
 			admin_redirect($html->url(array("action" => 'custom_boxes')));
 		}
 
-		$this_custom->export();
+		$this_custom->export(array("version" => ASB_CUSTOM_VERSION));
 		exit();
 	}
 

@@ -16,6 +16,7 @@ if (!defined('IN_MYBB')) {
 define('IN_ASB', true);
 define('ASB_MODULES_DIR', MYBB_ROOT . 'inc/plugins/asb/modules');
 define('ASB_VERSION', '3.1.4');
+define('ASB_CUSTOM_VERSION', '2.0');
 
 // register custom class autoloader
 spl_autoload_register('classAutoLoad');
