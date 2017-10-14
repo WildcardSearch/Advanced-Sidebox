@@ -1044,7 +1044,7 @@ function asb_admin_manage_scripts()
 	} elseif ($mybb->input['mode'] == 'export' && $mybb->input['id']) {
 		$this_script = new ScriptInfo((int) $mybb->input['id']);
 
-		if (!$this_script->export()) {
+		if (!$this_script->export(array("version" => ASB_SCRIPT_VERSION))) {
 			flash_message($lang->asb_script_export_fail, 'error');
 			admin_redirect($html->url(array("action" => 'manage_scripts')));
 		}
