@@ -42,9 +42,6 @@ function asb_admin()
 		$min = '.min';
 	}
 
-	// a few classes for the ACP side
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/acp.php';
-
 	// URL, link and image markup generator
 	$html = new HTMLGenerator(ASB_URL, array('addon', 'pos', 'topic', 'ajax'));
 
@@ -658,7 +655,7 @@ function asb_admin_custom_boxes()
 			admin_redirect($html->url(array("action" => 'custom_boxes')));
 		}
 
-		$this_custom->export();
+		$this_custom->export(array("version" => ASB_CUSTOM_VERSION));
 		exit();
 	}
 
@@ -980,8 +977,6 @@ function asb_admin_manage_scripts()
 {
 	global $mybb, $db, $page, $lang, $html, $min, $cp_style;
 
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/ScriptInfo.php';
-
 	$page->add_breadcrumb_item($lang->asb, $html->url());
 
 	if ($mybb->request_method == 'post') {
@@ -1049,7 +1044,7 @@ function asb_admin_manage_scripts()
 	} elseif ($mybb->input['mode'] == 'export' && $mybb->input['id']) {
 		$this_script = new ScriptInfo((int) $mybb->input['id']);
 
-		if (!$this_script->export()) {
+		if (!$this_script->export(array("version" => ASB_SCRIPT_VERSION))) {
 			flash_message($lang->asb_script_export_fail, 'error');
 			admin_redirect($html->url(array("action" => 'manage_scripts')));
 		}

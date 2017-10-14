@@ -7,17 +7,6 @@
  * this file contains an object wrapper for script definitons
  */
 
-// check dependencies
-if (!class_exists('MalleableObject')) {
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/MalleableObject.php';
-}
-if (!class_exists('StorableObject')) {
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/StorableObject.php';
-}
-if (!class_exists('PortableObject')) {
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/PortableObject.php';
-}
-
 class ScriptInfo extends PortableObject
 {
 	/**

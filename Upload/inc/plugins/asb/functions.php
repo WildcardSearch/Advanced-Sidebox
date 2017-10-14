@@ -119,9 +119,6 @@ function asb_build_cache(&$asb)
 	$asb['last_run'] = TIME_NOW;
 	$asb['has_changed'] = false;
 
-	// all the general side box related objects
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/forum.php';
-
 	// get all the active scripts' info
 	$all_scripts = asb_get_all_scripts();
 

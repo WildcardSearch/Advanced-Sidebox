@@ -88,47 +88,49 @@ EOF;
 	*/
 	public function import($xml)
 	{
-		if ($xml) {
-			require_once MYBB_ROOT . 'inc/class_xml.php';
-			$parser = new XMLParser($xml);
-			$tree = $parser->get_tree();
+		if (!$xml) {
+			return false;
+		}
 
-			// only doing a single YourCode backup, fail if multi detected
-			if (is_array($tree) &&
-				is_array($tree[$this->tableName]) &&
-				is_array($tree[$this->tableName]['attributes']) &&
-				isset($tree[$this->tableName]['attributes']['contains']) &&
-				$tree[$this->tableName]['attributes']['contains'] == 'single') {
-				foreach ($tree[$this->tableName] as $property => $this_entry) {
-					// skip the info
-					if (in_array($property, array('tag', 'value', 'attributes'))) {
-						continue;
-					}
+		require_once MYBB_ROOT . 'inc/class_xml.php';
+		$parser = new XMLParser($xml);
+		$tree = $parser->get_tree();
 
-					// if there is data
-					if (is_array($this_entry) &&
-						!empty($this_entry)) {
-						foreach ($this_entry as $key => $value) {
-							// skip the info
-							if (in_array($key, array('tag', 'value'))) {
-								continue;
-							}
+		if (!is_array($tree) ||
+			!is_array($tree[$this->tableName])) {
+			return false;
+		}
 
-							// get the field name from the array key
-							$key_array = explode('-', $key);
-							$newkey = $key_array[0];
+		foreach ($tree[$this->tableName] as $property => $this_entry) {
+			// skip the info
+			if (in_array($property, array('tag', 'value', 'attributes'))) {
+				continue;
+			}
 
-							// is it a valid property name for this object?
-							if (property_exists($this, $newkey)) {
-								// then store it
-								$this->$newkey = $value['value'];
-							}
-						}
-					}
+			// check data
+			if (!is_array($this_entry) ||
+				empty($this_entry)) {
+				continue;
+			}
+
+			foreach ($this_entry as $key => $value) {
+				// skip the info
+				if (in_array($key, array('tag', 'value'))) {
+					continue;
+				}
+
+				// get the field name from the array key
+				$key_array = explode('-', $key);
+				$newkey = $key_array[0];
+
+				// is it a valid property name for this object?
+				if (property_exists($this, $newkey)) {
+					// then store it
+					$this->$newkey = $value['value'];
 				}
 			}
 		}
-		return false;
+		return true;
 	}
 
 	/**
