@@ -4,11 +4,6 @@
  * MalleableObject Class Structure
  */
 
-if(!class_exists('MalleableObject'))
-{
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/MalleableObject.php';
-}
-
 /*
  * standard interface for external PHP modules
  *

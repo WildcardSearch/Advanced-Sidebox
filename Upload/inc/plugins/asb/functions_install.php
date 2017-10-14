@@ -15,7 +15,6 @@
  */
 function asb_create_script_info($return = false)
 {
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/ScriptInfo.php';
 	$scripts = array(
 		"index" => array(
 			"title" => 'Index',

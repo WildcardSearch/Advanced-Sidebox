@@ -20,9 +20,6 @@ function asb_start()
 {
 	global $mybb, $theme;
 
-	// side box, add-on and custom box classes
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/forum.php';
-
 	// don't waste execution if unnecessary
 	if (!asb_do_checks()) {
 		return;
@@ -435,7 +432,6 @@ function asb_xmlhttp()
 
 	// get the ASB core stuff
 	require_once MYBB_ROOT . 'inc/plugins/asb/functions_addon.php';
-	require_once MYBB_ROOT . 'inc/plugins/asb/classes/xmlhttp.php';
 
 	// attempt to load the module and side box requested
 	$module = new SideboxExternalModule($mybb->input['addon']);
