@@ -124,13 +124,17 @@ class SideboxExternalModule extends ExternalModule
 		$this->has_scripts = !empty($this->scripts);
 		$this->old_version = $this->get_cache_version();
 
-		// if this module needs to be upgraded . . .
-		if (isset($this->old_version) &&
-			$this->old_version &&
+		// new module
+		if ((!isset($this->old_version) ||
+			$this->old_version === 0) &&
+			!defined('IN_ASB_UNINSTALL')) {
+			$this->install();
+		// newly updated module
+		} elseif ($this->old_version &&
 			version_compare($this->old_version, $this->version, '<') &&
 			!defined('IN_ASB_UNINSTALL')) {
-			// get-r-done
 			$this->upgrade();
+		// pre-existing module
 		} else {
 			// otherwise mark upgrade status
 			$this->is_upgraded = $this->is_installed = true;

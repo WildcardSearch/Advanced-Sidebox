@@ -15,12 +15,12 @@ if (!defined('IN_MYBB')) {
 // for modules
 define('IN_ASB', true);
 define('ASB_MODULES_DIR', MYBB_ROOT . 'inc/plugins/asb/modules');
-define('ASB_VERSION', '3.1.5');
+define('ASB_VERSION', '3.1.6');
 define('ASB_CUSTOM_VERSION', '2.0');
 define('ASB_SCRIPT_VERSION', '2.0');
 
 // register custom class autoloader
-spl_autoload_register('classAutoLoad');
+spl_autoload_register('asbClassAutoload');
 
 // some basic functions used everywhere
 require_once MYBB_ROOT . 'inc/plugins/asb/functions.php';
@@ -37,7 +37,7 @@ if (defined('IN_ADMINCP')) {
   *
   * @param string the name of the class to load
   */
-function classAutoLoad($className) {
+function asbClassAutoload($className) {
 	$path = MYBB_ROOT . "inc/plugins/asb/classes/{$className}.php";
 
 	if (file_exists($path)) {
