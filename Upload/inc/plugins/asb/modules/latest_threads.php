@@ -29,7 +29,7 @@ function asb_latest_threads_info()
 	return array(
 		"title" => $lang->asb_latest_threads,
 		"description" => $lang->asb_latest_threads_desc,
-		"version" => '1.1.2',
+		"version" => '1.1.3',
 		"compatibility" => '2.1',
 		"wrap_content" => true,
 		"xmlhttp" => true,
@@ -129,7 +129,7 @@ function asb_latest_threads_info()
 				"template" => <<<EOF
 				<tr>
 					<td class="{\$altbg}">
-						{\$gotounread}<a href="{\$mybb->settings[\'bburl\']}/{\$thread[\'threadlink\']}" title="{\$thread[\'subject\']}"><strong>{\$thread[\'subject\']}</strong></a>
+						{\$gotounread}<a href="{\$mybb->settings[\'bburl\']}/{\$thread[\'threadlink\']}" title="{\$fullSubject}"><strong>{\$thread[\'subject\']}</strong></a>
 						<span class="smalltext"><br />
 							{\$last_poster}<br />
 							{\$lastpostdate} {\$lastposttime}<br />
@@ -388,6 +388,7 @@ EOF;
 			}
 		}
 
+		$fullSubject = $thread['subject'];
 		$max_len = (int) $settings['max_thread_title_length'];
 		if ($max_len > 0 &&
 			my_strlen($thread['subject']) > $max_len) {
