@@ -7,7 +7,7 @@
  * this file contains an object wrapper for individual custom boxes
  */
 
-class CustomSidebox extends PortableObject
+class CustomSidebox extends PortableObject010000
 {
 	/**
 	 * @var string

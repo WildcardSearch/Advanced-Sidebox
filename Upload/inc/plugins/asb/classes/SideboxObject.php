@@ -7,7 +7,7 @@
  * this file contains an object wrapper for individual side boxes
  */
 
-class SideboxObject extends StorableObject
+class SideboxObject extends StorableObject010000
 {
 	/**
 	 * @var string

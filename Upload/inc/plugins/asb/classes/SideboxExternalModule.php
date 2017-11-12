@@ -10,7 +10,7 @@
 /*
  * ExternalModule extended for add-on modules
  */
-class SideboxExternalModule extends ExternalModule
+class SideboxExternalModule extends ExternalModule010000
 {
 	/**
 	 * @var string

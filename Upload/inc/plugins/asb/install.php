@@ -141,8 +141,7 @@ function asb_install()
 
 	// settings tables, templates, groups and setting groups
 	require_once MYBB_ROOT . 'inc/plugins/asb/functions_install.php';
-	$installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
-	$installer->install();
+	AdvancedSideboxInstaller::getInstance()->install();
 
 	$addons = asb_get_all_modules();
 	foreach ($addons as $addon) {
@@ -218,8 +217,7 @@ function asb_uninstall()
 	}
 
 	require_once MYBB_ROOT . 'inc/plugins/asb/functions_install.php';
-	$installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
-	$installer->uninstall();
+	AdvancedSideboxInstaller::getInstance()->uninstall();
 
 	// delete our cached version
 	asb_unset_cache_version();

@@ -43,7 +43,7 @@ function asb_admin()
 	}
 
 	// URL, link and image markup generator
-	$html = new HTMLGenerator(ASB_URL, array('addon', 'pos', 'topic', 'ajax'));
+	$html = new HTMLGenerator010000(ASB_URL, array('addon', 'pos', 'topic', 'ajax'));
 
 	$scripts = asb_get_all_scripts();
 	if (is_array($scripts) &&

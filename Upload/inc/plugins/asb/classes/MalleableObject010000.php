@@ -6,18 +6,8 @@
 
 /**
  * provides standard data methods and validation for inheritance
-*/
-interface MalleableObjectInterface
-{
-	public function get($properties);
-	public function set($properties, $value = '');
-	public function isValid();
-}
-
-/**
- * provides standard data methods and validation for inheritance
  */
-abstract class MalleableObject implements MalleableObjectInterface
+abstract class MalleableObject010000 implements MalleableObjectInterface010000
 {
 	/**
 	 * @var bool
@@ -40,9 +30,7 @@ abstract class MalleableObject implements MalleableObjectInterface
 				}
 			}
 			return $returnArray;
-		}
-		else
-		{
+		} else {
 			if (property_exists($this, $properties)) {
 				return $this->$properties;
 			}
@@ -53,26 +41,23 @@ abstract class MalleableObject implements MalleableObjectInterface
 	/**
 	 * sets a single property or multiple properties at once
 	 *
-	 * @param  array|string propertie(s)
+	 * @param  array|string
 	 * @param  mixed the property value
 	 * @return bool success/fail
 	 */
 	public function set($properties, $value = '')
 	{
-		if (is_array($properties)) {
-			foreach ($properties as $property => $value) {
-				if (property_exists($this, $property)) {
-					$this->$property = $value;
-				}
-			}
-			return true;
-		} elseif (strlen($properties) > 0 &&
-			property_exists($this, $properties) &&
-			isset($value)) {
-			$this->$properties = $value;
-			return true;
+		if (!is_array($properties)) {
+			$properties = array($properties => $value);
 		}
-		return false;
+
+		foreach ($properties as $property => $value) {
+			if (isset($value) &&
+				property_exists($this, $property)) {
+				$this->$property = $value;
+			}
+		}
+		return true;
 	}
 
 	/**

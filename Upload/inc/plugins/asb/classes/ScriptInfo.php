@@ -7,7 +7,7 @@
  * this file contains an object wrapper for script definitons
  */
 
-class ScriptInfo extends PortableObject
+class ScriptInfo extends PortableObject010000
 {
 	/**
 	 * @var string

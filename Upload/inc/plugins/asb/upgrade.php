@@ -12,8 +12,7 @@ if (!$lang->asb) {
 	$lang->load('asb');
 }
 
-$installer = new WildcardPluginInstaller(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
-$installer->install();
+AdvancedSideboxInstaller::getInstance()->install();
 
 $removedAdminFolders = $removedForumFolders = $removedAdminFiles = $removedForumFiles = array();
 
@@ -98,6 +97,18 @@ if (version_compare($asbOldVersion, '3.1.5', '<')) {
 		'inc/plugins/asb/classes/acp.php',
 		'inc/plugins/asb/classes/forum.php',
 		'inc/plugins/asb/classes/xmlhttp.php',
+	));
+}
+
+/* < 3.1.7 */
+if (version_compare($asbOldVersion, '3.1.7', '<')) {
+	$removedForumFiles = array_merge($removedForumFiles, array(
+		'inc/plugins/asb/classes/ExternalModule.php',
+		'inc/plugins/asb/classes/HTMLGenerator.php',
+		'inc/plugins/asb/classes/MalleableObject.php',
+		'inc/plugins/asb/classes/StorableObject.php',
+		'inc/plugins/asb/classes/PortableObject.php',
+		'inc/plugins/asb/classes/WildcardPluginInstaller.php',
 	));
 }
 

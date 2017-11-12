@@ -4,7 +4,7 @@
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
- * this file contains the functions used in ACP and depends upon HTMLGenerator.php
+ * this file contains the functions used in ACP
  */
 
 /**
