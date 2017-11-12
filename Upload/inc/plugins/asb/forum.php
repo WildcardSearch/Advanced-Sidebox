@@ -263,9 +263,11 @@ EOF;
 
 	if (is_array($script['js'])) {
 		foreach ($script['js'] as $script_name) {
-			if(file_exists(MYBB_ROOT . "jscripts/asb/{$script_name}{$min}.js")) {
-				$script_name .= $min;
+			$script_name .= $min;
+			if (!file_exists(MYBB_ROOT . "jscripts/asb/{$script_name}.js")) {
+				continue;
 			}
+
 			$headerinclude .= <<<EOF
 
 <script type="text/javascript" src="jscripts/asb/{$script_name}.js"></script>
