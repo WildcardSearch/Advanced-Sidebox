@@ -122,16 +122,16 @@ class SideboxExternalModule extends ExternalModule010000
 
 		$this->has_settings = !empty($this->settings);
 		$this->has_scripts = !empty($this->scripts);
-		$this->old_version = $this->get_cache_version();
+		$oldVersion = $this->get_cache_version();
 
 		// new module
-		if ((!isset($this->old_version) ||
-			$this->old_version === 0) &&
+		if ((!isset($oldVersion) ||
+			$oldVersion === 0) &&
 			!defined('IN_ASB_UNINSTALL')) {
 			$this->install();
 		// newly updated module
-		} elseif ($this->old_version &&
-			version_compare($this->old_version, $this->version, '<') &&
+		} elseif ($oldVersion &&
+			version_compare($oldVersion, $this->version, '<') &&
 			!defined('IN_ASB_UNINSTALL')) {
 			$this->upgrade();
 		// pre-existing module

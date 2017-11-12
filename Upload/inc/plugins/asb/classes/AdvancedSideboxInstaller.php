@@ -6,6 +6,11 @@
 
 class AdvancedSideboxInstaller extends WildcardPluginInstaller010202
 {
+	/**
+	 * returns an installer object
+	 *
+	 * @return AdvancedSideboxInstaller
+	 */
 	static public function getInstance()
 	{
 		static $instance;
