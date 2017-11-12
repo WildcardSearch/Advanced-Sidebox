@@ -422,7 +422,7 @@ EOF;
 	if ($ajax) {
 		// the content is much different
 		echo <<<EOF
-<div class="modal" style="width: auto;">
+<div class="modal" style="width: 540px;">
 <script src="jscripts/tabs.js" type="text/javascript"></script>
 <script src="jscripts/asb/asb_modal.js" type="text/javascript"></script>
 
@@ -486,7 +486,7 @@ EOF;
 		$box_action = $lang->asb_editing;
 	}
 
-	echo "\n<div id=\"tab_general\">\n";
+	echo "\n<div id=\"tab_general\" style=\"width: auto;\">\n";
 	$form_container = new FormContainer('<h3>' . $lang->sprintf($lang->asb_new_sidebox_action, $box_action, $currently_editing) . '</h3>');
 
 	if (!$ajax) {
@@ -510,7 +510,7 @@ EOF;
 	}
 	$form_container->end();
 
-	echo "\n</div>\n<div id=\"tab_permissions\" style=\"text-align: center;\">\n";
+	echo "\n</div>\n<div id=\"tab_permissions\" style=\"text-align: center; width: auto;\">\n";
 	$form_container = new FormContainer($lang->asb_which_groups);
 
 	// prepare options for which groups
@@ -538,7 +538,7 @@ EOF;
 
 	$form_container->end();
 
-	echo "\n</div>\n<div id=\"tab_pages\" style=\"text-align: center;\">\n";
+	echo "\n</div>\n<div id=\"tab_pages\" style=\"text-align: center; width: auto;\">\n";
 	$form_container = new FormContainer($lang->asb_which_scripts);
 
 	// prepare for which scripts
@@ -572,7 +572,7 @@ EOF;
 	$form_container->output_row('', $script_warning, $form->generate_select_box('script_select_box[]', $choices, $selected_scripts, array("id" => 'script_select_box', "multiple" => true, 'size' => 5)));
 	$form_container->end();
 
-	echo "\n</div>\n<div id=\"tab_themes\" style=\"text-align: center;\">\n";
+	echo "\n</div>\n<div id=\"tab_themes\" style=\"text-align: center; width: auto;\">\n";
 	$form_container = new FormContainer($lang->asb_which_themes);
 
 	// do we have themes stored?
@@ -588,7 +588,7 @@ EOF;
 	$form_container->end();
 
 	if ($do_settings) {
-		echo "</div>\n<div id=\"tab_settings\" style=\"max-width: 400px; max-height: 250px; overflow: auto; clear: both;\">\n";
+		echo "</div>\n<div id=\"tab_settings\" style=\"overflow: auto; clear: both; max-height: 360px;\">\n";
 
 		$form_container = new FormContainer($lang->asb_modal_tab_settings_desc);
 
