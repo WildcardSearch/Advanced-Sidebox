@@ -46,6 +46,7 @@ $l['asb_theme_exclude_list'] = 'Theme EXCLUDE List';
 $l['asb_theme_exclude_list_description'] = 'select themes to disable sidebox display for them.<br />(use CTRL to select/deselect multiple themes)';
 $l['asb_theme_exclude_select_update_link'] = 'Update Theme Exclude Selector';
 $l['asb_theme_exclude_select_update_description'] = 'when themes are installed/removed the theme exclude select box will need to be updated to reflect the current theme list.';
+$l['asb_theme_exclude_no_themes'] = 'no themes';
 
 $l['asb_disable_for_mobile_title'] = 'Disable For Mobile Users?';
 $l['asb_disable_for_mobile_description'] = 'YES to disable for mobile users, NO (default) to enable for all browsers';

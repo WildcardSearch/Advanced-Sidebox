@@ -144,6 +144,11 @@ EOF
  */
 function asb_build_theme_exclude_select()
 {
+	global $lang;
+	if (!$lang-asb) {
+		$lang->load('asb');
+	}
+
 	$all_themes = asb_get_all_themes(true);
 
 	$theme_count = min(5, count($all_themes));
@@ -151,7 +156,7 @@ function asb_build_theme_exclude_select()
 		return $theme_select = <<<EOF
 php
 <select name=\"upsetting[asb_exclude_theme][]\" size=\"1\">
-	<option value=\"0\">no themes!</option>
+	<option value=\"0\">{$lang->asb_theme_exclude_no_themes}</option>
 </select>
 
 EOF;
