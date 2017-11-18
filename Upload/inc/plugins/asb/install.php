@@ -163,17 +163,19 @@ function asb_activate()
 {
 	global $asbOldVersion;
 
-	// get the last cached version
+	$myCache = AdvancedSideboxCache::getInstance();
+
 	require_once MYBB_ROOT . 'inc/plugins/asb/functions_install.php';
 
 	// if we just upgraded . . .
-	$asbOldVersion = asb_get_cache_version();
+	$asbOldVersion = $myCache->getVersion();
 	if (isset($asbOldVersion) &&
 		$asbOldVersion &&
 		version_compare($asbOldVersion, ASB_VERSION, '<')) {
 		require_once MYBB_ROOT . 'inc/plugins/asb/upgrade.php';
 	}
-	asb_set_cache_version();
+
+	$myCache->setVersion(ASB_VERSION);
 
 	// change the permissions to on by default
 	change_admin_permission('config', 'asb');
@@ -220,7 +222,7 @@ function asb_uninstall()
 	AdvancedSideboxInstaller::getInstance()->uninstall();
 
 	// delete our cached version
-	asb_unset_cache_version();
+	AdvancedSideboxCache::getInstance()->clear();
 }
 
 /*

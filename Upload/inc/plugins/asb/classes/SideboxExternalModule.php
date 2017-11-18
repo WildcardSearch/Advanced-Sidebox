@@ -352,15 +352,12 @@ class SideboxExternalModule extends ExternalModule010000
 	 */
 	protected function get_cache_version()
 	{
-		global $cache;
+		$addonVersions = AdvancedSideboxCache::getInstance()->read('addon_versions');
 
-		// get currently installed version, if there is one
-		$asb = $cache->read('asb');
-
-		if (is_array($asb['addon_versions']) &&
-			isset($asb['addon_versions'][$this->baseName]) &&
-			isset($asb['addon_versions'][$this->baseName]['version'])) {
-			return $asb['addon_versions'][$this->baseName]['version'];
+		if (is_array($addonVersions) &&
+			isset($addonVersions[$this->baseName]) &&
+			isset($addonVersions[$this->baseName]['version'])) {
+			return $addonVersions[$this->baseName]['version'];
 		}
 		return 0;
 	}
@@ -372,12 +369,12 @@ class SideboxExternalModule extends ExternalModule010000
 	 */
 	protected function set_cache_version()
 	{
-		global $cache;
+		$myCache = AdvancedSideboxCache::getInstance();
 
-		//update version cache to latest
-		$asb = $cache->read('asb');
-		$asb['addon_versions'][$this->baseName]['version'] = $this->version;
-		$cache->update('asb', $asb);
+		// update version cache to latest
+		$addonVersions = $myCache->read('addon_versions');
+		$addonVersions[$this->baseName]['version'] = $this->version;
+		$myCache->update('addon_versions', $addonVersions);
 		return true;
 	}
 
@@ -388,13 +385,13 @@ class SideboxExternalModule extends ExternalModule010000
 	 */
 	protected function unset_cache_version()
 	{
-		global $cache;
+		$myCache = AdvancedSideboxCache::getInstance();
 
-		$asb = $cache->read('asb');
-		if (isset($asb['addon_versions'][$this->baseName])) {
-			unset($asb['addon_versions'][$this->baseName]);
+		$addonVersions = $myCache->read('addon_versions');
+		if (isset($addonVersions[$this->baseName])) {
+			unset($addonVersions[$this->baseName]);
 		}
-		$cache->update('asb', $asb);
+		$myCache->update('addon_versions', $addonVersions);
 		return true;
 	}
 

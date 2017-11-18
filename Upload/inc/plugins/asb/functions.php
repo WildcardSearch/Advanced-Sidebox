@@ -80,22 +80,15 @@ function asb_get_excluded_themes($sql = false)
  */
 function asb_get_cache()
 {
-	global $cache;
-	static $asb;
-
-	// if we've already retrieved it (we will do it twice per script)
-	// then just return the static copy, otherwise retrieve it
-	if (!isset($asb) ||
-		empty($asb)) {
-		$asb = $cache->read('asb');
-	}
+	$myCache = AdvancedSideboxCache::getInstance();
+	$asb = $myCache->read();
 
 	// if the cache has never been built or has been marked as changed
 	// then rebuild and store it
 	if ((int) $asb['last_run'] == 0 ||
 		$asb['has_changed']) {
 		asb_build_cache($asb);
-		$cache->update('asb', $asb);
+		$myCache->update(null, $asb);
 	}
 
 	// returned the cached info
@@ -400,7 +393,8 @@ function asb_build_sidebox_content($this_box)
 	// need good info
 	if ($this_box instanceof SideboxObject) {
 		$data = $this_box->get('data');
-	} else if(is_array($this_box) && !empty($this_box)) {
+	} else if (is_array($this_box) &&
+		!empty($this_box)) {
 		$data = $this_box;
 	} else {
 		return false;
