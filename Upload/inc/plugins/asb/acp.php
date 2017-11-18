@@ -1573,7 +1573,6 @@ function asb_admin_update_theme_select()
 	}
 
 	// update the setting
-	require_once MYBB_ROOT . 'inc/plugins/asb/functions_install.php';
 	$status = $db->update_query('settings', array("optionscode" => $db->escape_string(asb_build_theme_exclude_select())), "name='asb_exclude_theme'");
 
 	// success?

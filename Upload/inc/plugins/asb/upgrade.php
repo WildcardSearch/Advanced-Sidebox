@@ -109,6 +109,7 @@ if (version_compare($asbOldVersion, '3.1.7', '<')) {
 		'inc/plugins/asb/classes/StorableObject.php',
 		'inc/plugins/asb/classes/PortableObject.php',
 		'inc/plugins/asb/classes/WildcardPluginInstaller.php',
+		'inc/plugins/asb/functions_install.php',
 	));
 }
 
