@@ -150,6 +150,14 @@ $l['asb_delete_box_failure'] = 'There was an error while attempting to remove th
 $l['asb_no_description'] = 'no description';
 $l['asb_edit_fail_bad_module'] = 'The chosen module was invalid and cannot be used.';
 
+$l['asb_inline_title'] = 'Inline Edits';
+$l['asb_inline_selection_error'] = 'You did not select anything.';
+$l['asb_inline_success'] = '{1} {2} successfully {3}';
+$l['asb_update_width'] = 'Update Width';
+$l['asb_deleted'] = 'deleted';
+$l['asb_activated'] = 'activated';
+$l['asb_deactivated'] = 'deactivated';
+
 // menus
 $l['asb_add_new_box'] = 'Add A New Side Box';
 $l['asb_add_new_box_desc'] = 'or edit an existing box';
@@ -250,6 +258,8 @@ $l['asb_uninstall'] = 'Uninstall';
 $l['asb_install'] = 'Install';
 $l['asb_modules_version'] = 'Version';
 $l['asb_modules_author'] = 'Author';
+$l['asb_activate'] = 'Activate';
+$l['asb_deactivate'] = 'Deactivate';
 
 // module info
 $l['asb_no_modules_detected'] = 'no modules detected';
@@ -332,6 +342,9 @@ $l['asb_edit_script_desc'] = 'add new script definitions or edit existing info';
 $l['asb_add_new_script'] = 'Add a new script definition';
 $l['asb_no_scripts'] = 'no script info to show';
 $l['asb_script_info'] = 'Script Info';
+$l['asb_script_definition'] = 'script definition';
+$l['asb_script_definitions'] = 'script definitions';
+$l['asb_updated'] = 'updated';
 
 $l['asb_script_save_success'] = 'The script definition was saved successfully';
 $l['asb_script_save_fail'] = 'The script definition could not be saved successfully';
