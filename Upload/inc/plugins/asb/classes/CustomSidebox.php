@@ -7,7 +7,7 @@
  * this file contains an object wrapper for individual custom boxes
  */
 
-class CustomSidebox extends PortableObject
+class CustomSidebox extends PortableObject010000
 {
 	/**
 	 * @var string
@@ -76,7 +76,7 @@ class CustomSidebox extends PortableObject
 	{
 		// unless specifically requested otherwise clean up
 		if (!$noCleanup) {
-			$this->remove_children();
+			$this->removeChildren();
 		}
 		return parent::remove();
 	}
@@ -86,7 +86,7 @@ class CustomSidebox extends PortableObject
 	 *
 	 * @return void
 	 */
-	protected function remove_children()
+	protected function removeChildren()
 	{
 		global $db;
 
@@ -101,9 +101,8 @@ class CustomSidebox extends PortableObject
 	 * @param  string
 	 * @return bool success/fail
 	 */
-	public function build_template($template_variable)
+	public function buildTemplate($template_variable)
 	{
-		// note the double-$'s . . . we are declaring the baseName of this custom module as global so that our changes will take effect where they are needed
 		global $$template_variable, $mybb, $lang;
 
 		$content = $this->content;

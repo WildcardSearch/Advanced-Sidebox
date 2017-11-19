@@ -4,7 +4,7 @@
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *
- * this file contains the functions used in ACP and depends upon HTMLGenerator.php
+ * this file contains the functions used in ACP
  */
 
 /**
@@ -413,17 +413,13 @@ EOF;
 }
 
 /**
- * set the flag so the cache is rebuilt new run
+ * set the flag so the cache is rebuilt next run
  *
  * @return void
  */
 function asb_cache_has_changed()
 {
-	global $cache;
-
-	$asb = $cache->read('asb');
-	$asb['has_changed'] = true;
-	$cache->update('asb', $asb);
+	AdvancedSideboxCache::getInstance()->update('has_changed', true);
 }
 
 /**

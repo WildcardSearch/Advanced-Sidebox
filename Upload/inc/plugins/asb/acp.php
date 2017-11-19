@@ -43,7 +43,7 @@ function asb_admin()
 	}
 
 	// URL, link and image markup generator
-	$html = new HTMLGenerator(ASB_URL, array('addon', 'pos', 'topic', 'ajax'));
+	$html = new HTMLGenerator010000(ASB_URL, array('addon', 'pos', 'topic', 'ajax'));
 
 	$scripts = asb_get_all_scripts();
 	if (is_array($scripts) &&
@@ -314,7 +314,7 @@ function asb_admin_edit_box()
 						$settings[$setting['name']] = $mybb->input[$setting['name']];
 					}
 				}
-				$settings = $parent->do_settings_save($settings);
+				$settings = $parent->doSettingsSave($settings);
 				$sidebox->set('settings', $settings);
 			}
 		} elseif($is_custom) {
@@ -422,7 +422,7 @@ EOF;
 	if ($ajax) {
 		// the content is much different
 		echo <<<EOF
-<div class="modal" style="width: auto;">
+<div class="modal" style="width: 540px;">
 <script src="jscripts/tabs.js" type="text/javascript"></script>
 <script src="jscripts/asb/asb_modal.js" type="text/javascript"></script>
 
@@ -454,8 +454,8 @@ EOF;
 
 	// we only need a 'Settings' tab if the current module type has settings
 	$do_settings = true;
-	if (!$sidebox->has_settings &&
-		!$parent->has_settings) {
+	if (!$sidebox->hasSettings &&
+		!$parent->hasSettings) {
 		unset($tabs['settings']);
 		$do_settings = false;
 	}
@@ -486,7 +486,7 @@ EOF;
 		$box_action = $lang->asb_editing;
 	}
 
-	echo "\n<div id=\"tab_general\">\n";
+	echo "\n<div id=\"tab_general\" style=\"width: auto;\">\n";
 	$form_container = new FormContainer('<h3>' . $lang->sprintf($lang->asb_new_sidebox_action, $box_action, $currently_editing) . '</h3>');
 
 	if (!$ajax) {
@@ -510,7 +510,7 @@ EOF;
 	}
 	$form_container->end();
 
-	echo "\n</div>\n<div id=\"tab_permissions\" style=\"text-align: center;\">\n";
+	echo "\n</div>\n<div id=\"tab_permissions\" style=\"text-align: center; width: auto;\">\n";
 	$form_container = new FormContainer($lang->asb_which_groups);
 
 	// prepare options for which groups
@@ -538,7 +538,7 @@ EOF;
 
 	$form_container->end();
 
-	echo "\n</div>\n<div id=\"tab_pages\" style=\"text-align: center;\">\n";
+	echo "\n</div>\n<div id=\"tab_pages\" style=\"text-align: center; width: auto;\">\n";
 	$form_container = new FormContainer($lang->asb_which_scripts);
 
 	// prepare for which scripts
@@ -572,7 +572,7 @@ EOF;
 	$form_container->output_row('', $script_warning, $form->generate_select_box('script_select_box[]', $choices, $selected_scripts, array("id" => 'script_select_box', "multiple" => true, 'size' => 5)));
 	$form_container->end();
 
-	echo "\n</div>\n<div id=\"tab_themes\" style=\"text-align: center;\">\n";
+	echo "\n</div>\n<div id=\"tab_themes\" style=\"text-align: center; width: auto;\">\n";
 	$form_container = new FormContainer($lang->asb_which_themes);
 
 	// do we have themes stored?
@@ -588,7 +588,7 @@ EOF;
 	$form_container->end();
 
 	if ($do_settings) {
-		echo "</div>\n<div id=\"tab_settings\" style=\"max-width: 400px; max-height: 250px; overflow: auto; clear: both;\">\n";
+		echo "</div>\n<div id=\"tab_settings\" style=\"overflow: auto; clear: both; max-height: 360px;\">\n";
 
 		$form_container = new FormContainer($lang->asb_modal_tab_settings_desc);
 
@@ -610,7 +610,7 @@ EOF;
 
 		$form_container->end();
 
-		$parent->do_settings_load();
+		$parent->doSettingsLoad();
 	}
 
 	echo "</div>\n";
@@ -1029,6 +1029,80 @@ function asb_admin_manage_scripts()
 			flash_message($lang->asb_script_import_success, 'success');
 			asb_cache_has_changed();
 			admin_redirect($html->url(array("action" => 'manage_scripts')));
+		} elseif ($mybb->input['mode'] == 'inline') {
+			$redirect = $html->url(array("action" => 'manage_scripts'));
+
+			if (!is_array($mybb->input['asb_inline_ids']) ||
+				empty($mybb->input['asb_inline_ids'])) {
+				flash_message($lang->asb_inline_selection_error, 'error');
+				admin_redirect($redirect);
+			}
+
+			$job_count = 0;
+			foreach ($mybb->input['asb_inline_ids'] as $id => $throwAway) {
+				$script = new ScriptInfo($id);
+				if (!$script->isValid()) {
+					continue;
+				}
+
+				$deleted = false;
+				switch ($mybb->input['inline_action']) {
+				case 'update_width':
+					$action = $lang->asb_updated;
+					$changed = false;
+					if (isset($mybb->input['width_left'][$id])) {
+						$script->set('width_left', $mybb->input['width_left'][$id]);
+						$changed = true;
+					}
+					if (isset($mybb->input['width_right'][$id])) {
+						$script->set('width_right', $mybb->input['width_right'][$id]);
+						$changed = true;
+					}
+					if ($changed == false) {
+						continue 2;
+					}
+					$script->save();
+					break;
+				case 'delete':
+					$action = $lang->asb_deleted;
+					if (!$script->remove()) {
+						continue 2;
+					}
+					$deleted = true;
+					break;
+				case 'activate':
+					$action = $lang->asb_activated;
+					if ($script->get('active')) {
+						continue 2;
+					}
+					$script->set('active', true);
+					$script->save();
+					break;
+				case 'deactivate':
+					$action = $lang->asb_deactivated;
+					if (!$script->get('active')) {
+						continue 2;
+					}
+					$script->set('active', false);
+					$script->save();
+					break;
+				default:
+					continue 2;
+				}
+				++$job_count;
+			}
+
+			$status = 'error';
+			$objectTitle = $lang->asb_script_definitions;
+			if ($job_count > 0) {
+				$status = 'success';
+				asb_cache_has_changed();
+				if ($job_count == 1) {
+					$objectTitle = $lang->asb_script_definition;
+				}
+			}
+			flash_message($lang->sprintf($lang->asb_inline_success, $job_count, $objectTitle, $action), $status);
+			admin_redirect($redirect);
 		}
 	}
 
@@ -1212,6 +1286,15 @@ EOF;
 	} else {
 		$page->extra_header .= <<<EOF
 	<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
+	<script type="text/javascript" src="jscripts/asb/asb_inline{$min}.js"></script>
+	<script type="text/javascript">
+	<!--
+	ASB.inline.setup({
+		go: '{$lang->go}',
+		noSelection: '{$lang->asb_inline_selection_error}',
+	});
+	// -->
+	</script>
 
 EOF;
 
@@ -1223,15 +1306,18 @@ EOF;
 		$new_script_link = $html->link($new_script_url, $lang->asb_add_new_script, array("style" => 'font-weight: bold;', "title" => $lang->asb_add_new_script, "icon" => "styles/{$cp_style}/images/asb/add.png"), array("alt" => '+', "title" => $lang->asb_add_new_script, "style" => 'margin-bottom: -3px;'));
 		echo($new_script_link . '<br /><br />');
 
+		$form = new Form($html->url(array("action" => 'manage_scripts', "mode" => 'inline')), 'post', 'inline_form');
+
 		$table = new Table;
-		$table->construct_header($lang->asb_title, array("width" => '16%'));
+		$table->construct_header($lang->asb_title, array("width" => '34%'));
 		$table->construct_header($lang->asb_filename, array("width" => '16%'));
 		$table->construct_header($lang->asb_action, array("width" => '7%'));
 		$table->construct_header($lang->asb_page, array("width" => '7%'));
-		$table->construct_header($lang->asb_template, array("width" => '18%'));
-		$table->construct_header($lang->asb_hook, array("width" => '20%'));
+		$table->construct_header($lang->asb_width_left, array("width" => '10%'));
+		$table->construct_header($lang->asb_width_right, array("width" => '10%'));
 		$table->construct_header($lang->asb_status, array("width" => '7%'));
 		$table->construct_header($lang->asb_controls, array("width" => '8%'));
+		$table->construct_header($form->generate_check_box('', '', '', array("id" => 'asb_select_all')), array("style" => 'width: 1%'));
 
 		$query = $db->simple_select('asb_script_info', '*', '', array("order_by" => 'title', "order_dir" => 'ASC'));
 		if ($db->num_rows($query) > 0) {
@@ -1249,8 +1335,8 @@ EOF;
 				$table->construct_cell($data['filename']);
 				$table->construct_cell($data['action'] ? $data['action'] : $none);
 				$table->construct_cell($data['page'] ? $data['page'] : $none);
-				$table->construct_cell($data['template_name'] ? $data['template_name'] : $none);
-				$table->construct_cell($data['hook'] ? $data['hook'] : $none);
+				$table->construct_cell($form->generate_text_box("width_left[{$data['id']}]", $data['width_left'], array('style' => 'width: 40px;')));
+				$table->construct_cell($form->generate_text_box("width_right[{$data['id']}]", $data['width_right'], array('style' => 'width: 40px;')));
 				$table->construct_cell($data['active'] ? $deactivate_link : $activate_link);
 
 				// options popup
@@ -1267,13 +1353,37 @@ EOF;
 
 				// popup cell
 				$table->construct_cell($popup->fetch());
+				$table->construct_cell($form->generate_check_box("asb_inline_ids[{$data['id']}]", '', '', array("class" => 'asb_check')));
+				$table->construct_row();
 				$table->construct_row();
 			}
 		} else {
-			$table->construct_cell("<span style=\"color: gray;\"><em>{$lang->asb_no_scripts}</em></span>", array("colspan" => 8));
+			$table->construct_cell("<span style=\"color: gray;\"><em>{$lang->asb_no_scripts}</em></span>", array("colspan" => 9));
 			$table->construct_row();
 		}
+
+		$inline = <<<EOF
+<div>
+	<span>
+		<strong>{$lang->asb_inline_title}:</strong>&nbsp;
+		<select name="inline_action">
+			<option value="activate">{$lang->asb_activate}</option>
+			<option value="deactivate">{$lang->asb_deactivate}</option>
+			<option value="update_width">{$lang->asb_update_width}</option>
+			<option value="delete">{$lang->asb_delete}</option>
+		</select>
+		<input id="asb_inline_submit" type="submit" class="button" name="asb_inline_submit" value="{$lang->go} (0)"/>
+		<input id="asb_inline_clear" type="button" class="button" name="asb_inline_clear" value="{$lang->clear}"/>
+	</span>
+</div>
+EOF;
+
+		$table->construct_cell('', array("colspan" => 4, 'style' =>'border-right: none;'));
+		$table->construct_cell($inline, array("colspan" => 5, 'style' =>'border-left: none;'));
+		$table->construct_row();
+
 		$table->output($lang->asb_script_info);
+		$form->end();
 
 		$form = new Form($html->url(array("action" => 'manage_scripts', "mode" => 'import')), 'post', '', 1);
 		$form_container = new FormContainer($lang->asb_custom_import);
@@ -1573,7 +1683,6 @@ function asb_admin_update_theme_select()
 	}
 
 	// update the setting
-	require_once MYBB_ROOT . 'inc/plugins/asb/functions_install.php';
 	$status = $db->update_query('settings', array("optionscode" => $db->escape_string(asb_build_theme_exclude_select())), "name='asb_exclude_theme'");
 
 	// success?

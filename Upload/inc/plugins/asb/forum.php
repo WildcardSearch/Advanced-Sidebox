@@ -29,12 +29,14 @@ function asb_start()
 	$this_script = asb_get_this_script($asb, true);
 
 	// no boxes, get out
-	if ((!is_array($this_script['sideboxes']) ||
-	   empty($this_script['sideboxes'])) ||
+	if (!is_array($this_script['sideboxes']) ||
+	   empty($this_script['sideboxes']) ||
 	   (empty($this_script['sideboxes'][0]) &&
 	   empty($this_script['sideboxes'][1])) ||
-	   strlen($this_script['find_top']) == 0 ||
-	   strlen($this_script['find_bottom']) == 0) {
+	   ((strlen($this_script['find_top']) == 0 ||
+	   strlen($this_script['find_bottom']) == 0) &&
+	   (!$this_script['replace_all'] &&
+	   !$this_script['eval']))) {
 		return;
 	}
 
@@ -101,7 +103,7 @@ function asb_start()
 			if ($module->isValid()) {
 				// build the template. pass settings, template variable
 				// name and column width
-				$result = $module->build_template($sidebox->get('settings'), $template_var, $width[$pos], get_current_location());
+				$result = $module->buildTemplate($sidebox->get('settings'), $template_var, $width[$pos], get_current_location());
 			// if it doesn't verify as an add-on, try it as a custom box
 			} elseif (isset($asb['custom'][$module_name]) &&
 				is_array($asb['custom'][$module_name])) {
@@ -110,7 +112,7 @@ function asb_start()
 				// if it validates, then build it, otherwise there was an error
 				if ($custom->isValid()) {
 					// build the custom box template
-					$result = $custom->build_template($template_var);
+					$result = $custom->buildTemplate($template_var);
 				}
 			} else {
 				continue;
@@ -263,9 +265,11 @@ EOF;
 
 	if (is_array($script['js'])) {
 		foreach ($script['js'] as $script_name) {
-			if(file_exists(MYBB_ROOT . "jscripts/asb/{$script_name}{$min}.js")) {
-				$script_name .= $min;
+			$script_name .= $min;
+			if (!file_exists(MYBB_ROOT . "jscripts/asb/{$script_name}.js")) {
+				continue;
 			}
+
 			$headerinclude .= <<<EOF
 
 <script type="text/javascript" src="jscripts/asb/{$script_name}.js"></script>
@@ -302,6 +306,8 @@ EOF;
 		if ($insert_top ||
 			$insert_bottom) {
 			// make the edits
+			$script['find_top'] = str_replace("\r", '', $script['find_top']);
+			$script['find_bottom'] = str_replace("\r", '', $script['find_bottom']);
 			$find_top_pos = strpos($templates->cache[$script['template_name']], $script['find_top']);
 
 			if ($find_top_pos !== false) {
@@ -441,7 +447,7 @@ function asb_xmlhttp()
 	if ($module->isValid() &&
 		$sidebox->isValid()) {
 		// then call the module's AJAX method and echo its return value
-		echo($module->do_xmlhttp($mybb->input['dateline'], $sidebox->get('settings'), $mybb->input['width'], $mybb->input['script']));
+		echo($module->doXmlhttp($mybb->input['dateline'], $sidebox->get('settings'), $mybb->input['width'], $mybb->input['script']));
 	}
 	exit;
 }

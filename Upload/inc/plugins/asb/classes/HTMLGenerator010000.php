@@ -6,8 +6,13 @@
  * produces standard or encoded URLs, HTML anchors and images
  */
 
-class HTMLGenerator
+class HTMLGenerator010000
 {
+	/**
+	 * @const version
+	 */
+	const VERSION = '1.0';
+
 	/**
 	 * @var string default URL for links,
 	 * can be set in __construct() by the plugin ACP
@@ -60,7 +65,7 @@ class HTMLGenerator
 	/**
 	 * constructor
 	 *
-	 * @param  string the base URL for all links and URLs
+	 * @param  string base URL
 	 * @param  string|array 1+ key names
 	 * @return void
 	 */
@@ -72,16 +77,15 @@ class HTMLGenerator
 		}
 
 		// custom keys?
-		if ($extra_keys) {
-			if (!is_array($extra_keys)) {
-				$extra_keys = array($extra_keys);
-			}
-			foreach ($extra_keys as $key) {
-				$key = trim($key);
-				if ($key &&
-					!in_array($key, $this->allowed_url_keys)) {
-					$this->allowed_url_keys[] = $key;
-				}
+		if (!$extra_keys) {
+			return;
+		}
+
+		foreach ((array) $extra_keys as $key) {
+			$key = trim($key);
+			if ($key &&
+				!in_array($key, $this->allowed_url_keys)) {
+				$this->allowed_url_keys[] = $key;
 			}
 		}
 	}
@@ -89,18 +93,17 @@ class HTMLGenerator
 	/**
 	 * builds a URL from standard options array
 	 *
-	 * @param  array keyed to standard URL options
-	 * @param  string overrides the default URL base if present
-	 * @param  bool override URL encoded ampersand (for JS mostly)
+	 * @param  array
+	 * @param  string override URL base
+	 * @param  bool override URL encoded ampersand
 	 * @return string URL
 	 */
 	public function url($options = array(), $base_url = '', $encoded = true)
 	{
+		$url = $this->base_url;
 		if ($base_url &&
 			trim($base_url)) {
 			$url = $base_url;
-		} else {
-			$url = $this->base_url;
 		}
 
 		$amp = '&';
@@ -127,10 +130,11 @@ class HTMLGenerator
 	/**
 	 * builds an HTML anchor from the provided options
 	 *
-	 * @param  string the address
-	 * @param  string the title of the link
-	 * @param  array options to effect the HTML output
-	 * @return string HTML anchor
+	 * @param  string
+	 * @param  string
+	 * @param  array
+	 * @param  array
+	 * @return string
 	 */
 	public function link($url = '', $caption = '', $options = '', $icon_options = array())
 	{
@@ -157,11 +161,11 @@ EOF;
 	}
 
 	/**
-	 * generate HTML <img> mark-up
+	 * generate HTML image markup
 	 *
-	 * @param  string image source attribute
-	 * @param  array a keyed array of options to be generated
-	 * @return string HTML image
+	 * @param  string
+	 * @param  array
+	 * @return string
 	 */
 	public function img($url, $options = array())
 	{
@@ -175,9 +179,9 @@ EOF;
 	/**
 	 * build HTML property list
 	 *
-	 * @param  array keyed array of properties
-	 * @param  array unindexed array of allowable property names
-	 * @return string a list of properties
+	 * @param  array
+	 * @param  array
+	 * @return string
 	 */
 	protected function build_property_list($options = array(), $allowed = array())
 	{
