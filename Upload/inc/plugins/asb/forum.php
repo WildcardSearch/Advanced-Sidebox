@@ -29,12 +29,14 @@ function asb_start()
 	$this_script = asb_get_this_script($asb, true);
 
 	// no boxes, get out
-	if ((!is_array($this_script['sideboxes']) ||
-	   empty($this_script['sideboxes'])) ||
+	if (!is_array($this_script['sideboxes']) ||
+	   empty($this_script['sideboxes']) ||
 	   (empty($this_script['sideboxes'][0]) &&
 	   empty($this_script['sideboxes'][1])) ||
-	   strlen($this_script['find_top']) == 0 ||
-	   strlen($this_script['find_bottom']) == 0) {
+	   ((strlen($this_script['find_top']) == 0 ||
+	   strlen($this_script['find_bottom']) == 0) &&
+	   (!$this_script['replace_all'] &&
+	   !$this_script['eval']))) {
 		return;
 	}
 
@@ -304,6 +306,8 @@ EOF;
 		if ($insert_top ||
 			$insert_bottom) {
 			// make the edits
+			$script['find_top'] = str_replace("\r", '', $script['find_top']);
+			$script['find_bottom'] = str_replace("\r", '', $script['find_bottom']);
 			$find_top_pos = strpos($templates->cache[$script['template_name']], $script['find_top']);
 
 			if ($find_top_pos !== false) {
