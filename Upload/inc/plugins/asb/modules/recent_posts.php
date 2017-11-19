@@ -165,15 +165,6 @@ EOF;
 function asb_recent_posts_xmlhttp($args)
 {
 	extract($args);
-	global $db;
-
-	// do a quick check to make sure we don't waste execution
-	$query = $db->simple_select('posts', '*', "dateline > {$dateline}");
-
-	if ($db->num_rows($query) == 0) {
-		return 'nochange';
-	}
-
 	$all_posts = recent_posts_get_postlist($settings);
 
 	if (!$all_posts) {

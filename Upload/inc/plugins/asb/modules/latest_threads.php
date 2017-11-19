@@ -202,17 +202,10 @@ EOF;
 function asb_latest_threads_xmlhttp($args)
 {
 	extract($args);
-	global $db;
+	$all_threads = latest_threads_get_threadlist($settings, $width);
 
-	// do a quick check to make sure we don't waste execution
-	$query = $db->simple_select('posts', '*', "dateline > {$dateline}");
-
-	if ($db->num_rows($query) > 0) {
-		$all_threads = latest_threads_get_threadlist($settings, $width);
-
-		if ($all_threads) {
-			return $all_threads;
-		}
+	if ($all_threads) {
+		return $all_threads;
 	}
 	return 'nochange';
 }
