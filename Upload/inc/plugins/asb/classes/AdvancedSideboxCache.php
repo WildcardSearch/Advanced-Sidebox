@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: MentionMe for MyBB 1.8.x
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
  * http://www.rantcentralforums.com
  *

@@ -175,7 +175,7 @@ function asb_build_cache(&$asb)
 
 				// AJAX?
 				if ($addons[$module]->xmlhttp &&
-					$sidebox->has_settings) {
+					$sidebox->hasSettings) {
 					$settings = $sidebox->get('settings');
 
 					// again, default here is off if anything goes wrong
@@ -187,7 +187,7 @@ function asb_build_cache(&$asb)
 					}
 				}
 
-				if ($addons[$module]->has_scripts) {
+				if ($addons[$module]->hasScripts) {
 					foreach ($addons[$module]->get('scripts') as $script) {
 						$asb['scripts'][$filename]['js'][$script] = $script;
 					}

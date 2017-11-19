@@ -35,7 +35,7 @@ class SideboxExternalModule extends ExternalModule010000
 	/**
 	 * @var bool
 	 */
-	public $has_settings = false;
+	public $hasSettings = false;
 
 	/**
 	 * @var array
@@ -45,7 +45,7 @@ class SideboxExternalModule extends ExternalModule010000
 	/**
 	 * @var bool
 	 */
-	public $has_scripts = false;
+	public $hasScripts = false;
 
 	/**
 	 * @var array
@@ -60,17 +60,12 @@ class SideboxExternalModule extends ExternalModule010000
 	/**
 	 * @var bool
 	 */
-	protected $is_installed = false;
+	protected $isInstalled = false;
 
 	/**
 	 * @var bool
 	 */
-	protected $is_upgraded = false;
-
-	/**
-	 * @var mixed
-	 */
-	protected $old_version = 0;
+	protected $isUpgraded = false;
 
 	/**
 	 * @var string
@@ -120,9 +115,9 @@ class SideboxExternalModule extends ExternalModule010000
 			return false;
 		}
 
-		$this->has_settings = !empty($this->settings);
-		$this->has_scripts = !empty($this->scripts);
-		$oldVersion = $this->get_cache_version();
+		$this->hasSettings = !empty($this->settings);
+		$this->hasScripts = !empty($this->scripts);
+		$oldVersion = $this->getCacheVersion();
 
 		// new module
 		if ((!isset($oldVersion) ||
@@ -137,7 +132,7 @@ class SideboxExternalModule extends ExternalModule010000
 		// pre-existing module
 		} else {
 			// otherwise mark upgrade status
-			$this->is_upgraded = $this->is_installed = true;
+			$this->isUpgraded = $this->isInstalled = true;
 		}
 		return true;
 	}
@@ -153,13 +148,13 @@ class SideboxExternalModule extends ExternalModule010000
 		global $db;
 
 		// already installed? unless $cleanup is specifically denied . . .
-		if ($this->is_installed &&
+		if ($this->isInstalled &&
 			$cleanup) {
 			// . . . remove the leftovers before installing
 			$this->uninstall();
 		}
 
-		// if there are templates . . .
+		// if there are no templates we're done
 		if (!is_array($this->templates)) {
 			return;
 		}
@@ -187,19 +182,19 @@ class SideboxExternalModule extends ExternalModule010000
 	 * remove any templates used by the module and clean up any boxes created
 	 * using this add-on module
 	 *
-	 * @param  bool leave side boxes that use this module?
+	 * @param  bool remove children
 	 * @return void
 	 */
 	public function uninstall($cleanup = true)
 	{
-		$this->unset_cache_version();
+		$this->unsetCacheVersion();
 
 		// unless specifically asked not to, delete any boxes that use this module
 		if ($cleanup) {
-			$this->remove_children();
+			$this->removeChildren();
 		}
 
-		// if there are templates . . .
+		// if there are no templates we're done
 		if (!is_array($this->templates)) {
 			return;
 		}
@@ -219,7 +214,6 @@ class SideboxExternalModule extends ExternalModule010000
 
 	/**
 	 * called upon add-on version change to verify module's templates/settings
-	 * discarded templates and ACP settings (from pre-1.4) are removed
 	 *
 	 * @return void
 	 */
@@ -228,7 +222,7 @@ class SideboxExternalModule extends ExternalModule010000
 		global $db;
 
 		// don't waste time if everything is in order
-		if ($this->is_upgraded) {
+		if ($this->isUpgraded) {
 			return;
 		}
 
@@ -252,13 +246,13 @@ class SideboxExternalModule extends ExternalModule010000
 		 * $cleanup = false directs the install method not to uninstall the module as normal
 		 */
 		$this->install(false);
-		if ($this->has_settings) {
-			$this->update_children();
+		if ($this->hasSettings) {
+			$this->updateChildren();
 		}
 
 		// update the version cache and the upgrade is complete
-		$this->is_upgraded = $this->set_cache_version();
-		$this->is_installed = true;
+		$this->isUpgraded = $this->setCacheVersion();
+		$this->isInstalled = true;
 	}
 
 	/**
@@ -283,7 +277,7 @@ class SideboxExternalModule extends ExternalModule010000
 	 *
 	 * @return void
 	 */
-	protected function remove_children()
+	protected function removeChildren()
 	{
 		global $db;
 
@@ -297,7 +291,7 @@ class SideboxExternalModule extends ExternalModule010000
 	 *
 	 * @return void
 	 */
-	protected function update_children()
+	protected function updateChildren()
 	{
 		global $db;
 
@@ -316,41 +310,40 @@ class SideboxExternalModule extends ExternalModule010000
 
 			if (!$sidebox->isValid()) {
 				// something went wrong and this box has no ID
-				// if we continue, we'll be creating a side box when we save
-				// so . . . don't ;)
+				// if we continue, we'll be creating a side box
 				continue;
 			}
 
 			// retrieve the settings
-			$sidebox_settings = $sidebox->get('settings');
+			$sideboxSettings = $sidebox->get('settings');
 
 			// unset any removed settings
-			foreach ($sidebox_settings as $name => $setting) {
+			foreach ($sideboxSettings as $name => $setting) {
 				if (!isset($this->settings[$name])) {
-					unset($sidebox_settings[$name]);
+					unset($sideboxSettings[$name]);
 				}
 			}
 
 			// update any settings which are missing
 			foreach ($this->settings as $name => $setting) {
-				if (!isset($sidebox_settings[$name])) {
+				if (!isset($sideboxSettings[$name])) {
 					// new setting-- default value
-					$sidebox_settings[$name] = $this->settings[$name]['value'];
+					$sideboxSettings[$name] = $this->settings[$name]['value'];
 				}
 			}
 
 			// save the side box
-			$sidebox->set('settings', $sidebox_settings);
+			$sidebox->set('settings', $sideboxSettings);
 			$sidebox->save();
 		}
 	}
 
 	/**
-	 * version control derived from the work of pavemen in MyBB Publisher
+	 * version control
 	 *
 	 * @return string|int version or 0
 	 */
-	protected function get_cache_version()
+	protected function getCacheVersion()
 	{
 		$addonVersions = AdvancedSideboxCache::getInstance()->read('addon_versions');
 
@@ -363,11 +356,11 @@ class SideboxExternalModule extends ExternalModule010000
 	}
 
 	/**
-	 * version control derived from the work of pavemen in MyBB Publisher
+	 * version control
 	 *
 	 * @return bool true
 	 */
-	protected function set_cache_version()
+	protected function setCacheVersion()
 	{
 		$myCache = AdvancedSideboxCache::getInstance();
 
@@ -379,11 +372,11 @@ class SideboxExternalModule extends ExternalModule010000
 	}
 
 	/**
-	 * version control derived from the work of pavemen in MyBB Publisher
+	 * version control
 	 *
 	 * @return bool true
 	 */
-	protected function unset_cache_version()
+	protected function unsetCacheVersion()
 	{
 		$myCache = AdvancedSideboxCache::getInstance();
 
@@ -396,11 +389,11 @@ class SideboxExternalModule extends ExternalModule010000
 	}
 
 	/**
-	 * runs template building code for the current module referenced by this object
+	 * runs template building code for the module
 	 *
 	 * @return mixed|bool return value of function or false
 	 */
-	public function build_template($settings, $template_var, $width, $script)
+	public function buildTemplate($settings, $template_var, $width, $script)
 	{
 		foreach (array('settings', 'template_var', 'width', 'script') as $key) {
 			$args[$key] = $$key;
@@ -416,7 +409,7 @@ class SideboxExternalModule extends ExternalModule010000
 	 * @param  int column width
 	 * @return mixed|bool return value of function or false
 	 */
-	public function do_xmlhttp($dateline, $settings, $width)
+	public function doXmlhttp($dateline, $settings, $width)
 	{
 		foreach (array('dateline', 'settings', 'width') as $key) {
 			$args[$key] = $$key;
@@ -425,22 +418,22 @@ class SideboxExternalModule extends ExternalModule010000
 	}
 
 	/**
-	 * run the module's setting_load function
+	 * run the module's settings_load function
 	 *
 	 * @return mixed|bool return value of function or false
 	 */
-	public function do_settings_load()
+	public function doSettingsLoad()
 	{
 		return $this->run('settings_load', $settings);
 	}
 
 	/**
-	 * run the module's do_settings_save function
+	 * run the module's settings_save function
 	 *
 	 * @param  array settings
 	 * @return mixed|bool return value of function or false
 	 */
-	public function do_settings_save($settings)
+	public function doSettingsSave($settings)
 	{
 		$retval = $this->run('settings_save', $settings);
 		if ($retval) {

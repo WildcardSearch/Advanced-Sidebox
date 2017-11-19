@@ -7,7 +7,6 @@
  * ASB default module
  */
 
-// Include a check for Advanced Sidebox
 if (!defined('IN_MYBB') ||
 	!defined('IN_ASB')) {
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
@@ -178,7 +177,7 @@ function asb_latest_threads_build_template($args)
 	}
 
 	// get the threads (or at least attempt to)
-	$all_threads = latest_threads_get_threadlist($settings, $width);
+	$all_threads = asb_latest_threads_get_threadlist($settings, $width);
 
 	if ($all_threads) {
 		// if there are threads, show them
@@ -202,7 +201,7 @@ EOF;
 function asb_latest_threads_xmlhttp($args)
 {
 	extract($args);
-	$all_threads = latest_threads_get_threadlist($settings, $width);
+	$all_threads = asb_latest_threads_get_threadlist($settings, $width);
 
 	if ($all_threads) {
 		return $all_threads;
@@ -217,7 +216,7 @@ function asb_latest_threads_xmlhttp($args)
  * @param  int column width
  * @return string|bool html or success/fail
  */
-function latest_threads_get_threadlist($settings, $width)
+function asb_latest_threads_get_threadlist($settings, $width)
 {
 	global $db, $mybb, $templates, $lang, $cache, $gotounread, $theme;
 
@@ -227,25 +226,20 @@ function latest_threads_get_threadlist($settings, $width)
 
 	if ($mybb->user['uid'] == 0) {
 		$query = $db->query("
-			SELECT
-				fid
+			SELECT fid
 			FROM {$db->table_prefix}forums
-			WHERE
-				active != 0
-			ORDER BY
-				pid, disporder
+			WHERE active != 0
+			ORDER BY pid, disporder
 		");
 		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
 	} else {
 		$query = $db->query("
-			SELECT
-				f.fid, fr.dateline AS lastread
+			SELECT f.fid, fr.dateline AS lastread
 			FROM {$db->table_prefix}forums f
-			LEFT JOIN {$db->table_prefix}forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
-			WHERE
-				f.active != 0
-			ORDER BY
-				pid, disporder
+			LEFT JOIN {$db->table_prefix}forumsread fr
+				ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
+			WHERE f.active != 0
+			ORDER BY pid, disporder
 		");
 	}
 
@@ -299,17 +293,12 @@ function latest_threads_get_threadlist($settings, $width)
 
 	// query for the latest forum discussions
 	$query = $db->query("
-		SELECT
-			t.*,
-			u.username, u.avatar, u.usergroup, u.displaygroup
+		SELECT t.*, u.username, u.avatar, u.usergroup, u.displaygroup
 		FROM {$db->table_prefix}threads t
 		LEFT JOIN {$db->table_prefix}users u ON (u.uid=t.lastposteruid)
-		WHERE
-			t.visible='1' AND t.closed NOT LIKE 'moved|%'{$query_where}
-		ORDER BY
-			t.lastpost DESC
-		LIMIT
-			0, " . (int) $settings['max_threads']
+		WHERE t.visible='1' AND t.closed NOT LIKE 'moved|%'{$query_where}
+		ORDER BY t.lastpost DESC
+		LIMIT 0, " . (int) $settings['max_threads']
 	);
 
 	if ($db->num_rows($query) == 0) {
@@ -317,24 +306,24 @@ function latest_threads_get_threadlist($settings, $width)
 		return false;
 	}
 
-	$thread_cache = array();
+	$threadCache = array();
 
 	while ($thread = $db->fetch_array($query)) {
-		$thread_cache[$thread['tid']] = $thread;
+		$threadCache[$thread['tid']] = $thread;
 	}
 
-	$thread_ids = implode(",", array_keys($thread_cache));
+	$threadIds = implode(",", array_keys($threadCache));
 
 	// fetch the read threads.
 	if ($mybb->user['uid'] &&
 		$mybb->settings['threadreadcut'] > 0) {
-		$query = $db->simple_select('threadsread', 'tid,dateline', "uid='{$mybb->user['uid']}' AND tid IN({$thread_ids})");
-		while ($readthread = $db->fetch_array($query)) {
-			$thread_cache[$readthread['tid']]['lastread'] = $readthread['dateline'];
+		$query = $db->simple_select('threadsread', 'tid,dateline', "uid='{$mybb->user['uid']}' AND tid IN({$threadIds})");
+		while ($readThread = $db->fetch_array($query)) {
+			$threadCache[$readThread['tid']]['lastread'] = $readThread['dateline'];
 		}
 	}
 
-	foreach ($thread_cache as $thread) {
+	foreach ($threadCache as $thread) {
 		$forumpermissions[$thread['fid']] = forum_permissions($thread['fid']);
 
 		// make sure we can view this thread

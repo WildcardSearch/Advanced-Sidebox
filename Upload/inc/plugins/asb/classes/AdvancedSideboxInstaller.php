@@ -1,7 +1,10 @@
 <?php
-/**
- * Wildcard Helper Classes - Plugin Installer
- * plugin specific extension
+/*
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
+ * Copyright 2014 WildcardSearch
+ * http://www.rantcentralforums.com
+ *
+ * wrapper to handle our plugin's installation
  */
 
 class AdvancedSideboxInstaller extends WildcardPluginInstaller010202

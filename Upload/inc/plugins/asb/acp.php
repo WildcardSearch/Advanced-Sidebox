@@ -314,7 +314,7 @@ function asb_admin_edit_box()
 						$settings[$setting['name']] = $mybb->input[$setting['name']];
 					}
 				}
-				$settings = $parent->do_settings_save($settings);
+				$settings = $parent->doSettingsSave($settings);
 				$sidebox->set('settings', $settings);
 			}
 		} elseif($is_custom) {
@@ -454,8 +454,8 @@ EOF;
 
 	// we only need a 'Settings' tab if the current module type has settings
 	$do_settings = true;
-	if (!$sidebox->has_settings &&
-		!$parent->has_settings) {
+	if (!$sidebox->hasSettings &&
+		!$parent->hasSettings) {
 		unset($tabs['settings']);
 		$do_settings = false;
 	}
@@ -610,7 +610,7 @@ EOF;
 
 		$form_container->end();
 
-		$parent->do_settings_load();
+		$parent->doSettingsLoad();
 	}
 
 	echo "</div>\n";

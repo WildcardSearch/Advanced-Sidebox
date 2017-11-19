@@ -62,7 +62,7 @@ class SideboxObject extends StorableObject010000
 	/**
 	 * @var bool
 	 */
-	public $has_settings = false;
+	public $hasSettings = false;
 
 	/**
 	 * @var string
@@ -77,8 +77,7 @@ class SideboxObject extends StorableObject010000
 	 */
 	function __construct($data = '')
 	{
-		$this->noStore[] = 'groups_array';
-		$this->noStore[] = 'has_settings';
+		$this->noStore[] = 'hasSettings';
 		parent::__construct($data);
 	}
 
@@ -90,19 +89,20 @@ class SideboxObject extends StorableObject010000
 	 */
 	public function load($data)
 	{
-		if ($data &&
-			parent::load($data)) {
-			foreach (array('settings', 'groups', 'scripts', 'themes') as $property) {
-				if ($this->$property) {
-					// if so decode them
-					$this->$property = json_decode($this->$property, true);
-				}
-			}
-
-			$this->has_settings = (is_array($this->settings) && !empty($this->settings));
-			return true;
+		if (!parent::load($data)) {
+			return false;
 		}
-		return false;
+
+		foreach (array('settings', 'groups', 'scripts', 'themes') as $property) {
+			if (property_exists($this, $property) &&
+				isset($this->$property)) {
+				// if so decode them
+				$this->$property = json_decode($this->$property, true);
+			}
+		}
+
+		$this->hasSettings = (is_array($this->settings) && !empty($this->settings));
+		return true;
 	}
 }
 
