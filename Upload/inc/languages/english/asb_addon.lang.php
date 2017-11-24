@@ -282,4 +282,35 @@ $l['asb_top_poster_three_months_desc'] = 'The Last Three Months';
 $l['asb_top_poster_six_months_desc'] = 'The Last Six Months';
 $l['asb_top_poster_one_year_desc'] = 'The Last Year';
 
+// goals
+$l['asb_goals_title'] = 'Forum Goals';
+$l['asb_goals_description'] = 'displays a countdown';
+
+	// setting
+$l['asb_goals_goal_type_title'] = 'Goal Type';
+$l['asb_goals_goal_type_description'] = 'the type of goal to be tracked';
+$l['asb_goals_goal_type_optionscode_posts'] = 'Post Count';
+$l['asb_goals_goal_type_optionscode_threads'] = 'Thread Count';
+$l['asb_goals_goal_type_optionscode_users'] = 'User Count';
+
+$l['asb_goals_goal_title'] = 'Goal';
+$l['asb_goals_goal_description'] = 'the total number of items before the goal is reached';
+
+$l['asb_goals_success_image_title'] = 'Success Image';
+$l['asb_goals_success_image_description'] = 'enter an image URL here to display it when the goal has been met, leave it blank to show no image (default)';
+
+// messages
+$l['asb_goals_goal_reached'] = "We've done it! We've made {1} {2}!";
+$l['asb_goals_progress_message'] = "of the way to our goal of {1} {2}!";
+$l['asb_goals_progress_bar_title'] = "{1} of {2}";
+
+$l['asb_goals_no_content'] = 'nothing to show';
+
+$l['asb_goals_posts'] = 'posts';
+$l['asb_goals_threads'] = 'threads';
+$l['asb_goals_users'] = 'users';
+
+$l['asb_goals_footer_goal_reached'] = 'Goal Met!';
+$l['asb_goals_footer_progress'] = 'Only {1} {2} left to go!';
+
 ?>
