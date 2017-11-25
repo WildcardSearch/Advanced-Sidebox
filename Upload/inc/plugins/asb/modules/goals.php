@@ -30,7 +30,7 @@ function asb_goals_info()
 		'title' => $lang->asb_goals_title,
 		'description' => $lang->asb_goals_description,
 		'wrap_content' => true,
-		'version' => '1',
+		'version' => '1.0.1',
 		'compatibility' => '2.1',
 		'xmlhttp' => true,
 		'settings' => array(
@@ -78,6 +78,7 @@ EOF
 				</tr>
 				<tr>
 					<td class="tfoot" style="text-align: center;"><span class="smalltext">{\$stats}</span></td>
+				</tr>
 EOF
 			),
 			array(
@@ -116,7 +117,7 @@ EOF
 function asb_goals_build_template($args)
 {
 	extract($args);
-	global $$template_var, $lang; 
+	global $$template_var, $lang;
 
 	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
@@ -183,12 +184,13 @@ function asb_goals_get_progress($args)
 
 	$query = $db->simple_select($table, "{$function}({$field}) AS total");
 	$total = $db->fetch_field($query, 'total');
-	$goal = my_number_format($settings['goal']);
+	$goal = (int) $settings['goal'];
+	$formatted_goal = my_number_format($goal);
 
 	if ($total >= $goal) {
 		$percentage = 100;
 		$stats = $lang->asb_goals_footer_goal_reached;
-		$goal_reached_message = $lang->sprintf($lang->asb_goals_goal_reached, $goal, $goal_type_plural);
+		$goal_reached_message = $lang->sprintf($lang->asb_goals_goal_reached, $formatted_goal, $goal_type_plural);
 
 		$successImage = '';
 		if ($settings['success_image']) {
@@ -200,8 +202,8 @@ function asb_goals_get_progress($args)
 		$itemsLeft = my_number_format($goal - $total);
 		$percentage = round(($total / $goal) * 100, 1);
 		$stats = $lang->sprintf($lang->asb_goals_footer_progress, $itemsLeft, $goal_type_plural);
-		$progress_message = $lang->sprintf($lang->asb_goals_progress_message, $goal, $goal_type_plural);
-		$progress_bar_title = $lang->sprintf($lang->asb_goals_progress_bar_title, $total, $goal);
+		$progress_message = $lang->sprintf($lang->asb_goals_progress_message, $formatted_goal, $goal_type_plural);
+		$progress_bar_title = $lang->sprintf($lang->asb_goals_progress_bar_title, $total, $formatted_goal);
 		eval("\$progress = \"{$templates->get('asb_goals_progress')}\";");
 	}
 
