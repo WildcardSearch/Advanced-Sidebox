@@ -27,90 +27,81 @@ function asb_recent_posts_info()
 	}
 
 	return array(
-		"title" => $lang->asb_recent_posts,
-		"description" => $lang->asb_recent_posts_desc,
-		"version" => '1.3.2',
-		"compatibility" => '2.1',
-		"wrap_content" => true,
-		"xmlhttp" => true,
-		"settings" => array(
-			"max_posts" => array(
-				"sid" => 'NULL',
-				"name" => 'max_posts',
-				"title" => $lang->asb_recent_posts_max_title,
-				"description" => $lang->asb_recent_posts_max_description,
-				"optionscode" => 'text',
-				"value" => '5',
+		'title' => $lang->asb_recent_posts,
+		'description' => $lang->asb_recent_posts_desc,
+		'version' => '1.3.2',
+		'compatibility' => '2.1',
+		'wrap_content' => true,
+		'xmlhttp' => true,
+		'settings' => array(
+			'max_posts' => array(
+				'name' => 'max_posts',
+				'title' => $lang->asb_recent_posts_max_title,
+				'description' => $lang->asb_recent_posts_max_description,
+				'optionscode' => 'text',
+				'value' => '5',
 			),
-			"max_length" => array(
-				"sid" => 'NULL',
-				"name" => 'max_length',
-				"title" => $lang->asb_recent_posts_max_length_title,
-				"description" => $lang->asb_recent_posts_max_length_description,
-				"optionscode" => 'text',
-				"value" => '20',
+			'max_length' => array(
+				'name' => 'max_length',
+				'title' => $lang->asb_recent_posts_max_length_title,
+				'description' => $lang->asb_recent_posts_max_length_description,
+				'optionscode' => 'text',
+				'value' => '20',
 			),
-			"max_thread_title_length" => array(
-				"sid" => 'NULL',
-				"name" => 'max_thread_title_length',
-				"title" => $lang->asb_max_thread_title_length_title,
-				"description" => $lang->asb_max_thread_title_length_desc,
-				"optionscode" => 'text',
-				"value" => '40',
+			'max_thread_title_length' => array(
+				'name' => 'max_thread_title_length',
+				'title' => $lang->asb_max_thread_title_length_title,
+				'description' => $lang->asb_max_thread_title_length_desc,
+				'optionscode' => 'text',
+				'value' => '40',
 			),
-			"forum_show_list" => array(
-				"sid" => 'NULL',
-				"name" => 'forum_show_list',
-				"title" => $lang->asb_forum_show_list_title,
-				"description" => $lang->asb_forum_show_list_desc,
-				"optionscode" => 'text',
-				"value" => '',
+			'forum_show_list' => array(
+				'name' => 'forum_show_list',
+				'title' => $lang->asb_forum_show_list_title,
+				'description' => $lang->asb_forum_show_list_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"forum_hide_list" => array(
-				"sid" => 'NULL',
-				"name" => 'forum_hide_list',
-				"title" => $lang->asb_forum_hide_list_title,
-				"description" => $lang->asb_forum_hide_list_desc,
-				"optionscode" => 'text',
-				"value" => '',
+			'forum_hide_list' => array(
+				'name' => 'forum_hide_list',
+				'title' => $lang->asb_forum_hide_list_title,
+				'description' => $lang->asb_forum_hide_list_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"thread_show_list" => array(
-				"sid" => 'NULL',
-				"name" => 'thread_show_list',
-				"title" => $lang->asb_thread_show_list_title,
-				"description" => $lang->asb_thread_show_list_desc,
-				"optionscode" => 'text',
-				"value" => '',
+			'thread_show_list' => array(
+				'name' => 'thread_show_list',
+				'title' => $lang->asb_thread_show_list_title,
+				'description' => $lang->asb_thread_show_list_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"thread_hide_list" => array(
-				"sid" => 'NULL',
-				"name" => 'thread_hide_list',
-				"title" => $lang->asb_thread_hide_list_title,
-				"description" => $lang->asb_thread_hide_list_desc,
-				"optionscode" => 'text',
-				"value" => '',
+			'thread_hide_list' => array(
+				'name' => 'thread_hide_list',
+				'title' => $lang->asb_thread_hide_list_title,
+				'description' => $lang->asb_thread_hide_list_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"important_threads_only" => array(
-				"sid" => 'NULL',
-				"name" => 'important_threads_only',
-				"title" => $lang->asb_important_threads_only_title,
-				"description" => $lang->asb_important_threads_only_desc,
-				"optionscode" => 'yesno',
-				"value" => '0',
+			'important_threads_only' => array(
+				'name' => 'important_threads_only',
+				'title' => $lang->asb_important_threads_only_title,
+				'description' => $lang->asb_important_threads_only_desc,
+				'optionscode' => 'yesno',
+				'value' => '0',
 			),
-			"xmlhttp_on" => array(
-				"sid" => 'NULL',
-				"name" => 'xmlhttp_on',
-				"title" => $lang->asb_xmlhttp_on_title,
-				"description" => $lang->asb_xmlhttp_on_description,
-				"optionscode" => 'text',
-				"value" => '0',
+			'xmlhttp_on' => array(
+				'name' => 'xmlhttp_on',
+				'title' => $lang->asb_xmlhttp_on_title,
+				'description' => $lang->asb_xmlhttp_on_description,
+				'optionscode' => 'text',
+				'value' => '0',
 			),
 		),
-		"templates" => array(
+		'templates' => array(
 			array(
-				"title" => 'asb_recent_posts_post',
-				"template" => <<<EOF
+				'title' => 'asb_recent_posts_post',
+				'template' => <<<EOF
 				<tr>
 					<td style="text-align: center;" class="tcat">
 						<a style="font-weight: bold;" href="{\$mybb->settings[\'bburl\']}/{\$post[\'link\']}" title="{\$post[\'subject\']}">{\$post[\'subject\']}</a>

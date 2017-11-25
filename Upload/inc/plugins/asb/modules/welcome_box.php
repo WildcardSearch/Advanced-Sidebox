@@ -8,9 +8,9 @@
  */
 
 // Include a check for Advanced Sidebox
-if (!defined("IN_MYBB") ||
-	!defined("IN_ASB")) {
-	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
+if (!defined('IN_MYBB') ||
+	!defined('IN_ASB')) {
+	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 
 /**
@@ -27,25 +27,25 @@ function asb_welcome_box_info()
 	}
 
  	return array(
-		"title" => $lang->asb_welcome,
-		"description" => $lang->asb_welcome_desc,
-		"wrap_content" => true,
-		"version" => '1.3.2',
-		"compatibility" => '2.1',
-		"templates" => array(
+		'title' => $lang->asb_welcome,
+		'description' => $lang->asb_welcome_desc,
+		'wrap_content' => true,
+		'version' => '1.3.2',
+		'compatibility' => '2.1',
+		'templates' => array(
 			array(
-				"title" => 'asb_welcome',
-				"template" => <<<EOF
+				'title' => 'asb_welcome',
+				'template' => <<<EOF
 				<tr>
-					<td class=\"trow1\">
+					<td class="trow1">
 						{\$welcometext}
 					</td>
 				</tr>
 EOF
 			),
 			array(
-				"title" => 'asb_welcome_membertext',
-				"template" => <<<EOF
+				'title' => 'asb_welcome_membertext',
+				'template' => <<<EOF
 				{\$user_avatar}<span class="smalltext"><em>{\$lang->asb_welcome_member_welcome_lastvisit}:</em> {\$lastvisit}<br />
 				{\$lang->since_then}<br />
 				<strong>&raquo;</strong> {\$lang->asb_welcome_new_announcements}<br />
@@ -56,8 +56,8 @@ EOF
 EOF
 			),
 			array(
-				"title" => 'asb_welcome_guesttext',
-				"template" => <<<EOF
+				'title' => 'asb_welcome_guesttext',
+				'template' => <<<EOF
 				<span class="smalltext">{\$lang->asb_welcome_guest_welcome_registration}</span><br />
 				<br />
 				<form method="post" action="{\$mybb->settings[\'bburl\']}/member.php"><input type="hidden" name="action" value="do_login"/>
@@ -91,11 +91,11 @@ function asb_welcome_box_build_template($args)
 
 	if ($mybb->user['uid'] != 0) {
 		// Get number of new posts, threads, announcements
-		$query = $db->simple_select("posts", "COUNT(pid) AS newposts", "visible=1 AND dateline>'" . $mybb->user['lastvisit'] . "' $unviewwhere");
+		$query = $db->simple_select('posts', 'COUNT(pid) AS newposts', "visible=1 AND dateline > '{$mybb->user['lastvisit']}' $unviewwhere");
 		$newposts = $db->fetch_field($query, 'newposts');
 		if ($newposts) {
 			// If there aren't any new posts, there is no point in wasting two more queries
-			$query = $db->simple_select('threads', 'COUNT(tid) AS newthreads', "visible=1 AND dateline>'{$mybb->user['lastvisit']}' {$unviewwhere}");
+			$query = $db->simple_select('threads', 'COUNT(tid) AS newthreads', "visible=1 AND dateline > '{$mybb->user['lastvisit']}' {$unviewwhere}");
 			$newthreads = $db->fetch_field($query, 'newthreads');
 
 			$announcementsfids = explode(',', $mybb->settings['portal_announcementsfid']);
@@ -105,7 +105,7 @@ function asb_welcome_box_build_template($args)
 				}
 
 				$announcementsfids = implode(',', $fid_array);
-				$query = $db->simple_select('threads', 'COUNT(tid) AS newann', "visible=1 AND dateline>'{$mybb->user['lastvisit']}' AND fid IN ({$announcementsfids}) {$unviewwhere}");
+				$query = $db->simple_select('threads', 'COUNT(tid) AS newann', "visible=1 AND dateline > '{$mybb->user['lastvisit']}' AND fid IN ({$announcementsfids}) {$unviewwhere}");
 				$newann = $db->fetch_field($query, 'newann');
 			}
 

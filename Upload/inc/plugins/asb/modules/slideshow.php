@@ -27,100 +27,90 @@ function asb_slideshow_info()
 	}
 
 	return array(
-		"title" => $lang->asb_slideshow,
-		"description" => $lang->asb_slideshow_desc,
-		"wrap_content" => true,
-		"version" => '1.1',
-		"compatibility" => '2.1',
-		"scripts" => array(
+		'title' => $lang->asb_slideshow,
+		'description' => $lang->asb_slideshow_desc,
+		'wrap_content' => true,
+		'version' => '1.1',
+		'compatibility' => '2.1',
+		'scripts' => array(
 			'Slideshow',
 		),
-		"settings" => array(
-			"folder" => array(
-				"sid" => 'NULL',
-				"name" => 'folder',
-				"title" => $lang->asb_slideshow_folder_title,
-				"description" => $lang->asb_slideshow_folder_description,
-				"optionscode" => 'text',
-				"value" => 'images',
+		'settings' => array(
+			'folder' => array(
+				'name' => 'folder',
+				'title' => $lang->asb_slideshow_folder_title,
+				'description' => $lang->asb_slideshow_folder_description,
+				'optionscode' => 'text',
+				'value' => 'images',
 			),
-			"recursive" => array(
-				"sid" => 'NULL',
-				"name" => 'recursive',
-				"title" => $lang->asb_slideshow_recursive_title,
-				"description" => $lang->asb_slideshow_recursive_description,
-				"optionscode" => 'yesno',
-				"value" => '0',
+			'recursive' => array(
+				'name' => 'recursive',
+				'title' => $lang->asb_slideshow_recursive_title,
+				'description' => $lang->asb_slideshow_recursive_description,
+				'optionscode' => 'yesno',
+				'value' => '0',
 			),
-			"rate" => array(
-				"sid" => 'NULL',
-				"name" => 'rate',
-				"title" => $lang->asb_slideshow_rate_title,
-				"description" => $lang->asb_slideshow_rate_description,
-				"optionscode" => 'text',
-				"value" => '10',
+			'rate' => array(
+				'name' => 'rate',
+				'title' => $lang->asb_slideshow_rate_title,
+				'description' => $lang->asb_slideshow_rate_description,
+				'optionscode' => 'text',
+				'value' => '10',
 			),
-			"shuffle" => array(
-				"sid" => 'NULL',
-				"name" => 'shuffle',
-				"title" => $lang->asb_slideshow_shuffle_title,
-				"description" => $lang->asb_slideshow_shuffle_description,
-				"optionscode" => 'yesno',
-				"value" => '1',
+			'shuffle' => array(
+				'name' => 'shuffle',
+				'title' => $lang->asb_slideshow_shuffle_title,
+				'description' => $lang->asb_slideshow_shuffle_description,
+				'optionscode' => 'yesno',
+				'value' => '1',
 			),
-			"fade_rate" => array(
-				"sid" => 'NULL',
-				"name" => 'fade_rate',
-				"title" => $lang->asb_slideshow_fade_rate_title,
-				"description" => $lang->asb_slideshow_fade_rate_description,
-				"optionscode" => 'text',
-				"value" => '1',
+			'fade_rate' => array(
+				'name' => 'fade_rate',
+				'title' => $lang->asb_slideshow_fade_rate_title,
+				'description' => $lang->asb_slideshow_fade_rate_description,
+				'optionscode' => 'text',
+				'value' => '1',
 			),
-			"footer_text" => array(
-				"sid" => 'NULL',
-				"name" => 'footer_text',
-				"title" => $lang->asb_slideshow_footer_text_title,
-				"description" => $lang->asb_slideshow_footer_text_description,
-				"optionscode" => 'text',
-				"value" => '',
+			'footer_text' => array(
+				'name' => 'footer_text',
+				'title' => $lang->asb_slideshow_footer_text_title,
+				'description' => $lang->asb_slideshow_footer_text_description,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"footer_url" => array(
-				"sid" => 'NULL',
-				"name" => 'footer_url',
-				"title" => $lang->asb_slideshow_footer_url_title,
-				"description" => $lang->asb_slideshow_footer_url_description,
-				"optionscode" => 'text',
-				"value" => '',
+			'footer_url' => array(
+				'name' => 'footer_url',
+				'title' => $lang->asb_slideshow_footer_url_title,
+				'description' => $lang->asb_slideshow_footer_url_description,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"max_width" => array(
-				"sid" => 'NULL',
-				"name" => 'max_width',
-				"title" => $lang->asb_slideshow_max_width_title,
-				"description" => $lang->asb_slideshow_max_width_description,
-				"optionscode" => 'text',
-				"value" => '',
+			'max_width' => array(
+				'name' => 'max_width',
+				'title' => $lang->asb_slideshow_max_width_title,
+				'description' => $lang->asb_slideshow_max_width_description,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"max_height" => array(
-				"sid" => 'NULL',
-				"name" => 'max_height',
-				"title" => $lang->asb_slideshow_max_height_title,
-				"description" => $lang->asb_slideshow_max_height_description,
-				"optionscode" => 'text',
-				"value" => '',
+			'max_height' => array(
+				'name' => 'max_height',
+				'title' => $lang->asb_slideshow_max_height_title,
+				'description' => $lang->asb_slideshow_max_height_description,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"maintain_height" => array(
-				"sid" => 'NULL',
-				"name" => 'maintain_height',
-				"title" => $lang->asb_slideshow_maintain_height_title,
-				"description" => $lang->asb_slideshow_maintain_height_description,
-				"optionscode" => 'yesno',
-				"value" => '1',
+			'maintain_height' => array(
+				'name' => 'maintain_height',
+				'title' => $lang->asb_slideshow_maintain_height_title,
+				'description' => $lang->asb_slideshow_maintain_height_description,
+				'optionscode' => 'yesno',
+				'value' => '1',
 			),
 		),
-		"templates" => array(
+		'templates' => array(
 			array(
-				"title" => 'asb_slideshow',
-				"template" => <<<EOF
+				'title' => 'asb_slideshow',
+				'template' => <<<EOF
 				<tr>
 					<td class="trow1" style="text-align: center;">
 						<div id="{\$template_var}"></div>
@@ -144,8 +134,8 @@ function asb_slideshow_info()
 EOF
 			),
 			array(
-				"title" => "asb_slideshow_footer",
-				"template" => <<<EOF
+				'title' => 'asb_slideshow_footer',
+				'template' => <<<EOF
 
 				<tr>
 					<td class="tfoot">

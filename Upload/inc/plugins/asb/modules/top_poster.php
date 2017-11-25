@@ -27,18 +27,18 @@ function asb_top_poster_info()
 	}
 
 	return array	(
-		"title" => $lang->asb_top_poster_title,
-		"description" => $lang->asb_top_poster_desc,
-		"wrap_content" => true,
-		"version" => '1.2.1',
-		"compatibility" => '2.1',
-		"settings" => array(
-			"time_frame" => array(
-				"sid" => 'NULL',
-				"name" => 'time_frame',
-				"title" => $lang->asb_top_poster_time_frame_title,
-				"description" => $lang->asb_top_poster_time_frame_desc,
-				"optionscode" => "select
+		'title' => $lang->asb_top_poster_title,
+		'description' => $lang->asb_top_poster_desc,
+		'wrap_content' => true,
+		'version' => '1.2.1',
+		'compatibility' => '2.1',
+		'settings' => array(
+			'time_frame' => array(
+				'name' => 'time_frame',
+				'title' => $lang->asb_top_poster_time_frame_title,
+				'description' => $lang->asb_top_poster_time_frame_desc,
+				'optionscode' => <<<EOF
+select
 0={$lang->asb_top_poster_all_time_title}
 1={$lang->asb_top_poster_one_day_title}
 7={$lang->asb_top_poster_one_week_title}
@@ -46,49 +46,51 @@ function asb_top_poster_info()
 30={$lang->asb_top_poster_one_month_title}
 90={$lang->asb_top_poster_three_months_title}
 180={$lang->asb_top_poster_six_months_title}
-365={$lang->asb_top_poster_one_year_title}",
-				"value" => '1',
+365={$lang->asb_top_poster_one_year_title}
+EOF
+				,
+				'value' => '1',
 			),
-			"tid" => array(
-				"name" => 'tid',
-				"title" => $lang->asb_top_poster_tid_title,
-				"description" => $lang->asb_top_poster_tid_desc,
-				"optionscode" => 'text',
-				"value" => '',
+			'tid' => array(
+				'name' => 'tid',
+				'title' => $lang->asb_top_poster_tid_title,
+				'description' => $lang->asb_top_poster_tid_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"max_posters" => array(
-				"name" => 'max_posters',
-				"title" => $lang->asb_top_poster_max_posters_title,
-				"description" => $lang->asb_top_poster_max_posters_desc,
-				"optionscode" => 'text',
-				"value" => '1',
+			'max_posters' => array(
+				'name' => 'max_posters',
+				'title' => $lang->asb_top_poster_max_posters_title,
+				'description' => $lang->asb_top_poster_max_posters_desc,
+				'optionscode' => 'text',
+				'value' => '1',
 			),
-			"avatar_size" => array(
-				"name" => 'avatar_size',
-				"title" => $lang->asb_top_poster_avatar_size_title,
-				"description" => $lang->asb_top_poster_avatar_size_desc,
-				"optionscode" => 'text',
-				"value" => '',
+			'avatar_size' => array(
+				'name' => 'avatar_size',
+				'title' => $lang->asb_top_poster_avatar_size_title,
+				'description' => $lang->asb_top_poster_avatar_size_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"group_show_list" => array(
-				"name" => 'group_show_list',
-				"title" => $lang->asb_group_show_list_title,
-				"description" => $lang->asb_group_show_list_desc,
-				"optionscode" => 'text',
-				"value" => '',
+			'group_show_list' => array(
+				'name' => 'group_show_list',
+				'title' => $lang->asb_group_show_list_title,
+				'description' => $lang->asb_group_show_list_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"group_hide_list" => array(
-				"name" => 'group_hide_list',
-				"title" => $lang->asb_group_hide_list_title,
-				"description" => $lang->asb_group_hide_list_desc,
-				"optionscode" => 'text',
-				"value" => '',
+			'group_hide_list' => array(
+				'name' => 'group_hide_list',
+				'title' => $lang->asb_group_hide_list_title,
+				'description' => $lang->asb_group_hide_list_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
 		),
-		"templates" => array(
+		'templates' => array(
 			array(
-				"title" => 'asb_top_posters_multiple',
-				"template" => <<<EOF
+				'title' => 'asb_top_posters_multiple',
+				'template' => <<<EOF
 				<tr>
 					<td class="tcat" style="font-size: .8em; text-align: center;">
 						{\$top_poster_description}
@@ -105,16 +107,16 @@ function asb_top_poster_info()
 EOF
 			),
 			array(
-				"title" => 'asb_top_posters_single',
-				"template" => <<<EOF
+				'title' => 'asb_top_posters_single',
+				'template' => <<<EOF
 				<tr style="text-align: center;">
 					<td class="{\$altbg}">{\$top_poster_avatar}{\$top_poster_text}</td>
 				</tr>
 EOF
 			),
 			array(
-				"title" => 'asb_top_poster',
-				"template" => <<<EOF
+				'title' => 'asb_top_poster',
+				'template' => <<<EOF
 				<tr>
 					<td class="{\$altbg}" style="width: {\$avatar_width}px; padding-top: 0px; padding-bottom: 0px;">
 						{\$top_poster_avatar}
@@ -126,8 +128,8 @@ EOF
 EOF
 			),
 			array(
-				"title" => 'asb_top_poster_avatar',
-				"template" => <<<EOF
+				'title' => 'asb_top_poster_avatar',
+				'template' => <<<EOF
 <img src="{\$top_poster_avatar_src}" style="width: {\$avatar_width}px;" alt="{\$lang->asb_top_poster_no_avatar}"/>
 EOF
 			),

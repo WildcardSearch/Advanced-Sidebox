@@ -27,25 +27,24 @@ function asb_statistics_info()
 	}
 
  	return array(
-		"title" => $lang->asb_stats,
-		"description" => $lang->asb_stats_desc,
-		"wrap_content" => true,
-		"version" => '1.2',
-		"compatibility" => '2.1',
-		"settings" => array(
-			"format_username" => array(
-				"sid" => 'NULL',
-				"name" => 'format_username',
-				"title" => $lang->asb_stats_format_usernames_title,
-				"description" => $lang->asb_stats_format_usernames_desc,
-				"optionscode" => 'yesno',
-				"value" => '0',
+		'title' => $lang->asb_stats,
+		'description' => $lang->asb_stats_desc,
+		'wrap_content' => true,
+		'version' => '1.2',
+		'compatibility' => '2.1',
+		'settings' => array(
+			'format_username' => array(
+				'name' => 'format_username',
+				'title' => $lang->asb_stats_format_usernames_title,
+				'description' => $lang->asb_stats_format_usernames_desc,
+				'optionscode' => 'yesno',
+				'value' => '0',
 			),
 		),
-		"templates" => array(
+		'templates' => array(
 			array(
-				"title" => 'asb_statistics',
-				"template" => <<<EOF
+				'title' => 'asb_statistics',
+				'template' => <<<EOF
 				<tr>
 					<td class="trow1">
 						<span class="smalltext">
@@ -80,7 +79,7 @@ function asb_statistics_build_template($args)
 	}
 
 	// get forum statistics
-	$statistics = $cache->read("stats");
+	$statistics = $cache->read('stats');
 	$statistics['numthreads'] = my_number_format($statistics['numthreads']);
 	$statistics['numposts'] = my_number_format($statistics['numposts']);
 	$statistics['numusers'] = my_number_format($statistics['numusers']);

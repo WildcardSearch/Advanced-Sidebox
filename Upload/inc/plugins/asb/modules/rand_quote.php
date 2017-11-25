@@ -27,93 +27,93 @@ function asb_rand_quote_info()
 	}
 
 	return array(
-		"title" => $lang->asb_random_quotes,
-		"description" => $lang->asb_random_quotes_desc,
-		"wrap_content" => true,
-		"xmlhttp" => true,
-		"version" => '1.5.1',
-		"compatibility" => '2.1',
-		"settings" => array(
-			"forum_show_list" => array(
-				"sid" => 'NULL',
-				"name" => 'forum_show_list',
-				"title" => $lang->asb_forum_show_list_title,
-				"description" => $lang->asb_forum_show_list_desc,
-				"optionscode" => 'text',
-				"value" => '',
+		'title' => $lang->asb_random_quotes,
+		'description' => $lang->asb_random_quotes_desc,
+		'wrap_content' => true,
+		'xmlhttp' => true,
+		'version' => '1.5.1',
+		'compatibility' => '2.1',
+		'settings' => array(
+			'forum_show_list' => array(
+				'sid' => 'NULL',
+				'name' => 'forum_show_list',
+				'title' => $lang->asb_forum_show_list_title,
+				'description' => $lang->asb_forum_show_list_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"forum_hide_list" => array(
-				"sid" => 'NULL',
-				"name" => 'forum_hide_list',
-				"title" => $lang->asb_forum_hide_list_title,
-				"description" => $lang->asb_forum_hide_list_desc,
-				"optionscode" => 'text',
-				"value" => '',
+			'forum_hide_list' => array(
+				'sid' => 'NULL',
+				'name' => 'forum_hide_list',
+				'title' => $lang->asb_forum_hide_list_title,
+				'description' => $lang->asb_forum_hide_list_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"thread_show_list" => array(
-				"sid" => 'NULL',
-				"name" => 'thread_show_list',
-				"title" => $lang->asb_thread_show_list_title,
-				"description" => $lang->asb_thread_show_list_desc,
-				"optionscode" => 'text',
-				"value" => '',
+			'thread_show_list' => array(
+				'sid' => 'NULL',
+				'name' => 'thread_show_list',
+				'title' => $lang->asb_thread_show_list_title,
+				'description' => $lang->asb_thread_show_list_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"thread_hide_list" => array(
-				"sid" => 'NULL',
-				"name" => 'thread_hide_list',
-				"title" => $lang->asb_thread_hide_list_title,
-				"description" => $lang->asb_thread_hide_list_desc,
-				"optionscode" => 'text',
-				"value" => '',
+			'thread_hide_list' => array(
+				'sid' => 'NULL',
+				'name' => 'thread_hide_list',
+				'title' => $lang->asb_thread_hide_list_title,
+				'description' => $lang->asb_thread_hide_list_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"min_length" => array(
-				"sid" => 'NULL',
-				"name" => 'min_length',
-				"title" => $lang->asb_random_quotes_min_quote_length_title,
-				"description" => $lang->asb_random_quotes_min_quote_length_desc,
-				"optionscode" => 'text',
-				"value" => '20',
+			'min_length' => array(
+				'sid' => 'NULL',
+				'name' => 'min_length',
+				'title' => $lang->asb_random_quotes_min_quote_length_title,
+				'description' => $lang->asb_random_quotes_min_quote_length_desc,
+				'optionscode' => 'text',
+				'value' => '20',
 			),
-			"max_length" => array(
-				"sid" => 'NULL',
-				"name" => 'max_length',
-				"title" => $lang->asb_random_quotes_max_quote_length_title,
-				"description" => $lang->asb_random_quotes_max_quote_length,
-				"optionscode" => 'text',
-				"value" => '160',
+			'max_length' => array(
+				'sid' => 'NULL',
+				'name' => 'max_length',
+				'title' => $lang->asb_random_quotes_max_quote_length_title,
+				'description' => $lang->asb_random_quotes_max_quote_length,
+				'optionscode' => 'text',
+				'value' => '160',
 			),
-			"default_text" => array(
-				"sid" => 'NULL',
-				"name" => 'default_text',
-				"title" => $lang->asb_random_quotes_default_text_title,
-				"description" => $lang->asb_random_quotes_default_text_desc,
-				"optionscode" => 'text',
-				"value" => '',
+			'default_text' => array(
+				'sid' => 'NULL',
+				'name' => 'default_text',
+				'title' => $lang->asb_random_quotes_default_text_title,
+				'description' => $lang->asb_random_quotes_default_text_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"important_threads_only" => array(
-				"sid" => 'NULL',
-				"name" => 'important_threads_only',
-				"title" => $lang->asb_important_threads_only_title,
-				"description" => $lang->asb_important_threads_only_desc,
-				"optionscode" => 'yesno',
-				"value" => '0',
+			'important_threads_only' => array(
+				'sid' => 'NULL',
+				'name' => 'important_threads_only',
+				'title' => $lang->asb_important_threads_only_title,
+				'description' => $lang->asb_important_threads_only_desc,
+				'optionscode' => 'yesno',
+				'value' => '0',
 			),
-			"xmlhttp_on" => array(
-				"sid" => 'NULL',
-				"name" => 'xmlhttp_on',
-				"title" => $lang->asb_xmlhttp_on_title,
-				"description" => $lang->asb_xmlhttp_on_description,
-				"optionscode" => 'text',
-				"value" => '0',
+			'xmlhttp_on' => array(
+				'sid' => 'NULL',
+				'name' => 'xmlhttp_on',
+				'title' => $lang->asb_xmlhttp_on_title,
+				'description' => $lang->asb_xmlhttp_on_description,
+				'optionscode' => 'text',
+				'value' => '0',
 			),
 		),
-		"discarded_templates" => array(
+		'discarded_templates' => array(
 			'rand_quote_sidebox',
 		),
-		"templates" => array(
+		'templates' => array(
 			array(
-				"title" => 'asb_rand_quote_sidebox',
-				"template" => <<<EOF
+				'title' => 'asb_rand_quote_sidebox',
+				'template' => <<<EOF
 				<tr>
 					<td class="tcat">
 						{\$thread_title_link}
@@ -132,8 +132,8 @@ function asb_rand_quote_info()
 EOF
 			),
 			array(
-				"title" => 'asb_rand_quote_read_more',
-				"template" => <<<EOF
+				'title' => 'asb_rand_quote_read_more',
+				'template' => <<<EOF
 
 				<tr>
 					<td class="tfoot">
@@ -300,7 +300,7 @@ function asb_rand_quote_get_quote($settings, $width)
 	$thread_link = get_thread_link($rand_post['tid']);
 
 	// allow smilies, but kill
-	$parser_options = array("allow_smilies" => 1);
+	$parser_options = array('allow_smilies' => 1);
 	$new_message = str_replace(array('<br />', '/me'), array('', " * {$plain_text_username}"), $parser->parse_message($new_message . ' ', $parser_options));
 
 	// if the user has an avatar then display it, otherwise force the default avatar.
