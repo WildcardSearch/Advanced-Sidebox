@@ -27,51 +27,49 @@ function asb_staff_online_box_info()
 	}
 
  	return array(
-		"title" => $lang->asb_staff_online,
-		"description" => $lang->asb_staff_online_desc,
-		"version" => '1.4.4',
-		"compatibility" => '2.1',
-		"wrap_content" => true,
-		"xmlhttp" => true,
-		"settings" => array(
-			"max_staff" => array(
-				"sid" => 'NULL',
-				"name" => 'max_staff',
-				"title" => $lang->asb_staff_online_max_staff_title,
-				"description" => $lang->asb_staff_online_max_staff_desc,
-				"optionscode" => 'text',
-				"value" => '5',
+		'title' => $lang->asb_staff_online,
+		'description' => $lang->asb_staff_online_desc,
+		'version' => '1.4.4',
+		'compatibility' => '2.1',
+		'wrap_content' => true,
+		'xmlhttp' => true,
+		'settings' => array(
+			'max_staff' => array(
+				'name' => 'max_staff',
+				'title' => $lang->asb_staff_online_max_staff_title,
+				'description' => $lang->asb_staff_online_max_staff_desc,
+				'optionscode' => 'text',
+				'value' => '5',
 			),
-			"group_show_list" => array(
-				"name" => 'group_show_list',
-				"title" => $lang->asb_group_show_list_title,
-				"description" => $lang->asb_group_show_list_desc,
-				"optionscode" => 'text',
-				"value" => '',
+			'group_show_list' => array(
+				'name' => 'group_show_list',
+				'title' => $lang->asb_group_show_list_title,
+				'description' => $lang->asb_group_show_list_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"group_hide_list" => array(
-				"name" => 'group_hide_list',
-				"title" => $lang->asb_group_hide_list_title,
-				"description" => $lang->asb_group_hide_list_desc,
-				"optionscode" => 'text',
-				"value" => '',
+			'group_hide_list' => array(
+				'name' => 'group_hide_list',
+				'title' => $lang->asb_group_hide_list_title,
+				'description' => $lang->asb_group_hide_list_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"xmlhttp_on" => array(
-				"sid" => 'NULL',
-				"name" => 'xmlhttp_on',
-				"title" => $lang->asb_xmlhttp_on_title,
-				"description" => $lang->asb_xmlhttp_on_description,
-				"optionscode" => 'text',
-				"value" => '0',
+			'xmlhttp_on' => array(
+				'name' => 'xmlhttp_on',
+				'title' => $lang->asb_xmlhttp_on_title,
+				'description' => $lang->asb_xmlhttp_on_description,
+				'optionscode' => 'text',
+				'value' => '0',
 			)
 		),
-		"discarded_templates" => array(
+		'discarded_templates' => array(
 			'asb_staff_online',
 		),
-		"templates" => array(
+		'templates' => array(
 			array(
-				"title" => 'asb_staff_online_bit',
-				"template" => <<<EOF
+				'title' => 'asb_staff_online_bit',
+				'template' => <<<EOF
 				<tr>
 					<td class="{\$bgcolor}">
 						<table cellspacing="0" cellpadding="{\$theme[\'tablespace\']}" width="100%">
@@ -274,7 +272,7 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 			$staff_badge_alt = $staff_badge_title = $usergroup['usertitle'];
 
 			// if the user's group has a badge image . . .
-			$staff_badge = "{$staff_badge_alt}";
+			$staff_badge = $staff_badge_alt;
 			if ($usergroup['image']) {
 				// store it (if nothing is store alt property will display group default usertitle)
 				$staff_badge_filename = $usergroup['image'];

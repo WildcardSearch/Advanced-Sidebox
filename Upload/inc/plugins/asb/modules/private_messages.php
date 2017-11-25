@@ -27,26 +27,25 @@ function asb_private_messages_info()
 	}
 
 	return array(
-		"title" => $lang->asb_private_messages,
-		"description" => $lang->asb_private_messages_desc,
-		"wrap_content" => true,
-		"xmlhttp" => true,
-		"version" => '1.1.1',
-		"compatibility" => '2.1',
-		"settings" => array(
-			"xmlhttp_on" => array(
-				"sid" => 'NULL',
-				"name" => 'xmlhttp_on',
-				"title" => $lang->asb_xmlhttp_on_title,
-				"description" => $lang->asb_xmlhttp_on_description,
-				"optionscode" => 'text',
-				"value" => '0',
+		'title' => $lang->asb_private_messages,
+		'description' => $lang->asb_private_messages_desc,
+		'wrap_content' => true,
+		'xmlhttp' => true,
+		'version' => '1.1.1',
+		'compatibility' => '2.1',
+		'settings' => array(
+			'xmlhttp_on' => array(
+				'name' => 'xmlhttp_on',
+				'title' => $lang->asb_xmlhttp_on_title,
+				'description' => $lang->asb_xmlhttp_on_description,
+				'optionscode' => 'text',
+				'value' => '0',
 			),
 		),
-		"templates" => array(
+		'templates' => array(
 			array(
-				"title" => 'asb_pms',
-				"template" => <<<EOF
+				'title' => 'asb_pms',
+				'template' => <<<EOF
 				<tr>
 					<td class="trow1">
 						<span class="smalltext">{\$lang->asb_pms_received_new}<br /><br />
@@ -130,7 +129,7 @@ function asb_private_messages_get_messages()
 
 	if ($mybb->user['uid'] == 0) {
 		// guest
-		$pmessages = $lang->sprintf("<tr><td class='trow1'>{$lang->asb_pms_no_messages}</td></tr>","<a href=\"{$mybb->settings['bburl']}/member.php?action=login\">{$lang->asb_pms_login}</a>", "<a href=\"{$mybb->settings['bburl']}/member.php?action=register\">{$lang->asb_pms_register}</a>");
+		$pmessages = $lang->sprintf("<tr><td class='trow1'>{$lang->asb_pms_no_messages}</td></tr>", "<a href=\"{$mybb->settings['bburl']}/member.php?action=login\">{$lang->asb_pms_login}</a>", "<a href=\"{$mybb->settings['bburl']}/member.php?action=register\">{$lang->asb_pms_register}</a>");
 		$ret_val = false;
 	} else {
 		// has the user disabled pms?
@@ -146,7 +145,7 @@ function asb_private_messages_get_messages()
 				$username = build_profile_link(format_name($mybb->user['username'], $mybb->user['usergroup'], $mybb->user['displaygroup']), $mybb->user['uid']);
 				$lang->asb_pms_received_new = $lang->sprintf($lang->asb_pms_received_new, $username, $mybb->user['pms_unread']);
 
-				eval("\$" . pmessages . " = \"" . $templates->get("asb_pms") . "\";");
+				eval("\$" . pmessages . " = \"" . $templates->get('asb_pms') . "\";");
 			}
 		} else {
 			// user has disabled PMs

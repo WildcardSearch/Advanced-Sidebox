@@ -27,58 +27,53 @@ function asb_whosonline_info()
 	}
 
 	return array(
-		"title" => $lang->asb_wol,
-		"description" => $lang->asb_wol_desc,
-		"version" => '1.4.6',
-		"compatibility" => '2.1',
-		"wrap_content" => true,
-		"xmlhttp" => true,
-		"settings" =>	array(
-			"show_avatars" => array(
-				"sid" => 'NULL',
-				"name" => 'show_avatars',
-				"title" => $lang->asb_show_avatars_title,
-				"description" => $lang->asb_show_avatars_desc,
-				"optionscode" => 'yesno',
-				"value" => '1',
+		'title' => $lang->asb_wol,
+		'description' => $lang->asb_wol_desc,
+		'version' => '1.4.6',
+		'compatibility' => '2.1',
+		'wrap_content' => true,
+		'xmlhttp' => true,
+		'settings' =>	array(
+			'show_avatars' => array(
+				'name' => 'show_avatars',
+				'title' => $lang->asb_show_avatars_title,
+				'description' => $lang->asb_show_avatars_desc,
+				'optionscode' => 'yesno',
+				'value' => '1',
 			),
-			"asb_avatar_per_row" => array(
-				"sid" => 'NULL',
-				"name" => 'asb_avatar_per_row',
-				"title" => $lang->asb_wol_num_avatars_per_row_title,
-				"description" => $lang->asb_wol_num_avatars_per_row_desc,
-				"optionscode" => 'text',
-				"value" => '4',
+			'asb_avatar_per_row' => array(
+				'name' => 'asb_avatar_per_row',
+				'title' => $lang->asb_wol_num_avatars_per_row_title,
+				'description' => $lang->asb_wol_num_avatars_per_row_desc,
+				'optionscode' => 'text',
+				'value' => '4',
 			),
-			"asb_avatar_max_rows" => array(
-				"sid" => 'NULL',
-				"name" => 'asb_avatar_max_rows',
-				"title" => $lang->asb_wol_avatar_max_rows_title,
-				"description" => $lang->asb_wol_avatar_max_rows_desc,
-				"optionscode" => 'text',
-				"value" => '3',
+			'asb_avatar_max_rows' => array(
+				'name' => 'asb_avatar_max_rows',
+				'title' => $lang->asb_wol_avatar_max_rows_title,
+				'description' => $lang->asb_wol_avatar_max_rows_desc,
+				'optionscode' => 'text',
+				'value' => '3',
 			),
-			"asb_avatar_maintain_aspect" => array(
-				"sid" => 'NULL',
-				"name" => 'asb_avatar_maintain_aspect',
-				"title" => $lang->asb_wol_avatar_maintain_aspect_title,
-				"description" => $lang->asb_wol_avatar_maintain_aspect_desc,
-				"optionscode" => 'yesno',
-				"value" => '0',
+			'asb_avatar_maintain_aspect' => array(
+				'name' => 'asb_avatar_maintain_aspect',
+				'title' => $lang->asb_wol_avatar_maintain_aspect_title,
+				'description' => $lang->asb_wol_avatar_maintain_aspect_desc,
+				'optionscode' => 'yesno',
+				'value' => '0',
 			),
-			"xmlhttp_on" => array(
-				"sid" => 'NULL',
-				"name" => 'xmlhttp_on',
-				"title" => $lang->asb_xmlhttp_on_title,
-				"description" => $lang->asb_xmlhttp_on_description,
-				"optionscode" => 'text',
-				"value" => '0',
+			'xmlhttp_on' => array(
+				'name' => 'xmlhttp_on',
+				'title' => $lang->asb_xmlhttp_on_title,
+				'description' => $lang->asb_xmlhttp_on_description,
+				'optionscode' => 'text',
+				'value' => '0',
 			)
 		),
-		"templates" => array(
+		'templates' => array(
 			array(
-				"title" => 'asb_whosonline',
-				"template" => <<<EOF
+				'title' => 'asb_whosonline',
+				'template' => <<<EOF
 				<tr>
 					<td class="trow1">
 						<span class="smalltext">{\$lang->asb_wol_online_users} [<a href="online.php" title="Who\'s Online">{\$lang->asb_wol_complete_list}</a>]<br /><strong>&raquo;</strong> {\$lang->asb_wol_online_counts}</span>
@@ -96,20 +91,20 @@ function asb_whosonline_info()
 EOF
 			),
 			array(
-				"title" => 'asb_whosonline_memberbit_name',
-				"template" => <<<EOF
+				'title' => 'asb_whosonline_memberbit_name',
+				'template' => <<<EOF
 {\$sep}<a href="{\$mybb->settings[\'bburl\']}/{\$user[\'profilelink\']}">{\$user[\'username\']}</a>
 EOF
 			),
 			array(
-				"title" => 'asb_whosonline_memberbit_avatar',
-				"template" => <<<EOF
+				'title' => 'asb_whosonline_memberbit_avatar',
+				'template' => <<<EOF
 <td><a href="{\$mybb->settings[\'bburl\']}/{\$user[\'profilelink\']}"><img style="{\$avatar_width_style}{\$avatar_height_style}" src="{\$avatar_filename}" alt="{\$lang->asb_wol_avatar}" title="{\$user[\'username\']}\'s {\$lang->asb_wol_profile}"/></a></td>
 EOF
 			),
 			array(
-				"title" => 'asb_whosonline_memberbit_see_all',
-				"template" => <<<EOF
+				'title' => 'asb_whosonline_memberbit_see_all',
+				'template' => <<<EOF
 <td><a href="{\$mybb->settings[\'bburl\']}/online.php" title="{\$lang->asb_wol_see_all_title}"><img style="{\$avatar_style}" src="{\$theme[\'imgdir\']}/asb/see_all.png" alt="{\$lang->asb_wol_see_all_alt}" title="{\$lang->asb_wol_see_all_title}" width="{\$avatar_width}px"/></a></td>
 EOF
 			),
@@ -323,7 +318,7 @@ function asb_whosonline_get_online_members($settings, $width)
 		$time = TIME_NOW;
 		$mostonline['numusers'] = $onlinecount;
 		$mostonline['time'] = $time;
-		$cache->update("mostonline", $mostonline);
+		$cache->update('mostonline', $mostonline);
 	}
 	$recordcount = $mostonline['numusers'];
 	$recorddate = my_date($mybb->settings['dateformat'], $mostonline['time']);

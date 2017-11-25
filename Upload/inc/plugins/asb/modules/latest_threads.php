@@ -26,106 +26,95 @@ function asb_latest_threads_info()
 	}
 
 	return array(
-		"title" => $lang->asb_latest_threads,
-		"description" => $lang->asb_latest_threads_desc,
-		"version" => '1.1.3',
-		"compatibility" => '2.1',
-		"wrap_content" => true,
-		"xmlhttp" => true,
-		"settings" => array(
-			"max_threads" => array(
-				"sid" => 'NULL',
-				"name" => 'max_threads',
-				"title" => $lang->asb_max_threads_title,
-				"description" => $lang->asb_max_threads_desc,
-				"optionscode" => 'text',
-				"value" => '20',
+		'title' => $lang->asb_latest_threads,
+		'description' => $lang->asb_latest_threads_desc,
+		'version' => '1.1.3',
+		'compatibility' => '2.1',
+		'wrap_content' => true,
+		'xmlhttp' => true,
+		'settings' => array(
+			'max_threads' => array(
+				'name' => 'max_threads',
+				'title' => $lang->asb_max_threads_title,
+				'description' => $lang->asb_max_threads_desc,
+				'optionscode' => 'text',
+				'value' => '20',
 			),
-			"max_thread_title_length" => array(
-				"sid" => 'NULL',
-				"name" => 'max_thread_title_length',
-				"title" => $lang->asb_max_thread_title_length_title,
-				"description" => $lang->asb_max_thread_title_length_desc,
-				"optionscode" => 'text',
-				"value" => '40',
+			'max_thread_title_length' => array(
+				'name' => 'max_thread_title_length',
+				'title' => $lang->asb_max_thread_title_length_title,
+				'description' => $lang->asb_max_thread_title_length_desc,
+				'optionscode' => 'text',
+				'value' => '40',
 			),
-			"forum_show_list" => array(
-				"sid" => 'NULL',
-				"name" => 'forum_show_list',
-				"title" => $lang->asb_forum_show_list_title,
-				"description" => $lang->asb_forum_show_list_desc,
-				"optionscode" => 'text',
-				"value" => '',
+			'forum_show_list' => array(
+				'name' => 'forum_show_list',
+				'title' => $lang->asb_forum_show_list_title,
+				'description' => $lang->asb_forum_show_list_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"forum_hide_list" => array(
-				"sid" => 'NULL',
-				"name" => 'forum_hide_list',
-				"title" => $lang->asb_forum_hide_list_title,
-				"description" => $lang->asb_forum_hide_list_desc,
-				"optionscode" => 'text',
-				"value" => '',
+			'forum_hide_list' => array(
+				'name' => 'forum_hide_list',
+				'title' => $lang->asb_forum_hide_list_title,
+				'description' => $lang->asb_forum_hide_list_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"thread_show_list" => array(
-				"sid" => 'NULL',
-				"name" => 'thread_show_list',
-				"title" => $lang->asb_thread_show_list_title,
-				"description" => $lang->asb_thread_show_list_desc,
-				"optionscode" => 'text',
-				"value" => '',
+			'thread_show_list' => array(
+				'name' => 'thread_show_list',
+				'title' => $lang->asb_thread_show_list_title,
+				'description' => $lang->asb_thread_show_list_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"thread_hide_list" => array(
-				"sid" => 'NULL',
-				"name" => 'thread_hide_list',
-				"title" => $lang->asb_thread_hide_list_title,
-				"description" => $lang->asb_thread_hide_list_desc,
-				"optionscode" => 'text',
-				"value" => '',
+			'thread_hide_list' => array(
+				'name' => 'thread_hide_list',
+				'title' => $lang->asb_thread_hide_list_title,
+				'description' => $lang->asb_thread_hide_list_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
-			"last_poster_avatar" => array(
-				"sid" => 'NULL',
-				"name" => 'last_poster_avatar',
-				"title" => $lang->asb_last_poster_avatar_title,
-				"description" => $lang->asb_last_poster_avatar_desc,
-				"optionscode" => 'yesno',
-				"value" => '0',
+			'last_poster_avatar' => array(
+				'name' => 'last_poster_avatar',
+				'title' => $lang->asb_last_poster_avatar_title,
+				'description' => $lang->asb_last_poster_avatar_desc,
+				'optionscode' => 'yesno',
+				'value' => '0',
 			),
-			"avatar_width" => array(
-				"sid" => 'NULL',
-				"name" => 'avatar_width',
-				"title" => $lang->asb_avatar_width_title,
-				"description" => $lang->asb_avatar_width_desc,
-				"optionscode" => 'text',
-				"value" => '30',
+			'avatar_width' => array(
+				'name' => 'avatar_width',
+				'title' => $lang->asb_avatar_width_title,
+				'description' => $lang->asb_avatar_width_desc,
+				'optionscode' => 'text',
+				'value' => '30',
 			),
-			"new_threads_only" => array(
-				"sid" => 'NULL',
-				"name" => 'new_threads_only',
-				"title" => $lang->asb_new_threads_only_title,
-				"description" => $lang->asb_new_threads_only_desc,
-				"optionscode" => 'text',
-				"value" => '0',
+			'new_threads_only' => array(
+				'name' => 'new_threads_only',
+				'title' => $lang->asb_new_threads_only_title,
+				'description' => $lang->asb_new_threads_only_desc,
+				'optionscode' => 'text',
+				'value' => '0',
 			),
-			"important_threads_only" => array(
-				"sid" => 'NULL',
-				"name" => 'important_threads_only',
-				"title" => $lang->asb_important_threads_only_title,
-				"description" => $lang->asb_important_threads_only_desc,
-				"optionscode" => 'yesno',
-				"value" => '0',
+			'important_threads_only' => array(
+				'name' => 'important_threads_only',
+				'title' => $lang->asb_important_threads_only_title,
+				'description' => $lang->asb_important_threads_only_desc,
+				'optionscode' => 'yesno',
+				'value' => '0',
 			),
-			"xmlhttp_on" => array(
-				"sid" => 'NULL',
-				"name" => 'xmlhttp_on',
-				"title" => $lang->asb_xmlhttp_on_title,
-				"description" => $lang->asb_xmlhttp_on_description,
-				"optionscode" => 'text',
-				"value" => '0',
+			'xmlhttp_on' => array(
+				'name' => 'xmlhttp_on',
+				'title' => $lang->asb_xmlhttp_on_title,
+				'description' => $lang->asb_xmlhttp_on_description,
+				'optionscode' => 'text',
+				'value' => '0',
 			),
 		),
-		"templates" => array(
+		'templates' => array(
 			array(
-				"title" => 'asb_latest_threads_thread',
-				"template" => <<<EOF
+				'title' => 'asb_latest_threads_thread',
+				'template' => <<<EOF
 				<tr>
 					<td class="{\$altbg}">
 						{\$gotounread}<a href="{\$mybb->settings[\'bburl\']}/{\$thread[\'threadlink\']}" title="{\$fullSubject}"><strong>{\$thread[\'subject\']}</strong></a>
@@ -140,20 +129,20 @@ function asb_latest_threads_info()
 EOF
 			),
 			array(
-				"title" => "asb_latest_threads_gotounread",
-				"template" => <<<EOF
+				'title' => 'asb_latest_threads_gotounread',
+				'template' => <<<EOF
 <a href="{\$thread[\'newpostlink\']}"><img src="{\$theme[\'imgdir\']}/jump.png" alt="{\$lang->asb_gotounread}" title="{\$lang->asb_gotounread}" /></a>
 EOF
 			),
 			array(
-				"title" => "asb_latest_threads_last_poster_name",
-				"template" => <<<EOF
+				'title' => 'asb_latest_threads_last_poster_name',
+				'template' => <<<EOF
 <a href="{\$thread[\'lastpostlink\']}" title="{\$lang->asb_latest_threads_lastpost}">{\$lang->asb_latest_threads_lastpost}:</a> {\$lastposterlink}
 EOF
 			),
 			array(
-				"title" => "asb_latest_threads_last_poster_avatar",
-				"template" => <<<EOF
+				'title' => 'asb_latest_threads_last_poster_avatar',
+				'template' => <<<EOF
 {\$lastposterlink}<br /><a href="{\$thread[\'lastpostlink\']}" title="{\$lang->asb_latest_threads_lastpost}">{\$lang->asb_latest_threads_lastpost}</a>
 EOF
 			),
@@ -312,7 +301,7 @@ function asb_latest_threads_get_threadlist($settings, $width)
 		$threadCache[$thread['tid']] = $thread;
 	}
 
-	$threadIds = implode(",", array_keys($threadCache));
+	$threadIds = implode(',', array_keys($threadCache));
 
 	// fetch the read threads.
 	if ($mybb->user['uid'] &&
@@ -379,7 +368,7 @@ EOF;
 
 		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 		$thread['threadlink'] = get_thread_link($thread['tid']);
-		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
+		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, 'lastpost');
 
 		eval("\$last_poster = \"" . $templates->get($lp_template) . "\";");
 
@@ -422,7 +411,7 @@ EOF;
 			$unreadpost = 1;
 		}
 
-		eval("\$threadlist .= \"".$templates->get("asb_latest_threads_thread")."\";");
+		eval("\$threadlist .= \"" . $templates->get('asb_latest_threads_thread') . "\";");
 		$altbg = alt_trow();
 	}
 

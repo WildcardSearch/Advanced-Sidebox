@@ -428,7 +428,7 @@ EOF
 function asb_build_theme_exclude_select()
 {
 	global $lang;
-	if (!$lang-asb) {
+	if (!$lang->asb) {
 		$lang->load('asb');
 	}
 
