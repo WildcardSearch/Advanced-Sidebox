@@ -246,13 +246,17 @@ $l['asb_top_poster_post'] = 'post';
 $l['asb_top_poster_congrats'] = 'Congratulations to {1}, our current top poster for the last {2} with {3} {4}{5}!';
 $l['asb_top_poster_congrats_all_time'] = 'Congratulations to {1}, our all time top poster with {2} {3}{4}!';
 $l['asb_top_poster_specific_thread_congrats'] = ' in {1}';
+$l['asb_top_poster_specific_forum_congrats'] = ' in {1}';
 $l['asb_top_poster_description'] = 'Top Posters For {1}';
 
 $l['asb_top_poster_time_frame_title'] = 'Time Frame';
 $l['asb_top_poster_time_frame_desc'] = 'time to compare for top poster stats';
 
+$l['asb_top_poster_fid_title'] = 'Forum ID';
+$l['asb_top_poster_fid_desc'] = 'enter a forum id to show the top poster for that forum, leave this field blank to show the top poster from all forums (default)';
+
 $l['asb_top_poster_tid_title'] = 'Thread ID';
-$l['asb_top_poster_tid_desc'] = 'enter a thread id to show the top poster for that thread, leave this field blank to show the top poster from all threads (default)';
+$l['asb_top_poster_tid_desc'] = 'enter a thread id to show the top poster for that thread, leave this field blank to show the top poster from all threads (default) [this setting will override the above forum setting';
 
 $l['asb_top_poster_max_posters_title'] = 'Number Of Top Posters';
 $l['asb_top_poster_max_posters_desc'] = '0 or invalid values default to 1';

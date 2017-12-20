@@ -51,6 +51,13 @@ EOF
 				,
 				'value' => '1',
 			),
+			'fid' => array(
+				'name' => 'fid',
+				'title' => $lang->asb_top_poster_fid_title,
+				'description' => $lang->asb_top_poster_fid_desc,
+				'optionscode' => 'text',
+				'value' => '',
+			),
 			'tid' => array(
 				'name' => 'tid',
 				'title' => $lang->asb_top_poster_tid_title,
@@ -203,8 +210,9 @@ function asb_top_poster_build_template($args)
 	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
 	$group_where = asb_build_SQL_where($where, ' AND ', ' AND ');
 
-	$thread_where = $extraCongrats = '';
+	$forum_where = $thread_where = $extraCongrats = '';
 	$tid = (int) $settings['tid'];
+	$fid = (int) $settings['fid'];
 	if ($tid) {
 		$thread_where = " AND p.tid='{$tid}'";
 		$threadQuery = $db->simple_select('threads', 'subject', "tid='{$tid}'");
@@ -220,6 +228,17 @@ function asb_top_poster_build_template($args)
 EOF;
 			$extraCongrats = $lang->sprintf($lang->asb_top_poster_specific_thread_congrats, $threadLink);
 		}
+	} elseif ($fid) {
+		$forum_where = " AND p.fid='{$fid}'";
+		$forumQuery = $db->simple_select('forums', 'name', "fid='{$fid}'");
+		if ($db->num_rows($forumQuery) > 0) {
+			$forumTitle = $db->fetch_field($forumQuery, 'name');
+			$forumUrl = get_forum_link($fid);
+			$forumLink = <<<EOF
+<a href="{$forumUrl}">{$forumTitle}</a>
+EOF;
+			$extraCongrats = $lang->sprintf($lang->asb_top_poster_specific_forum_congrats, $forumLink);
+		}
 	}
 
 	$group_by = 'p.uid';
@@ -228,12 +247,13 @@ EOF;
 	}
 
 	if ($time_frame > 0 ||
-		$tid) {
+		$tid ||
+		$fid) {
 		$query = $db->query("
 		SELECT u.uid, u.username, u.usergroup, u.displaygroup, u.avatar, COUNT(p.pid) AS totalposts
 		FROM {$db->table_prefix}posts p
 		LEFT JOIN {$db->table_prefix}users u ON (p.uid=u.uid)
-		WHERE p.dateline > {$timesearch}{$group_where}{$thread_where}
+		WHERE p.dateline > {$timesearch}{$group_where}{$thread_where}{$forum_where}
 		GROUP BY {$group_by} ORDER BY totalposts DESC
 		LIMIT {$limit}
 		");
