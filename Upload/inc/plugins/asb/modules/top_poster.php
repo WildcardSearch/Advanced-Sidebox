@@ -30,7 +30,7 @@ function asb_top_poster_info()
 		'title' => $lang->asb_top_poster_title,
 		'description' => $lang->asb_top_poster_desc,
 		'wrap_content' => true,
-		'version' => '1.2.1',
+		'version' => '1.2.2',
 		'compatibility' => '2.1',
 		'settings' => array(
 			'time_frame' => array(
@@ -50,6 +50,20 @@ select
 EOF
 				,
 				'value' => '1',
+			),
+			'threads_only' => array(
+				'name' => 'threads_only',
+				'title' => $lang->asb_top_poster_threads_only_title,
+				'description' => $lang->asb_top_poster_threads_only_desc,
+				'optionscode' => 'yesno',
+				'value' => '0',
+			),
+			'fid' => array(
+				'name' => 'fid',
+				'title' => $lang->asb_top_poster_fid_title,
+				'description' => $lang->asb_top_poster_fid_desc,
+				'optionscode' => 'text',
+				'value' => '',
 			),
 			'tid' => array(
 				'name' => 'tid',
@@ -203,9 +217,13 @@ function asb_top_poster_build_template($args)
 	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
 	$group_where = asb_build_SQL_where($where, ' AND ', ' AND ');
 
-	$thread_where = $extraCongrats = '';
+	$forum_where = $thread_where = $extraCongrats = '';
 	$tid = (int) $settings['tid'];
-	if ($tid) {
+	$fid = (int) $settings['fid'];
+	$threadsOnly = (bool) $settings['threads_only'];
+
+	if ($tid &&
+		!$threadsOnly) {
 		$thread_where = " AND p.tid='{$tid}'";
 		$threadQuery = $db->simple_select('threads', 'subject', "tid='{$tid}'");
 		if ($db->num_rows($threadQuery) > 0) {
@@ -220,6 +238,21 @@ function asb_top_poster_build_template($args)
 EOF;
 			$extraCongrats = $lang->sprintf($lang->asb_top_poster_specific_thread_congrats, $threadLink);
 		}
+	} elseif ($fid) {
+		$forum_where = " AND p.fid='{$fid}'";
+		if ($threadsOnly) {
+			$forum_where = " AND t.fid='{$fid}'";
+		}
+
+		$forumQuery = $db->simple_select('forums', 'name', "fid='{$fid}'");
+		if ($db->num_rows($forumQuery) > 0) {
+			$forumTitle = $db->fetch_field($forumQuery, 'name');
+			$forumUrl = get_forum_link($fid);
+			$forumLink = <<<EOF
+<a href="{$forumUrl}">{$forumTitle}</a>
+EOF;
+			$extraCongrats = $lang->sprintf($lang->asb_top_poster_specific_forum_congrats, $forumLink);
+		}
 	}
 
 	$group_by = 'p.uid';
@@ -227,20 +260,42 @@ EOF;
 		$group_by = $db->build_fields_string('users', 'u.');
 	}
 
-	if ($time_frame > 0 ||
-		$tid) {
+	// all-time top poster (or thread starter) with no specified thread
+	// can use the simple query
+	if ($time_frame <= 0 &&
+		!$tid &&
+		!$fid) {
+		$fieldName = 'postnum';
+		if ($threadsOnly) {
+			$fieldName = 'threadnum';
+		}
+
+		$query = $db->simple_select('users', "uid, avatar, username, {$fieldName} as totalposts, usergroup, displaygroup", "{$fieldName} > 0{$group_where}", array('order_by' => $fieldName, 'order_dir' => 'DESC', 'limit' => $limit));
+	} elseif ($threadsOnly) {
+		$group_by = 't.uid';
+
+		$query = $db->query("
+		SELECT u.uid, u.username, u.usergroup, u.displaygroup, u.avatar, COUNT(t.tid) AS totalposts
+		FROM {$db->table_prefix}threads t
+		LEFT JOIN {$db->table_prefix}users u ON (t.uid=u.uid)
+		WHERE t.dateline > {$timesearch}{$group_where}{$forum_where}
+		GROUP BY {$group_by}
+		ORDER BY totalposts DESC
+		LIMIT {$limit}
+		");
+	} else {
 		$query = $db->query("
 		SELECT u.uid, u.username, u.usergroup, u.displaygroup, u.avatar, COUNT(p.pid) AS totalposts
 		FROM {$db->table_prefix}posts p
 		LEFT JOIN {$db->table_prefix}users u ON (p.uid=u.uid)
-		WHERE p.dateline > {$timesearch}{$group_where}{$thread_where}
-		GROUP BY {$group_by} ORDER BY totalposts DESC
+		WHERE p.dateline > {$timesearch}{$group_where}{$thread_where}{$forum_where}
+		GROUP BY {$group_by}
+		ORDER BY totalposts DESC
 		LIMIT {$limit}
 		");
-	} else {
-		$query = $db->simple_select('users', 'uid, avatar, username, postnum as totalposts, usergroup, displaygroup', "postnum > 0{$group_where}", array('order_by' => 'postnum', 'order_dir' => 'DESC', 'limit' => $limit));
 	}
 
+	// error
 	$altbg = alt_trow();
 	if ($db->num_rows($query) == 0) {
 		// some defaults
@@ -261,9 +316,17 @@ EOF;
 		}
 
 		$top_poster_posts = $user['totalposts'];
+
 		$post_lang = $lang->asb_top_poster_posts;
+		if ($threadsOnly) {
+			$post_lang = $lang->asb_top_poster_threads;
+		}
+
 		if ($top_poster_posts == 1) {
 			$post_lang = $lang->asb_top_poster_post;
+			if ($threadsOnly) {
+				$post_lang = $lang->asb_top_poster_thread;
+			}
 		}
 
 		$top_poster_avatar_src = "{$theme['imgdir']}/default_avatar.png";
@@ -278,20 +341,32 @@ EOF;
 
 		if ($db->num_rows($query) == 1) {
 			if ($time_frame == 0) {
-				$top_poster_text = $lang->sprintf($lang->asb_top_poster_congrats_all_time, $top_poster, $top_poster_posts, $post_lang, $extraCongrats);
+				if ($threadsOnly) {
+					$top_poster_text = $lang->sprintf($lang->asb_top_poster_congrats_all_time_threads, $top_poster, $top_poster_posts, $post_lang, $extraCongrats);
+				} else {
+					$top_poster_text = $lang->sprintf($lang->asb_top_poster_congrats_all_time, $top_poster, $top_poster_posts, $post_lang, $extraCongrats);
+				}
 			} else {
-				$top_poster_text = $lang->sprintf($lang->asb_top_poster_congrats, $top_poster, $top_poster_timeframe, $top_poster_posts, $post_lang, $extraCongrats);
+				if ($threadsOnly) {
+					$top_poster_text = $lang->sprintf($lang->asb_top_poster_congrats_threads, $top_poster, $top_poster_timeframe, $top_poster_posts, $post_lang, $extraCongrats);
+				} else {
+					$top_poster_text = $lang->sprintf($lang->asb_top_poster_congrats, $top_poster, $top_poster_timeframe, $top_poster_posts, $post_lang, $extraCongrats);
+				}
 			}
 
 			$avatar_width = (int) $width * .75;
 			if ((int) $settings['avatar_size']) {
 				$avatar_width = (int) $settings['avatar_size'];
 			}
+
 			eval("\$top_poster_avatar = \"" . $templates->get('asb_top_poster_avatar') . "\";");
 
 			eval("\$\$template_var = \"" . $templates->get('asb_top_posters_single') . "\";");
 		} else {
 			$top_poster_description = $lang->sprintf($lang->asb_top_poster_description, $top_poster_timeframe_prelude) . $extraCongrats;
+			if ($threadsOnly) {
+				$top_poster_description = $lang->sprintf($lang->asb_top_poster_description_threads, $top_poster_timeframe_prelude) . $extraCongrats;
+			}
 			$top_poster_text = $top_poster . '<br />' . $top_poster_posts;
 
 			$avatar_width = (int) $width * .2;

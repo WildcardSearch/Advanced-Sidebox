@@ -184,6 +184,7 @@ function asb_goals_get_progress($args)
 
 	$query = $db->simple_select($table, "{$function}({$field}) AS total");
 	$total = $db->fetch_field($query, 'total');
+	$formatted_total = my_number_format($total);
 	$goal = (int) $settings['goal'];
 	$formatted_goal = my_number_format($goal);
 
@@ -203,7 +204,7 @@ function asb_goals_get_progress($args)
 		$percentage = round(($total / $goal) * 100, 1);
 		$stats = $lang->sprintf($lang->asb_goals_footer_progress, $itemsLeft, $goal_type_plural);
 		$progress_message = $lang->sprintf($lang->asb_goals_progress_message, $formatted_goal, $goal_type_plural);
-		$progress_bar_title = $lang->sprintf($lang->asb_goals_progress_bar_title, $total, $formatted_goal);
+		$progress_bar_title = $lang->sprintf($lang->asb_goals_progress_bar_title, $formatted_total, $formatted_goal);
 		eval("\$progress = \"{$templates->get('asb_goals_progress')}\";");
 	}
 

@@ -243,16 +243,28 @@ $l['asb_top_poster_no_top_poster'] = 'There is no top poster to display.';
 $l['asb_top_poster_no_avatar'] = 'no avatar';
 $l['asb_top_poster_posts'] = 'posts';
 $l['asb_top_poster_post'] = 'post';
+$l['asb_top_poster_threads'] = 'threads';
+$l['asb_top_poster_thread'] = 'thread';
 $l['asb_top_poster_congrats'] = 'Congratulations to {1}, our current top poster for the last {2} with {3} {4}{5}!';
+$l['asb_top_poster_congrats_threads'] = 'Congratulations to {1}, our current top thread starter for the last {2} with {3} {4}{5}!';
 $l['asb_top_poster_congrats_all_time'] = 'Congratulations to {1}, our all time top poster with {2} {3}{4}!';
+$l['asb_top_poster_congrats_all_time_threads'] = 'Congratulations to {1}, our all time thread starter with {2} {3}{4}!';
 $l['asb_top_poster_specific_thread_congrats'] = ' in {1}';
+$l['asb_top_poster_specific_forum_congrats'] = ' in {1}';
 $l['asb_top_poster_description'] = 'Top Posters For {1}';
+$l['asb_top_poster_description_threads'] = 'Top Thread Starters For {1}';
 
 $l['asb_top_poster_time_frame_title'] = 'Time Frame';
 $l['asb_top_poster_time_frame_desc'] = 'time to compare for top poster stats';
 
+$l['asb_top_poster_threads_only_title'] = 'Threads Only?';
+$l['asb_top_poster_threads_only_desc'] = 'YES to only count the creation of new threads, NO (default) to include any post in the count';
+
+$l['asb_top_poster_fid_title'] = 'Forum ID';
+$l['asb_top_poster_fid_desc'] = 'enter a forum id to show the top poster for that forum, leave this field blank to show the top poster from all forums (default)';
+
 $l['asb_top_poster_tid_title'] = 'Thread ID';
-$l['asb_top_poster_tid_desc'] = 'enter a thread id to show the top poster for that thread, leave this field blank to show the top poster from all threads (default)';
+$l['asb_top_poster_tid_desc'] = 'enter a thread id to show the top poster for that thread, leave this field blank to show the top poster from all threads (default)<p style="font-style: italic;">this setting will override the above forum setting</p><p style="font-style: italic;">this setting is ineffective if "Threads Only" is set to YES</p>';
 
 $l['asb_top_poster_max_posters_title'] = 'Number Of Top Posters';
 $l['asb_top_poster_max_posters_desc'] = '0 or invalid values default to 1';
