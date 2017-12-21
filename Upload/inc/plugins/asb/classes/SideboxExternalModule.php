@@ -154,6 +154,9 @@ class SideboxExternalModule extends ExternalModule010000
 			$this->uninstall();
 		}
 
+		$this->isUpgraded = $this->isInstalled = true;
+		$this->setCacheVersion();
+
 		// if there are no templates we're done
 		if (!is_array($this->templates)) {
 			return;
