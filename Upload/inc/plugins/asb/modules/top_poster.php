@@ -329,10 +329,7 @@ EOF;
 			}
 		}
 
-		$top_poster_avatar_src = "{$theme['imgdir']}/default_avatar.png";
-		if ($user['avatar'] != '') {
-			$top_poster_avatar_src = $user['avatar'];
-		}
+		$top_poster_avatar_src = format_avatar($user['avatar'])['image'];
 
 		$settings['avatar_size'] = trim($settings['avatar_size']);
 		if (my_strpos($settings['avatar_size'], '%') == my_strlen($settings['avatar_size']) - 1) {

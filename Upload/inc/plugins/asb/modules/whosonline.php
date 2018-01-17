@@ -242,13 +242,7 @@ function asb_whosonline_get_online_members($settings, $width)
 				$user['profilelink'] = get_profile_link($user['uid']);
 
 				if ($settings['show_avatars']) {
-					// If the user has an avatar then display it . . .
-					if ($user['avatar'] != '') {
-						$avatar_filename = $user['avatar'];
-					} else {
-						// . . . otherwise force the default avatar.
-						$avatar_filename = "{$theme['imgdir']}/default_avatar.png";
-					}
+					$avatar_filename = format_avatar($user['avatar'])['image'];
 
 					$avatar_height_style = " min-height: {$avatar_height}px; max-height: {$avatar_height}px;";
 					$avatar_width_style = " min-width: {$avatar_width}px; max-width: {$avatar_width}px;";

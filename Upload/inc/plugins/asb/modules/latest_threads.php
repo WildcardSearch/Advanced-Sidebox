@@ -326,17 +326,16 @@ function asb_latest_threads_get_threadlist($settings, $width)
 		$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
 		$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
 
-		if (strlen(trim($thread['avatar'])) == 0) {
-			$thread['avatar'] = "{$theme['imgdir']}/default_avatar.png";
-		}
-
 		$settings['avatar_width'] = trim($settings['avatar_width']);
 		if (my_strpos($settings['avatar_width'], '%') == my_strlen($settings['avatar_width']) - 1) {
 			$settings['avatar_width'] = (int) $width * (my_substr($settings['avatar_width'], 0, my_strlen($settings['avatar_width']) - 1) / 100);
 		}
 		$avatar_width = (int) min($width / 2, max($width / 8, $settings['avatar_width']));
+
+		$avatarInfo = format_avatar($thread['avatar']);
+
 		$avatar = <<<EOF
-<img src="{$thread['avatar']}" alt="{$thread['last_post']}" title="{$thread['lastposter']}'s profile" style="width: {$avatar_width}px;"/>
+<img src="{$avatarInfo['image']}" alt="{$thread['last_post']}" title="{$thread['lastposter']}'s profile" style="width: {$avatar_width}px;"/>
 EOF;
 
 		$formatted_name = format_name($thread['lastposter'], $thread['usergroup'], $thread['displaygroup']);
