@@ -145,7 +145,7 @@ function asb_private_messages_get_messages()
 				$username = build_profile_link(format_name($mybb->user['username'], $mybb->user['usergroup'], $mybb->user['displaygroup']), $mybb->user['uid']);
 				$lang->asb_pms_received_new = $lang->sprintf($lang->asb_pms_received_new, $username, $mybb->user['pms_unread']);
 
-				eval("\$" . pmessages . " = \"" . $templates->get('asb_pms') . "\";");
+				eval("\$pmessages = \"{$templates->get('asb_pms')}\";");
 			}
 		} else {
 			// user has disabled PMs
