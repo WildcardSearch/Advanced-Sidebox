@@ -1,4 +1,4 @@
-## Advanced-Sidebox 3.1.11
+## Advanced-Sidebox 3.1.12
 
 <p align="center">
   <img title="Advanced Sidebox Logo" alt="Advanced Sidebox Logo" src="http://i.imgur.com/4QWLq5V.png" />
