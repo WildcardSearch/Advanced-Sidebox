@@ -52,9 +52,14 @@ $tables = array(
 );
 
 $columns = array(
+	'pgsql' => array(
+		"users" => array(
+			"show_sidebox" => 'INT DEFAULT 1',
+		),
+	),
 	"users" => array(
-		"show_sidebox" => 'INT(1) DEFAULT 1'
-	)
+		"show_sidebox" => 'INT(1) DEFAULT 1',
+	),
 );
 
 $update_themes_link = "<ul><li><a href=\"" . ASB_URL . "&amp;action=update_theme_select\" title=\"\">{$lang->asb_theme_exclude_select_update_link}</a><br />{$lang->asb_theme_exclude_select_update_description}</li></ul>";
