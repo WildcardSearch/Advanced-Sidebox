@@ -8,6 +8,49 @@
  */
 
 $tables = array(
+	'pgsql' => array(
+		"asb_sideboxes" => array(
+			"id" => 'SERIAL',
+			"display_order" => 'INT NOT NULL',
+			"box_type" => 'VARCHAR(25) NOT NULL',
+			"title" => 'TEXT',
+			"title_link" => 'VARCHAR(128) NOT NULL',
+			"position" => 'INT',
+			"scripts" => 'TEXT',
+			"groups" => 'TEXT',
+			"themes" => 'TEXT',
+			"settings" => 'TEXT',
+			"wrap_content" => 'INT',
+			"dateline" => 'INT NOT NULL, PRIMARY KEY(id)'
+		),
+		"asb_custom_sideboxes" => array(
+			"id" => 'SERIAL',
+			"title" => 'VARCHAR(32) NOT NULL',
+			"description" => 'VARCHAR(128) NOT NULL',
+			"wrap_content" => 'INT',
+			"content" => 'TEXT',
+			"dateline" => 'INT NOT NULL, PRIMARY KEY(id)'
+		),
+		"asb_script_info" => array(
+			"id" => 'SERIAL',
+			"title" => 'VARCHAR(32) NOT NULL',
+			"filename" => 'VARCHAR(32) NOT NULL',
+			"action" => 'VARCHAR(32) NOT NULL',
+			"page" => 'VARCHAR(32) NOT NULL',
+			"width_left" => 'INT',
+			"width_right" => 'INT',
+			"template_name" => 'VARCHAR(128) NOT NULL',
+			"hook" => 'VARCHAR(128) NOT NULL',
+			"find_top" => 'TEXT',
+			"find_bottom" => 'TEXT',
+			"replace_all" => 'INT',
+			"replacement" => 'TEXT',
+			"replacement_template" => 'VARCHAR(128) NOT NULL',
+			"eval" => 'INT',
+			"active" => 'INT',
+			"dateline" => 'INT NOT NULL, PRIMARY KEY(id)'
+		),
+	),
 	"asb_sideboxes" => array(
 		"id" => 'INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY',
 		"display_order" => 'INT(10) NOT NULL',
@@ -48,13 +91,18 @@ $tables = array(
 		"eval" => 'INT(1)',
 		"active" => 'INT(1)',
 		"dateline" => 'INT(10)'
-	)
+	),
 );
 
 $columns = array(
+	'pgsql' => array(
+		"users" => array(
+			"show_sidebox" => 'INT DEFAULT 1',
+		),
+	),
 	"users" => array(
-		"show_sidebox" => 'INT(1) DEFAULT 1'
-	)
+		"show_sidebox" => 'INT(1) DEFAULT 1',
+	),
 );
 
 $update_themes_link = "<ul><li><a href=\"" . ASB_URL . "&amp;action=update_theme_select\" title=\"\">{$lang->asb_theme_exclude_select_update_link}</a><br />{$lang->asb_theme_exclude_select_update_description}</li></ul>";

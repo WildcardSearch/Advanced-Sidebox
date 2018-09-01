@@ -303,7 +303,8 @@ function asb_rand_quote_get_quote($settings, $width)
 	$parser_options = array('allow_smilies' => 1);
 	$new_message = str_replace(array('<br />', '/me'), array('', " * {$plain_text_username}"), $parser->parse_message($new_message . ' ', $parser_options));
 
-	$avatar_filename = format_avatar($rand_post['avatar'])['image'];
+	$avatar_info = format_avatar($rand_post['avatar']);
+	$avatar_filename = $avatar_info['image'];
 
 	$avatar_alt = $lang->sprintf($lang->asb_random_quote_users_profile, $plain_text_username);
 

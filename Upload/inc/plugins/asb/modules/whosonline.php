@@ -242,7 +242,8 @@ function asb_whosonline_get_online_members($settings, $width)
 				$user['profilelink'] = get_profile_link($user['uid']);
 
 				if ($settings['show_avatars']) {
-					$avatar_filename = format_avatar($user['avatar'])['image'];
+					$avatar_info = format_avatar($user['avatar']);
+					$avatar_filename = $avatar_info['image'];
 
 					$avatar_height_style = " min-height: {$avatar_height}px; max-height: {$avatar_height}px;";
 					$avatar_width_style = " min-width: {$avatar_width}px; max-width: {$avatar_width}px;";

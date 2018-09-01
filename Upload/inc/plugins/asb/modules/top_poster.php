@@ -329,7 +329,8 @@ EOF;
 			}
 		}
 
-		$top_poster_avatar_src = format_avatar($user['avatar'])['image'];
+		$avatar_info = format_avatar($user['avatar']);
+		$top_poster_avatar_src = $avatar_info['image'];
 
 		$settings['avatar_size'] = trim($settings['avatar_size']);
 		if (my_strpos($settings['avatar_size'], '%') == my_strlen($settings['avatar_size']) - 1) {

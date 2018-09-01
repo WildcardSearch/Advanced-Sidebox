@@ -9,7 +9,7 @@
  * XML file and to output a row to be included in a collection exported by
  * an outside function
  */
-abstract class PortableObject010000 extends StorableObject010000 implements PortableObjectInterface010000
+abstract class PortableObject010001 extends StorableObject010000 implements PortableObjectInterface010000
 {
 	/**
 	 * provides export functionality for any StorableObject
@@ -71,6 +71,7 @@ EOF;
 		header('Pragma: no-cache');
 		header('Expires: 0');
 		echo $xml;
+		return true;
 	}
 
 	/**
@@ -102,7 +103,8 @@ EOF;
 				}
 
 				// get the field name from the array key
-				$newKey = explode('-', $key)[0];
+				$newKey = explode('-', $key);
+				$newKey = $newKey[0];
 
 				// is it a valid property name for this object?
 				if (property_exists($this, $newKey)) {
