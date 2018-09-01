@@ -253,7 +253,8 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 			$staff_avatar_alt = $staff_avatar_title = $user['username'] . '\'s profile';
 
 			// if the user has an avatar then display it, otherwise force the default avatar.
-			$staff_avatar_filename = format_avatar($user['avatar'])['image'];
+			$avatar_info = format_avatar($user['avatar']);
+			$staff_avatar_filename = $avatar_info['image'];
 
 			// avatar properties
 			$staff_avatar_dimensions = '100%';
