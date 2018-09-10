@@ -588,6 +588,7 @@ function asb_build_setting($this_form, $this_form_container, $setting)
     $type = array_map('trim', $type);
 	$element_name = "{$setting['name']}";
 	$element_id = "setting_{$setting['name']}";
+	$row_id = "row_{$element_id}";
 
 	// prepare labels
 	$this_label = '<strong>' . htmlspecialchars_uni($setting['title']) . '</strong>';
@@ -596,21 +597,21 @@ function asb_build_setting($this_form, $this_form_container, $setting)
 	// sort by type
 	if ($type[0] == 'text' ||
 		$type[0] == '') {
-		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_text_box($element_name, $setting['value'], array('id' => $element_id)), $element_name, array("id" => $element_id));
+		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_text_box($element_name, $setting['value'], array('id' => $element_id)), $element_name, array("id" => $row_id));
 	} else if ($type[0] == 'textarea') {
-		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_text_area($element_name, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
+		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_text_area($element_name, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $row_id));
 	} else if ($type[0] == 'yesno') {
-		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_yes_no_radio($element_name, $setting['value'], true, array('id' => $element_id.'_yes', 'class' => $element_id), array('id' => $element_id.'_no', 'class' => $element_id)), $element_name, array('id' => $element_id));
+		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_yes_no_radio($element_name, $setting['value'], true, array('id' => $element_id.'_yes', 'class' => $element_id), array('id' => $element_id.'_no', 'class' => $element_id)), $element_name, array('id' => $row_id));
 	} else if ($type[0] == 'onoff') {
-		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_on_off_radio($element_name, $setting['value'], true, array('id' => $element_id.'_on', 'class' => $element_id), array('id' => $element_id.'_off', 'class' => $element_id)), $element_name, array('id' => $element_id));
+		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_on_off_radio($element_name, $setting['value'], true, array('id' => $element_id.'_on', 'class' => $element_id), array('id' => $element_id.'_off', 'class' => $element_id)), $element_name, array('id' => $row_id));
 	} else if ($type[0] == 'language') {
 		$languages = $lang->get_languages();
-		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
+		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $row_id));
 	} else if ($type[0] == 'adminlanguage') {
 		$languages = $lang->get_languages(1);
-		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
+		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $row_id));
 	} else if ($type[0] == 'passwordbox') {
-		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_password_box($element_name, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
+		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_password_box($element_name, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $row_id));
 	} else if ($type[0] == 'php') {
 		$setting['optionscode'] = substr($setting['optionscode'], 3);
 		eval("\$setting_code = \"" . $setting['optionscode'] . "\";");
@@ -638,14 +639,14 @@ function asb_build_setting($this_form, $this_form_container, $setting)
 			}
 		}
 		if ($type[0] == 'select') {
-			$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $option_list, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $element_id));
+			$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $option_list, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $row_id));
 		} else {
 			$setting_code = implode('<br />', $option_list);
 		}
 	}
 
 	if ($setting_code) {
-		$this_form_container->output_row($this_label, $this_desc, $setting_code, '', array(), array('id' => 'row_' . $element_id));
+		$this_form_container->output_row($this_label, $this_desc, $setting_code, '', array(), array('id' => $row_id));
 	}
 }
 
