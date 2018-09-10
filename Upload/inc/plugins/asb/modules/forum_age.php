@@ -253,7 +253,7 @@ function asb_forum_age_settings_load()
 	echo <<<EOF
 
 	<script type="text/javascript">
-	new Peeker($(".setting_show_creation_date"), $("#setting_creation_date_format"), /1/, true);
+	new Peeker($(".setting_show_creation_date"), $("#row_setting_creation_date_format"), /1/, true);
 	</script>
 EOF;
 }

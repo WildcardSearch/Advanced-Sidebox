@@ -421,4 +421,19 @@ EOF;
 	return false;
 }
 
+/**
+ * insert peeker for creation date
+ *
+ * @return void
+ */
+function asb_latest_threads_settings_load()
+{
+	echo <<<EOF
+
+	<script type="text/javascript">
+	new Peeker($(".setting_last_poster_avatar"), $("#row_setting_avatar_width"), /1/, true);
+	</script>
+EOF;
+}
+
 ?>
