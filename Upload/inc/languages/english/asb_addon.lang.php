@@ -379,4 +379,22 @@ $l['asb_forum_age_text'] = '{1} has been active for {2}';
 $l['asb_forum_age_and'] = 'and ';
 $l['asb_forum_age_founded_message'] = 'This forum was founded on {1}';
 
+$l['asb_forum_age_no_content'] = 'nothing to show';
+
+// birthdays
+$l['asb_birthdays_title'] = 'Birthdays';
+$l['asb_birthdays_description'] = 'Displays birthdays for the month, or today';
+
+$l['asb_birthdays_time_frame_title'] = 'Timeframe';
+$l['asb_birthdays_time_frame_description'] = 'Choose to show birthdays for the month, today';
+
+$l['asb_birthdays_timeframe_optionscode_this_month'] = 'This Month';
+$l['asb_birthdays_timeframe_optionscode_today'] = 'Today';
+
+$l['asb_birthdays_this_months_birthdays'] = 'This Month\'s Birthdays';
+$l['asb_birthdays_todays_birthdays'] = 'Today\'s Birthdays';
+
+$l['asb_birthdays_user_info'] = '{1} on {2}';
+$l['asb_birthdays_no_content'] = 'no birthdays to show';
+
 ?>
