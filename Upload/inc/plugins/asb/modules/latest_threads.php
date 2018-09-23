@@ -28,7 +28,7 @@ function asb_latest_threads_info()
 	return array(
 		'title' => $lang->asb_latest_threads,
 		'description' => $lang->asb_latest_threads_desc,
-		'version' => '1.1.3',
+		'version' => '1.2.0',
 		'compatibility' => '2.1',
 		'wrap_content' => true,
 		'xmlhttp' => true,
@@ -144,6 +144,12 @@ EOF
 				'title' => 'asb_latest_threads_last_poster_avatar',
 				'template' => <<<EOF
 {\$lastposterlink}<br /><a href="{\$thread[\'lastpostlink\']}" title="{\$lang->asb_latest_threads_lastpost}">{\$lang->asb_latest_threads_lastpost}</a>
+EOF
+			),
+			array(
+				'title' => 'asb_latest_threads_last_poster_avatar_avatar',
+				'template' => <<<EOF
+<img src="{\$avatarInfo[\'image\']}" alt="{\$thread[\'last_post\']}" title="{\$thread[\'lastposter\']}\'s profile" style="width: {\$avatar_width}px;"/>
 EOF
 			),
 		),
@@ -334,9 +340,7 @@ function asb_latest_threads_get_threadlist($settings, $width)
 
 		$avatarInfo = format_avatar($thread['avatar']);
 
-		$avatar = <<<EOF
-<img src="{$avatarInfo['image']}" alt="{$thread['last_post']}" title="{$thread['lastposter']}'s profile" style="width: {$avatar_width}px;"/>
-EOF;
+		eval("\$avatar = \"{$templates->get('asb_latest_threads_last_poster_avatar_avatar')}\";");
 
 		$formatted_name = format_name($thread['lastposter'], $thread['usergroup'], $thread['displaygroup']);
 
