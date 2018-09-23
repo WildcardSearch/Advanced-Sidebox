@@ -390,10 +390,13 @@ $l['asb_birthdays_time_frame_description'] = 'Choose to show birthdays for the m
 $l['asb_birthdays_timeframe_optionscode_this_month'] = 'This Month';
 $l['asb_birthdays_timeframe_optionscode_today'] = 'Today';
 
-$l['asb_birthdays_this_months_birthdays'] = 'This Month\'s Birthdays';
+$l['asb_birthdays_upcoming_birthdays'] = 'Upcoming Birthdays';
 $l['asb_birthdays_todays_birthdays'] = 'Today\'s Birthdays';
 
 $l['asb_birthdays_user_info'] = '{1} on {2}';
 $l['asb_birthdays_no_content'] = 'no birthdays to show';
+
+$l['asb_birthdays_no_birthdays_today'] = 'No birthdays today.';
+$l['asb_birthdays_no_upcoming_birthdays'] = 'No upcoming birthdays.';
 
 ?>

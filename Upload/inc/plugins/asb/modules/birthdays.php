@@ -32,40 +32,49 @@ function asb_birthdays_info()
 		'wrap_content' => true,
 		'version' => '1.0.0',
 		'compatibility' => '2.1',
-		'settings' => array(
-			'timeframe' => array(
-				'name' => 'timeframe',
-				'title' => $lang->asb_birthdays_time_frame_title,
-				'description' => $lang->asb_birthdays_time_frame_description,
-				'optionscode' => <<<EOF
-select
-1={$lang->asb_birthdays_timeframe_optionscode_this_month}
-2={$lang->asb_birthdays_timeframe_optionscode_today}
-EOF
-				,
-				'value' => '2',
-			),
-		),
 		'templates' => array(
 			array(
 				'title' => 'asb_birthdays',
 				'template' => <<<EOF
 				<tr>
 					<td class="tcat">
-						<span class="smalltext"><strong>{\$birthdaysTitle}</strong></span>
+						<span class="smalltext"><strong>{\$lang->asb_birthdays_todays_birthdays}</strong></span>
 					</td>
-				</tr>
+				</tr>{\$todaysBirthdays}
 				<tr>
-					<td class="trow1">
-						<span class="smalltext">{\$userList}</span>
+					<td class="tcat">
+						<span class="smalltext"><strong>{\$lang->asb_birthdays_upcoming_birthdays}</strong></span>
 					</td>
-				</tr>
+				</tr>{\$upcomingBirthdays}
 EOF
 			),
 			array(
-				'title' => 'asb_birthdays_user_link',
+				'title' => 'asb_birthdays_user_row',
 				'template' => <<<EOF
-<a href="{\$profileLink}" title="{\$userInfo}">{\$name}</a>
+				<tr>
+					<td class="{\$altbg}">
+						{\$avatar} <span class="smalltext float_right">({\$user[\'age\']})</span><a href="{\$profileLink}" title="{\$userInfo}">{\$name}</a>
+					</td>
+				</tr>
+
+EOF
+			),
+			array(
+				'title' => 'asb_birthdays_no_birthdays',
+				'template' => <<<EOF
+				<tr>
+					<td class="{\$altbg}">
+						<span>{\$noBirthdays}</span>
+					</td>
+				</tr>
+
+EOF
+			),
+			array(
+				'title' => 'asb_birthdays_user_avatar',
+				'template' => <<<EOF
+<img src="{\$avatarInfo[\'image\']}" alt="avatar" title="{\$user[\'username\']}\'s profile"{\$avatarInfo[\'width_height\']} style="margin-bottom: -5px;" />
+
 EOF
 			),
 		),
@@ -117,26 +126,61 @@ function asb_birthdays_get_birthdays($args)
 	$day = my_date('j');
 	$month = my_date('n');
 	$year = my_date('Y');
-	$today = ($settings['timeframe'] == 2);
 
-	/**
-	 * results by month return with a slighlty different
-	 * structure so we have to modify the daily to match
-	 */
-	if (!$today) {
-		$birthdaysTitle = $lang->asb_birthdays_this_months_birthdays;
-		$birthdays = get_birthdays($month);
-	} else {
-		$birthdaysTitle = $lang->asb_birthdays_todays_birthdays;
-		$birthdays = get_birthdays($month, $day);
-		$birthdays = array("{$day}-{$month}" => $birthdays);
+	$todaysBirthdayUsers = get_birthdays($month, $day);
+	$upcomingBirthdayUsers = get_birthdays($month);
+
+	$userAvatars = $userAvatarList = array();
+	foreach ($upcomingBirthdayUsers as $users) {
+		foreach ($users as $user) {
+			$userAvatarList[] = $user['uid'];
+		}
+	}
+
+	$userAvatarList = implode(',', $userAvatarList);
+	$query = $db->simple_select('users', 'uid, avatar, avatardimensions', "uid IN({$userAvatarList})");
+	while ($user = $db->fetch_array($query)) {
+		$userAvatars[$user['uid']] = format_avatar($user['avatar'], $user['avatardimensions'], '20x20');
+	}
+
+	$alreadyDone = array();
+	$altbg = 'trow1';
+	$todaysBirthdays = '';
+	foreach ($todaysBirthdayUsers as $user) {
+		if ($user['birthdayprivacy'] != 'all') {
+			continue;
+		}
+
+		$name = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
+		$profileLink = get_profile_link($user['uid']);
+
+		$birthday = my_date('F jS, Y', strtotime("{$year}-{$day}-{$month}"));
+		$userInfo = $lang->sprintf($lang->asb_birthdays_user_info, $user['age'], $birthday);
+
+		$avatarInfo = $userAvatars[$user['uid']];
+		eval("\$avatar = \"{$templates->get('asb_birthdays_user_avatar')}\";");
+
+		eval("\$todaysBirthdays .= \"{$templates->get('asb_birthdays_user_row')}\";");
+
+		$altbg = alt_trow();
+		$alreadyDone[$user['uid']] = true;
+	}
+
+	if (!$todaysBirthdays) {
+		$noBirthdays = $lang->asb_birthdays_no_birthdays_today;
+		eval("\$todaysBirthdays = \"{$templates->get('asb_birthdays_no_birthdays')}\";");
 	}
 
 	// build the user list
-	$userList = $sep = '';
-	foreach ($birthdays as $date => $users) {
+	$altbg = 'trow1';
+	$upcomingBirthdays = '';
+	foreach ($upcomingBirthdayUsers as $date => $users) {
 		foreach ($users as $user) {
-			if ($user['birthdayprivacy'] != 'all') {
+			$dateParts = explode('-', $date);
+			$userDay = $dateParts[0];
+			if ($user['birthdayprivacy'] != 'all' ||
+				$alreadyDone[$user['uid']] ||
+				$userDay <= $day) {
 				continue;
 			}
 
@@ -146,9 +190,18 @@ function asb_birthdays_get_birthdays($args)
 			$birthday = my_date('F jS, Y', strtotime("{$year}-{$date}"));
 			$userInfo = $lang->sprintf($lang->asb_birthdays_user_info, $user['age'], $birthday);
 
-			eval("\$userList .= \$sep . \"{$templates->get('asb_birthdays_user_link')}\";");
-			$sep = ', ';
+			$avatarInfo = $userAvatars[$user['uid']];
+			eval("\$avatar = \"{$templates->get('asb_birthdays_user_avatar')}\";");
+
+			eval("\$upcomingBirthdays .= \"{$templates->get('asb_birthdays_user_row')}\";");
+
+			$altbg = alt_trow();
 		}
+	}
+
+	if (!$upcomingBirthdays) {
+		$noBirthdays = $lang->asb_birthdays_no_upcoming_birthdays;
+		eval("\$upcomingBirthdays = \"{$templates->get('asb_birthdays_no_birthdays')}\";");
 	}
 
 	eval("\$returnValue = \"{$templates->get('asb_birthdays')}\";");
