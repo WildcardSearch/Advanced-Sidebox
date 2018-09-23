@@ -149,7 +149,6 @@ $l['asb_private_messages'] = 'Private Messages';
 $l['asb_private_messages_desc'] = "Lists the user's PM info";
 
 $l['asb_pms_received_new'] = '{1}, you have <b>{2}</b> unread message(s).';
-$l['asb_pms_received_new'] = '{1}, you have <b>{2}</b> unread message(s).';
 
 $l['asb_pms_no_messages'] = 'Please {1} or {2} to use this functionality.';
 $l['asb_pms_login'] = 'login';
