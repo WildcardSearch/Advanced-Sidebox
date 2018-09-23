@@ -334,4 +334,19 @@ function asb_whosonline_get_online_members($settings, $width)
 	}
 }
 
+/**
+ * insert peeker for creation date
+ *
+ * @return void
+ */
+function asb_whosonline_settings_load()
+{
+	echo <<<EOF
+
+	<script type="text/javascript">
+	new Peeker($(".setting_show_avatars"), $("#row_setting_asb_avatar_per_row, #row_setting_asb_avatar_max_rows, #row_setting_asb_avatar_maintain_aspect"), /1/, true);
+	</script>
+EOF;
+}
+
 ?>

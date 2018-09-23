@@ -7,7 +7,7 @@
  * wrapper to handle our plugin's installation
  */
 
-class AdvancedSideboxInstaller extends WildcardPluginInstaller010302
+class AdvancedSideboxInstaller extends WildcardPluginInstaller020000
 {
 	/**
 	 * returns an installer object
@@ -32,7 +32,7 @@ class AdvancedSideboxInstaller extends WildcardPluginInstaller010302
 	 */
 	public function __construct($path = '')
 	{
-		parent::__construct(MYBB_ROOT . 'inc/plugins/asb/install_data.php');
+		parent::__construct(MYBB_ROOT.'inc/plugins/asb/install_data.php');
 	}
 }
 

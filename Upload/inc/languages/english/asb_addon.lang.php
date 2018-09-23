@@ -144,11 +144,10 @@ $l['asb_recent_posts_max_length_description'] = 'enter nothing or 0 to show the 
 
 $l['asb_recent_posts_no_posts'] = 'There are no posts to display.';
 
-// pm's
+// pms
 $l['asb_private_messages'] = 'Private Messages';
 $l['asb_private_messages_desc'] = "Lists the user's PM info";
 
-$l['asb_pms_received_new'] = '{1}, you have <b>{2}</b> unread message(s).';
 $l['asb_pms_received_new'] = '{1}, you have <b>{2}</b> unread message(s).';
 
 $l['asb_pms_no_messages'] = 'Please {1} or {2} to use this functionality.';
@@ -316,7 +315,7 @@ $l['asb_goals_goal_description'] = 'the total number of items before the goal is
 $l['asb_goals_success_image_title'] = 'Success Image';
 $l['asb_goals_success_image_description'] = 'enter an image URL here to display it when the goal has been met, leave it blank to show no image (default)';
 
-// messages
+	// messages
 $l['asb_goals_goal_reached'] = "We've done it! We've made {1} {2}!";
 $l['asb_goals_progress_message'] = "of the way to our goal of {1} {2}!";
 $l['asb_goals_progress_bar_title'] = "{1} of {2}";
@@ -329,5 +328,75 @@ $l['asb_goals_users'] = 'users';
 
 $l['asb_goals_footer_goal_reached'] = 'Goal Met!';
 $l['asb_goals_footer_progress'] = 'Only {1} {2} left to go!';
+
+// forum age
+$l['asb_forum_age_title'] = 'Forum Age';
+$l['asb_forum_age_description'] = 'Displays the date the forum was founded and/or the current age of the forum.';
+
+$l['asb_forum_age_show_creation_date_title'] = 'Show Creation Date?';
+$l['asb_forum_age_show_creation_date_description'] = 'YES (default) to include the creation date of the forum in the descriptive text, NO to show only the forum age.';
+
+$l['asb_forum_age_forum_age_date_format_title'] = 'Forum Age Date Format';
+$l['asb_forum_age_forum_age_date_format_description'] = 'Select an option to format to a specific time interval.';
+
+$l['asb_forum_age_creation_date_format_title'] = 'Creation Date Format';
+$l['asb_forum_age_creation_date_format_description'] = 'Select a format for the creation date using PHP date() format';
+
+$l['asb_forum_age_optionscode_second'] = 'Second';
+$l['asb_forum_age_optionscode_minute'] = 'Minute';
+$l['asb_forum_age_optionscode_hour'] = 'Hour';
+$l['asb_forum_age_optionscode_day'] = 'Day';
+$l['asb_forum_age_optionscode_week'] = 'Week';
+$l['asb_forum_age_optionscode_month'] = 'Month';
+$l['asb_forum_age_optionscode_year'] = 'Year';
+
+$l['asb_forum_age_years'] = '{1} years';
+$l['asb_forum_age_year'] = '{1} year';
+
+$l['asb_forum_age_months'] = '{1} months';
+$l['asb_forum_age_month'] = '{1} month';
+
+$l['asb_forum_age_weeks'] = '{1} weeks';
+$l['asb_forum_age_week'] = '{1} week';
+
+$l['asb_forum_age_days'] = '{1} days';
+$l['asb_forum_age_day'] = '{1} day';
+
+$l['asb_forum_age_hours'] = '{1} hours';
+$l['asb_forum_age_hour'] = '{1} hour';
+
+$l['asb_forum_age_minutes'] = '{1} minutes';
+$l['asb_forum_age_minute'] = '{1} minute';
+
+$l['asb_forum_age_seconds'] = '{1} seconds';
+$l['asb_forum_age_second'] = '{1} second';
+
+$l['asb_forum_age_less_than'] = 'less than a';
+
+$l['asb_forum_age_text'] = '{1} has been active for {2}';
+
+$l['asb_forum_age_and'] = 'and ';
+$l['asb_forum_age_founded_message'] = 'This forum was founded on {1}';
+
+$l['asb_forum_age_no_content'] = 'nothing to show';
+
+// birthdays
+$l['asb_birthdays_title'] = 'Birthdays';
+$l['asb_birthdays_description'] = 'Displays birthdays for the month, or today';
+
+$l['asb_birthdays_time_frame_title'] = 'Timeframe';
+$l['asb_birthdays_time_frame_description'] = 'Choose to show birthdays for the month, today';
+
+$l['asb_birthdays_timeframe_optionscode_this_month'] = 'This Month';
+$l['asb_birthdays_timeframe_optionscode_today'] = 'Today';
+
+$l['asb_birthdays_upcoming_birthdays'] = 'Upcoming Birthdays';
+$l['asb_birthdays_todays_birthdays'] = 'Today\'s Birthdays';
+
+$l['asb_birthdays_user_info'] = '{1} on {2}';
+$l['asb_birthdays_no_content'] = 'no birthdays to show';
+
+$l['asb_birthdays_no_birthdays_today'] = 'No birthdays today.';
+$l['asb_birthdays_no_upcoming_birthdays'] = 'No upcoming birthdays.';
 
 ?>

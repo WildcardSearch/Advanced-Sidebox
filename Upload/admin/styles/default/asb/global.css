@@ -1,0 +1,215 @@
+/*
+ * Plugin Name: Advanced Sidebox for MyBB 1.8.x
+ * Copyright 2014 WildcardSearch
+ * http://www.rantcentralforums.com
+ *
+ * this file contains style information for the ACP pages
+ */
+
+/* sidebox management */
+
+div.container {
+	width: 100%;
+	background: #ffffff;
+}
+
+table.content {
+	text-align: center;
+	width: 100%;
+	table-layout: fixed;
+	border-collapse: collapse;
+}
+
+/* components */
+
+div.draggable {
+	z-index: 50;
+}
+
+.custom_type, .box_type, .sidebox {
+	cursor: move;
+	font-size: 12px;
+	padding: 3px;
+	margin: 2px 1px;
+
+	-webkit-user-select: none; /* Safari*/
+	-khtml-user-select: none; /* Konqueror */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Chrome and Opera */
+
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+
+.box_type {
+	background: #99e6ff;
+	border: 1px solid #0086b3;
+	/* text-align: center;
+	line-height: 15px;
+	text-shadow: 3px 3px 3px #070772; */
+}
+
+.custom_type {
+	background: #ffffbf;
+	border: 1px solid #b3b300;
+	/* width: 93%;
+	text-align: center;
+	line-height: 15px;
+	text-shadow: 3px 3px 3px #5a642f; */
+}
+
+.sidebox {
+	background: #bfffbf;
+	border: 1px solid #00b300;
+	line-height: 25px;
+	color: #000000;
+	position: relative;
+}
+
+.column {
+	border: 1px solid #aaaaaa;
+}
+
+td.hover {
+	background: #eeeeee;
+}
+
+.trashcan {
+	min-height: 80px;
+}
+
+.forum_column {
+	width: 225px;
+	min-height: 300px;
+}
+
+#addon_menu {
+	border: 1px solid #aaaaaa;
+}
+
+#custom_menu {
+	border: 1px solid #aaaaaa;
+}
+
+.column_head {
+	background: #aaaaaa;
+	color: #333;
+	font-size: 1.5em;
+}
+
+/* visibility chart */
+
+.tooltip {
+	color: #000000;
+	outline: none;
+	cursor: help;
+	text-decoration: none;
+	position: relative;
+}
+
+.tooltip span {
+	display: none;
+	position: absolute;
+	top: 0px;
+	left: -300px;
+	width: 300px;
+
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+
+.tooltip:hover span {
+	display: inline;
+}
+
+.custom {
+	z-index: 99;
+}
+
+* html a:hover {
+	background: transparent;
+}
+
+.info {
+	background: #99ccff;
+	border: 1px solid #7396ff;
+}
+
+.info_icon {
+	position: relative;
+	float: left;
+	padding: 4px;
+}
+
+.del_icon {
+	position: relative;
+	float: right;
+	padding: 4px;
+}
+
+.box_info {
+	background: #cccccc;
+	color: #333;
+	border: 1px solid #888888;
+}
+
+.box_info td {
+	width: 10px;
+	height: 10px;
+}
+
+.script_header {
+	background: #ffffff;
+	color: #000;
+
+	height: 10px;
+	text-align: right;
+	padding-right: 10px;
+}
+
+.group_header {
+	background: #ffffff;
+	color: #000;
+}
+
+td.info_cell {
+	height: 10px;
+	width: 10px;
+}
+
+th.script_header {
+	color: #000;
+	height: 10px;
+}
+
+td.on {
+	background: #cfffbf;
+}
+
+td.off {
+	background: #ffffff;
+}
+
+/* footer menu */
+
+.asb_label {
+	color: #333;
+	font-weight: bold;
+	margin: auto auto;
+	padding: 5px 0px;
+	border: 1px solid #aaaaaa;
+	text-align: center;
+
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+
+.asb_label a:hover,
+.asb_label a:active {
+	color: #333;
+	text-decoration: none;
+}
