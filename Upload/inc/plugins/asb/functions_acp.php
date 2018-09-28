@@ -198,21 +198,25 @@ function asb_build_visibility_rows($sidebox, &$group_count, &$global)
 {
 	global $db, $lang, $all_scripts;
 
+	static $options;
+
 	if (!is_array($all_scripts) ||
 		empty($all_scripts)) {
 		return $lang->asb_no_active_scripts;
 	}
 
-	// prepare options for which groups
-	$options = array($lang->asb_guests);
-	$groups = array();
+	if (!is_array($options)) {
+		// prepare options for which groups
+		$options = array($lang->asb_guests);
 
-	// look for all groups except Super Admins
-	$query = $db->simple_select('usergroups', 'gid, title', "gid != '1'", array('order_by' => 'gid'));
-	while ($usergroup = $db->fetch_array($query)) {
-		// store the titles by group id
-		$options[(int)$usergroup['gid']] = $usergroup['title'];
+		// look for all groups except Super Admins
+		$query = $db->simple_select('usergroups', 'gid, title', "gid != '1'", array('order_by' => 'gid'));
+		while ($usergroup = $db->fetch_array($query)) {
+			// store the titles by group id
+			$options[(int)$usergroup['gid']] = $usergroup['title'];
+		}
 	}
+
 	$group_count = $all_group_count = count($options);
 
 	$groups = $sidebox->get('groups');
