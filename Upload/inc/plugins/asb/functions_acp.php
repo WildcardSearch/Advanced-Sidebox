@@ -164,17 +164,12 @@ EOF;
  * @param  int id
  * @return string html
  */
-function asb_build_permissions_table($id)
+function asb_build_permissions_table($sidebox)
 {
-	if (!$id) {
-		return false;
-	}
-
 	global $lang, $all_scripts;
 
-	$sidebox = new SideboxObject($id);
-
-	if (!$sidebox->isValid()) {
+	if ($sidebox instanceof SideboxObject == false ||
+		!$sidebox->isValid()) {
 		return $lang->asb_invalid_sidebox;
 	}
 
@@ -367,7 +362,8 @@ EOF;
 function asb_build_sidebox_info($sidebox, $wrap = true, $ajax = false)
 {
 	// must be a valid object
-	if ($sidebox instanceof SideboxObject == false) {
+	if ($sidebox instanceof SideboxObject == false ||
+		!$sidebox->isValid()) {
 		return false;
 	}
 
@@ -379,7 +375,7 @@ function asb_build_sidebox_info($sidebox, $wrap = true, $ajax = false)
 	$module = $sidebox->get('box_type');
 
 	// visibility table
-	$visibility = '<span class="custom info">' . asb_build_permissions_table($id) . '</span>';
+	$visibility = '<span class="custom info">' . asb_build_permissions_table($sidebox) . '</span>';
 
 	// edit link
 	$edit_link = $html->url(array("action" => 'edit_box', "id" => $id, "addon" => $module, "pos" => $pos));
