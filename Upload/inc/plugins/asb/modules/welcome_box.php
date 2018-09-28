@@ -30,7 +30,7 @@ function asb_welcome_box_info()
 		'title' => $lang->asb_welcome,
 		'description' => $lang->asb_welcome_desc,
 		'wrap_content' => true,
-		'version' => '1.3.3',
+		'version' => '1.3.4',
 		'compatibility' => '2.1',
 		'templates' => array(
 			array(
@@ -61,6 +61,7 @@ EOF
 				<span class="smalltext">{\$lang->asb_welcome_guest_welcome_registration}</span><br />
 				<br />
 				<form method="post" action="{\$mybb->settings[\'bburl\']}/member.php"><input type="hidden" name="action" value="do_login"/>
+					<input name="my_post_key" type="hidden" value="{\$mybb->post_code}" />
 					<input type="hidden" name="url" value="member.php"/>
 					{\$username}<br /><input style="width: 95%;" type="text" class="textbox" name="username"/><br /><br />
 					{\$lang->password}<br /><input style="width: 95%;" type="password" class="textbox" name="password"/><br /><br />
