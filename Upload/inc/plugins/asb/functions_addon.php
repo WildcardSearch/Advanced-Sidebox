@@ -17,7 +17,7 @@ function asb_strip_quotes($message)
 {
 	// Assign pattern and replace values.
 	$pattern = array(
-		"#\[quote=([\"']|&quot;|)(.*?)(?:\\1)(.*?)(?:[\"']|&quot;)?\](.*?)\[/quote\](\r\n?|\n?)#esi",
+		"#\[quote=([\"']|&quot;|)(.*?)(?:\\1)(.*?)(?:[\"']|&quot;)?\](.*?)\[/quote\](\r\n?|\n?)#si",
 		"#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si",
 		"#\[\/quote\](\r\n?|\n?)#si"
 	);
@@ -26,11 +26,7 @@ function asb_strip_quotes($message)
 		$message = preg_replace($pattern, '', $message, -1, $count);
 	} while($count);
 
-	$find = array(
-		"#(\r\n*|\n*)<\/cite>(\r\n*|\n*)#",
-		"#(\r\n*|\n*)<\/blockquote>#"
-	);
-	return preg_replace($find, '', $message);
+	return $message;
 }
 
 /**

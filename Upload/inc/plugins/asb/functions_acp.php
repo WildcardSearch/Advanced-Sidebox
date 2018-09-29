@@ -164,17 +164,12 @@ EOF;
  * @param  int id
  * @return string html
  */
-function asb_build_permissions_table($id)
+function asb_build_permissions_table($sidebox)
 {
-	if (!$id) {
-		return false;
-	}
-
 	global $lang, $all_scripts;
 
-	$sidebox = new SideboxObject($id);
-
-	if (!$sidebox->isValid()) {
+	if ($sidebox instanceof SideboxObject == false ||
+		!$sidebox->isValid()) {
 		return $lang->asb_invalid_sidebox;
 	}
 
@@ -203,21 +198,25 @@ function asb_build_visibility_rows($sidebox, &$group_count, &$global)
 {
 	global $db, $lang, $all_scripts;
 
+	static $options;
+
 	if (!is_array($all_scripts) ||
 		empty($all_scripts)) {
 		return $lang->asb_no_active_scripts;
 	}
 
-	// prepare options for which groups
-	$options = array($lang->asb_guests);
-	$groups = array();
+	if (!is_array($options)) {
+		// prepare options for which groups
+		$options = array($lang->asb_guests);
 
-	// look for all groups except Super Admins
-	$query = $db->simple_select('usergroups', 'gid, title', "gid != '1'", array('order_by' => 'gid'));
-	while ($usergroup = $db->fetch_array($query)) {
-		// store the titles by group id
-		$options[(int)$usergroup['gid']] = $usergroup['title'];
+		// look for all groups except Super Admins
+		$query = $db->simple_select('usergroups', 'gid, title', "gid != '1'", array('order_by' => 'gid'));
+		while ($usergroup = $db->fetch_array($query)) {
+			// store the titles by group id
+			$options[(int)$usergroup['gid']] = $usergroup['title'];
+		}
 	}
+
 	$group_count = $all_group_count = count($options);
 
 	$groups = $sidebox->get('groups');
@@ -367,7 +366,8 @@ EOF;
 function asb_build_sidebox_info($sidebox, $wrap = true, $ajax = false)
 {
 	// must be a valid object
-	if ($sidebox instanceof SideboxObject == false) {
+	if ($sidebox instanceof SideboxObject == false ||
+		!$sidebox->isValid()) {
 		return false;
 	}
 
@@ -379,7 +379,7 @@ function asb_build_sidebox_info($sidebox, $wrap = true, $ajax = false)
 	$module = $sidebox->get('box_type');
 
 	// visibility table
-	$visibility = '<span class="custom info">' . asb_build_permissions_table($id) . '</span>';
+	$visibility = '<span class="custom info">' . asb_build_permissions_table($sidebox) . '</span>';
 
 	// edit link
 	$edit_link = $html->url(array("action" => 'edit_box', "id" => $id, "addon" => $module, "pos" => $pos));

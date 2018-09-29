@@ -138,9 +138,12 @@ function asb_birthdays_get_birthdays($args)
 	}
 
 	$userAvatarList = implode(',', $userAvatarList);
-	$query = $db->simple_select('users', 'uid, avatar, avatardimensions', "uid IN({$userAvatarList})");
-	while ($user = $db->fetch_array($query)) {
-		$userAvatars[$user['uid']] = format_avatar($user['avatar'], $user['avatardimensions'], '20x20');
+	if (!empty($userAvatarList)) {
+		$query = $db->simple_select('users', 'uid, avatar, avatardimensions', "uid IN({$userAvatarList})");
+
+		while ($user = $db->fetch_array($query)) {
+			$userAvatars[$user['uid']] = format_avatar($user['avatar'], $user['avatardimensions'], '20x20');
+		}
 	}
 
 	$alreadyDone = array();

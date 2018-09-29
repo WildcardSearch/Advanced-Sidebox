@@ -113,6 +113,19 @@ if (version_compare($asbOldVersion, '3.1.7', '<')) {
 	));
 }
 
+/* < 3.1.12 */
+if (version_compare($asbOldVersion, '3.1.12', '<')) {
+	$removedForumFiles = array_merge($removedForumFiles, array(
+		'inc/plugins/asb/classes/WildcardPluginInstaller010202.php',
+		'inc/plugins/asb/classes/PortableObject010000.php',
+	));
+}
+
+/* < 3.1.13 */
+if (version_compare($asbOldVersion, '3.1.13', '<')) {
+	$removedForumFiles[] = 'inc/plugins/asb/classes/WildcardPluginInstaller010302.php';
+}
+
 if (!empty($removedForumFiles)) {
 	foreach ($removedForumFiles as $file) {
 		@unlink(MYBB_ROOT . $file);

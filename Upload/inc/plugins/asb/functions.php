@@ -579,22 +579,23 @@ function asb_get_all_themes($full = false)
 {
 	global $db;
 
-	if ($full != true) {
-		$excluded_themes = asb_get_excluded_themes(true);
+	static $themeList;
+
+	if (!is_array($themeList)) {
+		if ($full != true) {
+			$excluded_themes = asb_get_excluded_themes(true);
+		}
+
+		// get all the themes that are not MasterStyles
+		$query = $db->simple_select('themes', 'tid, name', "NOT pid='0'{$excluded_themes}");
+
+		$themeList = array();
+		while ($thisTheme = $db->fetch_array($query)) {
+			$themeList[$thisTheme['tid']] = $thisTheme['name'];
+		}
 	}
 
-	// get all the themes that are not MasterStyles
-	$query = $db->simple_select('themes', 'tid, name', "NOT pid='0'{$excluded_themes}");
-
-	$return_array = array();
-	if ($db->num_rows($query) == 0) {
-		return $return_array;
-	}
-
-	while ($this_theme = $db->fetch_array($query)) {
-		$return_array[$this_theme['tid']] = $this_theme['name'];
-	}
-	return $return_array;
+	return $themeList;
 }
 
 ?>
