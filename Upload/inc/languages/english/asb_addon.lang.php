@@ -116,7 +116,6 @@ $l['asb_latest_threads_lastpost'] = 'Last Post';
 $l['asb_latest_threads_replies'] = 'Replies:';
 $l['asb_latest_threads_views'] = 'Views:';
 $l['asb_latest_threads_no_threads'] = 'There are no threads to display.';
-$l['asb_latest_threads'] = 'Latest Threads';
 $l['asb_gotounread'] = 'Go to first unread post';
 
 // * settings
