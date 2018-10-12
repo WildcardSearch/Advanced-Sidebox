@@ -750,12 +750,23 @@ function asb_admin_custom_boxes()
 		} else {
 			// saving?
 			if ($mybb->input['save_box_submit'] == 'Save') {
+				$id = (int) $mybb->input['id'];
+
 				if (!$mybb->input['box_name'] ||
 					!$mybb->input['box_content']) {
+					$redirectArray = array(
+						"action" => 'custom_boxes',
+						'mode' => 'edit',
+					);
+
+					if ($id) {
+						$redirectArray['id'] = $id;
+					}
+
 					flash_message($lang->asb_custom_box_save_failure_no_content, 'error');
-					admin_redirect($html->url(array("action" => 'custom_boxes')));
+					admin_redirect($html->url($redirectArray));
 				}
-				$this_custom = new CustomSidebox((int) $mybb->input['id']);
+				$this_custom = new CustomSidebox($id);
 
 				// get the info
 				$this_custom->set('title', $mybb->input['box_name']);
