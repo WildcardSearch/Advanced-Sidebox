@@ -68,8 +68,6 @@ EOF;
 </ul>
 EOF;
 
-		$button_pic = "styles/{$cp_style}/images/asb/donate.png";
-		$border_pic = "styles/{$cp_style}/images/asb/pixel.png";
 		$asb_description = <<<EOF
 <table width="100%">
 	<tbody>
@@ -79,12 +77,7 @@ EOF;
 			</td>
 			<td style="text-align: center;">
 				<img src="styles/{$cp_style}/images/asb/logo.png" alt="{$lang->asb_logo}" title="{$lang->asb_logo}"/><br /><br />
-				<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-					<input type="hidden" name="cmd" value="_s-xclick">
-					<input type="hidden" name="hosted_button_id" value="VA5RFLBUC4XM4">
-					<input type="image" src="{$button_pic}" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-					<img alt="" border="0" src="{$border_pic}" width="1" height="1">
-				</form>
+				<a href="https://paypal.me/wildcardsearch"><img src="styles/{$cp_style}/images/asb/donate.png" style="outline: none; border: none;" /></a>
 			</td>
 		</tr>
 	</tbody>
