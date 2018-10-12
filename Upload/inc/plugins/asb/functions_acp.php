@@ -436,17 +436,23 @@ function asb_detect_script_info($filename, $selected = array())
 
 	// check all the info
 	if (strlen(trim($filename)) == 0) {
-		return false;
+		return array(
+			'error' => 1,
+		);
 	}
 
 	$full_path = '../' . trim($filename);
 	if (!file_exists($full_path)) {
-		return false;
+		return array(
+			'error' => 2,
+		);
 	}
 
 	$contents = @file_get_contents($full_path);
 	if (!$contents) {
-		return false;
+		return array(
+			'error' => 3,
+		);
 	}
 
 	// build the object info

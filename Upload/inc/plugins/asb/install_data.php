@@ -468,6 +468,12 @@ td.off {
 	color: #333;
 	text-decoration: none;
 }
+
+#file_info {
+	color: red;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
 EOF
 		),
 	),

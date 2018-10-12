@@ -1217,6 +1217,9 @@ EOF;
 			hooks: '{$lang->asb_ajax_hooks}',
 			actions: '{$lang->asb_ajax_actions}',
 			templates: '{$lang->asb_ajax_templates}',
+			error_file_name_empty: '{$lang->asb_ajax_file_name_empty}',
+			error_file_does_not_exist: '{$lang->asb_ajax_file_does_not_exist}',
+			error_file_empty: '{$lang->asb_ajax_file_empty}',
 		});
 	// -->
 	</script>
@@ -1240,7 +1243,8 @@ EOF;
 
 		$form_container->output_row("{$lang->asb_title}:", $lang->asb_title_desc, $form->generate_text_box('title', $data['title']));
 
-		$form_container->output_row("{$lang->asb_filename}:", $lang->asb_filename_desc, $form->generate_text_box('filename', $data['filename'], array("id" => 'filename')));
+		$form_container->output_row("{$lang->asb_filename}:", $lang->asb_filename_desc, '<div id="file_info"></div>'.$form->generate_text_box('filename', $data['filename'], array("id" => 'filename')));
+
 		$form_container->output_row("{$lang->asb_action}:", $lang->sprintf($lang->asb_scriptvar_generic_desc, strtolower($lang->asb_action)), "{$spinner}<div id=\"action_list\"{$detected_show}>{$detected_info['actions']}</div>" . $form->generate_text_box('script_action', $data['action'], array("id" => 'action')));
 		$form_container->output_row($lang->asb_page, $lang->sprintf($lang->asb_scriptvar_generic_desc, strtolower($lang->asb_page)), $form->generate_text_box('page', $data['page']));
 
@@ -1605,10 +1609,6 @@ EOF;
 	} elseif($mybb->input['mode'] == 'analyze_script' &&
 		trim($mybb->input['filename'])) {
 		$content = asb_detect_script_info($mybb->input['filename'], $mybb->input['selected']);
-
-		if (!$content) {
-			$content = array("actions", "hooks", "templates");
-		}
 
 		header('Content-type: application/json');
 		echo(json_encode($content));
