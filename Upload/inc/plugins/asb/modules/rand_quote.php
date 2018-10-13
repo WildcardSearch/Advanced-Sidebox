@@ -325,7 +325,7 @@ function asb_rand_quote_get_quote($settings, $width)
 EOF;
 
 	// eval() the template
-	eval("\$this_quote = \"" . $templates->get("asb_rand_quote_sidebox") . "\";");
+	eval("\$this_quote = \"" . $templates->get('asb_rand_quote_sidebox') . "\";");
 	return $this_quote;
 }
 

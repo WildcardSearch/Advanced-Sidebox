@@ -410,7 +410,7 @@ function asb_latest_threads_get_threadlist($settings, $width)
 		if ($thread['lastpost'] > $last_read &&
 			$last_read) {
 			$thread['newpostlink'] = get_thread_link($thread['tid'], 0, 'newpost');
-			eval("\$gotounread = \"" . $templates->get("asb_latest_threads_gotounread") . "\";");
+			eval("\$gotounread = \"" . $templates->get('asb_latest_threads_gotounread') . "\";");
 			$unreadpost = 1;
 		}
 

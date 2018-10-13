@@ -47,7 +47,7 @@ function asb_start()
 
 	// make sure this script's width is within range 120-800 (120 because the templates
 	// aren't made to work any smaller and tbh 800 is kind of arbitrary :s
-	foreach (array("left" => 0, "right" => 1) as $key => $pos) {
+	foreach (array('left' => 0, 'right' => 1) as $key => $pos) {
 		$width[$pos] = (int) max(120, min(800, $this_script["width_{$key}"]));
 	}
 
@@ -169,13 +169,13 @@ function asb_edit_template($boxes, $width, $script)
 EOF;
 
 		$toggle_info['left'] = array(
-			"close" => array(
-				"img" => "{$theme['imgdir']}/asb/left_arrow.png",
-				"alt" => '&lt;'
+			'close' => array(
+				'img' => "{$theme['imgdir']}/asb/left_arrow.png",
+				'alt' => '&lt;'
 			),
-			"open" => array(
-				"img" => "{$theme['imgdir']}/asb/right_arrow.png",
-				"alt" => '&gt;'
+			'open' => array(
+				'img' => "{$theme['imgdir']}/asb/right_arrow.png",
+				'alt' => '&gt;'
 			)
 		);
 		$toggle_info['right']['close'] = $toggle_info['left']['open'];
@@ -246,7 +246,7 @@ EOF;
 			$extra_scripts .= <<<EOF
 {$sep}{ addon: '{$info['module']}', id: {$id}, position: {$info['position']}, rate: {$info['rate']}, dateline: {$dateline} }
 EOF;
-			$sep = ", ";
+			$sep = ', ';
 		}
 
 		$location = get_current_location();
@@ -394,7 +394,7 @@ function asb_usercp_options_end()
 
     // if the form is being submitted save the users choice.
 	if ($mybb->request_method == 'post') {
-		$db->update_query('users', array("show_sidebox" => (int) $mybb->input['showsidebox']), "uid='{$user['uid']}'");
+		$db->update_query('users', array('show_sidebox' => (int) $mybb->input['showsidebox']), "uid='{$user['uid']}'");
     }
 
 	// don't be silly and waste a query :p (thanks Destroy666)

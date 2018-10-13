@@ -41,7 +41,7 @@ function asb_do_checks()
 	 * credit: http://stackoverflow.com/users/1304523/justin-docanto
 	 */
 	if ($mybb->settings['asb_disable_for_mobile'] &&
-		preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"])) {
+		preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER['HTTP_USER_AGENT'])) {
 		return false;
 	}
 
@@ -90,9 +90,9 @@ function asb_build_script_filename($this_script = '')
 		empty($this_script)) {
 		global $mybb;
 		$this_script = array(
-			"filename" => THIS_SCRIPT,
-			"action" => $mybb->input['action'],
-			"page" => $mybb->input['page']
+			'filename' => THIS_SCRIPT,
+			'action' => $mybb->input['action'],
+			'page' => $mybb->input['page']
 		);
 	}
 
@@ -395,7 +395,7 @@ function asb_get_all_sideboxes($good_script = '')
 	// get any side boxes
 	$return_array = array();
 
-	$query = $db->simple_select('asb_sideboxes', '*', '', array("order_by" => 'display_order', "order_dir" => 'ASC'));
+	$query = $db->simple_select('asb_sideboxes', '*', '', array('order_by' => 'display_order', 'order_dir' => 'ASC'));
 	if ($db->num_rows($query) > 0) {
 		while ($data = $db->fetch_array($query)) {
 			$sidebox = new SideboxObject($data);

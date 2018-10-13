@@ -117,7 +117,7 @@ class CustomSidebox extends PortableObject010001
 	</tr>';
 		} else {
 			$content = str_replace("\\'", "'", addslashes($content));
-			eval("\${$template_variable} = \"" . $content . "\";");
+			eval("\${$template_variable} = \"{$content}\";");
 		}
 		return $ret_val;
 	}

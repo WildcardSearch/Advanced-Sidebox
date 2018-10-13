@@ -279,7 +279,7 @@ function recent_posts_get_postlist($settings)
 			$post_excerpt = my_substr($post_excerpt, 0, $settings['max_length']) . $lang->asb_recent_posts_ellipsis;
 		}
 
-		eval("\$postlist .= \"" . $templates->get("asb_recent_posts_post") . "\";");
+		eval("\$postlist .= \"" . $templates->get('asb_recent_posts_post') . "\";");
 		$altbg = alt_trow();
 	}
 	return $postlist;

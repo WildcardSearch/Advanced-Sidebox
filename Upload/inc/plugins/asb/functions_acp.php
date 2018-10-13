@@ -45,7 +45,7 @@ function asb_build_help_link($topic = '')
 		break;
 	}
 
-	return $html->link($url, $lang->asb_help, array("target" => '_blank', "style" => 'font-weight: bold;', "icon" => "styles/{$cp_style}/images/asb/help.png", "title" => $lang->asb_help), array("alt" => '?', "title" => $lang->asb_help, "style" => 'margin-bottom: -3px;'));
+	return $html->link($url, $lang->asb_help, array('target' => '_blank', 'style' => 'font-weight: bold;', 'icon' => "styles/{$cp_style}/images/asb/help.png", 'title' => $lang->asb_help), array('alt' => '?', 'title' => $lang->asb_help, 'style' => 'margin-bottom: -3px;'));
 }
 
 /**
@@ -58,7 +58,7 @@ function asb_build_settings_menu_link()
 	global $mybb, $lang, $html, $cp_style;
 
 	$settings_url = asb_build_settings_url(asb_get_settingsgroup());
-	$settings_link = $html->link($settings_url, $lang->asb_plugin_settings, array("icon" => "styles/{$cp_style}/images/asb/settings.png", "style" => 'font-weight: bold;', "title" => $lang->asb_plugin_settings), array("alt" => 'S', "style" => 'margin-bottom: -3px;'));
+	$settings_link = $html->link($settings_url, $lang->asb_plugin_settings, array('icon' => "styles/{$cp_style}/images/asb/settings.png", 'style' => 'font-weight: bold;', 'title' => $lang->asb_plugin_settings), array('alt' => 'S', 'style' => 'margin-bottom: -3px;'));
 	return $settings_link;
 }
 
@@ -81,32 +81,32 @@ function asb_output_tabs($current)
 
 	$sub_tabs['asb_custom'] = array(
 		'title'					=> $lang->asb_custom_boxes,
-		'link'					=> $html->url(array("action" => 'custom_boxes')),
+		'link'					=> $html->url(array('action' => 'custom_boxes')),
 		'description'		=> $lang->asb_custom_boxes_desc
 	);
 
 	if (in_array($current, array('asb_add_custom', 'asb_custom'))) {
 		$sub_tabs['asb_add_custom'] = array(
 			'title'					=> $lang->asb_add_custom,
-			'link'					=> $html->url(array("action" => 'custom_boxes', "mode" => 'edit')),
+			'link'					=> $html->url(array('action' => 'custom_boxes', 'mode' => 'edit')),
 			'description'		=> $lang->asb_add_custom_desc
 		);
 	}
 	$sub_tabs['asb_scripts'] = array(
 		'title'					=> $lang->asb_manage_scripts,
-		'link'					=> $html->url(array("action" => 'manage_scripts')),
+		'link'					=> $html->url(array('action' => 'manage_scripts')),
 		'description'		=> $lang->asb_manage_scripts_desc
 	);
 	if (in_array($current, array('asb_edit_script', 'asb_scripts'))) {
 		$sub_tabs['asb_edit_script'] = array(
 			'title'					=> $lang->asb_edit_script,
-			'link'					=> $html->url(array("action" => 'manage_scripts', "mode" => 'edit')),
+			'link'					=> $html->url(array('action' => 'manage_scripts', 'mode' => 'edit')),
 			'description'		=> $lang->asb_edit_script_desc
 		);
 	}
 	$sub_tabs['asb_modules'] = array(
 		'title'					=> $lang->asb_manage_modules,
-		'link'					=> $html->url(array("action" => 'manage_modules')),
+		'link'					=> $html->url(array('action' => 'manage_modules')),
 		'description'		=> $lang->asb_manage_modules_desc
 	);
 	$page->output_nav_tabs($sub_tabs, $current);
@@ -382,14 +382,14 @@ function asb_build_sidebox_info($sidebox, $wrap = true, $ajax = false)
 	$visibility = '<span class="custom info">' . asb_build_permissions_table($sidebox) . '</span>';
 
 	// edit link
-	$edit_link = $html->url(array("action" => 'edit_box', "id" => $id, "addon" => $module, "pos" => $pos));
+	$edit_link = $html->url(array('action' => 'edit_box', 'id' => $id, 'addon' => $module, 'pos' => $pos));
 	$edit_icon = <<<EOF
 <a href="{$edit_link}" class="info_icon" id="edit_sidebox_{$id}" title="{$lang->asb_edit}"><img src="styles/{$cp_style}/images/asb/edit.png" height="18" width="18" alt="{$lang->asb_edit}"/></a>
 EOF;
 
 	// delete link (only used if JS is disabled)
 	if (!$ajax) {
-		$delete_link = $html->url(array("action" => 'delete_box', "id" => $id));
+		$delete_link = $html->url(array('action' => 'delete_box', 'id' => $id));
 		$delete_icon = <<<EOF
 <a href="{$delete_link}" class="del_icon" title="{$lang->asb_delete}"><img src="styles/{$cp_style}/images/asb/delete.png" height="18" width="18" alt="{$lang->asb_delete}"/></a>
 EOF;
@@ -457,20 +457,20 @@ function asb_detect_script_info($filename, $selected = array())
 
 	// build the object info
 	$info = array(
-		"hook" => array(
-			"pattern" => "#\\\$plugins->run_hooks\([\"|'|&quot;]([\w|_]*)[\"|'|&quot;](.*?)\)#i",
-			"filter" => '_do_',
-			"plural" => $lang->asb_hooks
+		'hook' => array(
+			'pattern' => "#\\\$plugins->run_hooks\([\"|'|&quot;]([\w|_]*)[\"|'|&quot;](.*?)\)#i",
+			'filter' => '_do_',
+			'plural' => $lang->asb_hooks
 		),
-		"template" => array(
-			"pattern" => "#\\\$templates->get\([\"|'|&quot;]([\w|_]*)[\"|'|&quot;](.*?)\)#i",
-			"filter" => '',
-			"plural" => $lang->asb_templates
+		'template' => array(
+			'pattern' => "#\\\$templates->get\([\"|'|&quot;]([\w|_]*)[\"|'|&quot;](.*?)\)#i",
+			'filter' => '',
+			'plural' => $lang->asb_templates
 		),
-		"action" => array(
-			"pattern" => "#\\\$mybb->input\[[\"|'|&quot;]action[\"|'|&quot;]\] == [\"|'|&quot;]([\w|_]*)[\"|'|&quot;]#i",
-			"filter" => '',
-			"plural" => $lang->asb_actions
+		'action' => array(
+			'pattern' => "#\\\$mybb->input\[[\"|'|&quot;]action[\"|'|&quot;]\] == [\"|'|&quot;]([\w|_]*)[\"|'|&quot;]#i",
+			'filter' => '',
+			'plural' => $lang->asb_actions
 		)
 	);
 
@@ -502,7 +502,7 @@ function asb_detect_script_info($filename, $selected = array())
 			$$array_name = array_reverse($$array_name);
 
 			// store the HTML select box
-			$return_array[$array_name] = '<span style="font-weight: bold;">' . $lang->asb_detected . ' ' . $info[$key]['plural'] . ':</span><br />' . $form->generate_select_box("{$array_name}_options", $$array_name, $selected[$key], array("id" => "{$key}_selector")) . '<br /><br />';
+			$return_array[$array_name] = '<span style="font-weight: bold;">' . $lang->asb_detected . ' ' . $info[$key]['plural'] . ':</span><br />' . $form->generate_select_box("{$array_name}_options", $$array_name, $selected[$key], array('id' => "{$key}_selector")) . '<br /><br />';
 		} else {
 			$varName = "asb_ajax_{$array_name}";
 			$noContent = $lang->sprintf($lang->asb_ajax_nothing_found, $lang->$varName);
@@ -571,7 +571,7 @@ function asb_build_filter_selector($filter)
 	}
 
 	global $lang, $html;
-	$options = array_merge(array("" => 'no filter'), $all_scripts);
+	$options = array_merge(array('' => 'no filter'), $all_scripts);
 	$form = new Form($html->url(), 'post', 'script_filter', 0, 'script_filter');
 	echo($form->generate_select_box('page', $options, $filter));
 	echo($form->generate_submit_button('Filter', array('name' => 'filter')));
@@ -603,7 +603,7 @@ function asb_build_setting($this_form, $this_form_container, $setting)
 	// sort by type
 	if ($type[0] == 'text' ||
 		$type[0] == '') {
-		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_text_box($element_name, $setting['value'], array('id' => $element_id)), $element_name, array("id" => $row_id));
+		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_text_box($element_name, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $row_id));
 	} else if ($type[0] == 'textarea') {
 		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_text_area($element_name, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $row_id));
 	} else if ($type[0] == 'yesno') {
@@ -632,13 +632,13 @@ function asb_build_setting($this_form, $this_form_container, $setting)
 				$option_list[$optionsexp[0]] = htmlspecialchars_uni($optionsexp[1]);
 			} else if ($type[0] == 'radio') {
 				if ($setting['value'] == $optionsexp[0]) {
-					$option_list[$i] = $this_form->generate_radio_button($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
+					$option_list[$i] = $this_form->generate_radio_button($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'checked' => 1, 'class' => $element_id));
 				} else {
 					$option_list[$i] = $this_form->generate_radio_button($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'class' => $element_id));
 				}
 			} else if($type[0] == 'checkbox') {
 				if ($setting['value'] == $optionsexp[0]) {
-					$option_list[$i] = $this_form->generate_check_box($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
+					$option_list[$i] = $this_form->generate_check_box($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'checked' => 1, 'class' => $element_id));
 				} else {
 					$option_list[$i] = $this_form->generate_check_box($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'class' => $element_id));
 				}

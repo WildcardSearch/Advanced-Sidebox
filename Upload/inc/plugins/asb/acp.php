@@ -89,8 +89,8 @@ function asb_admin_manage_sideboxes()
 
 			$id = $box_type = $module->get('baseName');
 			$title = $module->get('title');
-			$title_url = $html->url(array("action" => 'edit_box', "addon" => $box_type));
-			$title_link = $html->link($title_url, $title, array("class" => 'add_box_link', "title" => $lang->asb_add_new_sidebox));
+			$title_url = $html->url(array('action' => 'edit_box', 'addon' => $box_type));
+			$title_link = $html->link($title_url, $title, array('class' => 'add_box_link', 'title' => $lang->asb_add_new_sidebox));
 
 			// add the HTML
 			$modules .= <<<EOF
@@ -110,8 +110,8 @@ EOF;
 		foreach ($custom as $module) {
 			$id = $box_type = $module->get('baseName');
 			$title = $module->get('title');
-			$title_url = $html->url(array("action" => 'edit_box', "addon" => $box_type));
-			$title_link = $html->link($title_url, $title, array("class" => 'add_box_link', "title" => $lang->asb_add_new_sidebox));
+			$title_url = $html->url(array('action' => 'edit_box', 'addon' => $box_type));
+			$title_link = $html->link($title_url, $title, array('class' => 'add_box_link', 'title' => $lang->asb_add_new_sidebox));
 
 			// add the HTML
 			$custom_boxes .= <<<EOF
@@ -427,7 +427,7 @@ EOF;
 <script src="jscripts/asb/asb_modal.js" type="text/javascript"></script>
 
 EOF;
-		$form = new Form($html->url(array("action" => 'edit_box', "id" => $id, "addon" => $module)), 'post', 'modal_form');
+		$form = new Form($html->url(array('action' => 'edit_box', 'id' => $id, 'addon' => $module)), 'post', 'modal_form');
 	} else {
 		// standard form stuff
 		$page->add_breadcrumb_item($lang->asb);
@@ -441,15 +441,15 @@ EOF;
 
 EOF;
 		$page->output_header("{$lang->asb} - {$page_title}");
-		$form = new Form($html->url(array("action" => 'edit_box', "id" => $id, "addon" => $module)), 'post', 'modal_form');
+		$form = new Form($html->url(array('action' => 'edit_box', 'id' => $id, 'addon' => $module)), 'post', 'modal_form');
 	}
 
 	$tabs = array(
-		"general" => $lang->asb_modal_tab_general,
-		"permissions" => $lang->asb_modal_tab_permissions,
-		"pages" => $lang->asb_modal_tab_pages,
-		"themes" => $lang->asb_modal_tab_themes,
-		"settings" => $lang->asb_modal_tab_settings
+		'general' => $lang->asb_modal_tab_general,
+		'permissions' => $lang->asb_modal_tab_permissions,
+		'pages' => $lang->asb_modal_tab_pages,
+		'themes' => $lang->asb_modal_tab_themes,
+		'settings' => $lang->asb_modal_tab_settings
 	);
 
 	// we only need a 'Settings' tab if the current module type has settings
@@ -491,22 +491,22 @@ EOF;
 
 	if (!$ajax) {
 		// box title
-		$form_container->output_row($lang->asb_custom_title, $current_title, $form->generate_text_box('box_title') . $form->generate_hidden_field('current_title', $sidebox->get('title')), 'box_title', array("id" => 'box_title'));
+		$form_container->output_row($lang->asb_custom_title, $current_title, $form->generate_text_box('box_title') . $form->generate_hidden_field('current_title', $sidebox->get('title')), 'box_title', array('id' => 'box_title'));
 
 		// title link
-		$form_container->output_row($lang->asb_title_link, $lang->asb_title_link_desc, $form->generate_text_box('title_link', $sidebox->get('title_link')), 'title_link', array("id" => 'title_link'));
+		$form_container->output_row($lang->asb_title_link, $lang->asb_title_link_desc, $form->generate_text_box('title_link', $sidebox->get('title_link')), 'title_link', array('id' => 'title_link'));
 
 		// position
-		$form_container->output_row($lang->asb_position, '', $form->generate_radio_button('box_position', 0, $lang->asb_position_left, array("checked" => ($sidebox->get('position') == 0))) . '&nbsp;&nbsp;' . $form->generate_radio_button('box_position', 1, $lang->asb_position_right, array("checked" => ($sidebox->get('position') != 0))));
+		$form_container->output_row($lang->asb_position, '', $form->generate_radio_button('box_position', 0, $lang->asb_position_left, array('checked' => ($sidebox->get('position') == 0))) . '&nbsp;&nbsp;' . $form->generate_radio_button('box_position', 1, $lang->asb_position_right, array('checked' => ($sidebox->get('position') != 0))));
 
 		// display order
 		$form_container->output_row($lang->asb_display_order, '', $form->generate_text_box('display_order', $sidebox->get('display_order')));
 	} else {
 		// box title
-		$form_container->output_row($lang->asb_title, $current_title, $form->generate_text_box('box_title'), 'box_title', array("id" => 'box_title'));
+		$form_container->output_row($lang->asb_title, $current_title, $form->generate_text_box('box_title'), 'box_title', array('id' => 'box_title'));
 
 		// title link and hidden fields
-		$form_container->output_row($lang->asb_title_link, $lang->asb_title_link_desc, $form->generate_text_box('title_link', $sidebox->get('title_link')) . $form->generate_hidden_field('current_title', $sidebox->get('title')) . $form->generate_hidden_field('display_order', $sidebox->get('display_order')) . $form->generate_hidden_field('pos', $position), 'title_link', array("id" => 'title_link'));
+		$form_container->output_row($lang->asb_title_link, $lang->asb_title_link_desc, $form->generate_text_box('title_link', $sidebox->get('title_link')) . $form->generate_hidden_field('current_title', $sidebox->get('title')) . $form->generate_hidden_field('display_order', $sidebox->get('display_order')) . $form->generate_hidden_field('pos', $position), 'title_link', array('id' => 'title_link'));
 	}
 	$form_container->end();
 
@@ -569,7 +569,7 @@ EOF;
 	}
 
 	// which scripts
-	$form_container->output_row('', $script_warning, $form->generate_select_box('script_select_box[]', $choices, $selected_scripts, array("id" => 'script_select_box', "multiple" => true, 'size' => 5)));
+	$form_container->output_row('', $script_warning, $form->generate_select_box('script_select_box[]', $choices, $selected_scripts, array('id' => 'script_select_box', 'multiple' => true, 'size' => 5)));
 	$form_container->end();
 
 	echo "\n</div>\n<div id=\"tab_themes\" style=\"text-align: center; width: auto;\">\n";
@@ -581,10 +581,10 @@ EOF;
 		$themes = 'all_themes';
 	}
 
-	$choices = array("all_themes" => 'All Themes') + asb_get_all_themes();
+	$choices = array('all_themes' => 'All Themes') + asb_get_all_themes();
 
 	// which scripts
-	$form_container->output_row('', '', $form->generate_select_box('theme_select_box[]', $choices, $themes, array("id" => 'theme_select_box', "multiple" => true, 'size' => 5)));
+	$form_container->output_row('', '', $form->generate_select_box('theme_select_box[]', $choices, $themes, array('id' => 'theme_select_box', 'multiple' => true, 'size' => 5)));
 	$form_container->end();
 
 	if ($do_settings) {
@@ -646,16 +646,16 @@ function asb_admin_custom_boxes()
 	if ($mybb->input['mode'] == 'export') {
 		if ((int) $mybb->input['id'] == 0) {
 			flash_message($lang->asb_custom_export_error, 'error');
-			admin_redirect($html->url(array("action" => 'custom_boxes')));
+			admin_redirect($html->url(array('action' => 'custom_boxes')));
 		}
 
 		$this_custom = new CustomSidebox($mybb->input['id']);
 		if (!$this_custom->isValid()) {
 			flash_message($lang->asb_custom_export_error, 'error');
-			admin_redirect($html->url(array("action" => 'custom_boxes')));
+			admin_redirect($html->url(array('action' => 'custom_boxes')));
 		}
 
-		$this_custom->export(array("version" => ASB_CUSTOM_VERSION));
+		$this_custom->export(array('version' => ASB_CUSTOM_VERSION));
 		exit();
 	}
 
@@ -663,7 +663,7 @@ function asb_admin_custom_boxes()
 		// info good?
 		if ((int) $mybb->input['id'] == 0) {
 			flash_message($lang->asb_add_custom_box_delete_failure, 'error');
-			admin_redirect($html->url(array("action" => 'custom_boxes')));
+			admin_redirect($html->url(array('action' => 'custom_boxes')));
 		}
 
 		// nuke it
@@ -672,13 +672,13 @@ function asb_admin_custom_boxes()
 		// success?
 		if (!$this_custom->remove()) {
 			flash_message($lang->asb_add_custom_box_delete_failure, 'error');
-			admin_redirect($html->url(array("action" => 'custom_boxes')));
+			admin_redirect($html->url(array('action' => 'custom_boxes')));
 		}
 
 		// :)
 		flash_message($lang->asb_add_custom_box_delete_success, 'success');
 		asb_cache_has_changed();
-		admin_redirect($html->url(array("action" => 'custom_boxes')));
+		admin_redirect($html->url(array('action' => 'custom_boxes')));
 	}
 
 	// POSTing?
@@ -687,17 +687,17 @@ function asb_admin_custom_boxes()
 			if (!$_FILES['file'] ||
 				$_FILES['file']['error'] == 4) {
 				flash_message($lang->asb_custom_import_no_file, 'error');
-				admin_redirect($html->url(array("action" => 'custom_boxes')));
+				admin_redirect($html->url(array('action' => 'custom_boxes')));
 			}
 
 			if ($_FILES['file']['error']) {
 				flash_message($lang->sprintf($lang->asb_custom_import_file_error, $_FILES['file']['error']), 'error');
-				admin_redirect($html->url(array("action" => 'custom_boxes')));
+				admin_redirect($html->url(array('action' => 'custom_boxes')));
 			}
 
 			if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
 				flash_message($lang->asb_custom_import_file_upload_error, 'error');
-				admin_redirect($html->url(array("action" => 'custom_boxes')));
+				admin_redirect($html->url(array('action' => 'custom_boxes')));
 			}
 
 			$contents = @file_get_contents($_FILES['file']['tmp_name']);
@@ -705,7 +705,7 @@ function asb_admin_custom_boxes()
 
 			if (!trim($contents)) {
 				flash_message($lang->asb_custom_import_file_empty, 'error');
-				admin_redirect($html->url(array("action" => 'custom_boxes')));
+				admin_redirect($html->url(array('action' => 'custom_boxes')));
 			}
 
 			require_once MYBB_ROOT . 'inc/class_xml.php';
@@ -715,7 +715,7 @@ function asb_admin_custom_boxes()
 			if (!is_array($tree) ||
 				empty($tree)) {
 				flash_message($lang->asb_custom_import_file_empty, 'error');
-				admin_redirect($html->url(array("action" => 'custom_boxes')));
+				admin_redirect($html->url(array('action' => 'custom_boxes')));
 			}
 
 			if (!is_array($tree['asb_custom_sideboxes']) ||
@@ -723,30 +723,30 @@ function asb_admin_custom_boxes()
 				if (!is_array($tree['adv_sidebox']) ||
 					!is_array($tree['adv_sidebox']['custom_sidebox'])) {
 					flash_message($lang->asb_custom_import_file_empty, 'error');
-					admin_redirect($html->url(array("action" => 'custom_boxes')));
+					admin_redirect($html->url(array('action' => 'custom_boxes')));
 				}
 
 				$results = asb_legacy_custom_import($tree);
 
 				if (!is_array($results)) {
 					flash_message($results, 'error');
-					admin_redirect($html->url(array("action" => 'custom_boxes')));
+					admin_redirect($html->url(array('action' => 'custom_boxes')));
 				}
 				$custom = new CustomSidebox($results);
 			} else {
 				$custom = new CustomSidebox;
 				if (!$custom->import($contents)) {
 					flash_message($lang->asb_custom_import_fail_generic, 'error');
-					admin_redirect($html->url(array("action" => 'custom_boxes')));
+					admin_redirect($html->url(array('action' => 'custom_boxes')));
 				}
 			}
 
 			if (!$custom->save()) {
 				flash_message($lang->asb_custom_box_save_failure, 'error');
-				admin_redirect($html->url(array("action" => 'custom_boxes')));
+				admin_redirect($html->url(array('action' => 'custom_boxes')));
 			}
 			flash_message($lang->asb_custom_import_save_success, 'success');
-			admin_redirect($html->url(array("action" => 'custom_boxes', "id" => $custom->get('id'))));
+			admin_redirect($html->url(array('action' => 'custom_boxes', 'id' => $custom->get('id'))));
 		} else {
 			// saving?
 			if ($mybb->input['save_box_submit'] == 'Save') {
@@ -755,7 +755,7 @@ function asb_admin_custom_boxes()
 				if (!$mybb->input['box_name'] ||
 					!$mybb->input['box_content']) {
 					$redirectArray = array(
-						"action" => 'custom_boxes',
+						'action' => 'custom_boxes',
 						'mode' => 'edit',
 					);
 
@@ -777,12 +777,12 @@ function asb_admin_custom_boxes()
 				// success?
 				if (!$this_custom->save()) {
 					flash_message($lang->asb_custom_box_save_failure, 'error');
-					admin_redirect($html->url(array("action" => 'custom_boxes', "id" => $this_custom->get('id'))));
+					admin_redirect($html->url(array('action' => 'custom_boxes', 'id' => $this_custom->get('id'))));
 				}
 
 				flash_message($lang->asb_custom_box_save_success, 'success');
 				asb_cache_has_changed();
-				admin_redirect($html->url(array("action" => 'custom_boxes', "id" => $this_custom->get('id'))));
+				admin_redirect($html->url(array('action' => 'custom_boxes', 'id' => $this_custom->get('id'))));
 			}
 		}
 	}
@@ -842,12 +842,12 @@ EOF;
 	<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
 EOF;
 
-		$page->add_breadcrumb_item($lang->asb_custom_boxes, $html->url(array("action" => 'custom_boxes')));
+		$page->add_breadcrumb_item($lang->asb_custom_boxes, $html->url(array('action' => 'custom_boxes')));
 		$page->add_breadcrumb_item($lang->asb_add_custom);
 		$page->output_header("{$lang->asb} - {$action}");
 		asb_output_tabs('asb_add_custom');
 
-		$form = new Form($html->url(array("action" => 'custom_boxes')) . $specify_box, 'post', 'edit_box');
+		$form = new Form($html->url(array('action' => 'custom_boxes')) . $specify_box, 'post', 'edit_box');
 		$form_container = new FormContainer($currently_editing);
 
 		$form_container->output_cell($lang->asb_name);
@@ -856,20 +856,20 @@ EOF;
 		$form_container->output_row('');
 
 		// name
-		$form_container->output_cell($form->generate_text_box('box_name', $this_box->get('title'), array("id" => 'box_name')));
+		$form_container->output_cell($form->generate_text_box('box_name', $this_box->get('title'), array('id' => 'box_name')));
 
 		// description
 		$form_container->output_cell($form->generate_text_box('box_description', $this_box->get('description')));
 
 		// wrap content?
-		$form_container->output_cell($form->generate_check_box('wrap_content', 'yes', $lang->asb_custom_box_wrap_content_desc, array("checked" => $this_box->get('wrap_content'))));
+		$form_container->output_cell($form->generate_check_box('wrap_content', 'yes', $lang->asb_custom_box_wrap_content_desc, array('checked' => $this_box->get('wrap_content'))));
 		$form_container->output_row('');
 
-		$form_container->output_cell('Content:', array("colspan" => 3));
+		$form_container->output_cell('Content:', array('colspan' => 3));
 		$form_container->output_row('');
 
 		// content
-		$form_container->output_cell($form->generate_text_area('box_content', $this_box->get('content'), array("id" => 'box_content', 'class' => '', 'style' => 'width: 100%; height: 500px;')), array("colspan" => 3));
+		$form_container->output_cell($form->generate_text_area('box_content', $this_box->get('content'), array('id' => 'box_content', 'class' => '', 'style' => 'width: 100%; height: 500px;')), array('colspan' => 3));
 		$form_container->output_row('');
 
 		// finish form
@@ -909,14 +909,14 @@ EOF;
 	$page->output_header("{$lang->asb} - {$lang->asb_custom_boxes}");
 	asb_output_tabs('asb_custom');
 
-	$new_box_url = $html->url(array("action" => 'custom_boxes', "mode" => 'edit'));
-	$new_box_link = $html->link($new_box_url, $lang->asb_add_custom_box_types, array("style" => 'font-weight: bold;', "title" => $lang->asb_add_custom_box_types, "icon" => "styles/{$cp_style}/images/asb/add.png"), array("alt" => '+', "style" => 'margin-bottom: -3px;', "title" => $lang->asb_add_custom_box_types));
+	$new_box_url = $html->url(array('action' => 'custom_boxes', 'mode' => 'edit'));
+	$new_box_link = $html->link($new_box_url, $lang->asb_add_custom_box_types, array('style' => 'font-weight: bold;', 'title' => $lang->asb_add_custom_box_types, 'icon' => "styles/{$cp_style}/images/asb/add.png"), array('alt' => '+', 'style' => 'margin-bottom: -3px;', 'title' => $lang->asb_add_custom_box_types));
 	echo($new_box_link . '<br /><br />');
 
 	$table = new Table;
 	$table->construct_header($lang->asb_name);
 	$table->construct_header($lang->asb_custom_box_desc);
-	$table->construct_header($lang->asb_controls, array("colspan" => 2));
+	$table->construct_header($lang->asb_controls, array('colspan' => 2));
 
 	$custom = asb_get_all_custom();
 
@@ -927,10 +927,10 @@ EOF;
 		foreach ($custom as $this_custom) {
 			$data = $this_custom->get('data');
 			// name (edit link)
-			$edit_url = $html->url(array("action" => 'custom_boxes', "mode" => 'edit', "id" => $data['id']));
-			$edit_link = $html->link($edit_url, $data['title'], array("title" => $lang->asb_edit, "style" => 'font-weight: bold;'));
+			$edit_url = $html->url(array('action' => 'custom_boxes', 'mode' => 'edit', 'id' => $data['id']));
+			$edit_link = $html->link($edit_url, $data['title'], array('title' => $lang->asb_edit, 'style' => 'font-weight: bold;'));
 
-			$table->construct_cell($edit_link, array("width" => '30%'));
+			$table->construct_cell($edit_link, array('width' => '30%'));
 
 			// description
 			if ($data['description']) {
@@ -938,7 +938,7 @@ EOF;
 			} else {
 				$description = "<em>{$lang->asb_no_description}</em>";
 			}
-			$table->construct_cell($description, array("width" => '60%'));
+			$table->construct_cell($description, array('width' => '60%'));
 
 			// options popup
 			$popup = new PopupMenu('box_' . $data['id'], $lang->asb_options);
@@ -947,27 +947,27 @@ EOF;
 			$popup->add_item($lang->asb_edit, $edit_url);
 
 			// delete
-			$popup->add_item($lang->asb_delete, $html->url(array("action" => 'custom_boxes', "mode" => 'delete', "id" => $data['id'])), "return confirm('{$lang->asb_custom_del_warning}');");
+			$popup->add_item($lang->asb_delete, $html->url(array('action' => 'custom_boxes', 'mode' => 'delete', 'id' => $data['id'])), "return confirm('{$lang->asb_custom_del_warning}');");
 
 			// export
-			$popup->add_item($lang->asb_custom_export, $html->url(array("action" => 'custom_boxes', "mode" => 'export', "id" => $data['id'])));
+			$popup->add_item($lang->asb_custom_export, $html->url(array('action' => 'custom_boxes', 'mode' => 'export', 'id' => $data['id'])));
 
 			// popup cell
-			$table->construct_cell($popup->fetch(), array("width" => '10%'));
+			$table->construct_cell($popup->fetch(), array('width' => '10%'));
 
 			// finish the table
 			$table->construct_row();
 		}
 	} else {
 		// no saved types
-		$table->construct_cell($lang->asb_no_custom_boxes, array("colspan" => 4));
+		$table->construct_cell($lang->asb_no_custom_boxes, array('colspan' => 4));
 		$table->construct_row();
 	}
 	$table->output($lang->asb_custom_box_types);
 
 	echo('<br /><br />');
 
-	$import_form = new Form($html->url(array("action" => 'custom_boxes', "mode" => 'import')), 'post', '', 1);
+	$import_form = new Form($html->url(array('action' => 'custom_boxes', 'mode' => 'import')), 'post', '', 1);
 	$import_form_container = new FormContainer($lang->asb_custom_import);
 	$import_form_container->output_row($lang->asb_custom_import_select_file, '', $import_form->generate_file_upload_box('file'));
 	$import_form_container->end();
@@ -997,26 +997,26 @@ function asb_admin_manage_scripts()
 
 			if (!$script_info->save()) {
 				flash_message($lang->asb_script_save_fail, 'error');
-				admin_redirect($html->url(array("action" => 'manage_scripts')));
+				admin_redirect($html->url(array('action' => 'manage_scripts')));
 			}
 			flash_message($lang->asb_script_save_success, 'success');
 			asb_cache_has_changed();
-			admin_redirect($html->url(array("action" => 'manage_scripts')));
+			admin_redirect($html->url(array('action' => 'manage_scripts')));
 		} elseif ($mybb->input['mode'] == 'import') {
 			if (!$_FILES['file'] ||
 				$_FILES['file']['error'] == 4) {
 				flash_message($lang->asb_custom_import_no_file, 'error');
-				admin_redirect($html->url(array("action" => 'manage_scripts')));
+				admin_redirect($html->url(array('action' => 'manage_scripts')));
 			}
 
 			if ($_FILES['file']['error']) {
 				flash_message($lang->sprintf($lang->asb_custom_import_file_error, $_FILES['file']['error']), 'error');
-				admin_redirect($html->url(array("action" => 'manage_scripts')));
+				admin_redirect($html->url(array('action' => 'manage_scripts')));
 			}
 
 			if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
 				flash_message($lang->asb_custom_import_file_upload_error, 'error');
-				admin_redirect($html->url(array("action" => 'manage_scripts')));
+				admin_redirect($html->url(array('action' => 'manage_scripts')));
 			}
 
 			$contents = @file_get_contents($_FILES['file']['tmp_name']);
@@ -1024,13 +1024,13 @@ function asb_admin_manage_scripts()
 
 			if (strlen(trim($contents)) == 0) {
 				flash_message($lang->asb_custom_import_file_empty, 'error');
-				admin_redirect($html->url(array("action" => 'manage_scripts')));
+				admin_redirect($html->url(array('action' => 'manage_scripts')));
 			}
 
 			$this_script = new ScriptInfo;
 			if (!$this_script->import($contents)) {
 				flash_message($lang->asb_script_import_fail, 'error');
-				admin_redirect($html->url(array("action" => 'manage_scripts')));
+				admin_redirect($html->url(array('action' => 'manage_scripts')));
 			}
 
 			if (!$this_script->save()) {
@@ -1039,9 +1039,9 @@ function asb_admin_manage_scripts()
 
 			flash_message($lang->asb_script_import_success, 'success');
 			asb_cache_has_changed();
-			admin_redirect($html->url(array("action" => 'manage_scripts')));
+			admin_redirect($html->url(array('action' => 'manage_scripts')));
 		} elseif ($mybb->input['mode'] == 'inline') {
-			$redirect = $html->url(array("action" => 'manage_scripts'));
+			$redirect = $html->url(array('action' => 'manage_scripts'));
 
 			if (!is_array($mybb->input['asb_inline_ids']) ||
 				empty($mybb->input['asb_inline_ids'])) {
@@ -1129,9 +1129,9 @@ function asb_admin_manage_scripts()
 	} elseif ($mybb->input['mode'] == 'export' && $mybb->input['id']) {
 		$this_script = new ScriptInfo((int) $mybb->input['id']);
 
-		if (!$this_script->export(array("version" => ASB_SCRIPT_VERSION))) {
+		if (!$this_script->export(array('version' => ASB_SCRIPT_VERSION))) {
 			flash_message($lang->asb_script_export_fail, 'error');
-			admin_redirect($html->url(array("action" => 'manage_scripts')));
+			admin_redirect($html->url(array('action' => 'manage_scripts')));
 		}
 		exit;
 	} elseif (($mybb->input['mode'] == 'activate' ||
@@ -1148,17 +1148,17 @@ function asb_admin_manage_scripts()
 			flash_message($action, 'success');
 			asb_cache_has_changed();
 		}
-		admin_redirect($html->url(array("action" => 'manage_scripts')));
+		admin_redirect($html->url(array('action' => 'manage_scripts')));
 	}
 
 	$data = array(
-		"active" => 'false',
-		"find_top" => '{$header}',
-		"find_bottom" => '{$footer}',
-		"replace_all" => 0,
-		"eval" => 0,
-		"width_left" => 160,
-		"width_right" => 160
+		'active' => 'false',
+		'find_top' => '{$header}',
+		'find_bottom' => '{$footer}',
+		'replace_all' => 0,
+		'eval' => 0,
+		'width_left' => 160,
+		'width_right' => 160
 	);
 
 	if ($mybb->input['mode'] == 'edit') {
@@ -1173,9 +1173,9 @@ function asb_admin_manage_scripts()
 			$data = $this_script->get('data');
 
 			$detected_info = asb_detect_script_info($data['filename'], array(
-				"hook" => $data['hook'],
-				"action" => $data['action'],
-				"template" => $data['template_name'],
+				'hook' => $data['hook'],
+				'action' => $data['action'],
+				'template' => $data['template_name'],
 			));
 			$detected_show = '';
 			$button_text = $lang->asb_update;
@@ -1227,7 +1227,7 @@ EOF;
 
 EOF;
 
-		$page->add_breadcrumb_item($lang->asb_manage_scripts, $html->url(array("action" => 'manage_scripts')));
+		$page->add_breadcrumb_item($lang->asb_manage_scripts, $html->url(array('action' => 'manage_scripts')));
 		$page->add_breadcrumb_item($lang->asb_edit_script);
 		$page->output_header("{$lang->asb} - {$lang->asb_manage_scripts} - {$lang->asb_edit_script}");
 		asb_output_tabs('asb_edit_script');
@@ -1238,30 +1238,30 @@ EOF;
 </div>
 EOF;
 
-		$form = new Form($html->url(array("action" => 'manage_scripts', "mode" => 'edit')), 'post', 'edit_script');
+		$form = new Form($html->url(array('action' => 'manage_scripts', 'mode' => 'edit')), 'post', 'edit_script');
 		$form_container = new FormContainer($lang->asb_edit_script);
 
 		$form_container->output_row("{$lang->asb_title}:", $lang->asb_title_desc, $form->generate_text_box('title', $data['title']));
 
-		$form_container->output_row("{$lang->asb_filename}:", $lang->asb_filename_desc, '<div id="file_info"></div>'.$form->generate_text_box('filename', $data['filename'], array("id" => 'filename')));
+		$form_container->output_row("{$lang->asb_filename}:", $lang->asb_filename_desc, '<div id="file_info"></div>'.$form->generate_text_box('filename', $data['filename'], array('id' => 'filename')));
 
-		$form_container->output_row("{$lang->asb_action}:", $lang->sprintf($lang->asb_scriptvar_generic_desc, strtolower($lang->asb_action)), "{$spinner}<div id=\"action_list\"{$detected_show}>{$detected_info['actions']}</div>" . $form->generate_text_box('script_action', $data['action'], array("id" => 'action')));
+		$form_container->output_row("{$lang->asb_action}:", $lang->sprintf($lang->asb_scriptvar_generic_desc, strtolower($lang->asb_action)), "{$spinner}<div id=\"action_list\"{$detected_show}>{$detected_info['actions']}</div>" . $form->generate_text_box('script_action', $data['action'], array('id' => 'action')));
 		$form_container->output_row($lang->asb_page, $lang->sprintf($lang->asb_scriptvar_generic_desc, strtolower($lang->asb_page)), $form->generate_text_box('page', $data['page']));
 
 		$form_container->output_row($lang->asb_width_left, $lang->asb_width_left_desc, $form->generate_text_box('width_left', $data['width_left']));
 		$form_container->output_row($lang->asb_width_right, $lang->asb_width_right_desc, $form->generate_text_box('width_right', $data['width_right']));
 
-		$form_container->output_row("{$lang->asb_output_to_vars}?", $lang->sprintf($lang->asb_output_to_vars_desc, '<span style="font-family: courier; font-weight: bold; font-size: 1.2em;">$asb_left</span> and <span style="font-family: courier; font-weight: bold; font-size: 1.2em;";>$asb_right</span>'), $form->generate_yes_no_radio('eval', $data['eval'], true, array("id" => 'eval_yes', "class" => 'eval'), array("id" => 'eval_no', "class" => 'eval')), '', array(), array("id" => 'var_output'));
+		$form_container->output_row("{$lang->asb_output_to_vars}?", $lang->sprintf($lang->asb_output_to_vars_desc, '<span style="font-family: courier; font-weight: bold; font-size: 1.2em;">$asb_left</span> and <span style="font-family: courier; font-weight: bold; font-size: 1.2em;";>$asb_right</span>'), $form->generate_yes_no_radio('eval', $data['eval'], true, array('id' => 'eval_yes', 'class' => 'eval'), array('id' => 'eval_no', 'class' => 'eval')), '', array(), array('id' => 'var_output'));
 
-		$form_container->output_row("{$lang->asb_template}:", $lang->asb_template_desc, "{$spinner}<div id=\"template_list\"{$detected_show}>{$detected_info['templates']}</div>" . $form->generate_text_box('template_name', $data['template_name'], array("id" => 'template_name')), '', array(), array("id" => 'template_row'));
-		$form_container->output_row("{$lang->asb_hook}:", $lang->asb_hook_desc, "{$spinner}<div id=\"hook_list\"{$detected_show}>{$detected_info['hooks']}</div>" . $form->generate_text_box('hook', $data['hook'], array("id" => 'hook')), '', array(), array("id" => 'hook_row'));
+		$form_container->output_row("{$lang->asb_template}:", $lang->asb_template_desc, "{$spinner}<div id=\"template_list\"{$detected_show}>{$detected_info['templates']}</div>" . $form->generate_text_box('template_name', $data['template_name'], array('id' => 'template_name')), '', array(), array('id' => 'template_row'));
+		$form_container->output_row("{$lang->asb_hook}:", $lang->asb_hook_desc, "{$spinner}<div id=\"hook_list\"{$detected_show}>{$detected_info['hooks']}</div>" . $form->generate_text_box('hook', $data['hook'], array('id' => 'hook')), '', array(), array('id' => 'hook_row'));
 
-		$form_container->output_row($lang->asb_header_search_text, $lang->asb_header_search_text_desc, $form->generate_text_area('find_top', $data['find_top'], array("id" => 'find_top', 'class' => '', 'style' => 'width: 100%;', "rows" => '3')), '', array(), array("id" => 'header_search'));
-		$form_container->output_row($lang->asb_footer_search_text, $lang->asb_footer_search_text_desc, $form->generate_text_area('find_bottom', $data['find_bottom'], array("id" => 'find_bottom', 'class' => '', 'style' => 'width: 100%; height: 100px;')) . $form->generate_hidden_field('id', $data['id']) . $form->generate_hidden_field('active', $data['active']) . $form->generate_hidden_field('action', 'manage_scripts') . $form->generate_hidden_field('mode', 'edit'), '', array(), array("id" => 'footer_search'));
+		$form_container->output_row($lang->asb_header_search_text, $lang->asb_header_search_text_desc, $form->generate_text_area('find_top', $data['find_top'], array('id' => 'find_top', 'class' => '', 'style' => 'width: 100%;', 'rows' => '3')), '', array(), array('id' => 'header_search'));
+		$form_container->output_row($lang->asb_footer_search_text, $lang->asb_footer_search_text_desc, $form->generate_text_area('find_bottom', $data['find_bottom'], array('id' => 'find_bottom', 'class' => '', 'style' => 'width: 100%; height: 100px;')) . $form->generate_hidden_field('id', $data['id']) . $form->generate_hidden_field('active', $data['active']) . $form->generate_hidden_field('action', 'manage_scripts') . $form->generate_hidden_field('mode', 'edit'), '', array(), array('id' => 'footer_search'));
 
-		$form_container->output_row($lang->asb_replace_template, $lang->asb_replace_template_desc, $form->generate_yes_no_radio('replace_all', $data['replace_all'], true, array("id" => 'replace_all_yes', "class" => 'replace_all'), array("id" => 'replace_all_no', "class" => 'replace_all')), '', array(), array("id" => 'replace_all'));
+		$form_container->output_row($lang->asb_replace_template, $lang->asb_replace_template_desc, $form->generate_yes_no_radio('replace_all', $data['replace_all'], true, array('id' => 'replace_all_yes', 'class' => 'replace_all'), array('id' => 'replace_all_no', 'class' => 'replace_all')), '', array(), array('id' => 'replace_all'));
 
-		$form_container->output_row($lang->asb_replacement_content, $lang->asb_replacement_content_desc, $form->generate_text_area('replacement', $data['replacement'], array("id" => 'replacement', 'class' => '', 'style' => 'width: 100%; height: 240px;')), '', array(), array("id" => 'replace_content'));
+		$form_container->output_row($lang->asb_replacement_content, $lang->asb_replacement_content_desc, $form->generate_text_area('replacement', $data['replacement'], array('id' => 'replacement', 'class' => '', 'style' => 'width: 100%; height: 240px;')), '', array(), array('id' => 'replace_content'));
 
 		$form_container->end();
 
@@ -1317,36 +1317,36 @@ EOF;
 		$page->output_header("{$lang->asb} - {$lang->asb_manage_scripts}");
 		asb_output_tabs('asb_scripts');
 
-		$new_script_url = $html->url(array("action" => 'manage_scripts', "mode" => 'edit'));
-		$new_script_link = $html->link($new_script_url, $lang->asb_add_new_script, array("style" => 'font-weight: bold;', "title" => $lang->asb_add_new_script, "icon" => "styles/{$cp_style}/images/asb/add.png"), array("alt" => '+', "title" => $lang->asb_add_new_script, "style" => 'margin-bottom: -3px;'));
+		$new_script_url = $html->url(array('action' => 'manage_scripts', 'mode' => 'edit'));
+		$new_script_link = $html->link($new_script_url, $lang->asb_add_new_script, array('style' => 'font-weight: bold;', 'title' => $lang->asb_add_new_script, 'icon' => "styles/{$cp_style}/images/asb/add.png"), array('alt' => '+', 'title' => $lang->asb_add_new_script, 'style' => 'margin-bottom: -3px;'));
 		echo($new_script_link . '<br /><br />');
 
-		$form = new Form($html->url(array("action" => 'manage_scripts', "mode" => 'inline')), 'post', 'inline_form');
+		$form = new Form($html->url(array('action' => 'manage_scripts', 'mode' => 'inline')), 'post', 'inline_form');
 
 		$table = new Table;
-		$table->construct_header($lang->asb_title, array("width" => '34%'));
-		$table->construct_header($lang->asb_filename, array("width" => '16%'));
-		$table->construct_header($lang->asb_action, array("width" => '7%'));
-		$table->construct_header($lang->asb_page, array("width" => '7%'));
-		$table->construct_header($lang->asb_width_left, array("width" => '10%'));
-		$table->construct_header($lang->asb_width_right, array("width" => '10%'));
-		$table->construct_header($lang->asb_status, array("width" => '7%'));
-		$table->construct_header($lang->asb_controls, array("width" => '8%'));
-		$table->construct_header($form->generate_check_box('', '', '', array("id" => 'asb_select_all')), array("style" => 'width: 1%'));
+		$table->construct_header($lang->asb_title, array('width' => '34%'));
+		$table->construct_header($lang->asb_filename, array('width' => '16%'));
+		$table->construct_header($lang->asb_action, array('width' => '7%'));
+		$table->construct_header($lang->asb_page, array('width' => '7%'));
+		$table->construct_header($lang->asb_width_left, array('width' => '10%'));
+		$table->construct_header($lang->asb_width_right, array('width' => '10%'));
+		$table->construct_header($lang->asb_status, array('width' => '7%'));
+		$table->construct_header($lang->asb_controls, array('width' => '8%'));
+		$table->construct_header($form->generate_check_box('', '', '', array('id' => 'asb_select_all')), array('style' => 'width: 1%'));
 
-		$query = $db->simple_select('asb_script_info', '*', '', array("order_by" => 'title', "order_dir" => 'ASC'));
+		$query = $db->simple_select('asb_script_info', '*', '', array('order_by' => 'title', 'order_dir' => 'ASC'));
 		if ($db->num_rows($query) > 0) {
 			while ($data = $db->fetch_array($query)) {
-				$edit_url = $html->url(array("action" => 'manage_scripts', "mode" => 'edit', "id" => $data['id']));
-				$activate_url = $html->url(array("action" => 'manage_scripts', "mode" => 'activate', "id" => $data['id']));
-				$deactivate_url = $html->url(array("action" => 'manage_scripts', "mode" => 'deactivate', "id" => $data['id']));
-				$activate_link = $html->link($activate_url, $lang->asb_inactive, array("style" => 'font-weight: bold; color: red;', "title" => $lang->asb_inactive_desc));
-				$deactivate_link = $html->link($deactivate_url, $lang->asb_active, array("style" => 'font-weight: bold; color: green', "title" => $lang->asb_active_desc));
+				$edit_url = $html->url(array('action' => 'manage_scripts', 'mode' => 'edit', 'id' => $data['id']));
+				$activate_url = $html->url(array('action' => 'manage_scripts', 'mode' => 'activate', 'id' => $data['id']));
+				$deactivate_url = $html->url(array('action' => 'manage_scripts', 'mode' => 'deactivate', 'id' => $data['id']));
+				$activate_link = $html->link($activate_url, $lang->asb_inactive, array('style' => 'font-weight: bold; color: red;', 'title' => $lang->asb_inactive_desc));
+				$deactivate_link = $html->link($deactivate_url, $lang->asb_active, array('style' => 'font-weight: bold; color: green', 'title' => $lang->asb_active_desc));
 				$none = <<<EOF
 <span style="color: gray;"><em>{$lang->asb_none}</em></span>
 EOF;
 
-				$table->construct_cell($html->link($edit_url, $data['title'], array("style" => 'font-weight: bold;')));
+				$table->construct_cell($html->link($edit_url, $data['title'], array('style' => 'font-weight: bold;')));
 				$table->construct_cell($data['filename']);
 				$table->construct_cell($data['action'] ? $data['action'] : $none);
 				$table->construct_cell($data['page'] ? $data['page'] : $none);
@@ -1361,19 +1361,19 @@ EOF;
 				$popup->add_item($lang->asb_edit, $edit_url);
 
 				// export
-				$popup->add_item($lang->asb_custom_export, $html->url(array("action" => 'manage_scripts', "mode" => 'export', "id" => $data['id'])));
+				$popup->add_item($lang->asb_custom_export, $html->url(array('action' => 'manage_scripts', 'mode' => 'export', 'id' => $data['id'])));
 
 				// delete
-				$popup->add_item($lang->asb_delete, $html->url(array("action" => 'manage_scripts', "mode" => 'delete', "id" => $data['id'])), "return confirm('{$lang->asb_script_del_warning}');");
+				$popup->add_item($lang->asb_delete, $html->url(array('action' => 'manage_scripts', 'mode' => 'delete', 'id' => $data['id'])), "return confirm('{$lang->asb_script_del_warning}');");
 
 				// popup cell
 				$table->construct_cell($popup->fetch());
-				$table->construct_cell($form->generate_check_box("asb_inline_ids[{$data['id']}]", '', '', array("class" => 'asb_check')));
+				$table->construct_cell($form->generate_check_box("asb_inline_ids[{$data['id']}]", '', '', array('class' => 'asb_check')));
 				$table->construct_row();
 				$table->construct_row();
 			}
 		} else {
-			$table->construct_cell("<span style=\"color: gray;\"><em>{$lang->asb_no_scripts}</em></span>", array("colspan" => 9));
+			$table->construct_cell("<span style=\"color: gray;\"><em>{$lang->asb_no_scripts}</em></span>", array('colspan' => 9));
 			$table->construct_row();
 		}
 
@@ -1393,14 +1393,14 @@ EOF;
 </div>
 EOF;
 
-		$table->construct_cell('', array("colspan" => 4, 'style' =>'border-right: none;'));
-		$table->construct_cell($inline, array("colspan" => 5, 'style' =>'border-left: none;'));
+		$table->construct_cell('', array('colspan' => 4, 'style' =>'border-right: none;'));
+		$table->construct_cell($inline, array('colspan' => 5, 'style' =>'border-left: none;'));
 		$table->construct_row();
 
 		$table->output($lang->asb_script_info);
 		$form->end();
 
-		$form = new Form($html->url(array("action" => 'manage_scripts', "mode" => 'import')), 'post', '', 1);
+		$form = new Form($html->url(array('action' => 'manage_scripts', 'mode' => 'import')), 'post', '', 1);
 		$form_container = new FormContainer($lang->asb_custom_import);
 		$form_container->output_row($lang->asb_custom_import_select_file, '', $form->generate_file_upload_box('file'));
 		$form_container->end();
@@ -1434,10 +1434,10 @@ EOF;
 	asb_output_tabs('asb_modules');
 
 	$table = new Table;
-	$table->construct_header($lang->asb_name, array("width" => '22%'));
-	$table->construct_header($lang->asb_description, array("width" => '55%'));
-	$table->construct_header($lang->asb_modules_author, array("width" => '15%'));
-	$table->construct_header($lang->asb_controls, array("width" => '8%'));
+	$table->construct_header($lang->asb_name, array('width' => '22%'));
+	$table->construct_header($lang->asb_description, array('width' => '55%'));
+	$table->construct_header($lang->asb_modules_author, array('width' => '15%'));
+	$table->construct_header($lang->asb_controls, array('width' => '8%'));
 
 	$addons = asb_get_all_modules();
 
@@ -1461,7 +1461,7 @@ EOF;
 			}
 
 			// title
-			$table->construct_cell($html->link($data['module_site'], $data['title'], array("style" => 'font-weight: bold;')) . " ({$version})");
+			$table->construct_cell($html->link($data['module_site'], $data['title'], array('style' => 'font-weight: bold;')) . " ({$version})");
 
 			// description
 			$table->construct_cell($data['description'] . $out_of_date);
@@ -1472,7 +1472,7 @@ EOF;
 
 			$author = $data['author'];
 			if ($data['author_site']) {
-				$author = $html->link($data['author_site'], $data['author'], array("style" => 'font-weight: bold;'));
+				$author = $html->link($data['author_site'], $data['author'], array('style' => 'font-weight: bold;'));
 			}
 
 			// author
@@ -1482,16 +1482,16 @@ EOF;
 			$popup = new PopupMenu('module_' . $data['baseName'], $lang->asb_options);
 
 			// delete
-			$popup->add_item($lang->asb_delete, $html->url(array("action" => 'delete_addon', "addon" => $data['baseName'])), "return confirm('{$lang->asb_modules_del_warning}');");
+			$popup->add_item($lang->asb_delete, $html->url(array('action' => 'delete_addon', 'addon' => $data['baseName'])), "return confirm('{$lang->asb_modules_del_warning}');");
 
 			// pop-up cell
-			$table->construct_cell($popup->fetch(), array("width" => '10%'));
+			$table->construct_cell($popup->fetch(), array('width' => '10%'));
 
 			// finish row
 			$table->construct_row();
 		}
 	} else {
-		$table->construct_cell("<span style=\"color: gray;\">{$lang->asb_no_modules_detected}</span>", array("colspan" => 3));
+		$table->construct_cell("<span style=\"color: gray;\">{$lang->asb_no_modules_detected}</span>", array('colspan' => 3));
 		$table->construct_row();
 	}
 	$table->output($lang->asb_addon_modules);
@@ -1652,7 +1652,7 @@ function asb_admin_delete_addon()
 	if (!isset($mybb->input['addon']) ||
 		strlen(trim($mybb->input['addon'])) == 0) {
 		flash_message($lang->asb_delete_addon_failure, 'error');
-		admin_redirect($html->url(array("action" => 'manage_modules')));
+		admin_redirect($html->url(array('action' => 'manage_modules')));
 	}
 
 	$this_module = new SideboxExternalModule($mybb->input['addon']);
@@ -1662,7 +1662,7 @@ function asb_admin_delete_addon()
 		flash_message($lang->asb_delete_addon_success, 'success');
 		asb_cache_has_changed();
 	}
-	admin_redirect($html->url(array("action" => 'manage_modules')));
+	admin_redirect($html->url(array('action' => 'manage_modules')));
 }
 
 /**
@@ -1794,7 +1794,7 @@ function asb_update_theme_select_setting()
 	}
 
 	// update the setting
-	return $db->update_query('settings', array("optionscode" => $db->escape_string(asb_build_theme_exclude_select())), "name='asb_exclude_theme'");
+	return $db->update_query('settings', array('optionscode' => $db->escape_string(asb_build_theme_exclude_select())), "name='asb_exclude_theme'");
 }
 
 /**
