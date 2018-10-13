@@ -362,7 +362,7 @@ function asb_latest_threads_get_threadlist($settings, $width)
 			}
 		}
 
-		$fullSubject = $thread['subject'];
+		$fullSubject = htmlspecialchars_uni($thread['subject']);
 		$max_len = (int) $settings['max_thread_title_length'];
 		if ($max_len > 0 &&
 			my_strlen($thread['subject']) > $max_len) {
