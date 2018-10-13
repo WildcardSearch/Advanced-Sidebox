@@ -37,7 +37,7 @@ function asb_strip_quotes($message)
  */
 function asb_strip_url($message)
 {
-	$message = ' ' . $message;
+	$message = ' '.$message;
 	$message = preg_replace("#([\>\s\(\)])(http|https|ftp|news){1}://([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", '', $message);
 	$message = preg_replace("#([\>\s\(\)])(www|ftp)\.(([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", '', $message);
 	return my_substr($message, 1);
@@ -103,7 +103,7 @@ function asb_build_SQL_where($conditions, $op = 'AND', $prefix = '', $wrap = tru
 		$sep = '';
 		foreach ($conditions as $condition) {
 			if ($condition) {
-				$where .= $sep . $condition;
+				$where .= $sep.$condition;
 				$sep = " {$op} ";
 			}
 		}
@@ -133,7 +133,7 @@ function asb_get_folder_images($folder, $subfolder = '', $recursive = false)
 {
 	// bad folder, get out
 	if (!$folder ||
-	   !is_dir(MYBB_ROOT . $folder)) {
+	   !is_dir(MYBB_ROOT.$folder)) {
 		return false;
 	}
 
@@ -145,7 +145,7 @@ function asb_get_folder_images($folder, $subfolder = '', $recursive = false)
 
 	// cycle through all the files/folders and produce a list
 	$sep = '';
-	foreach (new DirectoryIterator(MYBB_ROOT . $folder) as $file) {
+	foreach (new DirectoryIterator(MYBB_ROOT.$folder) as $file) {
 		// skip navigation folders
 		if ($file->isDot()) {
 			continue;
@@ -158,7 +158,7 @@ function asb_get_folder_images($folder, $subfolder = '', $recursive = false)
 			}
 
 			// get the files from this directory
-			$sub_files = asb_get_folder_images($folder . '/' . $file->getFilename(), $subfolder . $file->getFilename(), $recursive);
+			$sub_files = asb_get_folder_images($folder.'/'.$file->getFilename(), $subfolder.$file->getFilename(), $recursive);
 			if ($sub_files) {
 				$filenames .= "{$sep}{$sub_files}";
 				$sep = ',';

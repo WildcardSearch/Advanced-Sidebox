@@ -58,7 +58,7 @@ function asb_start()
 	}
 
 	// functions for add-on modules
-	require_once MYBB_ROOT . 'inc/plugins/asb/functions_addon.php';
+	require_once MYBB_ROOT.'inc/plugins/asb/functions_addon.php';
 
 	// loop through all the boxes for the script
 	foreach ($this_script['sideboxes'] as $pos => $sideboxes) {
@@ -161,7 +161,7 @@ function asb_edit_template($boxes, $width, $script)
 	$toggles = $show = array();
 	$filename = THIS_SCRIPT;
 
-	// if admin wants to show the toggle icons . . .
+	// if admin wants to show the toggle icons...
 	if ($mybb->settings['asb_show_toggle_icons']) {
 		// we will need this js
 		$headerinclude .= <<<EOF
@@ -266,7 +266,7 @@ EOF;
 	if (is_array($script['js'])) {
 		foreach ($script['js'] as $script_name) {
 			$script_name .= $min;
-			if (!file_exists(MYBB_ROOT . "jscripts/asb/{$script_name}.js")) {
+			if (!file_exists(MYBB_ROOT."jscripts/asb/{$script_name}.js")) {
 				continue;
 			}
 
@@ -298,8 +298,8 @@ EOF;
 		}
 
 		// now eval() their content for the custom script
-		eval("\$asb_left = \"" . str_replace("\\'", "'", addslashes($insert_top)) . "\";");
-		eval("\$asb_right = \"" . str_replace("\\'", "'", addslashes($insert_bottom)) . "\";");
+		eval("\$asb_left = \"".str_replace("\\'", "'", addslashes($insert_top))."\";");
+		eval("\$asb_right = \"".str_replace("\\'", "'", addslashes($insert_bottom))."\";");
 	// otherwise we are editing the template in the cache
 	} else {
 		// if there are columns stored
@@ -364,19 +364,19 @@ function asb_initialize()
 		return;
 	}
 
-	// then add the hook . . . one priority lower than Page Manager ;-) we need to run first
+	// then add the hook...one priority lower than Page Manager ;-) we need to run first
 	$plugins->add_hook($this_script['hook'], 'asb_start', 9);
 
 	// cache any script-specific templates (read: templates used by add-ons used in the script)
 	$template_list = '';
 	if (is_array($this_script['templates']) &&
 		!empty($this_script['templates'])) {
-		$template_list = ',' . implode(',', $this_script['templates']);
+		$template_list = ','.implode(',', $this_script['templates']);
 	}
 
 	// add the extra templates (if any) to our base stack
 	global $templatelist;
-	$templatelist .= ',asb_begin,asb_end,asb_sidebox_column,asb_wrapped_sidebox,asb_toggle_icon,asb_content_pad,asb_expander' . $template_list;
+	$templatelist .= ',asb_begin,asb_end,asb_sidebox_column,asb_wrapped_sidebox,asb_toggle_icon,asb_content_pad,asb_expander'.$template_list;
 }
 
 /**
@@ -437,7 +437,7 @@ function asb_xmlhttp()
 	}
 
 	// get the ASB core stuff
-	require_once MYBB_ROOT . 'inc/plugins/asb/functions_addon.php';
+	require_once MYBB_ROOT.'inc/plugins/asb/functions_addon.php';
 
 	// attempt to load the module and side box requested
 	$module = new SideboxExternalModule($mybb->input['addon']);

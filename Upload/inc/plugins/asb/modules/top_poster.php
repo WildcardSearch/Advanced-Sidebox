@@ -227,7 +227,7 @@ function asb_top_poster_build_template($args)
 		$thread_where = " AND p.tid='{$tid}'";
 		$threadQuery = $db->simple_select('threads', 'subject', "tid='{$tid}'");
 		if ($db->num_rows($threadQuery) > 0) {
-			require_once MYBB_ROOT . 'inc/class_parser.php';
+			require_once MYBB_ROOT.'inc/class_parser.php';
 			$parser = new postParser;
 
 			$threadTitle = $db->fetch_field($threadQuery, 'subject');
@@ -361,11 +361,11 @@ EOF;
 
 			eval("\$\$template_var = \"{$templates->get('asb_top_posters_single')}\";");
 		} else {
-			$top_poster_description = $lang->sprintf($lang->asb_top_poster_description, $top_poster_timeframe_prelude) . $extraCongrats;
+			$top_poster_description = $lang->sprintf($lang->asb_top_poster_description, $top_poster_timeframe_prelude).$extraCongrats;
 			if ($threadsOnly) {
-				$top_poster_description = $lang->sprintf($lang->asb_top_poster_description_threads, $top_poster_timeframe_prelude) . $extraCongrats;
+				$top_poster_description = $lang->sprintf($lang->asb_top_poster_description_threads, $top_poster_timeframe_prelude).$extraCongrats;
 			}
-			$top_poster_text = $top_poster . '<br />' . $top_poster_posts;
+			$top_poster_text = $top_poster.'<br />'.$top_poster_posts;
 
 			$avatar_width = (int) $width * .2;
 			if ((int) $settings['avatar_size']) {

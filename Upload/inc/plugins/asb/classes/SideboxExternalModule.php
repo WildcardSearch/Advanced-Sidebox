@@ -147,10 +147,10 @@ class SideboxExternalModule extends ExternalModule010000
 	{
 		global $db;
 
-		// already installed? unless $cleanup is specifically denied . . .
+		// already installed? unless $cleanup is specifically denied...
 		if ($this->isInstalled &&
 			$cleanup) {
-			// . . . remove the leftovers before installing
+			// ...remove the leftovers before installing
 			$this->uninstall();
 		}
 

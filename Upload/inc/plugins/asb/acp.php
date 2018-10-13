@@ -14,8 +14,8 @@ if (!defined('IN_MYBB') ||
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
 define('ASB_URL', 'index.php?module=config-asb');
-require_once MYBB_ROOT . 'inc/plugins/asb/functions_acp.php';
-require_once MYBB_ROOT . 'inc/plugins/asb/install.php';
+require_once MYBB_ROOT.'inc/plugins/asb/functions_acp.php';
+require_once MYBB_ROOT.'inc/plugins/asb/install.php';
 
 /**
  * the ACP page router
@@ -56,7 +56,7 @@ function asb_admin()
 	}
 
 	// if there is an existing function for the action
-	$page_function = 'asb_admin_' . $mybb->input['action'];
+	$page_function = 'asb_admin_'.$mybb->input['action'];
 	if (function_exists($page_function)) {
 		// run it
 		$page_function();
@@ -303,7 +303,7 @@ function asb_admin_edit_box()
 			$sidebox->set('wrap_content', $parent->get('wrap_content'));
 			$addon_settings = $parent->get('settings');
 
-			// if the parent module has settings . . .
+			// if the parent module has settings...
 			if (is_array($addon_settings)) {
 				// loop through them
 				$settings = array();
@@ -322,7 +322,7 @@ function asb_admin_edit_box()
 			$sidebox->set('wrap_content', $parent->get('wrap_content'));
 		}
 
-		// if the text field isn't empty . . .
+		// if the text field isn't empty...
 		if ($mybb->input['box_title']) {
 			// use it
 			$sidebox->set('title', $mybb->input['box_title']);
@@ -400,7 +400,7 @@ EOF;
 	} else {
 		$page_title = $lang->asb_edit_a_sidebox;
 
-		// . . . otherwise we are editing so pull the actual info from the side box
+		// ...otherwise we are editing so pull the actual info from the side box
 		$selected_scripts = $sidebox->get('scripts');
 		if (empty($selected_scripts)) {
 			$selected_scripts = 'all_scripts';
@@ -411,7 +411,7 @@ EOF;
 EOF;
 		}
 
-		// check the name of the add-on/custom against the display name of the sidebox, if they differ . . .
+		// check the name of the add-on/custom against the display name of the sidebox, if they differ...
 		if ($sidebox->get('title') != $parent->get('title')) {
 			// then this box has a custom title
 			$custom_title = 1;
@@ -479,7 +479,7 @@ EOF;
 	}
 
 	// current editing text
-	$currently_editing = '"' . $parent->get('title') . '"';
+	$currently_editing = '"'.$parent->get('title').'"';
 
 	$box_action = $lang->asb_creating;
 	if (isset($mybb->input['id'])) {
@@ -487,17 +487,17 @@ EOF;
 	}
 
 	echo "\n<div id=\"tab_general\" style=\"width: auto;\">\n";
-	$form_container = new FormContainer('<h3>' . $lang->sprintf($lang->asb_new_sidebox_action, $box_action, $currently_editing) . '</h3>');
+	$form_container = new FormContainer('<h3>'.$lang->sprintf($lang->asb_new_sidebox_action, $box_action, $currently_editing).'</h3>');
 
 	if (!$ajax) {
 		// box title
-		$form_container->output_row($lang->asb_custom_title, $current_title, $form->generate_text_box('box_title') . $form->generate_hidden_field('current_title', $sidebox->get('title')), 'box_title', array('id' => 'box_title'));
+		$form_container->output_row($lang->asb_custom_title, $current_title, $form->generate_text_box('box_title').$form->generate_hidden_field('current_title', $sidebox->get('title')), 'box_title', array('id' => 'box_title'));
 
 		// title link
 		$form_container->output_row($lang->asb_title_link, $lang->asb_title_link_desc, $form->generate_text_box('title_link', $sidebox->get('title_link')), 'title_link', array('id' => 'title_link'));
 
 		// position
-		$form_container->output_row($lang->asb_position, '', $form->generate_radio_button('box_position', 0, $lang->asb_position_left, array('checked' => ($sidebox->get('position') == 0))) . '&nbsp;&nbsp;' . $form->generate_radio_button('box_position', 1, $lang->asb_position_right, array('checked' => ($sidebox->get('position') != 0))));
+		$form_container->output_row($lang->asb_position, '', $form->generate_radio_button('box_position', 0, $lang->asb_position_left, array('checked' => ($sidebox->get('position') == 0))).'&nbsp;&nbsp;'.$form->generate_radio_button('box_position', 1, $lang->asb_position_right, array('checked' => ($sidebox->get('position') != 0))));
 
 		// display order
 		$form_container->output_row($lang->asb_display_order, '', $form->generate_text_box('display_order', $sidebox->get('display_order')));
@@ -506,7 +506,7 @@ EOF;
 		$form_container->output_row($lang->asb_title, $current_title, $form->generate_text_box('box_title'), 'box_title', array('id' => 'box_title'));
 
 		// title link and hidden fields
-		$form_container->output_row($lang->asb_title_link, $lang->asb_title_link_desc, $form->generate_text_box('title_link', $sidebox->get('title_link')) . $form->generate_hidden_field('current_title', $sidebox->get('title')) . $form->generate_hidden_field('display_order', $sidebox->get('display_order')) . $form->generate_hidden_field('pos', $position), 'title_link', array('id' => 'title_link'));
+		$form_container->output_row($lang->asb_title_link, $lang->asb_title_link_desc, $form->generate_text_box('title_link', $sidebox->get('title_link')).$form->generate_hidden_field('current_title', $sidebox->get('title')).$form->generate_hidden_field('display_order', $sidebox->get('display_order')).$form->generate_hidden_field('pos', $position), 'title_link', array('id' => 'title_link'));
 	}
 	$form_container->end();
 
@@ -708,7 +708,7 @@ function asb_admin_custom_boxes()
 				admin_redirect($html->url(array('action' => 'custom_boxes')));
 			}
 
-			require_once MYBB_ROOT . 'inc/class_xml.php';
+			require_once MYBB_ROOT.'inc/class_xml.php';
 			$parser = new XMLParser($contents);
 			$tree = $parser->get_tree();
 
@@ -817,9 +817,9 @@ EOF;
 
 		$action = $lang->asb_add_custom;
 		if ($this_box->get('id')) {
-			$specify_box = '&amp;id=' . $this_box->get('id');
-			$currently_editing = $lang->asb_editing . ': <strong>' . $this_box->get('title') . '</strong>';
-			$action = $lang->asb_edit . ' ' . $this_box->get('title');
+			$specify_box = '&amp;id='.$this_box->get('id');
+			$currently_editing = $lang->asb_editing.': <strong>'.$this_box->get('title').'</strong>';
+			$action = $lang->asb_edit.' '.$this_box->get('title');
 		} else {
 			// new box
 			$specify_box = '';
@@ -847,7 +847,7 @@ EOF;
 		$page->output_header("{$lang->asb} - {$action}");
 		asb_output_tabs('asb_add_custom');
 
-		$form = new Form($html->url(array('action' => 'custom_boxes')) . $specify_box, 'post', 'edit_box');
+		$form = new Form($html->url(array('action' => 'custom_boxes')).$specify_box, 'post', 'edit_box');
 		$form_container = new FormContainer($currently_editing);
 
 		$form_container->output_cell($lang->asb_name);
@@ -911,7 +911,7 @@ EOF;
 
 	$new_box_url = $html->url(array('action' => 'custom_boxes', 'mode' => 'edit'));
 	$new_box_link = $html->link($new_box_url, $lang->asb_add_custom_box_types, array('style' => 'font-weight: bold;', 'title' => $lang->asb_add_custom_box_types, 'icon' => "styles/{$cp_style}/images/asb/add.png"), array('alt' => '+', 'style' => 'margin-bottom: -3px;', 'title' => $lang->asb_add_custom_box_types));
-	echo($new_box_link . '<br /><br />');
+	echo($new_box_link.'<br /><br />');
 
 	$table = new Table;
 	$table->construct_header($lang->asb_name);
@@ -920,7 +920,7 @@ EOF;
 
 	$custom = asb_get_all_custom();
 
-	// if there are saved types . . .
+	// if there are saved types...
 	if (is_array($custom) &&
 		!empty($custom)) {
 		// display them
@@ -941,7 +941,7 @@ EOF;
 			$table->construct_cell($description, array('width' => '60%'));
 
 			// options popup
-			$popup = new PopupMenu('box_' . $data['id'], $lang->asb_options);
+			$popup = new PopupMenu('box_'.$data['id'], $lang->asb_options);
 
 			// edit
 			$popup->add_item($lang->asb_edit, $edit_url);
@@ -1234,7 +1234,7 @@ EOF;
 
 		$spinner = <<<EOF
 <div class="ajax_spinners" style="display: none;">
-	<img src="../images/spinner.gif" alt="{$lang->asb_detecting} . . ."/><br /><br />
+	<img src="../images/spinner.gif" alt="{$lang->asb_detecting}..."/><br /><br />
 </div>
 EOF;
 
@@ -1245,7 +1245,7 @@ EOF;
 
 		$form_container->output_row("{$lang->asb_filename}:", $lang->asb_filename_desc, '<div id="file_info"></div>'.$form->generate_text_box('filename', $data['filename'], array('id' => 'filename')));
 
-		$form_container->output_row("{$lang->asb_action}:", $lang->sprintf($lang->asb_scriptvar_generic_desc, strtolower($lang->asb_action)), "{$spinner}<div id=\"action_list\"{$detected_show}>{$detected_info['actions']}</div>" . $form->generate_text_box('script_action', $data['action'], array('id' => 'action')));
+		$form_container->output_row("{$lang->asb_action}:", $lang->sprintf($lang->asb_scriptvar_generic_desc, strtolower($lang->asb_action)), "{$spinner}<div id=\"action_list\"{$detected_show}>{$detected_info['actions']}</div>".$form->generate_text_box('script_action', $data['action'], array('id' => 'action')));
 		$form_container->output_row($lang->asb_page, $lang->sprintf($lang->asb_scriptvar_generic_desc, strtolower($lang->asb_page)), $form->generate_text_box('page', $data['page']));
 
 		$form_container->output_row($lang->asb_width_left, $lang->asb_width_left_desc, $form->generate_text_box('width_left', $data['width_left']));
@@ -1253,11 +1253,11 @@ EOF;
 
 		$form_container->output_row("{$lang->asb_output_to_vars}?", $lang->sprintf($lang->asb_output_to_vars_desc, '<span style="font-family: courier; font-weight: bold; font-size: 1.2em;">$asb_left</span> and <span style="font-family: courier; font-weight: bold; font-size: 1.2em;";>$asb_right</span>'), $form->generate_yes_no_radio('eval', $data['eval'], true, array('id' => 'eval_yes', 'class' => 'eval'), array('id' => 'eval_no', 'class' => 'eval')), '', array(), array('id' => 'var_output'));
 
-		$form_container->output_row("{$lang->asb_template}:", $lang->asb_template_desc, "{$spinner}<div id=\"template_list\"{$detected_show}>{$detected_info['templates']}</div>" . $form->generate_text_box('template_name', $data['template_name'], array('id' => 'template_name')), '', array(), array('id' => 'template_row'));
-		$form_container->output_row("{$lang->asb_hook}:", $lang->asb_hook_desc, "{$spinner}<div id=\"hook_list\"{$detected_show}>{$detected_info['hooks']}</div>" . $form->generate_text_box('hook', $data['hook'], array('id' => 'hook')), '', array(), array('id' => 'hook_row'));
+		$form_container->output_row("{$lang->asb_template}:", $lang->asb_template_desc, "{$spinner}<div id=\"template_list\"{$detected_show}>{$detected_info['templates']}</div>".$form->generate_text_box('template_name', $data['template_name'], array('id' => 'template_name')), '', array(), array('id' => 'template_row'));
+		$form_container->output_row("{$lang->asb_hook}:", $lang->asb_hook_desc, "{$spinner}<div id=\"hook_list\"{$detected_show}>{$detected_info['hooks']}</div>".$form->generate_text_box('hook', $data['hook'], array('id' => 'hook')), '', array(), array('id' => 'hook_row'));
 
 		$form_container->output_row($lang->asb_header_search_text, $lang->asb_header_search_text_desc, $form->generate_text_area('find_top', $data['find_top'], array('id' => 'find_top', 'class' => '', 'style' => 'width: 100%;', 'rows' => '3')), '', array(), array('id' => 'header_search'));
-		$form_container->output_row($lang->asb_footer_search_text, $lang->asb_footer_search_text_desc, $form->generate_text_area('find_bottom', $data['find_bottom'], array('id' => 'find_bottom', 'class' => '', 'style' => 'width: 100%; height: 100px;')) . $form->generate_hidden_field('id', $data['id']) . $form->generate_hidden_field('active', $data['active']) . $form->generate_hidden_field('action', 'manage_scripts') . $form->generate_hidden_field('mode', 'edit'), '', array(), array('id' => 'footer_search'));
+		$form_container->output_row($lang->asb_footer_search_text, $lang->asb_footer_search_text_desc, $form->generate_text_area('find_bottom', $data['find_bottom'], array('id' => 'find_bottom', 'class' => '', 'style' => 'width: 100%; height: 100px;')).$form->generate_hidden_field('id', $data['id']).$form->generate_hidden_field('active', $data['active']).$form->generate_hidden_field('action', 'manage_scripts').$form->generate_hidden_field('mode', 'edit'), '', array(), array('id' => 'footer_search'));
 
 		$form_container->output_row($lang->asb_replace_template, $lang->asb_replace_template_desc, $form->generate_yes_no_radio('replace_all', $data['replace_all'], true, array('id' => 'replace_all_yes', 'class' => 'replace_all'), array('id' => 'replace_all_no', 'class' => 'replace_all')), '', array(), array('id' => 'replace_all'));
 
@@ -1319,7 +1319,7 @@ EOF;
 
 		$new_script_url = $html->url(array('action' => 'manage_scripts', 'mode' => 'edit'));
 		$new_script_link = $html->link($new_script_url, $lang->asb_add_new_script, array('style' => 'font-weight: bold;', 'title' => $lang->asb_add_new_script, 'icon' => "styles/{$cp_style}/images/asb/add.png"), array('alt' => '+', 'title' => $lang->asb_add_new_script, 'style' => 'margin-bottom: -3px;'));
-		echo($new_script_link . '<br /><br />');
+		echo($new_script_link.'<br /><br />');
 
 		$form = new Form($html->url(array('action' => 'manage_scripts', 'mode' => 'inline')), 'post', 'inline_form');
 
@@ -1461,10 +1461,10 @@ EOF;
 			}
 
 			// title
-			$table->construct_cell($html->link($data['module_site'], $data['title'], array('style' => 'font-weight: bold;')) . " ({$version})");
+			$table->construct_cell($html->link($data['module_site'], $data['title'], array('style' => 'font-weight: bold;'))." ({$version})");
 
 			// description
-			$table->construct_cell($data['description'] . $out_of_date);
+			$table->construct_cell($data['description'].$out_of_date);
 
 			if ($data['author'] == 'Wildcard') {
 				$data['author'] = 'default';
@@ -1479,7 +1479,7 @@ EOF;
 			$table->construct_cell($author);
 
 			// options pop-up
-			$popup = new PopupMenu('module_' . $data['baseName'], $lang->asb_options);
+			$popup = new PopupMenu('module_'.$data['baseName'], $lang->asb_options);
 
 			// delete
 			$popup->add_item($lang->asb_delete, $html->url(array('action' => 'delete_addon', 'addon' => $data['baseName'])), "return confirm('{$lang->asb_modules_del_warning}');");
@@ -1601,7 +1601,7 @@ $("#edit_sidebox_{$id}").click(function(event) {
 </script>
 EOF;
 		// this HTML output will be directly stored in the side box's representative <div>
-		echo(asb_build_sidebox_info($sidebox, false, true) . $script);
+		echo(asb_build_sidebox_info($sidebox, false, true).$script);
 	/*
 	 * searches for hooks, templates and actions and returns an
 	 * array of JSON encoded select box HTML for any that are found

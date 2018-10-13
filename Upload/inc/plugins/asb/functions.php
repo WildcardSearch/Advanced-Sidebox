@@ -16,7 +16,7 @@ function asb_do_checks()
 {
 	global $mybb, $theme;
 
-	// if the EXCLUDE list isn't empty and this theme is listed . . .
+	// if the EXCLUDE list isn't empty and this theme is listed...
 	$exclude_list = asb_get_excluded_themes();
 	if ($exclude_list &&
 		in_array($theme['tid'], $exclude_list)) {
@@ -65,7 +65,7 @@ function asb_get_excluded_themes($sql = false)
 
 	if ($sql) {
 		if ($retval) {
-			$retval = ' AND pid NOT IN(' . implode(',', $retval) . ')';
+			$retval = ' AND pid NOT IN('.implode(',', $retval).')';
 		} else {
 			$retval = '';
 		}
@@ -98,7 +98,7 @@ function asb_build_script_filename($this_script = '')
 
 	$this_script = array_map('trim', $this_script);
 
-	// if there is nothing to work with . . .
+	// if there is nothing to work with...
 	if (!$this_script['filename']) {
 		return;
 	}
@@ -137,7 +137,7 @@ function asb_get_this_script($asb, $get_all = false)
 			continue;
 		}
 
-		$filename = THIS_SCRIPT . "&{$key}={$mybb->input[$key]}";
+		$filename = THIS_SCRIPT."&{$key}={$mybb->input[$key]}";
 		if (!is_array($asb['scripts'][$filename]) ||
 			empty($asb['scripts'][$filename])) {
 			continue;
@@ -179,7 +179,7 @@ function asb_merge_sidebox_list($asb)
 	// allow for variable amount of arguments
 	$args = func_get_args();
 
-	// if there aren't at least two arrays to merge . . .
+	// if there aren't at least two arrays to merge...
 	if (count($args) <= 2) {
 		// return the single array if it exists
 		if ($args[1]) {
@@ -275,16 +275,16 @@ function asb_build_sidebox_content($this_box)
 	}
 
 	// build the template variable
-	$content = '{$' . "{$box_type}_{$id}" . '}';
+	$content = '{$'."{$box_type}_{$id}".'}';
 
-	// if we are building header and expander . . .
+	// if we are building header and expander...
 	if ($wrap_content) {
 		global $mybb, $templates, $theme, $collapsed;
 
 		// element info
 		$sidebox['expcolimage_id'] = "{$box_type}_{$id}_img";
 		$sidebox['expdisplay_id'] = "{$box_type}_{$id}_e";
-		$sidebox['name'] = "{$id}_{$box_type}_" . TIME_NOW;
+		$sidebox['name'] = "{$id}_{$box_type}_".TIME_NOW;
 		$sidebox['class'] = $sidebox['id'] = "{$box_type}_main_{$id}";
 		$sidebox['content'] = $content;
 		$sidebox['title'] = $title;
@@ -376,7 +376,7 @@ function asb_get_all_custom()
 	$query = $db->simple_select('asb_custom_sideboxes');
 	if ($db->num_rows($query) > 0) {
 		while ($data = $db->fetch_array($query)) {
-			$return_array['asb_custom_' . $data['id']] = new CustomSidebox($data);
+			$return_array['asb_custom_'.$data['id']] = new CustomSidebox($data);
 		}
 	}
 	return $return_array;

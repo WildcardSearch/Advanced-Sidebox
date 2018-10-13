@@ -248,7 +248,7 @@ function asb_latest_threads_get_threadlist($settings, $width)
 	}
 
 	// Build a post parser
-	require_once MYBB_ROOT . 'inc/class_parser.php';
+	require_once MYBB_ROOT.'inc/class_parser.php';
 	$parser = new postParser;
 
 	// get forums user cannot view
@@ -281,7 +281,7 @@ function asb_latest_threads_get_threadlist($settings, $width)
 	$hide['tids'] = asb_build_id_list($settings['thread_hide_list'], 't.tid');
 	$where['show'] = asb_build_SQL_where($show, ' OR ');
 	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
-	$query_where = $new_threads . $important_threads . $unviewwhere . $inactivewhere . asb_build_SQL_where($where, ' AND ', ' AND ');
+	$query_where = $new_threads.$important_threads.$unviewwhere.$inactivewhere.asb_build_SQL_where($where, ' AND ', ' AND ');
 
 	$altbg = alt_trow();
 	$threadlist = '';
@@ -293,7 +293,7 @@ function asb_latest_threads_get_threadlist($settings, $width)
 		LEFT JOIN {$db->table_prefix}users u ON (u.uid=t.lastposteruid)
 		WHERE t.visible='1' AND t.closed NOT LIKE 'moved|%'{$query_where}
 		ORDER BY t.lastpost DESC
-		LIMIT 0, " . (int) $settings['max_threads']
+		LIMIT 0, ".(int) $settings['max_threads']
 	);
 
 	if ($db->num_rows($query) == 0) {
@@ -366,7 +366,7 @@ function asb_latest_threads_get_threadlist($settings, $width)
 		$max_len = (int) $settings['max_thread_title_length'];
 		if ($max_len > 0 &&
 			my_strlen($thread['subject']) > $max_len) {
-			$thread['subject'] = my_substr($thread['subject'], 0, $max_len) . $lang->asb_latest_threads_ellipsis;
+			$thread['subject'] = my_substr($thread['subject'], 0, $max_len).$lang->asb_latest_threads_ellipsis;
 		}
 
 		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));

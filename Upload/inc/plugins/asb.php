@@ -14,7 +14,7 @@ if (!defined('IN_MYBB')) {
 
 // for modules
 define('IN_ASB', true);
-define('ASB_MODULES_DIR', MYBB_ROOT . 'inc/plugins/asb/modules');
+define('ASB_MODULES_DIR', MYBB_ROOT.'inc/plugins/asb/modules');
 define('ASB_VERSION', '3.1.14');
 define('ASB_CUSTOM_VERSION', '2.0');
 define('ASB_SCRIPT_VERSION', '2.0');
@@ -23,13 +23,13 @@ define('ASB_SCRIPT_VERSION', '2.0');
 spl_autoload_register('asbClassAutoload');
 
 // some basic functions used everywhere
-require_once MYBB_ROOT . 'inc/plugins/asb/functions.php';
+require_once MYBB_ROOT.'inc/plugins/asb/functions.php';
 
 // load the install/admin routines only if in ACP.
 if (defined('IN_ADMINCP')) {
-    require_once MYBB_ROOT . 'inc/plugins/asb/acp.php';
+    require_once MYBB_ROOT.'inc/plugins/asb/acp.php';
 } else {
-	require_once MYBB_ROOT . 'inc/plugins/asb/forum.php';
+	require_once MYBB_ROOT.'inc/plugins/asb/forum.php';
 }
 
 /**
@@ -38,7 +38,7 @@ if (defined('IN_ADMINCP')) {
  * @param string the name of the class to load
  */
 function asbClassAutoload($className) {
-	$path = MYBB_ROOT . "inc/plugins/asb/classes/{$className}.php";
+	$path = MYBB_ROOT."inc/plugins/asb/classes/{$className}.php";
 
 	if (file_exists($path)) {
 		require_once $path;

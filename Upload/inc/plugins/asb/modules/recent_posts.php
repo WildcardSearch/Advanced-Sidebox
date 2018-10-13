@@ -202,7 +202,7 @@ function recent_posts_get_postlist($settings)
 	$hide['tids'] = asb_build_id_list($settings['thread_hide_list'], 'p.tid');
 	$where['show'] = asb_build_SQL_where($show, ' OR ');
 	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
-	$query_where = $important_threads . $unviewwhere . $inactivewhere . asb_build_SQL_where($where, ' AND ', ' AND ');
+	$query_where = $important_threads.$unviewwhere.$inactivewhere.asb_build_SQL_where($where, ' AND ', ' AND ');
 
 	$altbg = alt_trow();
 	$maxtitlelen = 48;
@@ -221,7 +221,7 @@ function recent_posts_get_postlist($settings)
 		ORDER BY
 			p.dateline DESC
 		LIMIT
-			0, " . (int) $settings['max_posts']
+			0, ".(int) $settings['max_posts']
 	);
 
 	if ($db->num_rows($query) == 0) {
@@ -230,7 +230,7 @@ function recent_posts_get_postlist($settings)
 	}
 
 	// Build a post parser
-	require_once MYBB_ROOT . 'inc/class_parser.php';
+	require_once MYBB_ROOT.'inc/class_parser.php';
 	$parser = new postParser;
 
 	$post_cache = array();
@@ -264,11 +264,11 @@ function recent_posts_get_postlist($settings)
 		$max_len = (int) $settings['max_thread_title_length'];
 		if ($max_len > 0 &&
 			my_strlen($post['subject']) > $max_len) {
-			$post['subject'] = my_substr($post['subject'], 0, $max_len) . $lang->asb_recent_posts_title_ellipsis;
+			$post['subject'] = my_substr($post['subject'], 0, $max_len).$lang->asb_recent_posts_title_ellipsis;
 		}
 
 		$post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
-		$post['link'] = get_post_link($post['pid'], $post['tid']) . "#pid{$post['pid']}";
+		$post['link'] = get_post_link($post['pid'], $post['tid'])."#pid{$post['pid']}";
 
 		// we just need the text and smilies (we'll parse them after we check length)
 		$pattern = "|[[\/\!]*?[^\[\]]*?]|si";
@@ -276,7 +276,7 @@ function recent_posts_get_postlist($settings)
 
 		if ($settings['max_length'] &&
 			strlen($post_excerpt) > $settings['max_length']) {
-			$post_excerpt = my_substr($post_excerpt, 0, $settings['max_length']) . $lang->asb_recent_posts_ellipsis;
+			$post_excerpt = my_substr($post_excerpt, 0, $settings['max_length']).$lang->asb_recent_posts_ellipsis;
 		}
 
 		eval("\$postlist .= \"{$templates->get('asb_recent_posts_post')}\";");

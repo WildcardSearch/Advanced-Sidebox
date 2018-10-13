@@ -235,7 +235,7 @@ function asb_rand_quote_get_quote($settings, $width)
 	$hide['tids'] = asb_build_id_list($settings['thread_hide_list'], 'p.tid');
 	$where['show'] = asb_build_SQL_where($show, ' OR ');
 	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
-	$query_where = $important_threads . $unviewwhere . $inactivewhere . asb_build_SQL_where($where, ' AND ', ' AND ');
+	$query_where = $important_threads.$unviewwhere.$inactivewhere.asb_build_SQL_where($where, ' AND ', ' AND ');
 
 	$post_query = $db->query("
 		SELECT
@@ -252,7 +252,7 @@ function asb_rand_quote_get_quote($settings, $width)
 		LIMIT 1;"
 	);
 
-	// if there was 1 . . .
+	// if there was 1...
 	if ($db->num_rows($post_query) == 0) {
 		return false;
 	}
@@ -260,7 +260,7 @@ function asb_rand_quote_get_quote($settings, $width)
 	$rand_post = $db->fetch_array($post_query);
 
 	// build a post parser
-	require_once MYBB_ROOT . 'inc/class_parser.php';
+	require_once MYBB_ROOT.'inc/class_parser.php';
 	$parser = new postParser;
 
 	// we just need the text and smilies (we'll parse them after we check length)
@@ -289,19 +289,19 @@ function asb_rand_quote_get_quote($settings, $width)
 
 	if ($settings['max_length'] &&
 		strlen($new_message) > $settings['max_length']) {
-		$new_message = substr($new_message, 0, $settings['max_length']) . ' . . .';
+		$new_message = substr($new_message, 0, $settings['max_length']).'...';
 	}
 
 	// set up the user name link so that it displays correctly for the display group of the user
 	$plain_text_username = htmlspecialchars_uni($rand_post['username']);
 	$username = format_name($plain_text_username, $rand_post['usergroup'], $rand_post['displaygroup']);
 	$author_link = get_profile_link($rand_post['uid']);
-	$post_link = get_post_link($rand_post['pid'], $rand_post['tid']) . '#pid' . $rand_post['pid'];
+	$post_link = get_post_link($rand_post['pid'], $rand_post['tid']).'#pid'.$rand_post['pid'];
 	$thread_link = get_thread_link($rand_post['tid']);
 
 	// allow smilies, but kill
 	$parser_options = array('allow_smilies' => 1);
-	$new_message = str_replace(array('<br />', '/me'), array('', " * {$plain_text_username}"), $parser->parse_message($new_message . ' ', $parser_options));
+	$new_message = str_replace(array('<br />', '/me'), array('', " * {$plain_text_username}"), $parser->parse_message($new_message.' ', $parser_options));
 
 	$avatar_info = format_avatar($rand_post['avatar']);
 	$avatar_filename = $avatar_info['image'];
@@ -311,7 +311,7 @@ function asb_rand_quote_get_quote($settings, $width)
 	eval("\$read_more = \"{$templates->get('asb_rand_quote_read_more')}\";");
 
 	if (my_strlen($rand_post['subject']) > 40) {
-		$rand_post['subject'] = my_substr($rand_post['subject'], 0, 40) . ' . . .';
+		$rand_post['subject'] = my_substr($rand_post['subject'], 0, 40).'...';
 	}
 
 	if (substr(strtolower($rand_post['subject']), 0, 3) == 're:') {

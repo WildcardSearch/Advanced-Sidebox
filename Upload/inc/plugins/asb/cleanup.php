@@ -26,7 +26,7 @@ $removed_folders = array(
 
 // delete the old adv_sidebox_xxx files and folders
 foreach ($removed_files as $filename) {
-	$fullpath = MYBB_ROOT . $filename;
+	$fullpath = MYBB_ROOT.$filename;
 
 	if (file_exists($fullpath) &&
 		!is_dir($fullpath)) {
@@ -34,14 +34,14 @@ foreach ($removed_files as $filename) {
 	}
 }
 foreach ($removed_folders as $folder) {
-	$fullpath = MYBB_ROOT . $folder;
+	$fullpath = MYBB_ROOT.$folder;
 	if (is_dir($fullpath)) {
 		@my_rmdir_recursive($fullpath);
 		@rmdir($fullpath);
 	}
 }
 
-require_once MYBB_ROOT . $config['admin_dir'] . '/inc/functions.php';
+require_once MYBB_ROOT.$config['admin_dir'].'/inc/functions.php';
 flash_message('All components of previous installation deleted', 'success');
 admin_redirect("{$mybb->settings['bburl']}/{$config['admin_dir']}/index.php?module=config-plugins");
 

@@ -186,7 +186,7 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 	// get all the users of those specific groups
 	$groups_in = implode(',', array_keys($usergroups));
 
-	// if there were no groups . . .
+	// if there were no groups...
 	if (!$groups_in) {
 		// there is nothing to show
 		return false;
@@ -210,7 +210,7 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 
 	// loop through our users
 	while ($user = $db->fetch_array($query)) {
-		// if displaygroup is not 0 (display primary group) . . .
+		// if displaygroup is not 0, display primary group
 		if ($user['displaygroup'] != 0) {
 			// then use this group
 			$group = $user['displaygroup'];
@@ -231,7 +231,7 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 
 	// loop through each user group
 	foreach ($usergroups as $usergroup) {
-		// if there are no users or we have reached our limit . . .
+		// if there are no users or we have reached our limit...
 		if (!isset($usergroup['user_list']) || $counter > $max_rows) {
 			// skip an iteration
 			continue;
@@ -250,7 +250,7 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 
 			// prepare the info
 			// alt and title for image are the same
-			$staff_avatar_alt = $staff_avatar_title = $user['username'] . '\'s profile';
+			$staff_avatar_alt = $staff_avatar_title = "{$user['username']}'s profile";
 
 			// if the user has an avatar then display it, otherwise force the default avatar.
 			$avatar_info = format_avatar($user['avatar']);
@@ -269,7 +269,7 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 			// badge alt and title are the same
 			$staff_badge_alt = $staff_badge_title = $usergroup['usertitle'];
 
-			// if the user's group has a badge image . . .
+			// if the user's group has a badge image...
 			$staff_badge = $staff_badge_alt;
 			if ($usergroup['image']) {
 				// store it (if nothing is store alt property will display group default usertitle)
@@ -291,7 +291,7 @@ EOF;
 		}
 	}
 
-	// if there were staff members online . . .
+	// if there were staff members online...
 	if ($online_staff) {
 		// show them
 		return $online_staff;

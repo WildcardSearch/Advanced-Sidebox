@@ -29,8 +29,8 @@ function asb_info()
 	$extra_links = '<br />';
 	$settings_link = asb_build_settings_link();
 	if ($settings_link) {
-		if (file_exists(MYBB_ROOT . 'inc/plugins/asb/cleanup.php') &&
-		   file_exists(MYBB_ROOT . 'inc/plugins/adv_sidebox/acp_functions.php')) {
+		if (file_exists(MYBB_ROOT.'inc/plugins/asb/cleanup.php') &&
+		   file_exists(MYBB_ROOT.'inc/plugins/adv_sidebox/acp_functions.php')) {
 			$remove_link = <<<EOF
 
 		<li>
@@ -141,7 +141,7 @@ function asb_install()
 
 	asb_create_script_info();
 
-	@unlink(MYBB_ROOT . 'inc/plugins/adv_sidebox.php');
+	@unlink(MYBB_ROOT.'inc/plugins/adv_sidebox.php');
 }
 
 /**
@@ -156,12 +156,12 @@ function asb_activate()
 
 	$myCache = AdvancedSideboxCache::getInstance();
 
-	// if we just upgraded . . .
+	// if we just upgraded...
 	$asbOldVersion = $myCache->getVersion();
 	if (isset($asbOldVersion) &&
 		$asbOldVersion &&
 		version_compare($asbOldVersion, ASB_VERSION, '<')) {
-		require_once MYBB_ROOT . 'inc/plugins/asb/upgrade.php';
+		require_once MYBB_ROOT.'inc/plugins/asb/upgrade.php';
 	}
 
 	$myCache->setVersion(ASB_VERSION);
@@ -250,7 +250,7 @@ function asb_get_settingsgroup()
 function asb_build_settings_url($gid)
 {
 	if ($gid) {
-		return 'index.php?module=config-settings&amp;action=change&amp;gid=' . $gid;
+		return 'index.php?module=config-settings&amp;action=change&amp;gid='.$gid;
 	}
 }
 
@@ -442,7 +442,7 @@ EOF;
 	foreach ($all_themes as $tid => $name) {
 		$name = addcslashes($name, '"');
 		$theme_select .= <<<EOF
-<option value=\"{$tid}\" " . (is_array(unserialize(\$setting['value'])) ? (\$setting['value'] != "" && in_array("{$tid}", unserialize(\$setting['value'])) ? "selected=\"selected\"":""):"") . ">{$name}</option>
+<option value=\"{$tid}\" ".(is_array(unserialize(\$setting['value'])) ? (\$setting['value'] != "" && in_array("{$tid}", unserialize(\$setting['value'])) ? "selected=\"selected\"":""):"").">{$name}</option>
 EOF;
 	}
 

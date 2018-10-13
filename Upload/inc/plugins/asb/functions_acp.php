@@ -140,8 +140,8 @@ function asb_build_footer_menu($page_key = '')
 		$page_key = 'manage_sideboxes';
 	}
 
-	$help_link = '&nbsp;' . asb_build_help_link($page_key);
-	$settings_link = '&nbsp;' . asb_build_settings_menu_link();
+	$help_link = '&nbsp;'.asb_build_help_link($page_key);
+	$settings_link = '&nbsp;'.asb_build_settings_menu_link();
 
 	if ($page_key == 'manage_sideboxes') {
 		$filter_links = asb_build_filter_selector($mybb->input['page']);
@@ -249,7 +249,7 @@ EOF;
 		$script_title_full = '';
 		if (strlen($script_title) > 15) {
 			$script_title_full = $script_title;
-			$script_title = substr($script_title, 0, 15) . '...';
+			$script_title = substr($script_title, 0, 15).'...';
 		}
 
 		$script_rows .= <<<EOF
@@ -379,7 +379,7 @@ function asb_build_sidebox_info($sidebox, $wrap = true, $ajax = false)
 	$module = $sidebox->get('box_type');
 
 	// visibility table
-	$visibility = '<span class="custom info">' . asb_build_permissions_table($sidebox) . '</span>';
+	$visibility = '<span class="custom info">'.asb_build_permissions_table($sidebox).'</span>';
 
 	// edit link
 	$edit_link = $html->url(array('action' => 'edit_box', 'id' => $id, 'addon' => $module, 'pos' => $pos));
@@ -441,7 +441,7 @@ function asb_detect_script_info($filename, $selected = array())
 		);
 	}
 
-	$full_path = '../' . trim($filename);
+	$full_path = '../'.trim($filename);
 	if (!file_exists($full_path)) {
 		return array(
 			'error' => 2,
@@ -502,7 +502,7 @@ function asb_detect_script_info($filename, $selected = array())
 			$$array_name = array_reverse($$array_name);
 
 			// store the HTML select box
-			$return_array[$array_name] = '<span style="font-weight: bold;">' . $lang->asb_detected . ' ' . $info[$key]['plural'] . ':</span><br />' . $form->generate_select_box("{$array_name}_options", $$array_name, $selected[$key], array('id' => "{$key}_selector")) . '<br /><br />';
+			$return_array[$array_name] = '<span style="font-weight: bold;">'.$lang->asb_detected.' '.$info[$key]['plural'].':</span><br />'.$form->generate_select_box("{$array_name}_options", $$array_name, $selected[$key], array('id' => "{$key}_selector")).'<br /><br />';
 		} else {
 			$varName = "asb_ajax_{$array_name}";
 			$noContent = $lang->sprintf($lang->asb_ajax_nothing_found, $lang->$varName);
@@ -564,7 +564,7 @@ function asb_build_filter_selector($filter)
 {
 	global $all_scripts;
 
-	// if there are active scripts . . .
+	// if there are active scripts...
 	if (!is_array($all_scripts) ||
 		empty($all_scripts)) {
 		return;
@@ -597,8 +597,8 @@ function asb_build_setting($this_form, $this_form_container, $setting)
 	$row_id = "row_{$element_id}";
 
 	// prepare labels
-	$this_label = '<strong>' . htmlspecialchars_uni($setting['title']) . '</strong>';
-	$this_desc = '<i>' . $setting['description'] . '</i>';
+	$this_label = '<strong>'.htmlspecialchars_uni($setting['title']).'</strong>';
+	$this_desc = '<i>'.$setting['description'].'</i>';
 
 	// sort by type
 	if ($type[0] == 'text' ||
@@ -620,7 +620,7 @@ function asb_build_setting($this_form, $this_form_container, $setting)
 		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_password_box($element_name, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $row_id));
 	} else if ($type[0] == 'php') {
 		$setting['optionscode'] = substr($setting['optionscode'], 3);
-		eval("\$setting_code = \"" . $setting['optionscode'] . "\";");
+		eval("\$setting_code = \"".$setting['optionscode']."\";");
 	} else {
 		for ($i=0; $i < count($type); $i++) {
 			$optionsexp = explode('=', $type[$i]);

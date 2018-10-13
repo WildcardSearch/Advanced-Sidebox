@@ -60,7 +60,7 @@ class CustomSidebox extends PortableObject010001
 	public function load($data)
 	{
 		if (parent::load($data)) {
-			$this->baseName = 'asb_custom_' . $this->id;
+			$this->baseName = 'asb_custom_'.$this->id;
 			return true;
 		}
 		return false;

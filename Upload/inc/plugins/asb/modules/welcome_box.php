@@ -151,7 +151,7 @@ EOF;
 
 		eval("\$welcometext = \"{$templates->get('asb_welcome_membertext')}\";");
 	} else {
-		$lang->asb_welcome_guest_welcome_registration = $lang->sprintf($lang->asb_welcome_guest_welcome_registration, $mybb->settings['bburl'] . '/member.php?action=register');
+		$lang->asb_welcome_guest_welcome_registration = $lang->sprintf($lang->asb_welcome_guest_welcome_registration, $mybb->settings['bburl'].'/member.php?action=register');
 		$mybb->user['username'] = $lang->guest;
 		switch ($mybb->settings['username_method']) {
 		case 0:
@@ -171,7 +171,7 @@ EOF;
 	}
 
 	$lang->welcome = $lang->sprintf($lang->welcome, $mybb->user['username']);
-	eval("\$" . $template_var . " = \"{$templates->get('asb_welcome')}\";");
+	eval("\$".$template_var." = \"{$templates->get('asb_welcome')}\";");
 	return true;
 }
 
