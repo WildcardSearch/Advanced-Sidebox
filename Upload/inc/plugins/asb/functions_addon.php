@@ -51,7 +51,7 @@ function asb_strip_url($message)
  * @param  bool present the id list as SQL IN()?
  * @return string id list
  */
-function asb_build_id_list($ids, $field = 'id', $wrap = true)
+function asb_build_id_list($ids, $field='id', $wrap=true)
 {
 	if (strlen($ids) == 0) {
 		return false;
@@ -97,7 +97,7 @@ EOF;
  * @param  bool prefix and enclose the conditions in parentheses?
  * @return string SQL WHERE clause
  */
-function asb_build_SQL_where($conditions, $op = 'AND', $prefix = '', $wrap = true)
+function asb_build_SQL_where($conditions, $op='AND', $prefix='', $wrap=true)
 {
 	if (is_array($conditions)) {
 		$sep = '';
@@ -129,7 +129,7 @@ function asb_build_SQL_where($conditions, $op = 'AND', $prefix = '', $wrap = tru
  * @param  bool recurse into subfolders?
  * @return string list of file names
  */
-function asb_get_folder_images($folder, $subfolder = '', $recursive = false)
+function asb_get_folder_images($folder, $subfolder='', $recursive=false)
 {
 	// bad folder, get out
 	if (!$folder ||

@@ -13,7 +13,7 @@
  * @param  string topic keyword
  * @return string html
  */
-function asb_build_help_link($topic = '')
+function asb_build_help_link($topic='')
 {
 	global $mybb, $lang, $html, $cp_style;
 
@@ -132,7 +132,7 @@ function asb_output_footer($page_key)
  * @param  string topic key
  * @return string html
  */
-function asb_build_footer_menu($page_key = '')
+function asb_build_footer_menu($page_key='')
 {
 	global $mybb;
 
@@ -363,7 +363,7 @@ EOF;
  * @param  bool produce delete link?
  * @return string html
  */
-function asb_build_sidebox_info($sidebox, $wrap = true, $ajax = false)
+function asb_build_sidebox_info($sidebox, $wrap=true, $ajax=false)
 {
 	// must be a valid object
 	if ($sidebox instanceof SideboxObject == false ||
@@ -430,7 +430,7 @@ function asb_cache_has_changed()
  * @param  array
  * @return array script component information
  */
-function asb_detect_script_info($filename, $selected = array())
+function asb_detect_script_info($filename, $selected=array())
 {
 	global $lang;
 

@@ -37,7 +37,8 @@ if (defined('IN_ADMINCP')) {
  *
  * @param string the name of the class to load
  */
-function asbClassAutoload($className) {
+function asbClassAutoload($className)
+{
 	$path = MYBB_ROOT."inc/plugins/asb/classes/{$className}.php";
 
 	if (file_exists($path)) {

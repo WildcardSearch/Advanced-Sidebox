@@ -289,7 +289,7 @@ function asb_build_settings_link()
  * @param  bool return associative array?
  * @return array|true see above dependency
  */
-function asb_create_script_info($return = false)
+function asb_create_script_info($return=false)
 {
 	$scripts = array(
 		'index' => array(

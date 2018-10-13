@@ -53,7 +53,7 @@ function asb_do_checks()
  *
  * @return array|bool excluded themes or false
  */
-function asb_get_excluded_themes($sql = false)
+function asb_get_excluded_themes($sql=false)
 {
 	global $mybb;
 
@@ -79,7 +79,7 @@ function asb_get_excluded_themes($sql = false)
  * @param  array script environment info
  * @return string filename marked up for asb
  */
-function asb_build_script_filename($this_script = '')
+function asb_build_script_filename($this_script='')
 {
 	if ($this_script instanceof ScriptInfo) {
 		$this_script = $this_script->get('data');
@@ -122,7 +122,7 @@ function asb_build_script_filename($this_script = '')
  * 	should be loaded along with the other info
  * @return array script info
  */
-function asb_get_this_script($asb, $get_all = false)
+function asb_get_this_script($asb, $get_all=false)
 {
 	global $mybb;
 
@@ -388,7 +388,7 @@ function asb_get_all_custom()
  * @param  string script filter
  * @return array SideboxObject
  */
-function asb_get_all_sideboxes($good_script = '')
+function asb_get_all_sideboxes($good_script='')
 {
 	global $db;
 
@@ -442,7 +442,7 @@ function asb_get_all_scripts()
  *
  * @return string|bool html or false
  */
-function asb_get_all_themes($full = false)
+function asb_get_all_themes($full=false)
 {
 	global $db;
 
