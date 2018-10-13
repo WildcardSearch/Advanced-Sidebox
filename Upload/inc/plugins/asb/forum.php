@@ -25,7 +25,7 @@ function asb_start()
 		return;
 	}
 
-	$asb = asb_get_cache();
+	$asb = AdvancedSideboxCache::getInstance()->getCache();
 	$this_script = asb_get_this_script($asb, true);
 
 	// no boxes, get out
@@ -355,7 +355,7 @@ function asb_initialize()
 	}
 
 	// get the cache
-	$asb = asb_get_cache();
+	$asb = AdvancedSideboxCache::getInstance()->getCache();
 	$this_script = asb_get_this_script($asb, true);
 
 	// anything to show for this script?
