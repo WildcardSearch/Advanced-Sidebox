@@ -847,6 +847,10 @@ EOF;
 		$page->output_header("{$lang->asb} - {$action}");
 		asbOutputTabs('asb_add_custom');
 
+		$onClick = <<<EOF
+if (!$('#box_name').val() || !editor.getValue()) { $.jGrowl('{$lang->asb_custom_box_save_failure_no_content}', { theme: 'error' }); return false; }
+EOF;
+
 		$form = new Form($html->url(array('action' => 'custom_boxes')).$specifyBox, 'post', 'edit_box');
 		$formContainer = new FormContainer($currentlyEditing);
 
@@ -873,7 +877,7 @@ EOF;
 
 		// finish form
 		$formContainer->end();
-		$buttons[] = $form->generate_submit_button('Save', array('name' => 'save_box_submit'));
+		$buttons[] = $form->generate_submit_button('Save', array('name' => 'save_box_submit', 'onclick' => $onClick));
 		$form->output_submit_wrapper($buttons);
 		$form->end();
 
