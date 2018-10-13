@@ -850,10 +850,9 @@ EOF;
 		$form = new Form($html->url(array('action' => 'custom_boxes')).$specifyBox, 'post', 'edit_box');
 		$formContainer = new FormContainer($currentlyEditing);
 
-		$formContainer->output_cell($lang->asb_name);
-		$formContainer->output_cell($lang->asb_description);
-		$formContainer->output_cell($lang->asb_custom_box_wrap_content);
-		$formContainer->output_row('');
+		$formContainer->output_row_header($lang->asb_name);
+		$formContainer->output_row_header($lang->asb_description);
+		$formContainer->output_row_header($lang->asb_custom_box_wrap_content);
 
 		// name
 		$formContainer->output_cell($form->generate_text_box('box_name', $custom->get('title'), array('id' => 'box_name')));
@@ -863,14 +862,14 @@ EOF;
 
 		// wrap content?
 		$formContainer->output_cell($form->generate_check_box('wrap_content', 'yes', $lang->asb_custom_box_wrap_content_desc, array('checked' => $custom->get('wrap_content'))));
-		$formContainer->output_row('');
+		$formContainer->construct_row();
 
 		$formContainer->output_cell('Content:', array('colspan' => 3));
-		$formContainer->output_row('');
+		$formContainer->construct_row();
 
 		// content
 		$formContainer->output_cell($form->generate_text_area('box_content', $custom->get('content'), array('id' => 'box_content', 'class' => '', 'style' => 'width: 100%; height: 500px;')), array('colspan' => 3));
-		$formContainer->output_row('');
+		$formContainer->construct_row();
 
 		// finish form
 		$formContainer->end();
