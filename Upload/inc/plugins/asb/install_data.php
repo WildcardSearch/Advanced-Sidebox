@@ -105,7 +105,7 @@ $columns = array(
 	),
 );
 
-$update_themes_link = "<ul><li><a href=\"".ASB_URL."&amp;action=update_theme_select\" title=\"\">{$lang->asb_theme_exclude_select_update_link}</a><br />{$lang->asb_theme_exclude_select_update_description}</li></ul>";
+$updateThemeExcludeLink = "<ul><li><a href=\"".ASB_URL."&amp;action=update_theme_select\" title=\"\">{$lang->asb_theme_exclude_select_update_link}</a><br />{$lang->asb_theme_exclude_select_update_description}</li></ul>";
 
 $settings = array(
 	'asb_settings' => array(
@@ -166,8 +166,8 @@ $settings = array(
 				'sid' => '0',
 				'name' => 'asb_exclude_theme',
 				'title' => $lang->asb_theme_exclude_list.':',
-				'description' => $db->escape_string($lang->asb_theme_exclude_list_description.$update_themes_link),
-				'optionscode' => $db->escape_string(asb_build_theme_exclude_select()),
+				'description' => $db->escape_string($lang->asb_theme_exclude_list_description.$updateThemeExcludeLink),
+				'optionscode' => $db->escape_string(asbBuildThemeExcludeSelect()),
 				'value' => '',
 				'disporder' => '60',
 			),

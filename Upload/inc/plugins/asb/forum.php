@@ -21,22 +21,22 @@ function asb_start()
 	global $mybb, $theme;
 
 	// don't waste execution if unnecessary
-	if (!asb_do_checks()) {
+	if (!asbDoStartupChecks()) {
 		return;
 	}
 
 	$asb = AdvancedSideboxCache::getInstance()->getCache();
-	$this_script = asb_get_this_script($asb, true);
+	$script = asbGetCurrentScript($asb, true);
 
 	// no boxes, get out
-	if (!is_array($this_script['sideboxes']) ||
-	   empty($this_script['sideboxes']) ||
-	   (empty($this_script['sideboxes'][0]) &&
-	   empty($this_script['sideboxes'][1])) ||
-	   ((strlen($this_script['find_top']) == 0 ||
-	   strlen($this_script['find_bottom']) == 0) &&
-	   (!$this_script['replace_all'] &&
-	   !$this_script['eval']))) {
+	if (!is_array($script['sideboxes']) ||
+	   empty($script['sideboxes']) ||
+	   (empty($script['sideboxes'][0]) &&
+	   empty($script['sideboxes'][1])) ||
+	   ((strlen($script['find_top']) == 0 ||
+	   strlen($script['find_bottom']) == 0) &&
+	   (!$script['replace_all'] &&
+	   !$script['eval']))) {
 		return;
 	}
 
@@ -48,12 +48,12 @@ function asb_start()
 	// make sure this script's width is within range 120-800 (120 because the templates
 	// aren't made to work any smaller and tbh 800 is kind of arbitrary :s
 	foreach (array('left' => 0, 'right' => 1) as $key => $pos) {
-		$width[$pos] = (int) max(120, min(800, $this_script["width_{$key}"]));
+		$width[$pos] = (int) max(120, min(800, $script["width_{$key}"]));
 	}
 
 	// does this column have boxes?
-	if (!is_array($this_script['sideboxes']) ||
-		empty($this_script['sideboxes'])) {
+	if (!is_array($script['sideboxes']) ||
+		empty($script['sideboxes'])) {
 		return;
 	}
 
@@ -61,7 +61,7 @@ function asb_start()
 	require_once MYBB_ROOT.'inc/plugins/asb/functions_addon.php';
 
 	// loop through all the boxes for the script
-	foreach ($this_script['sideboxes'] as $pos => $sideboxes) {
+	foreach ($script['sideboxes'] as $pos => $sideboxes) {
 		// does this column have boxes?
 		if (!is_array($sideboxes) ||
 			empty($sideboxes)) {
@@ -79,7 +79,7 @@ function asb_start()
 			$sidebox = new SideboxObject($asb['sideboxes'][$id]);
 
 			// can the user view this side box?
-			if (!asb_check_user_permissions($sidebox->get('groups'))) {
+			if (!asbCheckUserPermissions($sidebox->get('groups'))) {
 				continue;
 			}
 
@@ -129,13 +129,13 @@ function asb_start()
 			 */
 			if ($result ||
 				$mybb->settings['asb_show_empty_boxes']) {
-				$boxes[$pos] .= asb_build_sidebox_content($sidebox->get('data'));
+				$boxes[$pos] .= asbBuildSideBoxContent($sidebox->get('data'));
 			}
 		}
 	}
 
 	// make the edits
-	asb_edit_template($boxes, $width, $this_script);
+	asb_edit_template($boxes, $width, $script);
 }
 
 /**
@@ -154,8 +154,8 @@ function asb_edit_template($boxes, $width, $script)
 		$min = '.min';
 	}
 
-	$left_insert = $boxes[0];
-	$right_insert = $boxes[1];
+	$leftInsert = $boxes[0];
+	$rightInsert = $boxes[1];
 	$width_left = $width[0];
 	$width_right = $width[1];
 	$toggles = $show = array();
@@ -208,15 +208,15 @@ EOF;
 
 	foreach (array('left', 'right') as $key) {
 		// if there is content
-		$var_name = "{$key}_insert";
-		if ($$var_name) {
-			$prop_name = "{$key}_content";
-			$width_name = "width_{$key}";
-			$width = $$width_name;
+		$varName = "{$key}Insert";
+		if ($$varName) {
+			$propName = "{$key}_content";
+			$widthName = "width_{$key}";
+			$width = $$widthName;
 			$show_column = $show[$key];
 			$column_id = "asb_{$key}_column_id";
-			$insert_name = "{$key}_insert";
-			$sideboxes = $$insert_name;
+			$insertName = $varName;
+			$sideboxes = $$insertName;
 
 			eval("\$content_pad = \"{$templates->get('asb_content_pad')}\";");
 			eval("\$content = \"{$templates->get('asb_sidebox_column')}\";");
@@ -226,7 +226,7 @@ EOF;
 			$$toggle_name = $toggles[$key];
 
 			// finally set $POSITION_content for ::make_edits()
-			$$prop_name = <<<EOF
+			$$propName = <<<EOF
 
 		<!-- start: ASB {$key} column -->{$toggle_left}
 		{$content}
@@ -234,8 +234,8 @@ EOF;
 EOF;
 		}
 	}
-	eval("\$insert_top = \"{$templates->get('asb_begin')}\";");
-	eval("\$insert_bottom = \"{$templates->get('asb_end')}\";");
+	eval("\$insertTop = \"{$templates->get('asb_begin')}\";");
+	eval("\$insertBottom = \"{$templates->get('asb_end')}\";");
 
 	if (is_array($script['extra_scripts']) &&
 		!empty($script['extra_scripts'])) {
@@ -243,7 +243,7 @@ EOF;
 		$dateline = TIME_NOW;
 		foreach ($script['extra_scripts'] as $id => $info) {
 			// build the JS objects to pass to the custom object builder
-			$extra_scripts .= <<<EOF
+			$extraScripts .= <<<EOF
 {$sep}{ addon: '{$info['module']}', id: {$id}, position: {$info['position']}, rate: {$info['rate']}, dateline: {$dateline} }
 EOF;
 			$sep = ', ';
@@ -256,7 +256,7 @@ EOF;
 <script type="text/javascript">
 <!--
 $(function() {
-	ASB.ajax.buildUpdaters([ {$extra_scripts} ], { left: {$width_left}, right: {$width_right} }, '{$location}');
+	ASB.ajax.buildUpdaters([ {$extraScripts} ], { left: {$width_left}, right: {$width_right} }, '{$location}');
 });
 // -->
 </script>
@@ -264,15 +264,15 @@ EOF;
 	}
 
 	if (is_array($script['js'])) {
-		foreach ($script['js'] as $script_name) {
-			$script_name .= $min;
-			if (!file_exists(MYBB_ROOT."jscripts/asb/{$script_name}.js")) {
+		foreach ($script['js'] as $scriptName) {
+			$scriptName .= $min;
+			if (!file_exists(MYBB_ROOT."jscripts/asb/{$scriptName}.js")) {
 				continue;
 			}
 
 			$headerinclude .= <<<EOF
 
-<script type="text/javascript" src="jscripts/asb/{$script_name}.js"></script>
+<script type="text/javascript" src="jscripts/asb/{$scriptName}.js"></script>
 EOF;
 		}
 	}
@@ -282,7 +282,7 @@ EOF;
 		// if there is content
 		if ($script['replacement']) {
 			// replace the existing page entirely
-			$templates->cache[$script['template_name']] = str_replace(array('{$asb_left}', '{$asb_right}'), array($insert_top, $insert_bottom), $script['replacement']);
+			$templates->cache[$script['template_name']] = str_replace(array('{$asb_left}', '{$asb_right}'), array($insertTop, $insertBottom), $script['replacement']);
 		}
 	// outputting to variables? (custom script/Page Manager)
 	} elseif($script['eval']) {
@@ -298,22 +298,22 @@ EOF;
 		}
 
 		// now eval() their content for the custom script
-		eval("\$asb_left = \"".str_replace("\\'", "'", addslashes($insert_top))."\";");
-		eval("\$asb_right = \"".str_replace("\\'", "'", addslashes($insert_bottom))."\";");
+		eval("\$asb_left = \"".str_replace("\\'", "'", addslashes($insertTop))."\";");
+		eval("\$asb_right = \"".str_replace("\\'", "'", addslashes($insertBottom))."\";");
 	// otherwise we are editing the template in the cache
 	} else {
 		// if there are columns stored
-		if ($insert_top ||
-			$insert_bottom) {
+		if ($insertTop ||
+			$insertBottom) {
 			// make the edits
 			$script['find_top'] = str_replace("\r", '', $script['find_top']);
 			$script['find_bottom'] = str_replace("\r", '', $script['find_bottom']);
-			$find_top_pos = strpos($templates->cache[$script['template_name']], $script['find_top']);
+			$topPosition = strpos($templates->cache[$script['template_name']], $script['find_top']);
 
-			if ($find_top_pos !== false) {
-				$find_bottom_pos = strpos($templates->cache[$script['template_name']], $script['find_bottom']);
+			if ($topPosition !== false) {
+				$bottomPosition = strpos($templates->cache[$script['template_name']], $script['find_bottom']);
 
-				if ($find_bottom_pos !== false) {
+				if ($bottomPosition !== false) {
 					/*
 					 * split the template in 3 parts and splice our columns in after 1 and before 3
 					 * it is important that we function this way so we can work with the
@@ -321,11 +321,11 @@ EOF;
 					  * than replacing multiple found instances
 					 */
 					$templates->cache[$script['template_name']] =
-						substr($templates->cache[$script['template_name']], 0, $find_top_pos + strlen($script['find_top'])) .
-						$insert_top .
-						substr($templates->cache[$script['template_name']], $find_top_pos + strlen($script['find_top']), $find_bottom_pos - ($find_top_pos + strlen($script['find_top']))) .
-						$insert_bottom .
-						substr($templates->cache[$script['template_name']], $find_bottom_pos);
+						substr($templates->cache[$script['template_name']], 0, $topPosition + strlen($script['find_top'])) .
+						$insertTop .
+						substr($templates->cache[$script['template_name']], $topPosition + strlen($script['find_top']), $bottomPosition - ($topPosition + strlen($script['find_top']))) .
+						$insertBottom .
+						substr($templates->cache[$script['template_name']], $bottomPosition);
 				}
 			}
 		}
@@ -345,8 +345,8 @@ function asb_initialize()
 	switch (THIS_SCRIPT) {
 	case 'usercp.php':
 		if ($mybb->settings['asb_allow_user_disable']) {
-			$plugins->add_hook('usercp_options_end', 'asb_usercp_options_end');
-			$plugins->add_hook('usercp_do_options_end', 'asb_usercp_options_end');
+			$plugins->add_hook('usercp_options_end', 'asbUserCpOptionsEnd');
+			$plugins->add_hook('usercp_do_options_end', 'asbUserCpOptionsEnd');
 		}
 		break;
 	case 'xmlhttp.php':
@@ -356,27 +356,27 @@ function asb_initialize()
 
 	// get the cache
 	$asb = AdvancedSideboxCache::getInstance()->getCache();
-	$this_script = asb_get_this_script($asb, true);
+	$script = asbGetCurrentScript($asb, true);
 
 	// anything to show for this script?
-	if (!is_array($this_script['sideboxes']) ||
-		empty($this_script['sideboxes'])) {
+	if (!is_array($script['sideboxes']) ||
+		empty($script['sideboxes'])) {
 		return;
 	}
 
 	// then add the hook...one priority lower than Page Manager ;-) we need to run first
-	$plugins->add_hook($this_script['hook'], 'asb_start', 9);
+	$plugins->add_hook($script['hook'], 'asb_start', 9);
 
 	// cache any script-specific templates (read: templates used by add-ons used in the script)
-	$template_list = '';
-	if (is_array($this_script['templates']) &&
-		!empty($this_script['templates'])) {
-		$template_list = ','.implode(',', $this_script['templates']);
+	$addedTemplates = '';
+	if (is_array($script['templates']) &&
+		!empty($script['templates'])) {
+		$addedTemplates = ','.implode(',', $script['templates']);
 	}
 
 	// add the extra templates (if any) to our base stack
 	global $templatelist;
-	$templatelist .= ',asb_begin,asb_end,asb_sidebox_column,asb_wrapped_sidebox,asb_toggle_icon,asb_content_pad,asb_expander'.$template_list;
+	$templatelist .= ',asb_begin,asb_end,asb_sidebox_column,asb_wrapped_sidebox,asb_toggle_icon,asb_content_pad,asb_expander'.$addedTemplates;
 }
 
 /**
@@ -384,7 +384,7 @@ function asb_initialize()
  *
  * @return void
  */
-function asb_usercp_options_end()
+function asbUserCpOptionsEnd()
 {
 	global $db, $mybb, $templates, $user, $lang;
 
@@ -403,7 +403,7 @@ function asb_usercp_options_end()
 		$checked = 'checked="checked" ';
 	}
 
-	$usercp_option = <<<EOF
+	$userCpOption = <<<EOF
 	<td valign="top" width="1">
 		<input type="checkbox" class="checkbox" name="showsidebox" id="showsidebox" value="1" {$checked}/>
 	</td>
@@ -420,7 +420,7 @@ EOF;
 	$find = <<<EOF
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="showredirect"
 EOF;
-    $templates->cache['usercp_options'] = str_replace($find, $usercp_option, $templates->cache['usercp_options']);
+    $templates->cache['usercp_options'] = str_replace($find, $userCpOption, $templates->cache['usercp_options']);
 }
 
 /**

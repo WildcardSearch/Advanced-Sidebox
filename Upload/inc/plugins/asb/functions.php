@@ -12,14 +12,14 @@
  *
  * @return bool success/fail
  */
-function asb_do_checks()
+function asbDoStartupChecks()
 {
 	global $mybb, $theme;
 
 	// if the EXCLUDE list isn't empty and this theme is listed...
-	$exclude_list = asb_get_excluded_themes();
-	if ($exclude_list &&
-		in_array($theme['tid'], $exclude_list)) {
+	$excludedArray = asbGetExcludedThemes();
+	if ($excludedArray &&
+		in_array($theme['tid'], $excludedArray)) {
 		// no side boxes for you
 		return false;
 	}
@@ -53,24 +53,24 @@ function asb_do_checks()
  *
  * @return array|bool excluded themes or false
  */
-function asb_get_excluded_themes($sql=false)
+function asbGetExcludedThemes($sql=false)
 {
 	global $mybb;
 
-	$retval = unserialize($mybb->settings['asb_exclude_theme']);
-	if (!is_array($retval) ||
-		empty($retval)) {
-		$retval = false;
+	$returnVal = unserialize($mybb->settings['asb_exclude_theme']);
+	if (!is_array($returnVal) ||
+		empty($returnVal)) {
+		$returnVal = false;
 	}
 
 	if ($sql) {
-		if ($retval) {
-			$retval = ' AND pid NOT IN('.implode(',', $retval).')';
+		if ($returnVal) {
+			$returnVal = ' AND pid NOT IN('.implode(',', $returnVal).')';
 		} else {
-			$retval = '';
+			$returnVal = '';
 		}
 	}
-	return $retval;
+	return $returnVal;
 }
 
 /**
@@ -79,37 +79,37 @@ function asb_get_excluded_themes($sql=false)
  * @param  array script environment info
  * @return string filename marked up for asb
  */
-function asb_build_script_filename($this_script='')
+function asbBuildScriptFilename($script='')
 {
-	if ($this_script instanceof ScriptInfo) {
-		$this_script = $this_script->get('data');
+	if ($script instanceof ScriptInfo) {
+		$script = $script->get('data');
 	}
 
 	// no info means use the MyBB values
-	if (!is_array($this_script) ||
-		empty($this_script)) {
+	if (!is_array($script) ||
+		empty($script)) {
 		global $mybb;
-		$this_script = array(
+		$script = array(
 			'filename' => THIS_SCRIPT,
 			'action' => $mybb->input['action'],
 			'page' => $mybb->input['page'],
 		);
 	}
 
-	$this_script = array_map('trim', $this_script);
+	$script = array_map('trim', $script);
 
 	// if there is nothing to work with...
-	if (!$this_script['filename']) {
+	if (!$script['filename']) {
 		return;
 	}
 
 	// build each piece
-	$filename = $this_script['filename'];
+	$filename = $script['filename'];
 	foreach (array('action', 'page') as $key) {
-		if (!$this_script[$key]) {
+		if (!$script[$key]) {
 			continue;
 		}
-		$filename .= "&{$key}={$this_script[$key]}";
+		$filename .= "&{$key}={$script[$key]}";
 	}
 	return $filename;
 }
@@ -122,13 +122,13 @@ function asb_build_script_filename($this_script='')
  * 	should be loaded along with the other info
  * @return array script info
  */
-function asb_get_this_script($asb, $get_all=false)
+function asbGetCurrentScript($asb, $getAll=false)
 {
 	global $mybb;
 
 	if (is_array($asb['scripts'][THIS_SCRIPT]) &&
 		!empty($asb['scripts'][THIS_SCRIPT])) {
-		$return_array = $asb['scripts'][THIS_SCRIPT];
+		$returnArray = $asb['scripts'][THIS_SCRIPT];
 	}
 
 	foreach (array('action', 'page') as $key) {
@@ -142,29 +142,29 @@ function asb_get_this_script($asb, $get_all=false)
 			empty($asb['scripts'][$filename])) {
 			continue;
 		}
-		$return_array = $asb['scripts'][$filename];
+		$returnArray = $asb['scripts'][$filename];
 	}
 
-	if (empty($return_array) ||
-		!is_array($return_array)) {
+	if (empty($returnArray) ||
+		!is_array($returnArray)) {
 		return;
 	}
 
 	// merge any globally visible (script-wise) side boxes with this script
-	$return_array['template_vars'] = array_merge((array) $asb['scripts']['global']['template_vars'], (array) $return_array['template_vars']);
-	$return_array['extra_scripts'] = (array) $asb['scripts']['global']['extra_scripts'] + (array) $return_array['extra_scripts'];
-	$return_array['js'] = (array) $asb['scripts']['global']['js'] + (array) $return_array['js'];
+	$returnArray['template_vars'] = array_merge((array) $asb['scripts']['global']['template_vars'], (array) $returnArray['template_vars']);
+	$returnArray['extra_scripts'] = (array) $asb['scripts']['global']['extra_scripts'] + (array) $returnArray['extra_scripts'];
+	$returnArray['js'] = (array) $asb['scripts']['global']['js'] + (array) $returnArray['js'];
 
 	// the template handler does not need side boxes and templates
-	if (!$get_all) {
-		return $return_array;
+	if (!$getAll) {
+		return $returnArray;
 	}
 
 	// asb_start() and asb_initialize() do
-	$return_array['sideboxes'][0] = asb_merge_sidebox_list($asb, (array) $asb['scripts']['global']['sideboxes'][0], (array) $return_array['sideboxes'][0]);
-	$return_array['sideboxes'][1] = asb_merge_sidebox_list($asb, (array) $asb['scripts']['global']['sideboxes'][1], (array) $return_array['sideboxes'][1]);
-	$return_array['templates'] = array_merge((array) $asb['scripts']['global']['templates'], (array) $return_array['templates']);
-	return $return_array;
+	$returnArray['sideboxes'][0] = asbMergeSideBoxList($asb, (array) $asb['scripts']['global']['sideboxes'][0], (array) $returnArray['sideboxes'][0]);
+	$returnArray['sideboxes'][1] = asbMergeSideBoxList($asb, (array) $asb['scripts']['global']['sideboxes'][1], (array) $returnArray['sideboxes'][1]);
+	$returnArray['templates'] = array_merge((array) $asb['scripts']['global']['templates'], (array) $returnArray['templates']);
+	return $returnArray;
 }
 
 /**
@@ -174,7 +174,7 @@ function asb_get_this_script($asb, $get_all=false)
  * @param  array two or more arrays of side box ids => module names
  * @return array an array with the merged and sorted arrays
  */
-function asb_merge_sidebox_list($asb)
+function asbMergeSideBoxList($asb)
 {
 	// allow for variable amount of arguments
 	$args = func_get_args();
@@ -193,21 +193,21 @@ function asb_merge_sidebox_list($asb)
 	array_shift($args);
 
 	// merge all the passed arrays
-	$merged_array = array();
+	$mergedArray = array();
 	foreach ($args as $sideboxes) {
 		foreach ($sideboxes as $sidebox => $module) {
-			$merged_array[$sidebox] = $module;
+			$mergedArray[$sidebox] = $module;
 		}
 	}
 
 	// now sort them according to the original side box's display order
-	$return_array = array();
+	$returnArray = array();
 	foreach ($asb['sideboxes'] as $sidebox => $module) {
-		if (isset($merged_array[$sidebox])) {
-			$return_array[$sidebox] = $module['box_type'];
+		if (isset($mergedArray[$sidebox])) {
+			$returnArray[$sidebox] = $module['box_type'];
 		}
 	}
-	return $return_array;
+	return $returnArray;
 }
 
 /**
@@ -216,37 +216,37 @@ function asb_merge_sidebox_list($asb)
  * @param  array allowed groups
  * @return bool allowed/not
  */
-function asb_check_user_permissions($good_groups)
+function asbCheckUserPermissions($allowedGroups)
 {
 	// no groups = all groups says wildy
-	if (empty($good_groups)) {
+	if (empty($allowedGroups)) {
 		return true;
 	}
 
 	// array-ify the list if necessary
-	if (!is_array($good_groups)) {
-		$good_groups = explode(',', $good_groups);
+	if (!is_array($allowedGroups)) {
+		$allowedGroups = explode(',', $allowedGroups);
 	}
 
 	global $mybb;
 	if ($mybb->user['uid'] == 0) {
 		// guests don't require as much work ;-)
-		return in_array(0, $good_groups);
+		return in_array(0, $allowedGroups);
 	}
 
 	// get all the user's groups in one array
-	$users_groups = array($mybb->user['usergroup']);
+	$usersGroups = array($mybb->user['usergroup']);
 	if ($mybb->user['additionalgroups']) {
-		$adtl_groups = explode(',', $mybb->user['additionalgroups']);
-		$users_groups = array_merge($users_groups, $adtl_groups);
+		$additionalGroups = explode(',', $mybb->user['additionalgroups']);
+		$usersGroups = array_merge($usersGroups, $additionalGroups);
 	}
 
 	/*
-	 * if any overlaps occur then they will be in $test_array,
+	 * if any overlaps occur then they will be in $testArray,
 	 * empty returns true/false so !empty = true for allow and false for disallow
 	 */
-	$test_array = array_intersect($users_groups, $good_groups);
-	return !empty($test_array);
+	$testArray = array_intersect($usersGroups, $allowedGroups);
+	return !empty($testArray);
 }
 
 /**
@@ -255,14 +255,14 @@ function asb_check_user_permissions($good_groups)
  * @param  SideboxObject|array side box
  * @return string|bool html or false
  */
-function asb_build_sidebox_content($this_box)
+function asbBuildSideBoxContent($thisBox)
 {
 	// need good info
-	if ($this_box instanceof SideboxObject) {
-		$data = $this_box->get('data');
-	} else if (is_array($this_box) &&
-		!empty($this_box)) {
-		$data = $this_box;
+	if ($thisBox instanceof SideboxObject) {
+		$data = $thisBox->get('data');
+	} else if (is_array($thisBox) &&
+		!empty($thisBox)) {
+		$data = $thisBox;
 	} else {
 		return false;
 	}
@@ -332,9 +332,9 @@ EOF;
  *
  * @return array SideboxExternalModule
  */
-function asb_get_all_modules()
+function asbGetAllModules()
 {
-	$return_array = array();
+	$returnArray = array();
 
 	// load all detected modules
 	foreach (new DirectoryIterator(ASB_MODULES_DIR) as $file) {
@@ -356,9 +356,9 @@ function asb_get_all_modules()
 		$module = substr($filename, 0, strlen($filename) - 4);
 
 		// attempt to load the module
-		$return_array[$module] = new SideboxExternalModule($module);
+		$returnArray[$module] = new SideboxExternalModule($module);
 	}
-	return $return_array;
+	return $returnArray;
 }
 
 /**
@@ -366,20 +366,20 @@ function asb_get_all_modules()
  *
  * @return array CustomSidebox
  */
-function asb_get_all_custom()
+function asbGetAllCustomBoxes()
 {
 	global $db;
 
 	// get any custom boxes
-	$return_array = array();
+	$returnArray = array();
 
 	$query = $db->simple_select('asb_custom_sideboxes');
 	if ($db->num_rows($query) > 0) {
 		while ($data = $db->fetch_array($query)) {
-			$return_array['asb_custom_'.$data['id']] = new CustomSidebox($data);
+			$returnArray['asb_custom_'.$data['id']] = new CustomSidebox($data);
 		}
 	}
-	return $return_array;
+	return $returnArray;
 }
 
 /**
@@ -388,31 +388,31 @@ function asb_get_all_custom()
  * @param  string script filter
  * @return array SideboxObject
  */
-function asb_get_all_sideboxes($good_script='')
+function asbGetAllSideBoxes($allowedScript='')
 {
 	global $db;
 
 	// get any side boxes
-	$return_array = array();
+	$returnArray = array();
 
 	$query = $db->simple_select('asb_sideboxes', '*', '', array('order_by' => 'display_order', 'order_dir' => 'ASC'));
 	if ($db->num_rows($query) > 0) {
 		while ($data = $db->fetch_array($query)) {
 			$sidebox = new SideboxObject($data);
 
-			if ($good_script) {
+			if ($allowedScript) {
 				$scripts = $sidebox->get('scripts');
 				if (!empty($scripts) &&
-					!in_array($good_script, $scripts)) {
+					!in_array($allowedScript, $scripts)) {
 					continue;
 				}
 			}
 
 			// create the object and build basic data
-			$return_array[$data['id']] = $sidebox;
+			$returnArray[$data['id']] = $sidebox;
 		}
 	}
-	return $return_array;
+	return $returnArray;
 }
 
 /**
@@ -420,21 +420,21 @@ function asb_get_all_sideboxes($good_script='')
  *
  * @return array script data
  */
-function asb_get_all_scripts()
+function asbGetAllScripts()
 {
 	global $db;
 
 	// get all the active scripts' info
-	$return_array = array();
+	$returnArray = array();
 
 	$query = $db->simple_select('asb_script_info', '*', "active='1'");
 	if ($db->num_rows($query) > 0) {
-		while ($this_script = $db->fetch_array($query)) {
-			$filename = asb_build_script_filename($this_script);
-			$return_array[$filename] = $this_script;
+		while ($script = $db->fetch_array($query)) {
+			$filename = asbBuildScriptFilename($script);
+			$returnArray[$filename] = $script;
 		}
 	}
-	return $return_array;
+	return $returnArray;
 }
 
 /**
@@ -442,7 +442,7 @@ function asb_get_all_scripts()
  *
  * @return string|bool html or false
  */
-function asb_get_all_themes($full=false)
+function asbGetAllThemes($full=false)
 {
 	global $db;
 
@@ -450,11 +450,11 @@ function asb_get_all_themes($full=false)
 
 	if (!is_array($themeList)) {
 		if ($full != true) {
-			$excluded_themes = asb_get_excluded_themes(true);
+			$excludedThemes = asbGetExcludedThemes(true);
 		}
 
 		// get all the themes that are not MasterStyles
-		$query = $db->simple_select('themes', 'tid, name', "NOT pid='0'{$excluded_themes}");
+		$query = $db->simple_select('themes', 'tid, name', "NOT pid='0'{$excludedThemes}");
 
 		$themeList = array();
 		while ($thisTheme = $db->fetch_array($query)) {

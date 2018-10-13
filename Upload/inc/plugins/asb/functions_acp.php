@@ -13,7 +13,7 @@
  * @param  string topic keyword
  * @return string html
  */
-function asb_build_help_link($topic='')
+function asbBuildHelpLink($topic='')
 {
 	global $mybb, $lang, $html, $cp_style;
 
@@ -53,13 +53,13 @@ function asb_build_help_link($topic='')
  *
  * @return string html
  */
-function asb_build_settings_menu_link()
+function asbBuildSettingsMenuLink()
 {
 	global $mybb, $lang, $html, $cp_style;
 
-	$settings_url = asb_build_settings_url(asb_get_settingsgroup());
-	$settings_link = $html->link($settings_url, $lang->asb_plugin_settings, array('icon' => "styles/{$cp_style}/images/asb/settings.png", 'style' => 'font-weight: bold;', 'title' => $lang->asb_plugin_settings), array('alt' => 'S', 'style' => 'margin-bottom: -3px;'));
-	return $settings_link;
+	$settingsUrl = asbBuildSettingsUrl(asbGetSettingsGroup());
+	$settingsLink = $html->link($settingsUrl, $lang->asb_plugin_settings, array('icon' => "styles/{$cp_style}/images/asb/settings.png", 'style' => 'font-weight: bold;', 'title' => $lang->asb_plugin_settings), array('alt' => 'S', 'style' => 'margin-bottom: -3px;'));
+	return $settingsLink;
 }
 
 /**
@@ -68,48 +68,48 @@ function asb_build_settings_menu_link()
  * @param  string current tab
  * @return void
  */
-function asb_output_tabs($current)
+function asbOutputTabs($current)
 {
 	global $page, $lang, $mybb, $html;
 
 	// set up tabs
-	$sub_tabs['asb'] = array(
+	$tabs['asb'] = array(
 		'title' => $lang->asb_manage_sideboxes,
 		'link' => $html->url(),
 		'description' => $lang->asb_manage_sideboxes_desc,
 	);
 
-	$sub_tabs['asb_custom'] = array(
+	$tabs['asb_custom'] = array(
 		'title' => $lang->asb_custom_boxes,
 		'link' => $html->url(array('action' => 'custom_boxes')),
 		'description' => $lang->asb_custom_boxes_desc,
 	);
 
 	if (in_array($current, array('asb_add_custom', 'asb_custom'))) {
-		$sub_tabs['asb_add_custom'] = array(
+		$tabs['asb_add_custom'] = array(
 			'title' => $lang->asb_add_custom,
 			'link' => $html->url(array('action' => 'custom_boxes', 'mode' => 'edit')),
 			'description' => $lang->asb_add_custom_desc,
 		);
 	}
-	$sub_tabs['asb_scripts'] = array(
+	$tabs['asb_scripts'] = array(
 		'title' => $lang->asb_manage_scripts,
 		'link' => $html->url(array('action' => 'manage_scripts')),
 		'description' => $lang->asb_manage_scripts_desc,
 	);
 	if (in_array($current, array('asb_edit_script', 'asb_scripts'))) {
-		$sub_tabs['asb_edit_script'] = array(
+		$tabs['asb_edit_script'] = array(
 			'title' => $lang->asb_edit_script,
 			'link' => $html->url(array('action' => 'manage_scripts', 'mode' => 'edit')),
 			'description' => $lang->asb_edit_script_desc,
 		);
 	}
-	$sub_tabs['asb_modules'] = array(
+	$tabs['asb_modules'] = array(
 		'title' => $lang->asb_manage_modules,
 		'link' => $html->url(array('action' => 'manage_modules')),
 		'description' => $lang->asb_manage_modules_desc,
 	);
-	$page->output_nav_tabs($sub_tabs, $current);
+	$page->output_nav_tabs($tabs, $current);
 }
 
 /**
@@ -118,11 +118,11 @@ function asb_output_tabs($current)
  * @param  string current page
  * @return void
  */
-function asb_output_footer($page_key)
+function asbOutputFooter($pageKey)
 {
     global $page;
 
-	echo(asb_build_footer_menu($page_key));
+	echo(asbBuildFooterMenu($pageKey));
 	$page->output_footer();
 }
 
@@ -132,27 +132,27 @@ function asb_output_footer($page_key)
  * @param  string topic key
  * @return string html
  */
-function asb_build_footer_menu($page_key='')
+function asbBuildFooterMenu($pageKey='')
 {
 	global $mybb;
 
-	if (!$page_key) {
-		$page_key = 'manage_sideboxes';
+	if (!$pageKey) {
+		$pageKey = 'manage_sideboxes';
 	}
 
-	$help_link = '&nbsp;'.asb_build_help_link($page_key);
-	$settings_link = '&nbsp;'.asb_build_settings_menu_link();
+	$helpLink = '&nbsp;'.asbBuildHelpLink($pageKey);
+	$settingsLink = '&nbsp;'.asbBuildSettingsMenuLink();
 
-	if ($page_key == 'manage_sideboxes') {
-		$filter_links = asb_build_filter_selector($mybb->input['page']);
+	if ($pageKey == 'manage_sideboxes') {
+		$filterSelector = asbBuildFilterSelector($mybb->input['page']);
 	}
 
 	return <<<EOF
 
 <div class="asb_label">
-{$filter_links}
-	{$settings_link}
-	{$help_link}
+{$filterSelector}
+	{$settingsLink}
+	{$helpLink}
 </div>
 
 EOF;
@@ -164,24 +164,24 @@ EOF;
  * @param  int id
  * @return string html
  */
-function asb_build_permissions_table($sidebox)
+function asbBuildPermissionsTable($sidebox)
 {
-	global $lang, $all_scripts;
+	global $lang, $allScripts;
 
 	if ($sidebox instanceof SideboxObject == false ||
 		!$sidebox->isValid()) {
 		return $lang->asb_invalid_sidebox;
 	}
 
-	if (!$all_scripts) {
+	if (!$allScripts) {
 		return $lang->asb_no_active_scripts;
 	}
 
-	$visibility_rows = asb_build_visibility_rows($sidebox, $group_count, $global);
-	$theme_list = asb_build_theme_visibility_list($sidebox, $group_count + 1, $global);
+	$visibility_rows = asbBuildVisibilityRows($sidebox, $group_count, $global);
+	$themeList = asbBuildThemeVisibilityList($sidebox, $group_count + 1, $global);
 
 	return <<<EOF
-<table width="100%" class="box_info">{$visibility_rows}{$theme_list}
+<table width="100%" class="box_info">{$visibility_rows}{$themeList}
 </table>
 EOF;
 }
@@ -194,14 +194,14 @@ EOF;
  * @param  bool global visibility
  * @return string html
  */
-function asb_build_visibility_rows($sidebox, &$group_count, &$global)
+function asbBuildVisibilityRows($sidebox, &$group_count, &$global)
 {
-	global $db, $lang, $all_scripts;
+	global $db, $lang, $allScripts;
 
 	static $options;
 
-	if (!is_array($all_scripts) ||
-		empty($all_scripts)) {
+	if (!is_array($allScripts) ||
+		empty($allScripts)) {
 		return $lang->asb_no_active_scripts;
 	}
 
@@ -229,7 +229,7 @@ function asb_build_visibility_rows($sidebox, &$group_count, &$global)
 		} elseif (isset($groups[0]) && strlen($groups[0]) == 0) {
 			return "<tr><td>{$lang->asb_all_scripts_deactivated}</td></tr>";
 		} else {
-			$scripts = $all_scripts;
+			$scripts = $allScripts;
 		}
 	} elseif (isset($scripts[0]) &&
 		strlen($scripts[0]) == 0) {
@@ -245,7 +245,7 @@ EOF;
 	}
 
 	$script_rows = '';
-	foreach ($all_scripts as $script => $script_title) {
+	foreach ($allScripts as $script => $script_title) {
 		$script_title_full = '';
 		if (strlen($script_title) > 15) {
 			$script_title_full = $script_title;
@@ -315,11 +315,11 @@ EOF;
  * @param  bool global visibility
  * @return string html
  */
-function asb_build_theme_visibility_list($sidebox, $colspan, $global)
+function asbBuildThemeVisibilityList($sidebox, $colspan, $global)
 {
 	global $lang;
 
-	$themes = asb_get_all_themes();
+	$themes = asbGetAllThemes();
 	$good_themes = $sidebox->get('themes');
 
 	if (!$themes) {
@@ -328,20 +328,20 @@ function asb_build_theme_visibility_list($sidebox, $colspan, $global)
 
 	if (!$good_themes ||
 		count($good_themes) == count($themes)) {
-		$theme_list = $lang->asb_visibile_for_all_themes;
+		$themeList = $lang->asb_visibile_for_all_themes;
 		if ($global) {
 			return '';
 		}
 	} else {
-		$theme_list = '';
+		$themeList = '';
 		foreach ($themes as $tid => $name) {
 			if ($good_themes &&
 				!in_array($tid, $good_themes)) {
-				$theme_list .= <<<EOF
+				$themeList .= <<<EOF
 {$sep}<s>{$name}</s>
 EOF;
 			} else {
-				$theme_list .= <<<EOF
+				$themeList .= <<<EOF
 {$sep}{$name}
 EOF;
 			}
@@ -352,7 +352,7 @@ EOF;
 	return <<<EOF
 
 	<tr>
-		<td colspan="{$colspan}">{$theme_list}</td>
+		<td colspan="{$colspan}">{$themeList}</td>
 	</tr>
 EOF;
 }
@@ -363,7 +363,7 @@ EOF;
  * @param  bool produce delete link?
  * @return string html
  */
-function asb_build_sidebox_info($sidebox, $wrap=true, $ajax=false)
+function asbBuildSideBoxInfo($sidebox, $wrap=true, $ajax=false)
 {
 	// must be a valid object
 	if ($sidebox instanceof SideboxObject == false ||
@@ -371,7 +371,7 @@ function asb_build_sidebox_info($sidebox, $wrap=true, $ajax=false)
 		return false;
 	}
 
-	global $html, $scripts, $all_scripts, $lang, $cp_style;
+	global $html, $scripts, $allScripts, $lang, $cp_style;
 
 	$title = $sidebox->get('title');
 	$id = $sidebox->get('id');
@@ -379,25 +379,25 @@ function asb_build_sidebox_info($sidebox, $wrap=true, $ajax=false)
 	$module = $sidebox->get('box_type');
 
 	// visibility table
-	$visibility = '<span class="custom info">'.asb_build_permissions_table($sidebox).'</span>';
+	$visibility = '<span class="custom info">'.asbBuildPermissionsTable($sidebox).'</span>';
 
 	// edit link
-	$edit_link = $html->url(array('action' => 'edit_box', 'id' => $id, 'addon' => $module, 'pos' => $pos));
-	$edit_icon = <<<EOF
-<a href="{$edit_link}" class="info_icon" id="edit_sidebox_{$id}" title="{$lang->asb_edit}"><img src="styles/{$cp_style}/images/asb/edit.png" height="18" width="18" alt="{$lang->asb_edit}"/></a>
+	$editUrl = $html->url(array('action' => 'edit_box', 'id' => $id, 'addon' => $module, 'pos' => $pos));
+	$editIcon = <<<EOF
+<a href="{$editUrl}" class="info_icon" id="edit_sidebox_{$id}" title="{$lang->asb_edit}"><img src="styles/{$cp_style}/images/asb/edit.png" height="18" width="18" alt="{$lang->asb_edit}"/></a>
 EOF;
 
 	// delete link (only used if JS is disabled)
 	if (!$ajax) {
-		$delete_link = $html->url(array('action' => 'delete_box', 'id' => $id));
-		$delete_icon = <<<EOF
-<a href="{$delete_link}" class="del_icon" title="{$lang->asb_delete}"><img src="styles/{$cp_style}/images/asb/delete.png" height="18" width="18" alt="{$lang->asb_delete}"/></a>
+		$deleteUrl = $html->url(array('action' => 'delete_box', 'id' => $id));
+		$deleteIcon = <<<EOF
+<a href="{$deleteUrl}" class="del_icon" title="{$lang->asb_delete}"><img src="styles/{$cp_style}/images/asb/delete.png" height="18" width="18" alt="{$lang->asb_delete}"/></a>
 EOF;
 	}
 
 	// the content
 	$box = <<<EOF
-<span class="tooltip"><img class="info_icon" src="styles/{$cp_style}/images/asb/visibility.png" alt="Information" height="18" width="18"/>{$visibility}</span>{$edit_icon}{$delete_icon}{$title}
+<span class="tooltip"><img class="info_icon" src="styles/{$cp_style}/images/asb/visibility.png" alt="Information" height="18" width="18"/>{$visibility}</span>{$editIcon}{$deleteIcon}{$title}
 EOF;
 
 	// the <div> (if applicable)
@@ -417,7 +417,7 @@ EOF;
  *
  * @return void
  */
-function asb_cache_has_changed()
+function asbCacheHasChanged()
 {
 	AdvancedSideboxCache::getInstance()->update('has_changed', true);
 }
@@ -430,7 +430,7 @@ function asb_cache_has_changed()
  * @param  array
  * @return array script component information
  */
-function asb_detect_script_info($filename, $selected=array())
+function asbDetectScriptInfo($filename, $selected=array())
 {
 	global $lang;
 
@@ -441,14 +441,14 @@ function asb_detect_script_info($filename, $selected=array())
 		);
 	}
 
-	$full_path = '../'.trim($filename);
-	if (!file_exists($full_path)) {
+	$fullPath = '../'.trim($filename);
+	if (!file_exists($fullPath)) {
 		return array(
 			'error' => 2,
 		);
 	}
 
-	$contents = @file_get_contents($full_path);
+	$contents = @file_get_contents($fullPath);
 	if (!$contents) {
 		return array(
 			'error' => 3,
@@ -476,44 +476,44 @@ function asb_detect_script_info($filename, $selected=array())
 
 	$form = new Form('', '', '', 0, '', true);
 	foreach (array('hook', 'template', 'action') as $key) {
-		$array_name = "{$key}s";
-		$$array_name = array();
+		$element = "{$key}s";
+		$$element = array();
 
 		// find any references to the current object
 		preg_match_all($info[$key]['pattern'], $contents, $matches, PREG_SET_ORDER);
 		foreach ($matches as $match) {
 			// no duplicates and if there is a filter check it
-			if (!in_array($match[1], $$array_name) &&
-				(strlen(${$array_name}['filter'] == 0 ||
-				strpos($match[1], ${$array_name}['filter']) === false))) {
-				${$array_name}[$match[1]] = $match[1];
+			if (!in_array($match[1], $$element) &&
+				(strlen(${$element}['filter'] == 0 ||
+				strpos($match[1], ${$element}['filter']) === false))) {
+				${$element}[$match[1]] = $match[1];
 			}
 		}
 
 		// anything to show?
-		if (!empty($$array_name)) {
+		if (!empty($$element)) {
 
 			// sort the results, preserving keys
-			ksort($$array_name);
+			ksort($$element);
 
 			// make none = '' the first entry
-			$$array_name = array_reverse($$array_name);
-			${$array_name}[] = 'none';
-			$$array_name = array_reverse($$array_name);
+			$$element = array_reverse($$element);
+			${$element}[] = 'none';
+			$$element = array_reverse($$element);
 
 			// store the HTML select box
-			$return_array[$array_name] = '<span style="font-weight: bold;">'.$lang->asb_detected.' '.$info[$key]['plural'].':</span><br />'.$form->generate_select_box("{$array_name}_options", $$array_name, $selected[$key], array('id' => "{$key}_selector")).'<br /><br />';
+			$returnArray[$element] = '<span style="font-weight: bold;">'.$lang->asb_detected.' '.$info[$key]['plural'].':</span><br />'.$form->generate_select_box("{$element}_options", $$element, $selected[$key], array('id' => "{$key}_selector")).'<br /><br />';
 		} else {
-			$varName = "asb_ajax_{$array_name}";
+			$varName = "asb_ajax_{$element}";
 			$noContent = $lang->sprintf($lang->asb_ajax_nothing_found, $lang->$varName);
 
 			// store the no content message
-			$return_array[$array_name] = <<<EOF
+			$returnArray[$element] = <<<EOF
 <span style="font-style: italic;">{$noContent}</span>
 EOF;
 		}
 	}
-	return $return_array;
+	return $returnArray;
 }
 
 /**
@@ -522,7 +522,7 @@ EOF;
  * @param  array
  * @return void
  */
-function asb_legacy_custom_import($tree)
+function asbLegacyCustomImport($tree)
 {
 	global $lang;
 
@@ -536,19 +536,19 @@ function asb_legacy_custom_import($tree)
 			$property == 'value') {
 			continue;
 		}
-		$input_array[$property] = $value['value'];
+		$inputArray[$property] = $value['value'];
 	}
 
-	if ($input_array['content'] &&
-		$input_array['checksum'] &&
-		my_strtolower(md5(base64_decode($input_array['content']))) == my_strtolower($input_array['checksum'])) {
-		$input_array['content'] = trim(base64_decode($input_array['content']));
-		$input_array['title'] = $input_array['name'];
-		return $input_array;
+	if ($inputArray['content'] &&
+		$inputArray['checksum'] &&
+		my_strtolower(md5(base64_decode($inputArray['content']))) == my_strtolower($inputArray['checksum'])) {
+		$inputArray['content'] = trim(base64_decode($inputArray['content']));
+		$inputArray['title'] = $inputArray['name'];
+		return $inputArray;
 	}
 
 	$error = $lang->asb_custom_import_file_empty;
-	if ($input_array['content']) {
+	if ($inputArray['content']) {
 		$error = $lang->asb_custom_import_file_corrupted;
 	}
 	return $error;
@@ -560,18 +560,18 @@ function asb_legacy_custom_import($tree)
  * @param  string script to show or 'all_scripts' to avoid filtering altogether
  * @return string html
  */
-function asb_build_filter_selector($filter)
+function asbBuildFilterSelector($filter)
 {
-	global $all_scripts;
+	global $allScripts;
 
 	// if there are active scripts...
-	if (!is_array($all_scripts) ||
-		empty($all_scripts)) {
+	if (!is_array($allScripts) ||
+		empty($allScripts)) {
 		return;
 	}
 
 	global $lang, $html;
-	$options = array_merge(array('' => 'no filter'), $all_scripts);
+	$options = array_merge(array('' => 'no filter'), $allScripts);
 	$form = new Form($html->url(), 'post', 'script_filter', 0, 'script_filter');
 	echo($form->generate_select_box('page', $options, $filter));
 	echo($form->generate_submit_button('Filter', array('name' => 'filter')));
@@ -586,73 +586,73 @@ function asb_build_filter_selector($filter)
  * @param  array setting properties
  * @return void
  */
-function asb_build_setting($this_form, $this_form_container, $setting)
+function asbBuildSetting($this_form, $this_form_container, $setting)
 {
 	// create each element with unique id and name properties
 	$options = '';
 	$type = explode("\n", $setting['optionscode']);
     $type = array_map('trim', $type);
-	$element_name = "{$setting['name']}";
-	$element_id = "setting_{$setting['name']}";
-	$row_id = "row_{$element_id}";
+	$elementName = "{$setting['name']}";
+	$elementId = "setting_{$setting['name']}";
+	$rowId = "row_{$elementId}";
 
 	// prepare labels
-	$this_label = '<strong>'.htmlspecialchars_uni($setting['title']).'</strong>';
-	$this_desc = '<i>'.$setting['description'].'</i>';
+	$thisLabel = '<strong>'.htmlspecialchars_uni($setting['title']).'</strong>';
+	$thisDescription = '<i>'.$setting['description'].'</i>';
 
 	// sort by type
 	if ($type[0] == 'text' ||
 		$type[0] == '') {
-		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_text_box($element_name, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $row_id));
+		$this_form_container->output_row($thisLabel, $thisDescription, $this_form->generate_text_box($elementName, $setting['value'], array('id' => $elementId)), $elementName, array('id' => $rowId));
 	} else if ($type[0] == 'textarea') {
-		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_text_area($element_name, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $row_id));
+		$this_form_container->output_row($thisLabel, $thisDescription, $this_form->generate_text_area($elementName, $setting['value'], array('id' => $elementId)), $elementName, array('id' => $rowId));
 	} else if ($type[0] == 'yesno') {
-		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_yes_no_radio($element_name, $setting['value'], true, array('id' => $element_id.'_yes', 'class' => $element_id), array('id' => $element_id.'_no', 'class' => $element_id)), $element_name, array('id' => $row_id));
+		$this_form_container->output_row($thisLabel, $thisDescription, $this_form->generate_yes_no_radio($elementName, $setting['value'], true, array('id' => $elementId.'_yes', 'class' => $elementId), array('id' => $elementId.'_no', 'class' => $elementId)), $elementName, array('id' => $rowId));
 	} else if ($type[0] == 'onoff') {
-		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_on_off_radio($element_name, $setting['value'], true, array('id' => $element_id.'_on', 'class' => $element_id), array('id' => $element_id.'_off', 'class' => $element_id)), $element_name, array('id' => $row_id));
+		$this_form_container->output_row($thisLabel, $thisDescription, $this_form->generate_on_off_radio($elementName, $setting['value'], true, array('id' => $elementId.'_on', 'class' => $elementId), array('id' => $elementId.'_off', 'class' => $elementId)), $elementName, array('id' => $rowId));
 	} else if ($type[0] == 'language') {
 		$languages = $lang->get_languages();
-		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $row_id));
+		$this_form_container->output_row($thisLabel, $thisDescription, $this_form->generate_select_box($elementName, $languages, $setting['value'], array('id' => $elementId)), $elementName, array('id' => $rowId));
 	} else if ($type[0] == 'adminlanguage') {
 		$languages = $lang->get_languages(1);
-		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $row_id));
+		$this_form_container->output_row($thisLabel, $thisDescription, $this_form->generate_select_box($elementName, $languages, $setting['value'], array('id' => $elementId)), $elementName, array('id' => $rowId));
 	} else if ($type[0] == 'passwordbox') {
-		$this_form_container->output_row($this_label, $this_desc, $this_form->generate_password_box($element_name, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $row_id));
+		$this_form_container->output_row($thisLabel, $thisDescription, $this_form->generate_password_box($elementName, $setting['value'], array('id' => $elementId)), $elementName, array('id' => $rowId));
 	} else if ($type[0] == 'php') {
 		$setting['optionscode'] = substr($setting['optionscode'], 3);
 		eval("\$setting_code = \"".$setting['optionscode']."\";");
 	} else {
 		for ($i=0; $i < count($type); $i++) {
-			$optionsexp = explode('=', $type[$i]);
-			if (!$optionsexp[1]) {
+			$optionsArray = explode('=', $type[$i]);
+			if (!$optionsArray[1]) {
 				continue;
 			}
 
 			if ($type[0] == 'select') {
-				$option_list[$optionsexp[0]] = htmlspecialchars_uni($optionsexp[1]);
+				$optionList[$optionsArray[0]] = htmlspecialchars_uni($optionsArray[1]);
 			} else if ($type[0] == 'radio') {
-				if ($setting['value'] == $optionsexp[0]) {
-					$option_list[$i] = $this_form->generate_radio_button($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'checked' => 1, 'class' => $element_id));
+				if ($setting['value'] == $optionsArray[0]) {
+					$optionList[$i] = $this_form->generate_radio_button($elementName, $optionsArray[0], htmlspecialchars_uni($optionsArray[1]), array('id' => $elementId.'_'.$i, 'checked' => 1, 'class' => $elementId));
 				} else {
-					$option_list[$i] = $this_form->generate_radio_button($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'class' => $element_id));
+					$optionList[$i] = $this_form->generate_radio_button($elementName, $optionsArray[0], htmlspecialchars_uni($optionsArray[1]), array('id' => $elementId.'_'.$i, 'class' => $elementId));
 				}
 			} else if($type[0] == 'checkbox') {
-				if ($setting['value'] == $optionsexp[0]) {
-					$option_list[$i] = $this_form->generate_check_box($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'checked' => 1, 'class' => $element_id));
+				if ($setting['value'] == $optionsArray[0]) {
+					$optionList[$i] = $this_form->generate_check_box($elementName, $optionsArray[0], htmlspecialchars_uni($optionsArray[1]), array('id' => $elementId.'_'.$i, 'checked' => 1, 'class' => $elementId));
 				} else {
-					$option_list[$i] = $this_form->generate_check_box($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'class' => $element_id));
+					$optionList[$i] = $this_form->generate_check_box($elementName, $optionsArray[0], htmlspecialchars_uni($optionsArray[1]), array('id' => $elementId.'_'.$i, 'class' => $elementId));
 				}
 			}
 		}
 		if ($type[0] == 'select') {
-			$this_form_container->output_row($this_label, $this_desc, $this_form->generate_select_box($element_name, $option_list, $setting['value'], array('id' => $element_id)), $element_name, array('id' => $row_id));
+			$this_form_container->output_row($thisLabel, $thisDescription, $this_form->generate_select_box($elementName, $optionList, $setting['value'], array('id' => $elementId)), $elementName, array('id' => $rowId));
 		} else {
-			$setting_code = implode('<br />', $option_list);
+			$setting_code = implode('<br />', $optionList);
 		}
 	}
 
 	if ($setting_code) {
-		$this_form_container->output_row($this_label, $this_desc, $setting_code, '', array(), array('id' => $row_id));
+		$this_form_container->output_row($thisLabel, $thisDescription, $setting_code, '', array(), array('id' => $rowId));
 	}
 }
 

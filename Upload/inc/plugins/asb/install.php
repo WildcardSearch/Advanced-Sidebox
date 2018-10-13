@@ -26,12 +26,12 @@ function asb_info()
 		$lang->load('asb');
 	}
 
-	$extra_links = '<br />';
-	$settings_link = asb_build_settings_link();
-	if ($settings_link) {
+	$extraLinks = '<br />';
+	$settingsLink = asbBuildSettingsLink();
+	if ($settingsLink) {
 		if (file_exists(MYBB_ROOT.'inc/plugins/asb/cleanup.php') &&
 		   file_exists(MYBB_ROOT.'inc/plugins/adv_sidebox/acp_functions.php')) {
-			$remove_link = <<<EOF
+			$removeLink = <<<EOF
 
 		<li>
 			<span style="color: red;">{$lang->asb_remove_old_files_desc}</span><br /><a href="{$mybb->settings['bburl']}/inc/plugins/asb/cleanup.php" title="{$lang->asb_remove_old_files}">{$lang->asb_remove_old_files}</a>
@@ -40,40 +40,40 @@ EOF;
 		}
 
 		// only show Manage Sideboxes link if active
-		$plugin_list = $cache->read('plugins');
-		$manage_link = '';
-		if (!empty($plugin_list['active']) &&
-			is_array($plugin_list['active']) &&
-			in_array('asb', $plugin_list['active'])) {
+		$pluginList = $cache->read('plugins');
+		$manageLink = '';
+		if (!empty($pluginList['active']) &&
+			is_array($pluginList['active']) &&
+			in_array('asb', $pluginList['active'])) {
 			$url = ASB_URL;
-			$manage_link = <<<EOF
+			$manageLink = <<<EOF
 	<li style="list-style-image: url(styles/{$cp_style}/images/asb/manage.png)">
 		<a href="{$url}" title="{$lang->asb_manage_sideboxes}">{$lang->asb_manage_sideboxes}</a>
 	</li>
 EOF;
 		}
 
-		$settings_link = <<<EOF
+		$settingsLink = <<<EOF
 	<li style="list-style-image: url(styles/{$cp_style}/images/asb/settings.png)">
-		{$settings_link}
+		{$settingsLink}
 	</li>
 EOF;
-		$extra_links = <<<EOF
+		$extraLinks = <<<EOF
 <ul>
-	{$settings_link}
-	{$manage_link}{$remove_link}
+	{$settingsLink}
+	{$manageLink}{$removeLink}
 	<li style="list-style-image: url(styles/{$cp_style}/images/asb/help.png)">
 		<a href="https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help-Installation" title="{$lang->asb_help}">{$lang->asb_help}</a>
 	</li>
 </ul>
 EOF;
 
-		$asb_description = <<<EOF
+		$asbDescription = <<<EOF
 <table width="100%">
 	<tbody>
 		<tr>
 			<td>
-				{$lang->asb_description1}<br/><br/>{$lang->asb_description2}{$extra_links}
+				{$lang->asb_description1}<br/><br/>{$lang->asb_description2}{$extraLinks}
 			</td>
 			<td style="text-align: center;">
 				<img src="styles/{$cp_style}/images/asb/logo.png" alt="{$lang->asb_logo}" title="{$lang->asb_logo}"/><br /><br />
@@ -84,7 +84,7 @@ EOF;
 </table>
 EOF;
 	} else {
-		$asb_description = $lang->asb_description1;
+		$asbDescription = $lang->asb_description1;
 	}
 
 	$name = <<<EOF
@@ -97,7 +97,7 @@ EOF;
 	// This array returns information about the plugin, some of which was prefabricated above based on whether the plugin has been installed or not.
 	return array(
 		'name' => $name,
-		'description' => $asb_description,
+		'description' => $asbDescription,
 		'website' => 'https://github.com/WildcardSearch/Advanced-Sidebox',
 		'author' => $author,
 		'authorsite' => 'http://www.rantcentralforums.com',
@@ -114,7 +114,7 @@ EOF;
  */
 function asb_is_installed()
 {
-	return asb_get_settingsgroup();
+	return asbGetSettingsGroup();
 }
 
 /**
@@ -134,12 +134,12 @@ function asb_install()
 
 	AdvancedSideboxInstaller::getInstance()->install();
 
-	$addons = asb_get_all_modules();
+	$addons = asbGetAllModules();
 	foreach ($addons as $addon) {
 		$addon->install();
 	}
 
-	asb_create_script_info();
+	asbCreateScriptInfo();
 
 	@unlink(MYBB_ROOT.'inc/plugins/adv_sidebox.php');
 }
@@ -197,7 +197,7 @@ function asb_uninstall()
 	global $mybb;
 
 	// remove the modules first
-	$addons = asb_get_all_modules();
+	$addons = asbGetAllModules();
 
 	// if there are add-on modules installed
 	if (is_array($addons)) {
@@ -223,21 +223,18 @@ function asb_uninstall()
  *
  * @return int gid
  */
-function asb_get_settingsgroup()
+function asbGetSettingsGroup()
 {
-	static $asb_settings_gid;
+	static $gid;
 
 	// if we have already stored the value
-	if (isset($asb_settings_gid)) {
-		// don't waste a query
-		$gid = (int) $asb_settings_gid;
-	} else {
+	if (!isset($gid)) {
 		global $db;
 
-		// otherwise we will have to query the db
 		$query = $db->simple_select('settinggroups', 'gid', "name='asb_settings'");
 		$gid = (int) $db->fetch_field($query, 'gid');
 	}
+
 	return $gid;
 }
 
@@ -247,7 +244,7 @@ function asb_get_settingsgroup()
  * @param  int settings group id
  * @return string url
  */
-function asb_build_settings_url($gid)
+function asbBuildSettingsUrl($gid)
 {
 	if ($gid) {
 		return 'index.php?module=config-settings&amp;action=change&amp;gid='.$gid;
@@ -259,7 +256,7 @@ function asb_build_settings_url($gid)
  *
  * @return string html
  */
-function asb_build_settings_link()
+function asbBuildSettingsLink()
 {
 	global $lang;
 
@@ -267,12 +264,12 @@ function asb_build_settings_link()
 		$lang->load('asb');
 	}
 
-	$gid = asb_get_settingsgroup();
+	$gid = asbGetSettingsGroup();
 
 	// does the group exist?
 	if ($gid) {
 		// if so build the URL
-		$url = asb_build_settings_url($gid);
+		$url = asbBuildSettingsUrl($gid);
 
 		// did we get a URL?
 		if ($url) {
@@ -289,7 +286,7 @@ function asb_build_settings_link()
  * @param  bool return associative array?
  * @return array|true see above dependency
  */
-function asb_create_script_info($return=false)
+function asbCreateScriptInfo($return=false)
 {
 	$scripts = array(
 		'index' => array(
@@ -401,15 +398,16 @@ EOF
 
 	if ($return == false) {
 		foreach ($scripts as $info) {
-			$this_script = new ScriptInfo($info);
-			$this_script->save();
+			$script = new ScriptInfo($info);
+			$script->save();
 		}
+
 		return true;
 	} else {
 		foreach ($scripts as $key => $info) {
-			$ret_scripts[$key] = new ScriptInfo($info);
+			$returnArray[$key] = new ScriptInfo($info);
 		}
-		return $ret_scripts; // upgrade script will save these script defs
+		return $returnArray; // upgrade script will save these script defs
 	}
 }
 
@@ -418,18 +416,18 @@ EOF
  *
  * @return string|bool html or false
  */
-function asb_build_theme_exclude_select()
+function asbBuildThemeExcludeSelect()
 {
 	global $lang;
 	if (!$lang->asb) {
 		$lang->load('asb');
 	}
 
-	$all_themes = asb_get_all_themes(true);
+	$allThemes = asbGetAllThemes(true);
 
-	$theme_count = min(5, count($all_themes));
-	if ($theme_count == 0) {
-		return $theme_select = <<<EOF
+	$themeCount = min(5, count($allThemes));
+	if ($themeCount == 0) {
+		return <<<EOF
 php
 <select name=\"upsetting[asb_exclude_theme][]\" size=\"1\">
 	<option value=\"0\">{$lang->asb_theme_exclude_no_themes}</option>
@@ -439,9 +437,9 @@ EOF;
 	}
 
 	// Create an option for each theme and insert code to unserialize each option and 'remember' settings
-	foreach ($all_themes as $tid => $name) {
+	foreach ($allThemes as $tid => $name) {
 		$name = addcslashes($name, '"');
-		$theme_select .= <<<EOF
+		$themeSelect .= <<<EOF
 <option value=\"{$tid}\" ".(is_array(unserialize(\$setting['value'])) ? (\$setting['value'] != "" && in_array("{$tid}", unserialize(\$setting['value'])) ? "selected=\"selected\"":""):"").">{$name}</option>
 EOF;
 	}
@@ -449,8 +447,8 @@ EOF;
 	// put it all together
 	return <<<EOF
 php
-<select multiple name=\"upsetting[asb_exclude_theme][]\" size=\"{$theme_count}\">
-{$theme_select}
+<select multiple name=\"upsetting[asb_exclude_theme][]\" size=\"{$themeCount}\">
+{$themeSelect}
 </select>
 
 EOF;

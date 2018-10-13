@@ -18,7 +18,7 @@ $removedAdminFolders = $removedForumFolders = $removedAdminFiles = $removedForum
 
 /* < 2.1 */
 if (version_compare($asbOldVersion, '2.1', '<')) {
-	$sideboxes = asb_get_all_sideboxes();
+	$sideboxes = asbGetAllSideBoxes();
 	foreach ($sideboxes as $sidebox) {
 		$settings = array();
 		foreach ((array) $sidebox->get('settings') as $name => $setting) {
@@ -29,16 +29,16 @@ if (version_compare($asbOldVersion, '2.1', '<')) {
 	}
 
 	for ($x = 1; $x < 4; $x++) {
-		$module_name = 'example';
+		$moduleName = 'example';
 		if ($x != 1) {
-			$module_name .= $x;
+			$moduleName .= $x;
 		}
 
-		$module = new SideboxExternalModule($module_name);
+		$module = new SideboxExternalModule($moduleName);
 		$module->remove();
 	}
 
-	asb_cache_has_changed();
+	asbCacheHasChanged();
 
 	$removedForumFiles = array(
 		'jscripts/asb.js',

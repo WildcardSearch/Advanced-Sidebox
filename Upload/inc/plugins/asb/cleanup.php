@@ -11,7 +11,7 @@ define('IN_MYBB', 1);
 require_once '../../../global.php';
 global $config;
 
-$removed_files = array(
+$removeFiles = array(
 	'inc/languages/english/adv_sidebox.lang.php',
 	'inc/plugins/adv_sidebox.php',
 	'jscripts/adv_sidebox.js',
@@ -20,12 +20,12 @@ $removed_files = array(
 	'inc/plugins/asb/cleanup.php',
 );
 
-$removed_folders = array(
-	'inc/plugins/adv_sidebox'
+$removeFolders = array(
+	'inc/plugins/adv_sidebox',
 );
 
 // delete the old adv_sidebox_xxx files and folders
-foreach ($removed_files as $filename) {
+foreach ($removeFiles as $filename) {
 	$fullpath = MYBB_ROOT.$filename;
 
 	if (file_exists($fullpath) &&
@@ -33,7 +33,7 @@ foreach ($removed_files as $filename) {
 		@unlink($fullpath);
 	}
 }
-foreach ($removed_folders as $folder) {
+foreach ($removeFolders as $folder) {
 	$fullpath = MYBB_ROOT.$folder;
 	if (is_dir($fullpath)) {
 		@my_rmdir_recursive($fullpath);
