@@ -244,6 +244,18 @@ EOF
 							<img src="{\$theme['imgdir']}/{\$expcolimage}" id="{\$sidebox['expcolimage_id']}" class="expander" alt="{\$expaltext}" title="{\$expaltext}"/>
 						</div>
 EOF
+			,
+			'asb_ucp_show_sidebox_option' => <<<EOF
+
+	<tr>
+		<td valign="top" width="1">
+			<input type="checkbox" class="checkbox" name="showsidebox" id="showsidebox" value="1" {\$checked}/>
+		</td>
+		<td>
+			<span class="smalltext"><label for="showsidebox">{\$lang->asb_show_sidebox}</label></span>
+		</td>
+	</tr>
+EOF
 		),
 	),
 );

@@ -168,6 +168,9 @@ function asb_activate()
 
 	// change the permissions to on by default
 	change_admin_permission('config', 'asb');
+
+	require_once MYBB_ROOT . '/inc/adminfunctions_templates.php';
+	find_replace_templatesets('usercp_options', "#" . preg_quote('{$board_style}') . "#i", '{$asbShowSideboxes}{$board_style}');
 }
 
 /**
@@ -179,6 +182,9 @@ function asb_deactivate()
 {
 	// remove the permissions
 	change_admin_permission('config', 'asb', -1);
+
+	require_once MYBB_ROOT . '/inc/adminfunctions_templates.php';
+	find_replace_templatesets('usercp_options', "#" . preg_quote('{$asbShowSideboxes}') . "#i", '');
 }
 
 /**

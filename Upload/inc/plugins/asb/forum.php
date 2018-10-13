@@ -386,41 +386,24 @@ function asb_initialize()
  */
 function asbUserCpOptionsEnd()
 {
-	global $db, $mybb, $templates, $user, $lang;
+	global $db, $mybb, $templates, $user, $lang, $asbShowSideboxes;
+
+	// if the form is being submitted save the users choice.
+	if ($mybb->request_method == 'post') {
+		$db->update_query('users', array('show_sidebox' => (int) $mybb->input['showsidebox']), "uid='{$user['uid']}'");
+		return;
+    }
 
 	if (!$lang->asb) {
 		$lang->load('asb');
 	}
 
-    // if the form is being submitted save the users choice.
-	if ($mybb->request_method == 'post') {
-		$db->update_query('users', array('show_sidebox' => (int) $mybb->input['showsidebox']), "uid='{$user['uid']}'");
-    }
-
-	// don't be silly and waste a query :p (thanks Destroy666)
+    // don't be silly and waste a query :p (thanks Destroy666)
 	if ($mybb->user['show_sidebox'] > 0) {
-		// checked
 		$checked = 'checked="checked" ';
 	}
 
-	$userCpOption = <<<EOF
-	<td valign="top" width="1">
-		<input type="checkbox" class="checkbox" name="showsidebox" id="showsidebox" value="1" {$checked}/>
-	</td>
-	<td>
-		<span class="smalltext"><label for="showsidebox">{$lang->asb_show_sidebox}</label></span>
-	</td>
-</tr>
-<tr>
-<td valign="top" width="1">
-	<input type="checkbox" class="checkbox" name="showredirect"
-EOF;
-
-    // update the template cache
-	$find = <<<EOF
-<td valign="top" width="1"><input type="checkbox" class="checkbox" name="showredirect"
-EOF;
-    $templates->cache['usercp_options'] = str_replace($find, $userCpOption, $templates->cache['usercp_options']);
+	eval("\$asbShowSideboxes = \"{$templates->get('asb_ucp_show_sidebox_option')}\";");
 }
 
 /**
