@@ -13,13 +13,13 @@
  * @param  string message
  * @return string message
  */
-function asb_strip_quotes($message)
+function asbStripQuotes($message)
 {
 	// Assign pattern and replace values.
 	$pattern = array(
 		"#\[quote=([\"']|&quot;|)(.*?)(?:\\1)(.*?)(?:[\"']|&quot;)?\](.*?)\[/quote\](\r\n?|\n?)#si",
 		"#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si",
-		"#\[\/quote\](\r\n?|\n?)#si"
+		"#\[\/quote\](\r\n?|\n?)#si",
 	);
 
 	do {
@@ -35,9 +35,9 @@ function asb_strip_quotes($message)
  * @param string message
  * @return string message
  */
-function asb_strip_url($message)
+function asbStripUrls($message)
 {
-	$message = ' ' . $message;
+	$message = ' '.$message;
 	$message = preg_replace("#([\>\s\(\)])(http|https|ftp|news){1}://([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", '', $message);
 	$message = preg_replace("#([\>\s\(\)])(www|ftp)\.(([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", '', $message);
 	return my_substr($message, 1);
@@ -51,41 +51,42 @@ function asb_strip_url($message)
  * @param  bool present the id list as SQL IN()?
  * @return string id list
  */
-function asb_build_id_list($ids, $field = 'id', $wrap = true)
+function asbBuildIdList($ids, $field='id', $wrap=true)
 {
 	if (strlen($ids) == 0) {
 		return false;
 	}
 
 	if (strpos($ids, ',') !== false) {
-		$id_array = explode(',', $ids);
-		foreach ($id_array as $key => $id) {
+		$idArray = explode(',', $ids);
+
+		foreach ($idArray as $key => $id) {
 			if((int) $id == 0)
 			{
-				unset($id_array[$key]);
+				unset($idArray[$key]);
 			}
 		}
 
-		if (count($id_array) > 1) {
-			$id_list = implode(',', $id_array);
-		} elseif (count($id_array) == 1) {
-			$id_list = (int) $id_array[key($id_array)];
+		if (count($idArray) > 1) {
+			$idList = implode(',', $idArray);
+		} elseif (count($idArray) == 1) {
+			$idList = (int) $idArray[key($idArray)];
 		}
 	} else {
-		$id_list = (int) $ids;
+		$idList = (int) $ids;
 	}
 
-	if (!$id_list) {
+	if (!$idList) {
 		return false;
 	}
 
 	if ($wrap &&
 		$field) {
-		$id_list = <<<EOF
-{$field} IN({$id_list})
+		$idList = <<<EOF
+{$field} IN({$idList})
 EOF;
 	}
-	return $id_list;
+	return $idList;
 }
 
 /**
@@ -97,13 +98,13 @@ EOF;
  * @param  bool prefix and enclose the conditions in parentheses?
  * @return string SQL WHERE clause
  */
-function asb_build_SQL_where($conditions, $op = 'AND', $prefix = '', $wrap = true)
+function asbBuildSqlWhere($conditions, $op='AND', $prefix='', $wrap=true)
 {
 	if (is_array($conditions)) {
 		$sep = '';
 		foreach ($conditions as $condition) {
 			if ($condition) {
-				$where .= $sep . $condition;
+				$where .= $sep.$condition;
 				$sep = " {$op} ";
 			}
 		}
@@ -129,11 +130,11 @@ function asb_build_SQL_where($conditions, $op = 'AND', $prefix = '', $wrap = tru
  * @param  bool recurse into subfolders?
  * @return string list of file names
  */
-function asb_get_folder_images($folder, $subfolder = '', $recursive = false)
+function asbGetImagesFromPath($folder, $subfolder='', $recursive=false)
 {
 	// bad folder, get out
 	if (!$folder ||
-	   !is_dir(MYBB_ROOT . $folder)) {
+	   !is_dir(MYBB_ROOT.$folder)) {
 		return false;
 	}
 
@@ -145,7 +146,7 @@ function asb_get_folder_images($folder, $subfolder = '', $recursive = false)
 
 	// cycle through all the files/folders and produce a list
 	$sep = '';
-	foreach (new DirectoryIterator(MYBB_ROOT . $folder) as $file) {
+	foreach (new DirectoryIterator(MYBB_ROOT.$folder) as $file) {
 		// skip navigation folders
 		if ($file->isDot()) {
 			continue;
@@ -158,9 +159,9 @@ function asb_get_folder_images($folder, $subfolder = '', $recursive = false)
 			}
 
 			// get the files from this directory
-			$sub_files = asb_get_folder_images($folder . '/' . $file->getFilename(), $subfolder . $file->getFilename(), $recursive);
-			if ($sub_files) {
-				$filenames .= "{$sep}{$sub_files}";
+			$subFiles = asbGetImagesFromPath($folder.'/'.$file->getFilename(), $subfolder.$file->getFilename(), $recursive);
+			if ($subFiles) {
+				$filenames .= "{$sep}{$subFiles}";
 				$sep = ',';
 			}
 			continue;

@@ -195,7 +195,7 @@ function asb_forum_age_get_forum_age($args)
 	$start = $settings['forum_age_date_format'];
 	$age = TIME_NOW - $creationDateStamp;
 	foreach ($allInfo as $i => $info) {
-		$varName = $info['name'] . 's';
+		$varName = $info['name'].'s';
 		$$varName = 0;
 
 		if ($age > $info['inSeconds']) {
@@ -216,7 +216,7 @@ function asb_forum_age_get_forum_age($args)
 
 	// remove increments before the selected value that are empty
 	for ($x = 2; $x < 8; $x++) {
-		$varName = $allInfo[$x - 1]['name'] . 's';
+		$varName = $allInfo[$x - 1]['name'].'s';
 		if ($settings['forum_age_date_format'] >= $x &&
 		$$varName == 0) {
 			array_shift($forumAgeArray);
@@ -231,7 +231,7 @@ function asb_forum_age_get_forum_age($args)
 
 	// add "and" if there is more than one entry
 	if (count($forumAgeArray) > 1) {
-		$forumAgeArray[count($forumAgeArray) - 1] = $lang->asb_forum_age_and . $forumAgeArray[count($forumAgeArray) - 1];
+		$forumAgeArray[count($forumAgeArray) - 1] = $lang->asb_forum_age_and.$forumAgeArray[count($forumAgeArray) - 1];
 	}
 
 	// compile the time text

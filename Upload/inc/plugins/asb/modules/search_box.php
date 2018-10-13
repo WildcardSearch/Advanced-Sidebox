@@ -86,7 +86,7 @@ function asb_search_box_build_template($args)
 		$lang->load('asb_addon');
 	}
 
-	eval("\$" . $template_var . " = \"" . $templates->get('asb_search') . "\";");
+	eval("\$".$template_var." = \"{$templates->get('asb_search')}\";");
 	return true;
 }
 

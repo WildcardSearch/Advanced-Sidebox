@@ -95,7 +95,7 @@ function asb_statistics_build_template($args)
 		$newestmember = build_profile_link($last_username, $statistics['lastuid']);
 	}
 
-	eval("\$" . $template_var . " = \"" . $templates->get('asb_statistics') . "\";");
+	eval("\$".$template_var." = \"{$templates->get('asb_statistics')}\";");
 	return true;
 }
 

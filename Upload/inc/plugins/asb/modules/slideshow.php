@@ -178,7 +178,7 @@ EOF;
 	}
 
 	if ($settings['footer_text'] && $settings['footer_url']) {
-		eval ("\$footer = \"" . $templates->get('asb_slideshow_footer') . "\";");
+		eval ("\$footer = \"{$templates->get('asb_slideshow_footer')}\";");
 	}
 
 	$max_width = (int) $settings['max_width'];
@@ -186,7 +186,7 @@ EOF;
 	$maintain_height = (int) $settings['maintain_height'];
 
 	$width = $width * .9;
-	eval("\$\$template_var = \"" . $templates->get('asb_slideshow') . "\";");
+	eval("\$\$template_var = \"{$templates->get('asb_slideshow')}\";");
 
 	return true;
 }

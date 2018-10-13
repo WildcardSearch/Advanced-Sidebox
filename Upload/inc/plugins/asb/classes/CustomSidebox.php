@@ -60,7 +60,7 @@ class CustomSidebox extends PortableObject010001
 	public function load($data)
 	{
 		if (parent::load($data)) {
-			$this->baseName = 'asb_custom_' . $this->id;
+			$this->baseName = 'asb_custom_'.$this->id;
 			return true;
 		}
 		return false;
@@ -117,7 +117,7 @@ class CustomSidebox extends PortableObject010001
 	</tr>';
 		} else {
 			$content = str_replace("\\'", "'", addslashes($content));
-			eval("\${$template_variable} = \"" . $content . "\";");
+			eval("\${$template_variable} = \"{$content}\";");
 		}
 		return $ret_val;
 	}

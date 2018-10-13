@@ -68,7 +68,7 @@ function asb_whosonline_info()
 				'description' => $lang->asb_xmlhttp_on_description,
 				'optionscode' => 'text',
 				'value' => '0',
-			)
+			),
 		),
 		'templates' => array(
 			array(
@@ -130,7 +130,7 @@ function asb_whosonline_build_template($args)
 	// get the online members
 	$all_onlinemembers = asb_whosonline_get_online_members($settings, $width);
 
-	// if there are members online . . .
+	// if there are members online...
 	if ($all_onlinemembers) {
 		// set out template variable to the returned member list and return true
 		$$template_var = $all_onlinemembers;
@@ -263,15 +263,15 @@ function asb_whosonline_get_online_members($settings, $width)
 						$avatar_count) {
 						// check to see if we've already handled this, if so, do nothing
 						if (!$enough_already) {
-							// . . . if not, set a flag
+							// ...if not, set a flag
 							$enough_already = true;
 
-							// . . . and insert link to the WOL full list
-							eval("\$onlinemembers .= \"" . $templates->get('asb_whosonline_memberbit_see_all', 1, 0) . "\";");
+							// ...and insert link to the WOL full list
+							eval("\$onlinemembers .= \"{$templates->get('asb_whosonline_memberbit_see_all', 1, 0)}\";");
 						}
-					// . . . otherwise, add it to the list
+					// ...otherwise, add it to the list
 					} else {
-						eval("\$onlinemembers .= \"" . $templates->get('asb_whosonline_memberbit_avatar', 1, 0) . "\";");
+						eval("\$onlinemembers .= \"{$templates->get('asb_whosonline_memberbit_avatar', 1, 0)}\";");
 
 						// If we reach the end of the row, insert a <br />
 						if (($membercount - (($row - 1) * $rowlength)) == $rowlength) {
@@ -282,8 +282,8 @@ function asb_whosonline_get_online_members($settings, $width)
 					}
 				} else {
 					$user['username'] = format_name(trim($user['username']), $user['usergroup'], $user['displaygroup']);
-					eval("\$onlinemembers .= \"" . $templates->get('asb_whosonline_memberbit_name', 1, 0) . "\";");
-					$sep = $lang->comma . ' ';
+					eval("\$onlinemembers .= \"{$templates->get('asb_whosonline_memberbit_name', 1, 0)}\";");
+					$sep = $lang->comma.' ';
 				}
 			} else {
 				--$membercount;
@@ -292,7 +292,7 @@ function asb_whosonline_get_online_members($settings, $width)
 	}
 
 	if (!$settings['show_avatars']) {
-		$onlinemembers = '<td>' . $onlinemembers . '</td>';
+		$onlinemembers = '<td>'.$onlinemembers.'</td>';
 	}
 	$onlinecount = $membercount + $guestcount + $botcount;
 
@@ -327,7 +327,7 @@ function asb_whosonline_get_online_members($settings, $width)
 	$lang->asb_wol_online_counts = $lang->sprintf($lang->asb_wol_online_counts, $membercount, $guestcount);
 
 	if ($membercount) {
-		eval("\$onlinemembers = \"" . $templates->get('asb_whosonline') . "\";");
+		eval("\$onlinemembers = \"{$templates->get('asb_whosonline')}\";");
 		return $onlinemembers;
 	} else {
 		return false;

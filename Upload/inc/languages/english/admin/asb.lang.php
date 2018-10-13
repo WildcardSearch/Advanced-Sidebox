@@ -365,5 +365,8 @@ $l['asb_ajax_nothing_found'] = 'no {1} detected';
 $l['asb_ajax_actions'] = 'actions';
 $l['asb_ajax_hooks'] = 'hooks';
 $l['asb_ajax_templates'] = 'templates';
+$l['asb_ajax_file_name_empty'] = 'no file name';
+$l['asb_ajax_file_does_not_exist'] = 'file does not exist';
+$l['asb_ajax_file_empty'] = 'file empty or corrupted';
 
 ?>

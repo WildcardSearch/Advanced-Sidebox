@@ -13,6 +13,9 @@ var ASB = (function(a, $) {
 			hooks: "hooks",
 			actions: "actions",
 			templates: "templates",
+			error_file_name_empty: "no file name",
+			error_file_does_not_exist: "file does not exist",
+			error_file_empty: "file empty or corrupted",
 		};
 
 	/**
@@ -120,12 +123,30 @@ var ASB = (function(a, $) {
 	 * @return void
 	 */
 	function showResults(info) {
+		var $fileInfo = $("#file_info"),
+			errorMessage;
+
 		// hide all the spinners
 		$("div.ajax_spinners").hide();
 
-		// any response at all means something to show
-		if (!info) {
+		// check for errors
+		if (typeof info.error !== "undefined") {
+			switch (info.error) {
+			case 1:
+				errorMessage = lang.error_file_name_empty;
+				break;
+			case 3:
+				errorMessage = lang.error_file_empty;
+				break;
+			default:
+				errorMessage = lang.error_file_does_not_exist;
+				break;
+			}
+
+			$fileInfo.html(errorMessage);
 			return;
+		} else {
+			$fileInfo.html("")
 		}
 
 		/*

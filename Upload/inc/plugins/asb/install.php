@@ -26,12 +26,12 @@ function asb_info()
 		$lang->load('asb');
 	}
 
-	$extra_links = '<br />';
-	$settings_link = asb_build_settings_link();
-	if ($settings_link) {
-		if (file_exists(MYBB_ROOT . 'inc/plugins/asb/cleanup.php') &&
-		   file_exists(MYBB_ROOT . 'inc/plugins/adv_sidebox/acp_functions.php')) {
-			$remove_link = <<<EOF
+	$extraLinks = '<br />';
+	$settingsLink = asbBuildSettingsLink();
+	if ($settingsLink) {
+		if (file_exists(MYBB_ROOT.'inc/plugins/asb/cleanup.php') &&
+		   file_exists(MYBB_ROOT.'inc/plugins/adv_sidebox/acp_functions.php')) {
+			$removeLink = <<<EOF
 
 		<li>
 			<span style="color: red;">{$lang->asb_remove_old_files_desc}</span><br /><a href="{$mybb->settings['bburl']}/inc/plugins/asb/cleanup.php" title="{$lang->asb_remove_old_files}">{$lang->asb_remove_old_files}</a>
@@ -40,58 +40,51 @@ EOF;
 		}
 
 		// only show Manage Sideboxes link if active
-		$plugin_list = $cache->read('plugins');
-		$manage_link = '';
-		if (!empty($plugin_list['active']) &&
-			is_array($plugin_list['active']) &&
-			in_array('asb', $plugin_list['active'])) {
+		$pluginList = $cache->read('plugins');
+		$manageLink = '';
+		if (!empty($pluginList['active']) &&
+			is_array($pluginList['active']) &&
+			in_array('asb', $pluginList['active'])) {
 			$url = ASB_URL;
-			$manage_link = <<<EOF
+			$manageLink = <<<EOF
 	<li style="list-style-image: url(styles/{$cp_style}/images/asb/manage.png)">
 		<a href="{$url}" title="{$lang->asb_manage_sideboxes}">{$lang->asb_manage_sideboxes}</a>
 	</li>
 EOF;
 		}
 
-		$settings_link = <<<EOF
+		$settingsLink = <<<EOF
 	<li style="list-style-image: url(styles/{$cp_style}/images/asb/settings.png)">
-		{$settings_link}
+		{$settingsLink}
 	</li>
 EOF;
-		$extra_links = <<<EOF
+		$extraLinks = <<<EOF
 <ul>
-	{$settings_link}
-	{$manage_link}{$remove_link}
+	{$settingsLink}
+	{$manageLink}{$removeLink}
 	<li style="list-style-image: url(styles/{$cp_style}/images/asb/help.png)">
 		<a href="https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help-Installation" title="{$lang->asb_help}">{$lang->asb_help}</a>
 	</li>
 </ul>
 EOF;
 
-		$button_pic = "styles/{$cp_style}/images/asb/donate.png";
-		$border_pic = "styles/{$cp_style}/images/asb/pixel.png";
-		$asb_description = <<<EOF
+		$asbDescription = <<<EOF
 <table width="100%">
 	<tbody>
 		<tr>
 			<td>
-				{$lang->asb_description1}<br/><br/>{$lang->asb_description2}{$extra_links}
+				{$lang->asb_description1}<br/><br/>{$lang->asb_description2}{$extraLinks}
 			</td>
 			<td style="text-align: center;">
 				<img src="styles/{$cp_style}/images/asb/logo.png" alt="{$lang->asb_logo}" title="{$lang->asb_logo}"/><br /><br />
-				<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-					<input type="hidden" name="cmd" value="_s-xclick">
-					<input type="hidden" name="hosted_button_id" value="VA5RFLBUC4XM4">
-					<input type="image" src="{$button_pic}" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-					<img alt="" border="0" src="{$border_pic}" width="1" height="1">
-				</form>
+				<a href="https://paypal.me/wildcardsearch"><img src="styles/{$cp_style}/images/asb/donate.png" style="outline: none; border: none;" /></a>
 			</td>
 		</tr>
 	</tbody>
 </table>
 EOF;
 	} else {
-		$asb_description = $lang->asb_description1;
+		$asbDescription = $lang->asb_description1;
 	}
 
 	$name = <<<EOF
@@ -103,14 +96,14 @@ EOF;
 
 	// This array returns information about the plugin, some of which was prefabricated above based on whether the plugin has been installed or not.
 	return array(
-		"name" => $name,
-		"description" => $asb_description,
-		"website" => 'https://github.com/WildcardSearch/Advanced-Sidebox',
-		"author" => $author,
-		"authorsite" => 'http://www.rantcentralforums.com',
-		"version" => ASB_VERSION,
-		"compatibility" => '18*',
-		"codename" => 'asb',
+		'name' => $name,
+		'description' => $asbDescription,
+		'website' => 'https://github.com/WildcardSearch/Advanced-Sidebox',
+		'author' => $author,
+		'authorsite' => 'http://www.rantcentralforums.com',
+		'version' => ASB_VERSION,
+		'compatibility' => '18*',
+		'codename' => 'asb',
 	);
 }
 
@@ -121,7 +114,7 @@ EOF;
  */
 function asb_is_installed()
 {
-	return asb_get_settingsgroup();
+	return asbGetSettingsGroup();
 }
 
 /**
@@ -141,14 +134,14 @@ function asb_install()
 
 	AdvancedSideboxInstaller::getInstance()->install();
 
-	$addons = asb_get_all_modules();
+	$addons = asbGetAllModules();
 	foreach ($addons as $addon) {
 		$addon->install();
 	}
 
-	asb_create_script_info();
+	asbCreateScriptInfo();
 
-	@unlink(MYBB_ROOT . 'inc/plugins/adv_sidebox.php');
+	@unlink(MYBB_ROOT.'inc/plugins/adv_sidebox.php');
 }
 
 /**
@@ -163,18 +156,21 @@ function asb_activate()
 
 	$myCache = AdvancedSideboxCache::getInstance();
 
-	// if we just upgraded . . .
+	// if we just upgraded...
 	$asbOldVersion = $myCache->getVersion();
 	if (isset($asbOldVersion) &&
 		$asbOldVersion &&
 		version_compare($asbOldVersion, ASB_VERSION, '<')) {
-		require_once MYBB_ROOT . 'inc/plugins/asb/upgrade.php';
+		require_once MYBB_ROOT.'inc/plugins/asb/upgrade.php';
 	}
 
 	$myCache->setVersion(ASB_VERSION);
 
 	// change the permissions to on by default
 	change_admin_permission('config', 'asb');
+
+	require_once MYBB_ROOT . '/inc/adminfunctions_templates.php';
+	find_replace_templatesets('usercp_options', "#" . preg_quote('{$board_style}') . "#i", '{$asbShowSideboxes}{$board_style}');
 }
 
 /**
@@ -186,6 +182,9 @@ function asb_deactivate()
 {
 	// remove the permissions
 	change_admin_permission('config', 'asb', -1);
+
+	require_once MYBB_ROOT . '/inc/adminfunctions_templates.php';
+	find_replace_templatesets('usercp_options', "#" . preg_quote('{$asbShowSideboxes}') . "#i", '');
 }
 
 /**
@@ -204,7 +203,7 @@ function asb_uninstall()
 	global $mybb;
 
 	// remove the modules first
-	$addons = asb_get_all_modules();
+	$addons = asbGetAllModules();
 
 	// if there are add-on modules installed
 	if (is_array($addons)) {
@@ -230,21 +229,18 @@ function asb_uninstall()
  *
  * @return int gid
  */
-function asb_get_settingsgroup()
+function asbGetSettingsGroup()
 {
-	static $asb_settings_gid;
+	static $gid;
 
 	// if we have already stored the value
-	if (isset($asb_settings_gid)) {
-		// don't waste a query
-		$gid = (int) $asb_settings_gid;
-	} else {
+	if (!isset($gid)) {
 		global $db;
 
-		// otherwise we will have to query the db
 		$query = $db->simple_select('settinggroups', 'gid', "name='asb_settings'");
 		$gid = (int) $db->fetch_field($query, 'gid');
 	}
+
 	return $gid;
 }
 
@@ -254,10 +250,10 @@ function asb_get_settingsgroup()
  * @param  int settings group id
  * @return string url
  */
-function asb_build_settings_url($gid)
+function asbBuildSettingsUrl($gid)
 {
 	if ($gid) {
-		return 'index.php?module=config-settings&amp;action=change&amp;gid=' . $gid;
+		return 'index.php?module=config-settings&amp;action=change&amp;gid='.$gid;
 	}
 }
 
@@ -266,7 +262,7 @@ function asb_build_settings_url($gid)
  *
  * @return string html
  */
-function asb_build_settings_link()
+function asbBuildSettingsLink()
 {
 	global $lang;
 
@@ -274,12 +270,12 @@ function asb_build_settings_link()
 		$lang->load('asb');
 	}
 
-	$gid = asb_get_settingsgroup();
+	$gid = asbGetSettingsGroup();
 
 	// does the group exist?
 	if ($gid) {
 		// if so build the URL
-		$url = asb_build_settings_url($gid);
+		$url = asbBuildSettingsUrl($gid);
 
 		// did we get a URL?
 		if ($url) {
@@ -296,96 +292,96 @@ function asb_build_settings_link()
  * @param  bool return associative array?
  * @return array|true see above dependency
  */
-function asb_create_script_info($return = false)
+function asbCreateScriptInfo($return=false)
 {
 	$scripts = array(
-		"index" => array(
-			"title" => 'Index',
-			"filename" => 'index.php',
-			"template_name" => 'index',
-			"hook" => 'index_start',
-			"find_top" => '{$header}',
-			"find_bottom" => '{$footer}',
-			"replace_all" => 0,
-			"eval" => 0,
-			"active" => 1,
+		'index' => array(
+			'title' => 'Index',
+			'filename' => 'index.php',
+			'template_name' => 'index',
+			'hook' => 'index_start',
+			'find_top' => '{$header}',
+			'find_bottom' => '{$footer}',
+			'replace_all' => 0,
+			'eval' => 0,
+			'active' => 1,
 		),
-		"forumdisplay" => array(
-			"title" => 'Forum Display',
-			"filename" => 'forumdisplay.php',
-			"template_name" => 'forumdisplay_threadlist',
-			"hook" => 'forumdisplay_start',
-			"find_top" => '<div class="float_right">
+		'forumdisplay' => array(
+			'title' => 'Forum Display',
+			'filename' => 'forumdisplay.php',
+			'template_name' => 'forumdisplay_threadlist',
+			'hook' => 'forumdisplay_start',
+			'find_top' => '<div class="float_right">
 	{$newthread}
 </div>',
-			"find_bottom" => '{$inline_edit_js}',
-			"replace_all" => 0,
-			"eval" => 0,
-			"active" => 1,
+			'find_bottom' => '{$inline_edit_js}',
+			'replace_all' => 0,
+			'eval' => 0,
+			'active' => 1,
 		),
-		"showthread" => array(
-			"title" => 'Show Thread',
-			"filename" => 'showthread.php',
-			"template_name" => 'showthread',
-			"hook" => 'showthread_start',
-			"find_top" => '{$ratethread}',
-			"find_bottom" => '{$footer}',
-			"replace_all" => 0,
-			"eval" => 0,
-			"active" => 1,
+		'showthread' => array(
+			'title' => 'Show Thread',
+			'filename' => 'showthread.php',
+			'template_name' => 'showthread',
+			'hook' => 'showthread_start',
+			'find_top' => '{$ratethread}',
+			'find_bottom' => '{$footer}',
+			'replace_all' => 0,
+			'eval' => 0,
+			'active' => 1,
 		),
-		"member" => array(
-			"title" => 'Member Profile',
-			"filename" => 'member.php',
-			"action" => 'profile',
-			"template_name" => 'member_profile',
-			"hook" => 'member_profile_start',
-			"find_top" => '{$header}',
-			"find_bottom" => '{$footer}',
-			"replace_all" => 0,
-			"eval" => 0,
-			"active" => 1,
+		'member' => array(
+			'title' => 'Member Profile',
+			'filename' => 'member.php',
+			'action' => 'profile',
+			'template_name' => 'member_profile',
+			'hook' => 'member_profile_start',
+			'find_top' => '{$header}',
+			'find_bottom' => '{$footer}',
+			'replace_all' => 0,
+			'eval' => 0,
+			'active' => 1,
 		),
-		"memberlist" => array(
-			"title" => 'Member List',
-			"filename" => 'memberlist.php',
-			"template_name" => 'memberlist',
-			"hook" => 'memberlist_start',
-			"find_top" => '{$multipage}',
-			"find_bottom" => '{$footer}',
-			"replace_all" => 0,
-			"eval" => 0,
-			"active" => 1,
+		'memberlist' => array(
+			'title' => 'Member List',
+			'filename' => 'memberlist.php',
+			'template_name' => 'memberlist',
+			'hook' => 'memberlist_start',
+			'find_top' => '{$multipage}',
+			'find_bottom' => '{$footer}',
+			'replace_all' => 0,
+			'eval' => 0,
+			'active' => 1,
 		),
-		"showteam" => array(
-			"title" => 'Forum Team',
-			"filename" => 'showteam.php',
-			"template_name" => 'showteam',
-			"hook" => 'showteam_start',
-			"find_top" => '{$header}',
-			"find_bottom" => '{$footer}',
-			"replace_all" => 0,
-			"eval" => 0,
-			"active" => 1,
+		'showteam' => array(
+			'title' => 'Forum Team',
+			'filename' => 'showteam.php',
+			'template_name' => 'showteam',
+			'hook' => 'showteam_start',
+			'find_top' => '{$header}',
+			'find_bottom' => '{$footer}',
+			'replace_all' => 0,
+			'eval' => 0,
+			'active' => 1,
 		),
-		"stats" => array(
-			"title" => 'Statistics',
-			"filename" => 'stats.php',
-			"template_name" => 'stats',
-			"hook" => 'stats_start',
-			"find_top" => '{$header}',
-			"find_bottom" => '{$footer}',
-			"replace_all" => 0,
-			"eval" => 0,
-			"active" => 1,
+		'stats' => array(
+			'title' => 'Statistics',
+			'filename' => 'stats.php',
+			'template_name' => 'stats',
+			'hook' => 'stats_start',
+			'find_top' => '{$header}',
+			'find_bottom' => '{$footer}',
+			'replace_all' => 0,
+			'eval' => 0,
+			'active' => 1,
 		),
-		"portal" => array(
-			"title" => 'Portal',
-			"filename" => 'portal.php',
-			"template_name" => 'portal',
-			"hook" => 'portal_start',
-			"replace_all" => 1,
-			"replacement" => <<<EOF
+		'portal' => array(
+			'title' => 'Portal',
+			'filename' => 'portal.php',
+			'template_name' => 'portal',
+			'hook' => 'portal_start',
+			'replace_all' => 1,
+			'replacement' => <<<EOF
 <html>
 <head>
 <title>{\$mybb->settings['bbname']}</title>
@@ -401,22 +397,23 @@ function asb_create_script_info($return = false)
 </html>
 EOF
 			,
-			"eval" => 0,
-			"active" => 1,
+			'eval' => 0,
+			'active' => 1,
 		),
 	);
 
 	if ($return == false) {
 		foreach ($scripts as $info) {
-			$this_script = new ScriptInfo($info);
-			$this_script->save();
+			$script = new ScriptInfo($info);
+			$script->save();
 		}
+
 		return true;
 	} else {
 		foreach ($scripts as $key => $info) {
-			$ret_scripts[$key] = new ScriptInfo($info);
+			$returnArray[$key] = new ScriptInfo($info);
 		}
-		return $ret_scripts; // upgrade script will save these script defs
+		return $returnArray; // upgrade script will save these script defs
 	}
 }
 
@@ -425,18 +422,18 @@ EOF
  *
  * @return string|bool html or false
  */
-function asb_build_theme_exclude_select()
+function asbBuildThemeExcludeSelect()
 {
 	global $lang;
 	if (!$lang->asb) {
 		$lang->load('asb');
 	}
 
-	$all_themes = asb_get_all_themes(true);
+	$allThemes = asbGetAllThemes(true);
 
-	$theme_count = min(5, count($all_themes));
-	if ($theme_count == 0) {
-		return $theme_select = <<<EOF
+	$themeCount = min(5, count($allThemes));
+	if ($themeCount == 0) {
+		return <<<EOF
 php
 <select name=\"upsetting[asb_exclude_theme][]\" size=\"1\">
 	<option value=\"0\">{$lang->asb_theme_exclude_no_themes}</option>
@@ -446,18 +443,18 @@ EOF;
 	}
 
 	// Create an option for each theme and insert code to unserialize each option and 'remember' settings
-	foreach ($all_themes as $tid => $name) {
+	foreach ($allThemes as $tid => $name) {
 		$name = addcslashes($name, '"');
-		$theme_select .= <<<EOF
-<option value=\"{$tid}\" " . (is_array(unserialize(\$setting['value'])) ? (\$setting['value'] != "" && in_array("{$tid}", unserialize(\$setting['value'])) ? "selected=\"selected\"":""):"") . ">{$name}</option>
+		$themeSelect .= <<<EOF
+<option value=\"{$tid}\" ".(is_array(unserialize(\$setting['value'])) ? (\$setting['value'] != "" && in_array("{$tid}", unserialize(\$setting['value'])) ? "selected=\"selected\"":""):"").">{$name}</option>
 EOF;
 	}
 
 	// put it all together
 	return <<<EOF
 php
-<select multiple name=\"upsetting[asb_exclude_theme][]\" size=\"{$theme_count}\">
-{$theme_select}
+<select multiple name=\"upsetting[asb_exclude_theme][]\" size=\"{$themeCount}\">
+{$themeSelect}
 </select>
 
 EOF;
