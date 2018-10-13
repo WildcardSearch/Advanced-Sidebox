@@ -449,7 +449,7 @@ EOF;
 		'permissions' => $lang->asb_modal_tab_permissions,
 		'pages' => $lang->asb_modal_tab_pages,
 		'themes' => $lang->asb_modal_tab_themes,
-		'settings' => $lang->asb_modal_tab_settings
+		'settings' => $lang->asb_modal_tab_settings,
 	);
 
 	// we only need a 'Settings' tab if the current module type has settings
@@ -891,7 +891,7 @@ EOF;
 				indentWithTabs: true,
 				indentUnit: 4,
 				mode: "text/html",
-				theme: "mybb"
+				theme: "mybb",
 			});
 		</script>
 EOF;
@@ -1158,7 +1158,7 @@ function asb_admin_manage_scripts()
 		'replace_all' => 0,
 		'eval' => 0,
 		'width_left' => 160,
-		'width_right' => 160
+		'width_right' => 160,
 	);
 
 	if ($mybb->input['mode'] == 'edit') {
@@ -1290,7 +1290,7 @@ EOF;
 
 				editorFindTop = CodeMirror.fromTextArea(document.getElementById("find_top"), options).setSize('100%', 80);
 				editorFindBottom = CodeMirror.fromTextArea(document.getElementById("find_bottom"), options).setSize('100%', 80);
-				editorReplacement = CodeMirror.fromTextArea(document.getElementById("replacement"), options).setSize('100%', 300);;
+				editorReplacement = CodeMirror.fromTextArea(document.getElementById("replacement"), options).setSize('100%', 300);
 		</script>
 
 EOF;

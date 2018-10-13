@@ -17,7 +17,7 @@ $removed_files = array(
 	'jscripts/adv_sidebox.js',
 	"{$config['admin_dir']}/jscripts/adv_sidebox_acp.js",
 	"{$config['admin_dir']}/styles/adv_sidebox_acp.css",
-	'inc/plugins/asb/cleanup.php'
+	'inc/plugins/asb/cleanup.php',
 );
 
 $removed_folders = array(

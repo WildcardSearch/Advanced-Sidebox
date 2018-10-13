@@ -42,7 +42,7 @@ function asb_start()
 
 	$width = $boxes = array(
 		0 => '',
-		1 => ''
+		1 => '',
 	);
 
 	// make sure this script's width is within range 120-800 (120 because the templates
@@ -171,11 +171,11 @@ EOF;
 		$toggle_info['left'] = array(
 			'close' => array(
 				'img' => "{$theme['imgdir']}/asb/left_arrow.png",
-				'alt' => '&lt;'
+				'alt' => '&lt;',
 			),
 			'open' => array(
 				'img' => "{$theme['imgdir']}/asb/right_arrow.png",
-				'alt' => '&gt;'
+				'alt' => '&gt;',
 			)
 		);
 		$toggle_info['right']['close'] = $toggle_info['left']['open'];

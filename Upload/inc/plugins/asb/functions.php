@@ -92,7 +92,7 @@ function asb_build_script_filename($this_script = '')
 		$this_script = array(
 			'filename' => THIS_SCRIPT,
 			'action' => $mybb->input['action'],
-			'page' => $mybb->input['page']
+			'page' => $mybb->input['page'],
 		);
 	}
 

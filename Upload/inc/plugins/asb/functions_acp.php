@@ -74,40 +74,40 @@ function asb_output_tabs($current)
 
 	// set up tabs
 	$sub_tabs['asb'] = array(
-		'title' 				=> $lang->asb_manage_sideboxes,
-		'link' 					=> $html->url(),
-		'description' 		=> $lang->asb_manage_sideboxes_desc
+		'title' => $lang->asb_manage_sideboxes,
+		'link' => $html->url(),
+		'description' => $lang->asb_manage_sideboxes_desc,
 	);
 
 	$sub_tabs['asb_custom'] = array(
-		'title'					=> $lang->asb_custom_boxes,
-		'link'					=> $html->url(array('action' => 'custom_boxes')),
-		'description'		=> $lang->asb_custom_boxes_desc
+		'title' => $lang->asb_custom_boxes,
+		'link' => $html->url(array('action' => 'custom_boxes')),
+		'description' => $lang->asb_custom_boxes_desc,
 	);
 
 	if (in_array($current, array('asb_add_custom', 'asb_custom'))) {
 		$sub_tabs['asb_add_custom'] = array(
-			'title'					=> $lang->asb_add_custom,
-			'link'					=> $html->url(array('action' => 'custom_boxes', 'mode' => 'edit')),
-			'description'		=> $lang->asb_add_custom_desc
+			'title' => $lang->asb_add_custom,
+			'link' => $html->url(array('action' => 'custom_boxes', 'mode' => 'edit')),
+			'description' => $lang->asb_add_custom_desc,
 		);
 	}
 	$sub_tabs['asb_scripts'] = array(
-		'title'					=> $lang->asb_manage_scripts,
-		'link'					=> $html->url(array('action' => 'manage_scripts')),
-		'description'		=> $lang->asb_manage_scripts_desc
+		'title' => $lang->asb_manage_scripts,
+		'link' => $html->url(array('action' => 'manage_scripts')),
+		'description' => $lang->asb_manage_scripts_desc,
 	);
 	if (in_array($current, array('asb_edit_script', 'asb_scripts'))) {
 		$sub_tabs['asb_edit_script'] = array(
-			'title'					=> $lang->asb_edit_script,
-			'link'					=> $html->url(array('action' => 'manage_scripts', 'mode' => 'edit')),
-			'description'		=> $lang->asb_edit_script_desc
+			'title' => $lang->asb_edit_script,
+			'link' => $html->url(array('action' => 'manage_scripts', 'mode' => 'edit')),
+			'description' => $lang->asb_edit_script_desc,
 		);
 	}
 	$sub_tabs['asb_modules'] = array(
-		'title'					=> $lang->asb_manage_modules,
-		'link'					=> $html->url(array('action' => 'manage_modules')),
-		'description'		=> $lang->asb_manage_modules_desc
+		'title' => $lang->asb_manage_modules,
+		'link' => $html->url(array('action' => 'manage_modules')),
+		'description' => $lang->asb_manage_modules_desc,
 	);
 	$page->output_nav_tabs($sub_tabs, $current);
 }
@@ -460,18 +460,18 @@ function asb_detect_script_info($filename, $selected = array())
 		'hook' => array(
 			'pattern' => "#\\\$plugins->run_hooks\([\"|'|&quot;]([\w|_]*)[\"|'|&quot;](.*?)\)#i",
 			'filter' => '_do_',
-			'plural' => $lang->asb_hooks
+			'plural' => $lang->asb_hooks,
 		),
 		'template' => array(
 			'pattern' => "#\\\$templates->get\([\"|'|&quot;]([\w|_]*)[\"|'|&quot;](.*?)\)#i",
 			'filter' => '',
-			'plural' => $lang->asb_templates
+			'plural' => $lang->asb_templates,
 		),
 		'action' => array(
 			'pattern' => "#\\\$mybb->input\[[\"|'|&quot;]action[\"|'|&quot;]\] == [\"|'|&quot;]([\w|_]*)[\"|'|&quot;]#i",
 			'filter' => '',
-			'plural' => $lang->asb_actions
-		)
+			'plural' => $lang->asb_actions,
+		),
 	);
 
 	$form = new Form('', '', '', 0, '', true);

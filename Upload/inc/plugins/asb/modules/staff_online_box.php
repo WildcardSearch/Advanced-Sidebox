@@ -61,7 +61,7 @@ function asb_staff_online_box_info()
 				'description' => $lang->asb_xmlhttp_on_description,
 				'optionscode' => 'text',
 				'value' => '0',
-			)
+			),
 		),
 		'discarded_templates' => array(
 			'asb_staff_online',

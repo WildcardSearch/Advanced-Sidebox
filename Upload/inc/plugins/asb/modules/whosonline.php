@@ -68,7 +68,7 @@ function asb_whosonline_info()
 				'description' => $lang->asb_xmlhttp_on_description,
 				'optionscode' => 'text',
 				'value' => '0',
-			)
+			),
 		),
 		'templates' => array(
 			array(

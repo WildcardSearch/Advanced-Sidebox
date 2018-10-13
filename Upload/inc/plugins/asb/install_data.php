@@ -21,7 +21,7 @@ $tables = array(
 			'themes' => 'TEXT',
 			'settings' => 'TEXT',
 			'wrap_content' => 'INT',
-			'dateline' => 'INT NOT NULL, PRIMARY KEY(id)'
+			'dateline' => 'INT NOT NULL, PRIMARY KEY(id)',
 		),
 		'asb_custom_sideboxes' => array(
 			'id' => 'SERIAL',
@@ -29,7 +29,7 @@ $tables = array(
 			'description' => 'VARCHAR(128) NOT NULL',
 			'wrap_content' => 'INT',
 			'content' => 'TEXT',
-			'dateline' => 'INT NOT NULL, PRIMARY KEY(id)'
+			'dateline' => 'INT NOT NULL, PRIMARY KEY(id)',
 		),
 		'asb_script_info' => array(
 			'id' => 'SERIAL',
@@ -48,7 +48,7 @@ $tables = array(
 			'replacement_template' => 'VARCHAR(128) NOT NULL',
 			'eval' => 'INT',
 			'active' => 'INT',
-			'dateline' => 'INT NOT NULL, PRIMARY KEY(id)'
+			'dateline' => 'INT NOT NULL, PRIMARY KEY(id)',
 		),
 	),
 	'asb_sideboxes' => array(
@@ -63,7 +63,7 @@ $tables = array(
 		'themes' => 'TEXT',
 		'settings' => 'TEXT',
 		'wrap_content' => 'INT(1)',
-		'dateline' => 'INT(10)'
+		'dateline' => 'INT(10)',
 	),
 	'asb_custom_sideboxes' => array(
 		'id' => 'INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY',
@@ -71,7 +71,7 @@ $tables = array(
 		'description' => 'VARCHAR(128) NOT NULL',
 		'wrap_content' => 'INT(1)',
 		'content' => 'TEXT',
-		'dateline' => 'INT(10)'
+		'dateline' => 'INT(10)',
 	),
 	'asb_script_info' => array(
 		'id' => 'INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY',
@@ -90,7 +90,7 @@ $tables = array(
 		'replacement_template' => 'VARCHAR(128) NOT NULL',
 		'eval' => 'INT(1)',
 		'active' => 'INT(1)',
-		'dateline' => 'INT(10)'
+		'dateline' => 'INT(10)',
 	),
 );
 
@@ -114,7 +114,7 @@ $settings = array(
 			'title' => 'Advanced Sidebox',
 			'description' => $lang->asb_settingsgroup_description,
 			'disporder' => '101',
-			'isdefault' => 0
+			'isdefault' => 0,
 		),
 		'settings' => array(
 			'asb_show_empty_boxes' => array(
@@ -124,7 +124,7 @@ $settings = array(
 				'description' => $db->escape_string($lang->asb_show_empty_boxes_desc),
 				'optionscode' => 'yesno',
 				'value' => '1',
-				'disporder' => '10'
+				'disporder' => '10',
 			),
 			'asb_show_toggle_icons' => array(
 				'sid' => '0',
@@ -133,7 +133,7 @@ $settings = array(
 				'description' => '',
 				'optionscode' => 'yesno',
 				'value' => '0',
-				'disporder' => '20'
+				'disporder' => '20',
 			),
 			'asb_show_expanders' => array(
 				'sid' => '0',
@@ -142,7 +142,7 @@ $settings = array(
 				'description' => '',
 				'optionscode' => 'yesno',
 				'value' => '1',
-				'disporder' => '30'
+				'disporder' => '30',
 			),
 			'asb_allow_user_disable' => array(
 				'sid' => '0',
@@ -151,7 +151,7 @@ $settings = array(
 				'description' => '',
 				'optionscode' => 'yesno',
 				'value' => '1',
-				'disporder' => '40'
+				'disporder' => '40',
 			),
 			'asb_minify_js' => array(
 				'sid' => '0',
@@ -160,7 +160,7 @@ $settings = array(
 				'description' => $lang->asb_minify_js_desc,
 				'optionscode' => 'yesno',
 				'value' => '1',
-				'disporder' => '50'
+				'disporder' => '50',
 			),
 			'asb_exclude_theme' => array(
 				'sid' => '0',
@@ -169,7 +169,7 @@ $settings = array(
 				'description' => $db->escape_string($lang->asb_theme_exclude_list_description . $update_themes_link),
 				'optionscode' => $db->escape_string(asb_build_theme_exclude_select()),
 				'value' => '',
-				'disporder' => '60'
+				'disporder' => '60',
 			),
 			'asb_disable_for_mobile' => array(
 				'sid' => '0',
@@ -178,7 +178,7 @@ $settings = array(
 				'description' => $lang->asb_disable_for_mobile_description,
 				'optionscode' => 'yesno',
 				'value' => '0',
-				'disporder' => '70'
+				'disporder' => '70',
 			),
 		)
 	)

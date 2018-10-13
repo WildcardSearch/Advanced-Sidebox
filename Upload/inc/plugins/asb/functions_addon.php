@@ -19,7 +19,7 @@ function asb_strip_quotes($message)
 	$pattern = array(
 		"#\[quote=([\"']|&quot;|)(.*?)(?:\\1)(.*?)(?:[\"']|&quot;)?\](.*?)\[/quote\](\r\n?|\n?)#si",
 		"#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si",
-		"#\[\/quote\](\r\n?|\n?)#si"
+		"#\[\/quote\](\r\n?|\n?)#si",
 	);
 
 	do {
