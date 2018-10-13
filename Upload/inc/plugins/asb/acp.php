@@ -894,10 +894,10 @@ EOF;
 			});
 		</script>
 EOF;
-
-			// build link bar and ACP footer
-			asbOutputFooter('edit_custom');
 		}
+
+		// build link bar and ACP footer
+		asbOutputFooter('edit_custom');
 	}
 
 	$page->extra_header .= <<<EOF
