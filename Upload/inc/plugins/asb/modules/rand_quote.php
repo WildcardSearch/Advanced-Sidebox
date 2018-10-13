@@ -308,7 +308,7 @@ function asb_rand_quote_get_quote($settings, $width)
 
 	$avatar_alt = $lang->sprintf($lang->asb_random_quote_users_profile, $plain_text_username);
 
-	eval("\$read_more = \"" . $templates->get('asb_rand_quote_read_more') . "\";");
+	eval("\$read_more = \"{$templates->get('asb_rand_quote_read_more')}\";");
 
 	if (my_strlen($rand_post['subject']) > 40) {
 		$rand_post['subject'] = my_substr($rand_post['subject'], 0, 40) . ' . . .';
@@ -325,7 +325,7 @@ function asb_rand_quote_get_quote($settings, $width)
 EOF;
 
 	// eval() the template
-	eval("\$this_quote = \"" . $templates->get('asb_rand_quote_sidebox') . "\";");
+	eval("\$this_quote = \"{$templates->get('asb_rand_quote_sidebox')}\";");
 	return $this_quote;
 }
 

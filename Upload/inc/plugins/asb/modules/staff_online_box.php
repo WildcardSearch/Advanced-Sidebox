@@ -287,7 +287,7 @@ EOF;
 			++$counter;
 
 			// add this row to the table
-			eval("\$online_staff .= \"" . $templates->get("asb_staff_online_bit") . "\";");
+			eval("\$online_staff .= \"{$templates->get("asb_staff_online_bit")}\";");
 		}
 	}
 

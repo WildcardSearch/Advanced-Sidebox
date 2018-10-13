@@ -92,7 +92,7 @@ function asb_welcome_box_build_template($args)
 
 	if ($mybb->user['uid'] != 0) {
 		// Get number of new posts, threads, announcements
-		$query = $db->simple_select('posts', 'COUNT(pid) AS newposts', "visible=1 AND dateline > '{$mybb->user['lastvisit']}' $unviewwhere");
+		$query = $db->simple_select('posts', 'COUNT(pid) AS newposts', "visible=1 AND dateline > '{$mybb->user['lastvisit']}' {$unviewwhere}");
 		$newposts = $db->fetch_field($query, 'newposts');
 		if ($newposts) {
 			// If there aren't any new posts, there is no point in wasting two more queries
@@ -149,7 +149,7 @@ function asb_welcome_box_build_template($args)
 <span style="float: right;"><img src="{$avatar_filename}" width="{$avatar_width}" alt="{$mybb->user['username']}'s profile"/>&nbsp;</span>
 EOF;
 
-		eval("\$welcometext = \"" . $templates->get("asb_welcome_membertext") . "\";");
+		eval("\$welcometext = \"{$templates->get('asb_welcome_membertext')}\";");
 	} else {
 		$lang->asb_welcome_guest_welcome_registration = $lang->sprintf($lang->asb_welcome_guest_welcome_registration, $mybb->settings['bburl'] . '/member.php?action=register');
 		$mybb->user['username'] = $lang->guest;
@@ -167,11 +167,11 @@ EOF;
 			$username = $lang->username;
 			break;
 		}
-		eval("\$welcometext = \"" . $templates->get('asb_welcome_guesttext') . "\";");
+		eval("\$welcometext = \"{$templates->get('asb_welcome_guesttext')}\";");
 	}
 
 	$lang->welcome = $lang->sprintf($lang->welcome, $mybb->user['username']);
-	eval("\$" . $template_var . " = \"" . $templates->get('asb_welcome') . "\";");
+	eval("\$" . $template_var . " = \"{$templates->get('asb_welcome')}\";");
 	return true;
 }
 

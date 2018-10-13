@@ -267,11 +267,11 @@ function asb_whosonline_get_online_members($settings, $width)
 							$enough_already = true;
 
 							// . . . and insert link to the WOL full list
-							eval("\$onlinemembers .= \"" . $templates->get('asb_whosonline_memberbit_see_all', 1, 0) . "\";");
+							eval("\$onlinemembers .= \"{$templates->get('asb_whosonline_memberbit_see_all', 1, 0)}\";");
 						}
 					// . . . otherwise, add it to the list
 					} else {
-						eval("\$onlinemembers .= \"" . $templates->get('asb_whosonline_memberbit_avatar', 1, 0) . "\";");
+						eval("\$onlinemembers .= \"{$templates->get('asb_whosonline_memberbit_avatar', 1, 0)}\";");
 
 						// If we reach the end of the row, insert a <br />
 						if (($membercount - (($row - 1) * $rowlength)) == $rowlength) {
@@ -282,7 +282,7 @@ function asb_whosonline_get_online_members($settings, $width)
 					}
 				} else {
 					$user['username'] = format_name(trim($user['username']), $user['usergroup'], $user['displaygroup']);
-					eval("\$onlinemembers .= \"" . $templates->get('asb_whosonline_memberbit_name', 1, 0) . "\";");
+					eval("\$onlinemembers .= \"{$templates->get('asb_whosonline_memberbit_name', 1, 0)}\";");
 					$sep = $lang->comma . ' ';
 				}
 			} else {
@@ -327,7 +327,7 @@ function asb_whosonline_get_online_members($settings, $width)
 	$lang->asb_wol_online_counts = $lang->sprintf($lang->asb_wol_online_counts, $membercount, $guestcount);
 
 	if ($membercount) {
-		eval("\$onlinemembers = \"" . $templates->get('asb_whosonline') . "\";");
+		eval("\$onlinemembers = \"{$templates->get('asb_whosonline')}\";");
 		return $onlinemembers;
 	} else {
 		return false;

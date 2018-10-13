@@ -202,7 +202,7 @@ EOF;
 			$closed_id = "asb_{$key}_close";
 			$open_id = "asb_{$key}_open";
 
-			eval("\$toggles[\$key] = \"" . $templates->get('asb_toggle_icon') . "\";");
+			eval("\$toggles[\$key] = \"{$templates->get('asb_toggle_icon')}\";");
 		}
 	}
 
@@ -218,8 +218,8 @@ EOF;
 			$insert_name = "{$key}_insert";
 			$sideboxes = $$insert_name;
 
-			eval("\$content_pad = \"" . $templates->get('asb_content_pad') . "\";");
-			eval("\$content = \"" . $templates->get('asb_sidebox_column') . "\";");
+			eval("\$content_pad = \"{$templates->get('asb_content_pad')}\";");
+			eval("\$content = \"{$templates->get('asb_sidebox_column')}\";");
 
 			$toggle_left = $toggle_right = '';
 			$toggle_name = "toggle_{$key}";
@@ -234,8 +234,8 @@ EOF;
 EOF;
 		}
 	}
-	eval("\$insert_top = \"" . $templates->get('asb_begin') . "\";");
-	eval("\$insert_bottom = \"" . $templates->get('asb_end') . "\";");
+	eval("\$insert_top = \"{$templates->get('asb_begin')}\";");
+	eval("\$insert_bottom = \"{$templates->get('asb_end')}\";");
 
 	if (is_array($script['extra_scripts']) &&
 		!empty($script['extra_scripts'])) {

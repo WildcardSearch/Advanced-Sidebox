@@ -373,7 +373,7 @@ function asb_latest_threads_get_threadlist($settings, $width)
 		$thread['threadlink'] = get_thread_link($thread['tid']);
 		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, 'lastpost');
 
-		eval("\$last_poster = \"" . $templates->get($lp_template) . "\";");
+		eval("\$last_poster = \"{$templates->get($lp_template)}\";");
 
 		$gotounread = '';
 		$last_read = 0;
@@ -410,11 +410,11 @@ function asb_latest_threads_get_threadlist($settings, $width)
 		if ($thread['lastpost'] > $last_read &&
 			$last_read) {
 			$thread['newpostlink'] = get_thread_link($thread['tid'], 0, 'newpost');
-			eval("\$gotounread = \"" . $templates->get('asb_latest_threads_gotounread') . "\";");
+			eval("\$gotounread = \"{$templates->get('asb_latest_threads_gotounread')}\";");
 			$unreadpost = 1;
 		}
 
-		eval("\$threadlist .= \"" . $templates->get('asb_latest_threads_thread') . "\";");
+		eval("\$threadlist .= \"{$templates->get('asb_latest_threads_thread')}\";");
 		$altbg = alt_trow();
 	}
 

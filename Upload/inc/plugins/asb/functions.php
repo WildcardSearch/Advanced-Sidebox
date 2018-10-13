@@ -307,9 +307,9 @@ EOF;
 				$expcolimage = 'collapse.png';
 				$expaltext = '[-]';
 			}
-			eval("\$expander = \"" . $templates->get('asb_expander') . "\";");
+			eval("\$expander = \"{$templates->get('asb_expander')}\";");
 		}
-		eval("\$content = \"" . $templates->get('asb_wrapped_sidebox') . "\";");
+		eval("\$content = \"{$templates->get('asb_wrapped_sidebox')}\";");
 	}
 
 	// if there is anything to return
