@@ -1685,23 +1685,14 @@ function asb_admin_update_theme_select()
 		$lang->load('asb');
 	}
 
-	$query = $db->simple_select('settings', '*', "name='asb_exclude_theme'");
+	$status = asb_update_theme_select_setting();
 
-	// is the setting created?
-	if ($db->num_rows($query) == 0) {
+	if (!$status) {
 		flash_message($lang->asb_theme_exclude_select_update_fail, 'error');
 		admin_redirect('index.php?module=config-settings');
 	}
 
-	// update the setting
-	$status = $db->update_query('settings', array("optionscode" => $db->escape_string(asb_build_theme_exclude_select())), "name='asb_exclude_theme'");
-
-	// success?
-	if (!$status) {
-		flash_message($lang->asb_theme_exclude_select_update_fail, 'error');
-	} else {
-		flash_message($lang->asb_theme_exclude_select_update_success, 'success');
-	}
+	flash_message($lang->asb_theme_exclude_select_update_success, 'success');
 	admin_redirect(asb_build_settings_url($gid));
 }
 
@@ -1776,6 +1767,50 @@ function asb_admin_config_permissions(&$admin_permissions)
 		$lang->load('asb');
 	}
 	$admin_permissions['asb'] = $lang->asb_admin_permissions_desc;
+}
+
+/**
+ * update the theme exclude selector after any themes are added or deleted
+ *
+ * @return void
+ */
+$plugins->add_hook('admin_style_themes_import_commit', 'asb_update_theme_select_setting');
+$plugins->add_hook('admin_style_themes_duplicate_commit', 'asb_update_theme_select_setting');
+$plugins->add_hook('admin_style_themes_add_commit', 'asb_update_theme_select_setting');
+$plugins->add_hook('admin_style_themes_delete_commit', 'asb_update_theme_select_setting');
+function asb_update_theme_select_setting()
+{
+	global $db, $lang;
+
+	if (!$lang->asb) {
+		$lang->load('asb');
+	}
+
+	$query = $db->simple_select('settings', '*', "name='asb_exclude_theme'");
+
+	// is the setting created?
+	if ($db->num_rows($query) == 0) {
+		return false;
+	}
+
+	// update the setting
+	return $db->update_query('settings', array("optionscode" => $db->escape_string(asb_build_theme_exclude_select())), "name='asb_exclude_theme'");
+}
+
+/**
+ * update the theme exclude selector after any themes are edited
+ *
+ * @return void
+ */
+$plugins->add_hook('admin_style_themes_edit_commit', 'asb_update_theme_select_setting_on_edit');
+function asb_update_theme_select_setting_on_edit()
+{
+	global $db, $update_array, $theme;
+
+	// the edit commit hook is before the actualy update so we have to update the title ourselves.
+	$db->update_query('themes', array('name' => $update_array['name']), "tid='{$theme['tid']}'");
+
+	asb_update_theme_select_setting();
 }
 
 ?>
