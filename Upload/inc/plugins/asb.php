@@ -32,11 +32,11 @@ if (defined('IN_ADMINCP')) {
 	require_once MYBB_ROOT . 'inc/plugins/asb/forum.php';
 }
 
- /**
-  * class autoloader
-  *
-  * @param string the name of the class to load
-  */
+/**
+ * class autoloader
+ *
+ * @param string the name of the class to load
+ */
 function asbClassAutoload($className) {
 	$path = MYBB_ROOT . "inc/plugins/asb/classes/{$className}.php";
 
