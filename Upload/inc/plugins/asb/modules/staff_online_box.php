@@ -170,11 +170,11 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 	$users = array();
 
 	// build user group exclusions (if any)
-	$show = asb_build_id_list($settings['group_show_list'], 'gid');
-	$hide = asb_build_id_list($settings['group_hide_list'], 'gid');
-	$where['show'] = asb_build_SQL_where($show, ' OR ');
-	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
-	$group_where = asb_build_SQL_where($where, ' AND ', ' AND ');
+	$show = asbBuildIdList($settings['group_show_list'], 'gid');
+	$hide = asbBuildIdList($settings['group_hide_list'], 'gid');
+	$where['show'] = asbBuildSqlWhere($show, ' OR ');
+	$where['hide'] = asbBuildSqlWhere($hide, ' OR ', ' NOT ');
+	$group_where = asbBuildSqlWhere($where, ' AND ', ' AND ');
 
 	// get all the groups admin has specified should be shown on showteam.php
 	$query = $db->simple_select('usergroups', 'gid, title, usertitle, image', "showforumteam=1{$group_where}", array('order_by' => 'disporder'));

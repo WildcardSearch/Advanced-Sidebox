@@ -275,13 +275,13 @@ function asb_latest_threads_get_threadlist($settings, $width)
 	}
 
 	// build the exclude conditions
-	$show['fids'] = asb_build_id_list($settings['forum_show_list'], 't.fid');
-	$show['tids'] = asb_build_id_list($settings['thread_show_list'], 't.tid');
-	$hide['fids'] = asb_build_id_list($settings['forum_hide_list'], 't.fid');
-	$hide['tids'] = asb_build_id_list($settings['thread_hide_list'], 't.tid');
-	$where['show'] = asb_build_SQL_where($show, ' OR ');
-	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
-	$query_where = $new_threads.$important_threads.$unviewwhere.$inactivewhere.asb_build_SQL_where($where, ' AND ', ' AND ');
+	$show['fids'] = asbBuildIdList($settings['forum_show_list'], 't.fid');
+	$show['tids'] = asbBuildIdList($settings['thread_show_list'], 't.tid');
+	$hide['fids'] = asbBuildIdList($settings['forum_hide_list'], 't.fid');
+	$hide['tids'] = asbBuildIdList($settings['thread_hide_list'], 't.tid');
+	$where['show'] = asbBuildSqlWhere($show, ' OR ');
+	$where['hide'] = asbBuildSqlWhere($hide, ' OR ', ' NOT ');
+	$query_where = $new_threads.$important_threads.$unviewwhere.$inactivewhere.asbBuildSqlWhere($where, ' AND ', ' AND ');
 
 	$altbg = alt_trow();
 	$threadlist = '';

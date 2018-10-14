@@ -211,11 +211,11 @@ function asb_top_poster_build_template($args)
 	}
 
 	// build user group exclusions (if any)
-	$show = asb_build_id_list($settings['group_show_list'], 'u.usergroup');
-	$hide = asb_build_id_list($settings['group_hide_list'], 'u.usergroup');
-	$where['show'] = asb_build_SQL_where($show, ' OR ');
-	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
-	$group_where = asb_build_SQL_where($where, ' AND ', ' AND ');
+	$show = asbBuildIdList($settings['group_show_list'], 'u.usergroup');
+	$hide = asbBuildIdList($settings['group_hide_list'], 'u.usergroup');
+	$where['show'] = asbBuildSqlWhere($show, ' OR ');
+	$where['hide'] = asbBuildSqlWhere($hide, ' OR ', ' NOT ');
+	$group_where = asbBuildSqlWhere($where, ' AND ', ' AND ');
 
 	$forum_where = $thread_where = $extraCongrats = '';
 	$tid = (int) $settings['tid'];

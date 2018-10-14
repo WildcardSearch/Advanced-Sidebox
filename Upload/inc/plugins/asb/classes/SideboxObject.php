@@ -75,7 +75,7 @@ class SideboxObject extends StorableObject010000
 	 * @param  array|int data or id
 	 * @return void
 	 */
-	function __construct($data = '')
+	function __construct($data='')
 	{
 		$this->noStore[] = 'hasSettings';
 		parent::__construct($data);

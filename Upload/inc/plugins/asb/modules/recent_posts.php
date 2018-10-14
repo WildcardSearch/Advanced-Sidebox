@@ -196,13 +196,13 @@ function recent_posts_get_postlist($settings)
 	}
 
 	// build the exclude conditions
-	$show['fids'] = asb_build_id_list($settings['forum_show_list'], 'p.fid');
-	$show['tids'] = asb_build_id_list($settings['thread_show_list'], 'p.tid');
-	$hide['fids'] = asb_build_id_list($settings['forum_hide_list'], 'p.fid');
-	$hide['tids'] = asb_build_id_list($settings['thread_hide_list'], 'p.tid');
-	$where['show'] = asb_build_SQL_where($show, ' OR ');
-	$where['hide'] = asb_build_SQL_where($hide, ' OR ', ' NOT ');
-	$query_where = $important_threads.$unviewwhere.$inactivewhere.asb_build_SQL_where($where, ' AND ', ' AND ');
+	$show['fids'] = asbBuildIdList($settings['forum_show_list'], 'p.fid');
+	$show['tids'] = asbBuildIdList($settings['thread_show_list'], 'p.tid');
+	$hide['fids'] = asbBuildIdList($settings['forum_hide_list'], 'p.fid');
+	$hide['tids'] = asbBuildIdList($settings['thread_hide_list'], 'p.tid');
+	$where['show'] = asbBuildSqlWhere($show, ' OR ');
+	$where['hide'] = asbBuildSqlWhere($hide, ' OR ', ' NOT ');
+	$query_where = $important_threads.$unviewwhere.$inactivewhere.asbBuildSqlWhere($where, ' AND ', ' AND ');
 
 	$altbg = alt_trow();
 	$maxtitlelen = 48;
@@ -272,7 +272,7 @@ function recent_posts_get_postlist($settings)
 
 		// we just need the text and smilies (we'll parse them after we check length)
 		$pattern = "|[[\/\!]*?[^\[\]]*?]|si";
-		$post_excerpt = strip_tags(str_replace('<br />', '', asb_strip_url(preg_replace($pattern, '$1', $post['message']))));
+		$post_excerpt = strip_tags(str_replace('<br />', '', asbStripUrls(preg_replace($pattern, '$1', $post['message']))));
 
 		if ($settings['max_length'] &&
 			strlen($post_excerpt) > $settings['max_length']) {

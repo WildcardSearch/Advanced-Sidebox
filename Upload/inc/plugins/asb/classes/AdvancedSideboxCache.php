@@ -72,28 +72,28 @@ class AdvancedSideboxCache extends WildcardPluginCache010300
 		$data['has_changed'] = false;
 
 		// get all the active scripts' info
-		$all_scripts = asb_get_all_scripts();
+		$allScripts = asbGetAllScripts();
 
 		// no scripts, no work to do
-		if (!is_array($all_scripts) ||
-			empty($all_scripts)) {
+		if (!is_array($allScripts) ||
+			empty($allScripts)) {
 			return;
 		}
 
 		// store the script definitions and a master list
-		foreach ($all_scripts as $filename => $script) {
+		foreach ($allScripts as $filename => $script) {
 			$data['scripts'][$filename] = $script;
 		}
-		$data['all_scripts'] = array_keys($all_scripts);
+		$data['all_scripts'] = array_keys($allScripts);
 
 		// load all detected modules
-		$addons = asb_get_all_modules();
+		$addons = asbGetAllModules();
 
 		// get any custom boxes
-		$custom = asb_get_all_custom();
+		$custom = asbGetAllCustomBoxes();
 
 		// get any sideboxes
-		$sideboxes = asb_get_all_sideboxes();
+		$sideboxes = asbGetAllSideBoxes();
 
 		if (!is_array($sideboxes) ||
 			empty($sideboxes)) {
