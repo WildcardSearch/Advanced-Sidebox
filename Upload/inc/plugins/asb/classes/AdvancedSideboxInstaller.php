@@ -30,7 +30,7 @@ class AdvancedSideboxInstaller extends WildcardPluginInstaller020000
 	 * @param  string path to the install data
 	 * @return void
 	 */
-	public function __construct($path = '')
+	public function __construct($path='')
 	{
 		parent::__construct(MYBB_ROOT.'inc/plugins/asb/install_data.php');
 	}

@@ -143,7 +143,7 @@ class SideboxExternalModule extends ExternalModule010000
 	 * @param  bool remove install data before beginning?
 	 * @return void
 	 */
-	public function install($cleanup = true)
+	public function install($cleanup=true)
 	{
 		global $db;
 
@@ -162,7 +162,7 @@ class SideboxExternalModule extends ExternalModule010000
 			return;
 		}
 
-		$insert_array = array();
+		$insertArray = array();
 		foreach ($this->templates as $template) {
 			$template['sid'] = -2;
 			$query = $db->simple_select('templates', '*', "title='{$template['title']}' AND sid IN('-2', '-1')");
@@ -172,12 +172,12 @@ class SideboxExternalModule extends ExternalModule010000
 				$db->update_query('templates', $template, "title='{$template['title']}' AND sid IN('-2', '-1')");
 			} else {
 				// if not, create a new template
-				$insert_array[] = $template;
+				$insertArray[] = $template;
 			}
 		}
 
-		if (!empty($insert_array)) {
-			$db->insert_query_multiple('templates', $insert_array);
+		if (!empty($insertArray)) {
+			$db->insert_query_multiple('templates', $insertArray);
 		}
 	}
 
@@ -188,7 +188,7 @@ class SideboxExternalModule extends ExternalModule010000
 	 * @param  bool remove children
 	 * @return void
 	 */
-	public function uninstall($cleanup = true)
+	public function uninstall($cleanup=true)
 	{
 		$this->unsetCacheVersion();
 
@@ -203,15 +203,15 @@ class SideboxExternalModule extends ExternalModule010000
 		}
 
 		// remove them all
-		$delete_list = $sep = '';
+		$deleteList = $sep = '';
 		foreach ($this->templates as $template) {
-			$delete_list .= "{$sep}'{$template['title']}'";
+			$deleteList .= "{$sep}'{$template['title']}'";
 			$sep = ',';
 		}
 
-		if ($delete_list) {
+		if ($deleteList) {
 			global $db;
-			$db->delete_query('templates', "title IN({$delete_list})");
+			$db->delete_query('templates', "title IN({$deleteList})");
 		}
 	}
 
@@ -232,14 +232,14 @@ class SideboxExternalModule extends ExternalModule010000
 		// if any templates were dropped in this version
 		if (is_array($this->discarded_templates)) {
 			// delete them
-			$delete_list = $sep = '';
+			$deleteList = $sep = '';
 			foreach ($this->discarded_templates as $template) {
-				$delete_list .= "{$sep}'{$template}'";
+				$deleteList .= "{$sep}'{$template}'";
 				$sep = ',';
 			}
 
-			if ($delete_list) {
-				$db->delete_query('templates', "title IN({$delete_list})");
+			if ($deleteList) {
+				$db->delete_query('templates', "title IN({$deleteList})");
 			}
 		}
 
@@ -438,9 +438,9 @@ class SideboxExternalModule extends ExternalModule010000
 	 */
 	public function doSettingsSave($settings)
 	{
-		$retval = $this->run('settings_save', $settings);
-		if ($retval) {
-			return $retval;
+		$returnVal = $this->run('settings_save', $settings);
+		if ($returnVal) {
+			return $returnVal;
 		}
 		return $settings;
 	}

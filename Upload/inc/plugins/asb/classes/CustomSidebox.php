@@ -45,7 +45,7 @@ class CustomSidebox extends PortableObject010001
 	 * @param  array|int data or id
 	 * @return void
 	 */
-	public function __construct($data = '')
+	public function __construct($data='')
 	{
 		$this->noStore[] = 'baseName';
 		parent::__construct($data);
@@ -72,7 +72,7 @@ class CustomSidebox extends PortableObject010001
 	 * @param  bool prevent removal of sideboxes of this type?
 	 * @return bool success/fail
 	 */
-	public function remove($noCleanup = false)
+	public function remove($noCleanup=false)
 	{
 		// unless specifically requested otherwise clean up
 		if (!$noCleanup) {
@@ -106,11 +106,11 @@ class CustomSidebox extends PortableObject010001
 		global $$template_variable, $mybb, $lang;
 
 		$content = $this->content;
-		$ret_val = true;
+		$returnVal = true;
 
 		// if the user doesn't want content then at least make it validate
 		if (strlen($content) == 0) {
-			$ret_val = false;
+			$returnVal = false;
 			$content = '
 	<tr>
 		<td></td>
@@ -119,7 +119,7 @@ class CustomSidebox extends PortableObject010001
 			$content = str_replace("\\'", "'", addslashes($content));
 			eval("\${$template_variable} = \"{$content}\";");
 		}
-		return $ret_val;
+		return $returnVal;
 	}
 }
 
