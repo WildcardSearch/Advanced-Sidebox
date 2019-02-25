@@ -1815,4 +1815,41 @@ function asbUpdateThemeSelectSettingOnEdit()
 	asbUpdateThemeSelectSetting();
 }
 
+/**
+ * add our user sidebox preference setting in user edit
+ *
+ * @param  array options
+ * @return void
+ */
+$plugins->add_hook('admin_user_users_edit_other_options', 'asb_admin_user_users_edit_other_options');
+function asb_admin_user_users_edit_other_options($other_options)
+{
+	global $mybb, $user, $lang, $form, $form_container;
+
+	if (!$lang->asb) {
+		$lang->load('asb');
+	}
+
+	$checked = false;
+	if ($user['show_sidebox'] > 0) {
+		$checked = true;
+	}
+
+	array_unshift($other_options, $form->generate_check_box('show_sidebox', 1, 'Show side boxes', array("checked" => $mybb->input['show_sidebox'])));
+	return $other_options;
+}
+
+/**
+ * update the user sidebox preference when saving the user
+ *
+ * @return void
+ */
+$plugins->add_hook('admin_user_users_edit_commit_start', 'asb_admin_user_users_edit_commit_start');
+function asb_admin_user_users_edit_commit_start()
+{
+	global $mybb, $extra_user_updates;
+
+	$extra_user_updates['show_sidebox'] = $mybb->input['show_sidebox'];
+}
+
 ?>
