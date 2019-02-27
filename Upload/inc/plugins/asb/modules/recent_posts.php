@@ -273,6 +273,7 @@ function recent_posts_get_postlist($settings)
 		// we just need the text and smilies (we'll parse them after we check length)
 		$pattern = "|[[\/\!]*?[^\[\]]*?]|si";
 		$post_excerpt = strip_tags(str_replace('<br />', '', asbStripUrls(preg_replace($pattern, '$1', $post['message']))));
+		$post_excerpt = htmlspecialchars_uni($parser->parse_badwords($post_excerpt));
 
 		if ($settings['max_length'] &&
 			strlen($post_excerpt) > $settings['max_length']) {
