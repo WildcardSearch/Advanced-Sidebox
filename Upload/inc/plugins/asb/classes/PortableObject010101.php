@@ -24,7 +24,7 @@ abstract class PortableObject010101 extends StorableObject010001 implements Port
 			return false;
 		}
 
-		$rows = $this->buildRow();
+		$row = $this->buildRow();
 		$id = (int) $this->id;
 
 		if (!$row) {
@@ -37,7 +37,10 @@ abstract class PortableObject010101 extends StorableObject010001 implements Port
 		if ($return === true) {
 			return $xml;
 		}
+
 		$this->output($xml, $options);
+
+		return true;
 	}
 
 	/**
@@ -141,7 +144,7 @@ EOF;
 	 *
 	 * @return string|bool the XML markup or false on fail
 	 */
-	public function buildRows()
+	public function buildRow()
 	{
 		// object must have been saved (it exists in the db) in order to be exported
 		if (!$this->tableName ||

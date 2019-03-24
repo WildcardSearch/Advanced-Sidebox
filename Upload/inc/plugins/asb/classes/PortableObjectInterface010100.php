@@ -11,7 +11,7 @@ interface PortableObjectInterface010100
 {
 	public function export($options = '');
 	public function import($xml);
-	public function buildRows();
+	public function buildRow();
 }
 
 ?>
