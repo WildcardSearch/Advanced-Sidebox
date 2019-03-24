@@ -7,11 +7,11 @@
 /**
  * provides a standard interface for object import/export
  */
-interface PortableObjectInterface010000
+interface PortableObjectInterface010100
 {
 	public function export($options = '');
 	public function import($xml);
-	public function buildRow();
+	public function buildRows();
 }
 
 ?>

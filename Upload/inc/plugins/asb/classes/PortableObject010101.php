@@ -9,7 +9,7 @@
  * XML file and to output a row to be included in a collection exported by
  * an outside function
  */
-abstract class PortableObject010001 extends StorableObject010000 implements PortableObjectInterface010000
+abstract class PortableObject010101 extends StorableObject010001 implements PortableObjectInterface010100
 {
 	/**
 	 * provides export functionality for any StorableObject
@@ -17,61 +17,27 @@ abstract class PortableObject010001 extends StorableObject010000 implements Port
 	 * @param  array basic export options
 	 * @return void
 	 */
-	public function export($options = '')
+	public function export($options = '', $return = false)
 	{
 		if (!$this->tableName ||
 			!$this->id) {
 			return false;
 		}
 
-		$row = $this->buildRow();
+		$rows = $this->buildRow();
 		$id = (int) $this->id;
 
 		if (!$row) {
 			return false;
 		}
 
-		$name = $this->getCleanIdentifier();
-		$defaultValues = array(
-			"charset" => 'UTF-8',
-			"version" => '1.0',
-			"website" => 'http://www.rantcentralforums.com',
-			"filename" => "{$this->tableName}_{$name}-backup.xml",
-		);
+		$options = $this->buildOptions($options);
+		$xml = $this->buildXml($row, $options);
 
-		// try to get MyBB default charset
-		global $lang;
-		if (isset($lang->settings['charset'])) {
-			$defaultValues['charset'] = $lang->settings['charset'];
+		if ($return === true) {
+			return $xml;
 		}
-
-		if (is_array($options) &&
-			!empty($options)) {
-			foreach ($defaultValues as $key => $value) {
-				if (!isset($options[$key]) ||
-					!$options[$key]) {
-					$options[$key] = $value;
-				}
-			}
-		} else {
-			$options = $defaultValues;
-		}
-
-		$xml = <<<EOF
-<?xml version="1.0" encoding="{$options['charset']}"?>
-<{$this->tableName} version="{$options['version']}" xmlns="{$options['website']}">
-<{$this->tableName}_{$id}>
-{$row}	</{$this->tableName}_{$id}>
-</{$this->tableName}>
-EOF;
-		// send out headers (opens a save dialogue)
-		header("Content-Disposition: attachment; filename={$options['filename']}");
-		header('Content-Type: application/xml');
-		header('Content-Length: ' . strlen($xml));
-		header('Pragma: no-cache');
-		header('Expires: 0');
-		echo $xml;
-		return true;
+		$this->output($xml, $options);
 	}
 
 	/**
@@ -116,12 +82,66 @@ EOF;
 		return true;
 	}
 
+	public function output($xml, $options = '')
+	{
+		// send out headers (opens a save dialogue)
+		header("Content-Disposition: attachment; filename={$options['filename']}");
+		header('Content-Type: application/xml');
+		header('Content-Length: ' . strlen($xml));
+		header('Pragma: no-cache');
+		header('Expires: 0');
+		echo <<<EOF
+{$xml}
+EOF;
+	}
+
+	public function buildOptions($options = '')
+	{
+		global $lang;
+
+		$name = $this->getCleanIdentifier();
+		$defaultValues = array(
+			"charset" => 'UTF-8',
+			"version" => '1.0',
+			"website" => 'http://www.rantcentralforums.com',
+			"filename" => "{$this->tableName}_{$name}-backup.xml",
+		);
+
+		// try to get MyBB default charset
+		if (isset($lang->settings['charset'])) {
+			$defaultValues['charset'] = $lang->settings['charset'];
+		}
+
+		if (is_array($options) &&
+			!empty($options)) {
+			foreach ($defaultValues as $key => $value) {
+				if (!isset($options[$key]) ||
+					!$options[$key]) {
+					$options[$key] = $value;
+				}
+			}
+		} else {
+			$options = $defaultValues;
+		}
+		return $options;
+	}
+
+	public function buildXml($rows, $options = '')
+	{
+		return <<<EOF
+<?xml version="1.0" encoding="{$options['charset']}"?>
+<{$this->table_name} version="{$options['version']}" xmlns="{$options['website']}">
+{$rows}
+</{$this->table_name}>
+EOF;
+	}
+
 	/**
 	 * build a single row of XML markup for this object
 	 *
 	 * @return string|bool the XML markup or false on fail
 	 */
-	public function buildRow()
+	public function buildRows()
 	{
 		// object must have been saved (it exists in the db) in order to be exported
 		if (!$this->tableName ||
@@ -167,7 +187,7 @@ EOF;
 	 * @access private
 	 * @return string the identifier
 	 */
-	private function getCleanIdentifier()
+	protected function getCleanIdentifier()
 	{
 		if (property_exists($this, 'name') &&
 			trim($this->name)) {
