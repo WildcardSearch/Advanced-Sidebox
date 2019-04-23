@@ -7,7 +7,7 @@
 /**
  * standard object for db storage/retrieval
  */
-abstract class StorableObject010000 extends MalleableObject010000 implements StorableObjectInterface010000
+abstract class StorableObject010001 extends MalleableObject010000 implements StorableObjectInterface010000
 {
 	/**
 	 * @var int
@@ -121,8 +121,6 @@ abstract class StorableObject010000 extends MalleableObject010000 implements Sto
 			case 'resource':
 				$this->data[$property] = $db->escape_string(json_encode($value));
 				break;
-			default:
-				continue;
 			}
 		}
 		$this->data['dateline'] = TIME_NOW;

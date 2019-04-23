@@ -341,6 +341,10 @@ function asb_initialize()
 {
 	global $mybb, $plugins;
 
+	if (!defined('THIS_SCRIPT')) {
+		return;
+	}
+
 	// hooks for the User CP routine.
 	switch (THIS_SCRIPT) {
 	case 'usercp.php':
