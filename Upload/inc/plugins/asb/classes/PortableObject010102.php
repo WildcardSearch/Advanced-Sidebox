@@ -9,7 +9,7 @@
  * XML file and to output a row to be included in a collection exported by
  * an outside function
  */
-abstract class PortableObject010101 extends StorableObject010001 implements PortableObjectInterface010100
+abstract class PortableObject010102 extends StorableObject010001 implements PortableObjectInterface010100
 {
 	/**
 	 * provides export functionality for any StorableObject
@@ -133,9 +133,11 @@ EOF;
 	{
 		return <<<EOF
 <?xml version="1.0" encoding="{$options['charset']}"?>
-<{$this->table_name} version="{$options['version']}" xmlns="{$options['website']}">
+<{$this->tableName} version="{$options['version']}" xmlns="{$options['website']}">
+<{$this->tableName}_{$this->id}>
 {$rows}
-</{$this->table_name}>
+</{$this->tableName}_{$this->id}>
+</{$this->tableName}>
 EOF;
 	}
 
