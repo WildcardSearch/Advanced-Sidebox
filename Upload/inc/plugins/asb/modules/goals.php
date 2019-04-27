@@ -30,8 +30,8 @@ function asb_goals_info()
 		'title' => $lang->asb_goals_title,
 		'description' => $lang->asb_goals_description,
 		'wrap_content' => true,
-		'version' => '1.0.1',
-		'compatibility' => '2.1',
+		'version' => '2.0.0',
+		'compatibility' => '4.0',
 		'xmlhttp' => true,
 		'settings' => array(
 			'goal_type' => array(
@@ -69,10 +69,11 @@ EOF
 				'value' => '0',
 			),
 		),
-		'templates' => array(
-			array(
-				'title' => 'asb_goals',
-				'template' => <<<EOF
+		'installData' => array(
+			'templates' => array(
+				array(
+					'title' => 'asb_goals',
+					'template' => <<<EOF
 				<tr>
 					<td class="trow1" style="text-align: center;">{\$progress}</td>
 				</tr>
@@ -80,29 +81,30 @@ EOF
 					<td class="tfoot" style="text-align: center;"><span class="smalltext">{\$stats}</span></td>
 				</tr>
 EOF
-			),
-			array(
-				'title' => 'asb_goals_goal_reached',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_goals_goal_reached',
+					'template' => <<<EOF
 <span style="font-size: 1.6em; color: navy;">{\$goal_reached_message}</span>{\$successImage}
 EOF
-			),
-			array(
-				'title' => 'asb_goals_progress',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_goals_progress',
+					'template' => <<<EOF
 <span style="font-size: 1.4em; color: green;">{\$percentage}%</span> {\$progress_message}<br />
 <div style="width: 95%; background: white; height: 20px; border: 2px outset grey;">
 	<div style="width: {\$percentage}%; background: blue; height: 20px;" title="{\$progress_bar_title}">
 	</div>
 </div>
 EOF
-			),
-			array(
-				'title' => 'asb_goals_goal_reached_image',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_goals_goal_reached_image',
+					'template' => <<<EOF
 
 <img src="{\$settings[\'success_image\']}" alt="celebrate!"/>
 EOF
+				),
 			),
 		),
 	);
@@ -114,16 +116,15 @@ EOF
  * @param  array
  * @return bool success/fail
  */
-function asb_goals_build_template($args)
+function asb_goals_build_template($settings, $template_var, $width, $script)
 {
-	extract($args);
 	global $$template_var, $lang;
 
 	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
-	$goalStatus = asb_goals_get_progress($args);
+	$goalStatus = asb_goals_get_progress($settings, $template_var, $width, $script);
 	if (!$goalStatus) {
 		$$template_var = "<tr><td>{$lang->asb_goals_no_content}</td></tr>";
 		return false;
@@ -139,9 +140,9 @@ function asb_goals_build_template($args)
  * @param  array
  * @return string
  */
-function asb_goals_xmlhttp($args)
+function asb_goals_xmlhttp($dateline, $settings, $width, $script)
 {
-	$goalStatus = asb_goals_get_progress($args);
+	$goalStatus = asb_goals_get_progress($settings);
 	if ($goalStatus) {
 		return $goalStatus;
 	}
@@ -154,15 +155,13 @@ function asb_goals_xmlhttp($args)
  * @param  array
  * @return string
  */
-function asb_goals_get_progress($args)
+function asb_goals_get_progress($settings)
 {
 	global $lang, $templates, $db;
 
 	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
-
-	extract($args);
 
 	$returnValue = '';
 	$table = 'forums';

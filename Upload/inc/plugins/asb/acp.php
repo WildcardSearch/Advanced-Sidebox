@@ -94,7 +94,7 @@ function asb_admin_manage_sideboxes()
 
 			// add the HTML
 			$modules .= <<<EOF
-			<div id="{$id}" class="draggable box_type">
+			<div id="asb-{$id}" class="draggable box_type">
 				{$titleLink}
 			</div>
 
@@ -232,7 +232,7 @@ function asb_admin_edit_box()
 	$customTitle = 0;
 
 	$module = $mybb->input['addon'];
-	$parent = new SideboxExternalModule($module);
+	$parent = new SideboxModule($module);
 	if (!$parent->isValid()) {
 		// did this box come from a custom static box?
 		$namePieces = explode('_', $module);
@@ -1657,7 +1657,7 @@ function asb_admin_delete_addon()
 		admin_redirect($html->url(array('action' => 'manage_modules')));
 	}
 
-	$module = new SideboxExternalModule($mybb->input['addon']);
+	$module = new SideboxModule($mybb->input['addon']);
 	if (!$module->remove()) {
 		flash_message($lang->asb_delete_addon_failure, 'error');
 	} else {

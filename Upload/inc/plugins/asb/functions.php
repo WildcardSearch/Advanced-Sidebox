@@ -330,7 +330,7 @@ EOF;
 /**
  * retrieve any detected modules
  *
- * @return array SideboxExternalModule
+ * @return array SideboxModule
  */
 function asbGetAllModules()
 {
@@ -356,7 +356,7 @@ function asbGetAllModules()
 		$module = substr($filename, 0, strlen($filename) - 4);
 
 		// attempt to load the module
-		$returnArray[$module] = new SideboxExternalModule($module);
+		$returnArray[$module] = new SideboxModule($module);
 	}
 	return $returnArray;
 }

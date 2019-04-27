@@ -29,8 +29,8 @@ function asb_staff_online_box_info()
  	return array(
 		'title' => $lang->asb_staff_online,
 		'description' => $lang->asb_staff_online_desc,
-		'version' => '1.4.4',
-		'compatibility' => '2.1',
+		'version' => '2.0.0',
+		'compatibility' => '4.0',
 		'wrap_content' => true,
 		'xmlhttp' => true,
 		'settings' => array(
@@ -63,13 +63,11 @@ function asb_staff_online_box_info()
 				'value' => '0',
 			),
 		),
-		'discarded_templates' => array(
-			'asb_staff_online',
-		),
-		'templates' => array(
-			array(
-				'title' => 'asb_staff_online_bit',
-				'template' => <<<EOF
+		'installData' => array(
+			'templates' => array(
+				array(
+					'title' => 'asb_staff_online_bit',
+					'template' => <<<EOF
 				<tr>
 					<td class="{\$bgcolor}">
 						<table cellspacing="0" cellpadding="{\$theme[\'tablespace\']}" width="100%">
@@ -90,6 +88,7 @@ function asb_staff_online_box_info()
 					</td>
 				</tr>
 EOF
+				),
 			),
 		),
 	);
@@ -101,9 +100,8 @@ EOF
  * @param  array info from child box
  * @return bool success/fail
  */
-function asb_staff_online_box_build_template($args)
+function asb_staff_online_box_build_template($settings, $template_var, $width, $script)
 {
-	extract($args);
 	global $$template_var, $lang;
 
 	if (!$lang->asb_addon) {
@@ -131,9 +129,8 @@ EOF;
  * @param  array info from child box
  * @return void
  */
-function asb_staff_online_box_xmlhttp($args)
+function asb_staff_online_box_xmlhttp($dateline, $settings, $width, $script)
 {
-	extract($args);
 	$all_online_staff = asb_staff_online_box_get_online_staff($settings, $width);
 
 	if ($all_online_staff) {

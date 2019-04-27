@@ -30,8 +30,8 @@ function asb_top_poster_info()
 		'title' => $lang->asb_top_poster_title,
 		'description' => $lang->asb_top_poster_desc,
 		'wrap_content' => true,
-		'version' => '1.2.2',
-		'compatibility' => '2.1',
+		'version' => '2.0.0',
+		'compatibility' => '4.0',
 		'settings' => array(
 			'time_frame' => array(
 				'name' => 'time_frame',
@@ -101,10 +101,11 @@ EOF
 				'value' => '',
 			),
 		),
-		'templates' => array(
-			array(
-				'title' => 'asb_top_posters_multiple',
-				'template' => <<<EOF
+		'installData' => array(
+			'templates' => array(
+				array(
+					'title' => 'asb_top_posters_multiple',
+					'template' => <<<EOF
 				<tr>
 					<td class="tcat" style="font-size: .8em; text-align: center;">
 						{\$top_poster_description}
@@ -119,18 +120,18 @@ EOF
 				</tr>
 				</tr>
 EOF
-			),
-			array(
-				'title' => 'asb_top_posters_single',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_top_posters_single',
+					'template' => <<<EOF
 				<tr style="text-align: center;">
 					<td class="{\$altbg}">{\$top_poster_avatar}{\$top_poster_text}</td>
 				</tr>
 EOF
-			),
-			array(
-				'title' => 'asb_top_poster',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_top_poster',
+					'template' => <<<EOF
 				<tr>
 					<td class="{\$altbg}" style="width: {\$avatar_width}px; padding-top: 0px; padding-bottom: 0px;">
 						{\$top_poster_avatar}
@@ -140,12 +141,13 @@ EOF
 					</td>
 				</tr>
 EOF
-			),
-			array(
-				'title' => 'asb_top_poster_avatar',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_top_poster_avatar',
+					'template' => <<<EOF
 <img src="{\$top_poster_avatar_src}" style="width: {\$avatar_width}px;" alt="{\$lang->asb_top_poster_no_avatar}"/>
 EOF
+				),
 			),
 		),
 	);
@@ -157,9 +159,8 @@ EOF
  * @param  array info from child box
  * @return bool true on success, false on fail/no content
  */
-function asb_top_poster_build_template($args)
+function asb_top_poster_build_template($settings, $template_var, $width, $script)
 {
-	extract($args);
 	global $$template_var, $db, $templates, $lang, $theme, $parser;
 
 	if (!$lang->asb_addon) {

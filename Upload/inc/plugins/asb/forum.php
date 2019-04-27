@@ -96,7 +96,7 @@ function asb_start()
 			$template_var = "{$module_name}_{$id}";
 
 			// attempt to load the box as an add-on module
-			$module = new SideboxExternalModule($module_name);
+			$module = new SideboxModule($module_name);
 
 			// if it is valid, then the side box was created using an
 			// add-on module, so we can proceed
@@ -427,7 +427,7 @@ function asb_xmlhttp()
 	require_once MYBB_ROOT.'inc/plugins/asb/functions_addon.php';
 
 	// attempt to load the module and side box requested
-	$module = new SideboxExternalModule($mybb->input['addon']);
+	$module = new SideboxModule($mybb->input['addon']);
 	$sidebox = new SideboxObject($mybb->input['id']);
 
 	// we need both objects to continue

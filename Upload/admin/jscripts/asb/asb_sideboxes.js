@@ -117,7 +117,7 @@ var ASB = (function(a, $) {
 	function create(e, ui) {
 		// sort by position
 		var pos = ($(this).prop("id") == "left_column") ? 0 : 1,
-			url = "index.php?module=config-asb&action=edit_box&ajax=1&box=0&addon=" + ui.draggable.prop("id") + "&pos=" + pos;
+			url = "index.php?module=config-asb&action=edit_box&ajax=1&box=0&addon=" + ui.draggable.prop("id").replace("asb-", "") + "&pos=" + pos;
 
 		loadModal(url);
 	}

@@ -29,8 +29,8 @@ function asb_recent_posts_info()
 	return array(
 		'title' => $lang->asb_recent_posts,
 		'description' => $lang->asb_recent_posts_desc,
-		'version' => '1.3.2',
-		'compatibility' => '2.1',
+		'version' => '2.0.0',
+		'compatibility' => '4.0',
 		'wrap_content' => true,
 		'xmlhttp' => true,
 		'settings' => array(
@@ -98,10 +98,11 @@ function asb_recent_posts_info()
 				'value' => '0',
 			),
 		),
-		'templates' => array(
-			array(
-				'title' => 'asb_recent_posts_post',
-				'template' => <<<EOF
+		'installData' => array(
+			'templates' => array(
+				array(
+					'title' => 'asb_recent_posts_post',
+					'template' => <<<EOF
 				<tr>
 					<td style="text-align: center;" class="tcat">
 						<a style="font-weight: bold;" href="{\$mybb->settings[\'bburl\']}/{\$post[\'link\']}" title="{\$post[\'subject\']}">{\$post[\'subject\']}</a>
@@ -111,6 +112,7 @@ function asb_recent_posts_info()
 					<td class="{\$altbg}">{\$post_excerpt}<span style="position: relative; float: right;">{\$post_author} &mdash; {\$lastposttime}</span></td>
 				</tr>
 EOF
+				),
 			),
 		),
 	);
@@ -122,9 +124,8 @@ EOF
  * @param  array information from child box
  * @return bool sucess/fail
  */
-function asb_recent_posts_build_template($args)
+function asb_recent_posts_build_template($settings, $template_var, $width, $script)
 {
-	extract($args);
 	global $$template_var, $lang;
 
 	if (!$lang->asb_addon) {
@@ -153,7 +154,7 @@ EOF;
  * @param  array info from child box
  * @return void
  */
-function asb_recent_posts_xmlhttp($args)
+function asb_recent_posts_xmlhttp($dateline, $settings, $width, $script)
 {
 	extract($args);
 	$all_posts = recent_posts_get_postlist($settings);

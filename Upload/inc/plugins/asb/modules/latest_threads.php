@@ -28,8 +28,8 @@ function asb_latest_threads_info()
 	return array(
 		'title' => $lang->asb_latest_threads,
 		'description' => $lang->asb_latest_threads_desc,
-		'version' => '1.2.0',
-		'compatibility' => '2.1',
+		'version' => '2.0.0',
+		'compatibility' => '4.0',
 		'wrap_content' => true,
 		'xmlhttp' => true,
 		'settings' => array(
@@ -111,10 +111,11 @@ function asb_latest_threads_info()
 				'value' => '0',
 			),
 		),
-		'templates' => array(
-			array(
-				'title' => 'asb_latest_threads_thread',
-				'template' => <<<EOF
+		'installData' => array(
+			'templates' => array(
+				array(
+					'title' => 'asb_latest_threads_thread',
+					'template' => <<<EOF
 				<tr>
 					<td class="{\$altbg}">
 						{\$gotounread}<a href="{\$mybb->settings[\'bburl\']}/{\$thread[\'threadlink\']}" title="{\$fullSubject}"><strong>{\$thread[\'subject\']}</strong></a>
@@ -127,30 +128,31 @@ function asb_latest_threads_info()
 					</td>
 				</tr>
 EOF
-			),
-			array(
-				'title' => 'asb_latest_threads_gotounread',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_latest_threads_gotounread',
+					'template' => <<<EOF
 <a href="{\$thread[\'newpostlink\']}"><img src="{\$theme[\'imgdir\']}/jump.png" alt="{\$lang->asb_gotounread}" title="{\$lang->asb_gotounread}" /></a>
 EOF
-			),
-			array(
-				'title' => 'asb_latest_threads_last_poster_name',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_latest_threads_last_poster_name',
+					'template' => <<<EOF
 <a href="{\$thread[\'lastpostlink\']}" title="{\$lang->asb_latest_threads_lastpost}">{\$lang->asb_latest_threads_lastpost}:</a> {\$lastposterlink}
 EOF
-			),
-			array(
-				'title' => 'asb_latest_threads_last_poster_avatar',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_latest_threads_last_poster_avatar',
+					'template' => <<<EOF
 {\$lastposterlink}<br /><a href="{\$thread[\'lastpostlink\']}" title="{\$lang->asb_latest_threads_lastpost}">{\$lang->asb_latest_threads_lastpost}</a>
 EOF
-			),
-			array(
-				'title' => 'asb_latest_threads_last_poster_avatar_avatar',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_latest_threads_last_poster_avatar_avatar',
+					'template' => <<<EOF
 <img src="{\$avatarInfo[\'image\']}" alt="{\$thread[\'last_post\']}" title="{\$thread[\'lastposter\']}\'s profile" style="width: {\$avatar_width}px;"/>
 EOF
+				),
 			),
 		),
 	);
@@ -162,9 +164,8 @@ EOF
  * @param  array information from child box
  * @return bool success/fail
  */
-function asb_latest_threads_build_template($args)
+function asb_latest_threads_build_template($settings, $template_var, $width, $script)
 {
-	extract($args);
 	global $$template_var, $lang;
 
 	if (!$lang->asb_addon) {
@@ -193,9 +194,8 @@ EOF;
  * @param  array information from child box
  * @return void
  */
-function asb_latest_threads_xmlhttp($args)
+function asb_latest_threads_xmlhttp($dateline, $settings, $width, $script)
 {
-	extract($args);
 	$all_threads = asb_latest_threads_get_threadlist($settings, $width);
 
 	if ($all_threads) {

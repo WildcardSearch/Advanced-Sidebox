@@ -30,8 +30,8 @@ function asb_statistics_info()
 		'title' => $lang->asb_stats,
 		'description' => $lang->asb_stats_desc,
 		'wrap_content' => true,
-		'version' => '1.2',
-		'compatibility' => '2.1',
+		'version' => '2.0.0',
+		'compatibility' => '4.0',
 		'settings' => array(
 			'format_username' => array(
 				'name' => 'format_username',
@@ -41,10 +41,11 @@ function asb_statistics_info()
 				'value' => '0',
 			),
 		),
-		'templates' => array(
-			array(
-				'title' => 'asb_statistics',
-				'template' => <<<EOF
+		'installData' => array(
+			'templates' => array(
+				array(
+					'title' => 'asb_statistics',
+					'template' => <<<EOF
 				<tr>
 					<td class="trow1">
 						<span class="smalltext">
@@ -57,6 +58,7 @@ function asb_statistics_info()
 					</td>
 				</tr>
 EOF
+				),
 			),
 		),
 	);
@@ -68,9 +70,8 @@ EOF
  * @param  array info from child box
  * @return bool success/fail
  */
-function asb_statistics_build_template($args)
+function asb_statistics_build_template($settings, $template_var, $width, $script)
 {
-	extract($args);
 	global $$template_var, $mybb, $cache, $templates, $lang;
 
 	// Load global and custom language phrases
@@ -88,9 +89,9 @@ function asb_statistics_build_template($args)
 	if ($statistics['lastusername']) {
 		if ($settings['format_username']) {
 			$last_user = get_user($statistics['lastuid']);
-			$last_username = format_name($last_user['username'], $last_user['usergroup'], $last_user['displaygroup']);
+			$last_username = format_name(htmlspecialchars_uni($last_user['username']), $last_user['usergroup'], $last_user['displaygroup']);
 		} else {
-			$last_username = $statistics['lastusername'];
+			$last_username = htmlspecialchars_uni($statistics['lastusername']);
 		}
 		$newestmember = build_profile_link($last_username, $statistics['lastuid']);
 	}

@@ -30,12 +30,13 @@ function asb_birthdays_info()
 		'title' => $lang->asb_birthdays_title,
 		'description' => $lang->asb_birthdays_description,
 		'wrap_content' => true,
-		'version' => '1.0.0',
-		'compatibility' => '2.1',
-		'templates' => array(
-			array(
-				'title' => 'asb_birthdays',
-				'template' => <<<EOF
+		'version' => '2.0.0',
+		'compatibility' => '4.0',
+		'installData' => array(
+			'templates' => array(
+				array(
+					'title' => 'asb_birthdays',
+					'template' => <<<EOF
 				<tr>
 					<td class="tcat">
 						<span class="smalltext"><strong>{\$lang->asb_birthdays_todays_birthdays}</strong></span>
@@ -47,10 +48,10 @@ function asb_birthdays_info()
 					</td>
 				</tr>{\$upcomingBirthdays}
 EOF
-			),
-			array(
-				'title' => 'asb_birthdays_user_row',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_birthdays_user_row',
+					'template' => <<<EOF
 				<tr>
 					<td class="{\$altbg}">
 						{\$avatar} <span class="smalltext float_right">({\$user[\'age\']})</span><a href="{\$profileLink}" title="{\$userInfo}">{\$name}</a>
@@ -58,10 +59,10 @@ EOF
 				</tr>
 
 EOF
-			),
-			array(
-				'title' => 'asb_birthdays_no_birthdays',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_birthdays_no_birthdays',
+					'template' => <<<EOF
 				<tr>
 					<td class="{\$altbg}">
 						<span>{\$noBirthdays}</span>
@@ -69,13 +70,14 @@ EOF
 				</tr>
 
 EOF
-			),
-			array(
-				'title' => 'asb_birthdays_user_avatar',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_birthdays_user_avatar',
+					'template' => <<<EOF
 <img src="{\$avatarInfo[\'image\']}" alt="avatar" title="{\$user[\'username\']}\'s profile"{\$avatarInfo[\'width_height\']} style="margin-bottom: -5px;" />
 
 EOF
+				),
 			),
 		),
 	);
@@ -87,16 +89,15 @@ EOF
  * @param  array
  * @return bool success/fail
  */
-function asb_birthdays_build_template($args)
+function asb_birthdays_build_template($settings, $template_var, $width, $script)
 {
-	extract($args);
 	global $$template_var, $lang;
 
 	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
-	$birthdays_status = asb_birthdays_get_birthdays($args);
+	$birthdays_status = asb_birthdays_get_birthdays($settings, $template_var, $width, $script);
 	if (!$birthdays_status) {
 		$$template_var = "<tr><td>{$lang->asb_birthdays_no_content}</td></tr>";
 		return false;
@@ -112,15 +113,13 @@ function asb_birthdays_build_template($args)
  * @param  array
  * @return string
  */
-function asb_birthdays_get_birthdays($args)
+function asb_birthdays_get_birthdays($settings, $template_var, $width, $script)
 {
 	global $mybb, $db, $lang, $templates, $cache;
 
 	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
-
-	extract($args);
 
 	require_once MYBB_ROOT.'inc/functions_calendar.php';
 	$day = my_date('j');

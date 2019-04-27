@@ -29,8 +29,8 @@ function asb_whosonline_info()
 	return array(
 		'title' => $lang->asb_wol,
 		'description' => $lang->asb_wol_desc,
-		'version' => '1.4.6',
-		'compatibility' => '2.1',
+		'version' => '2.0.0',
+		'compatibility' => '4.0',
 		'wrap_content' => true,
 		'xmlhttp' => true,
 		'settings' =>	array(
@@ -70,10 +70,11 @@ function asb_whosonline_info()
 				'value' => '0',
 			),
 		),
-		'templates' => array(
-			array(
-				'title' => 'asb_whosonline',
-				'template' => <<<EOF
+		'installData' => array(
+			'templates' => array(
+				array(
+					'title' => 'asb_whosonline',
+					'template' => <<<EOF
 				<tr>
 					<td class="trow1">
 						<span class="smalltext">{\$lang->asb_wol_online_users} [<a href="online.php" title="Who\'s Online">{\$lang->asb_wol_complete_list}</a>]<br /><strong>&raquo;</strong> {\$lang->asb_wol_online_counts}</span>
@@ -89,24 +90,25 @@ function asb_whosonline_info()
 					</td>
 				</tr>
 EOF
-			),
-			array(
-				'title' => 'asb_whosonline_memberbit_name',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_whosonline_memberbit_name',
+					'template' => <<<EOF
 {\$sep}<a href="{\$mybb->settings[\'bburl\']}/{\$user[\'profilelink\']}">{\$user[\'username\']}</a>
 EOF
-			),
-			array(
-				'title' => 'asb_whosonline_memberbit_avatar',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_whosonline_memberbit_avatar',
+					'template' => <<<EOF
 <td><a href="{\$mybb->settings[\'bburl\']}/{\$user[\'profilelink\']}"><img style="{\$avatar_width_style}{\$avatar_height_style}" src="{\$avatar_filename}" alt="{\$lang->asb_wol_avatar}" title="{\$user[\'username\']}\'s {\$lang->asb_wol_profile}"/></a></td>
 EOF
-			),
-			array(
-				'title' => 'asb_whosonline_memberbit_see_all',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_whosonline_memberbit_see_all',
+					'template' => <<<EOF
 <td><a href="{\$mybb->settings[\'bburl\']}/online.php" title="{\$lang->asb_wol_see_all_title}"><img style="{\$avatar_style}" src="{\$theme[\'imgdir\']}/asb/see_all.png" alt="{\$lang->asb_wol_see_all_alt}" title="{\$lang->asb_wol_see_all_title}" width="{\$avatar_width}px"/></a></td>
 EOF
+				),
 			),
 		),
 	);
@@ -118,9 +120,8 @@ EOF
  * @param  array info from child box
  * @return bool success/fail
  */
-function asb_whosonline_build_template($args)
+function asb_whosonline_build_template($settings, $template_var, $width, $script)
 {
-	extract($args);
 	global $$template_var, $lang;
 
 	if (!$lang->asb_addon) {
@@ -150,9 +151,8 @@ EOF;
  * @param  array information from child box
  * @return void
  */
-function asb_whosonline_xmlhttp($args)
+function asb_whosonline_xmlhttp($dateline, $settings, $width, $script)
 {
-	extract($args);
 	$all_onlinemembers = asb_whosonline_get_online_members($settings, $width);
 
 	if ($all_onlinemembers) {
@@ -193,7 +193,8 @@ function asb_whosonline_get_online_members($settings, $width)
 
 	// Scale the avatars based on the width of the side boxes in Admin CP
 	$avatar_height = $avatar_width = (int) ($width * .83) / $rowlength;
-	$avatar_margin = (int) ($avatar_width *.02);
+	$avatar_width = ((int) 93 / $rowlength).'%';
+	$avatar_margin = ((int) 7 / ($rowlength * 2)).'%';
 
 	$timesearch = TIME_NOW - $mybb->settings['wolcutoff'];
 	$guestcount = 0;
@@ -245,8 +246,8 @@ function asb_whosonline_get_online_members($settings, $width)
 					$avatar_info = format_avatar($user['avatar']);
 					$avatar_filename = $avatar_info['image'];
 
-					$avatar_height_style = " min-height: {$avatar_height}px; max-height: {$avatar_height}px;";
-					$avatar_width_style = " min-width: {$avatar_width}px; max-width: {$avatar_width}px;";
+					$avatar_height_style = " max-height: {$avatar_height}px;";
+					$avatar_width_style = " width: {$avatar_width};";
 					if ($settings['asb_avatar_maintain_aspect']) {
 						// Check the avatar's dimensions, then constrain it by its largest dimension
 						$avatar_dimensions = explode('|', $user['avatardimensions']);
@@ -272,12 +273,6 @@ function asb_whosonline_get_online_members($settings, $width)
 					// ...otherwise, add it to the list
 					} else {
 						eval("\$onlinemembers .= \"{$templates->get('asb_whosonline_memberbit_avatar', 1, 0)}\";");
-
-						// If we reach the end of the row, insert a <br />
-						if (($membercount - (($row - 1) * $rowlength)) == $rowlength) {
-							$onlinemembers .= '</tr><tr>';
-							++$row;
-						}
 						++$avatar_count;
 					}
 				} else {

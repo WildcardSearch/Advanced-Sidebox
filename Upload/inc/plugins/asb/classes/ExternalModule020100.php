@@ -8,7 +8,7 @@
  * a standard wrapper for external PHP routines built upon the
  * MalleableObject abstract class and abiding by ExternalModuleInterface
  */
-abstract class ExternalModule010000 extends MalleableObject010000 implements ExternalModuleInterface010000
+abstract class ExternalModule020100 extends MalleableObject010000 implements ExternalModuleInterface020100
 {
 	/**
 	 * @var string the module title
@@ -81,7 +81,7 @@ abstract class ExternalModule010000 extends MalleableObject010000 implements Ext
 	 * @param  array
 	 * @return mixed
 	 */
-	public function run($function_name, $args = '')
+	public function run($function_name)
 	{
 		$function_name = trim($function_name);
 		if (!$function_name ||
@@ -101,7 +101,18 @@ abstract class ExternalModule010000 extends MalleableObject010000 implements Ext
 		if (!function_exists($this_function)) {
 			return false;
 		}
-		return $this_function($args);
+
+		$args = func_get_args();
+		
+		if (!is_array($args) ||
+			empty($args) ||
+			count($args) <= 1) {
+			return $this_function();
+		}
+
+		array_shift($args);
+
+		return call_user_func_array($this_function, $args);
 	}
 
 	/**

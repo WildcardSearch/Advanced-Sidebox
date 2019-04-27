@@ -118,7 +118,7 @@ class AdvancedSideboxCache extends WildcardPluginCache010300
 			foreach ($scripts as $filename) {
 				// side box from a module?
 				if (isset($addons[$module]) &&
-					$addons[$module] instanceof SideboxExternalModule) {
+					$addons[$module] instanceof SideboxModule) {
 					// store the module name and all the template vars used
 					$data['scripts'][$filename]['sideboxes'][$pos][$id] = $module;
 					$data['scripts'][$filename]['template_vars'][$id] = "{$module}_{$id}";

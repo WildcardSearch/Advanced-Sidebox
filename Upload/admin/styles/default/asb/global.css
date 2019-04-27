@@ -83,6 +83,7 @@ td.hover {
 .forum_column {
 	width: 225px;
 	min-height: 300px;
+	padding: 5px 2px;
 }
 
 #addon_menu {

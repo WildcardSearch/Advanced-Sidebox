@@ -31,8 +31,8 @@ function asb_private_messages_info()
 		'description' => $lang->asb_private_messages_desc,
 		'wrap_content' => true,
 		'xmlhttp' => true,
-		'version' => '1.1.1',
-		'compatibility' => '2.1',
+		'version' => '2.0.0',
+		'compatibility' => '4.0',
 		'settings' => array(
 			'xmlhttp_on' => array(
 				'name' => 'xmlhttp_on',
@@ -42,10 +42,11 @@ function asb_private_messages_info()
 				'value' => '0',
 			),
 		),
-		'templates' => array(
-			array(
-				'title' => 'asb_pms',
-				'template' => <<<EOF
+		'installData' => array(
+			'templates' => array(
+				array(
+					'title' => 'asb_pms',
+					'template' => <<<EOF
 				<tr>
 					<td class="trow1">
 						<span class="smalltext">{\$lang->asb_pms_received_new}<br /><br />
@@ -54,6 +55,7 @@ function asb_private_messages_info()
 					</td>
 				</tr>
 EOF
+				),
 			),
 		),
 	);
@@ -65,9 +67,8 @@ EOF
  * @param  array info from child box
  * @return bool success/fail
  */
-function asb_private_messages_build_template($args)
+function asb_private_messages_build_template($settings, $template_var, $width, $script)
 {
-	extract($args);
 	global $$template_var, $lang; // <-- important!
 
 	if (!$lang->asb_addon) {
@@ -96,9 +97,8 @@ EOF;
  * @param  array info from child box
  * @return void
  */
-function asb_private_messages_xmlhttp($args)
+function asb_private_messages_xmlhttp($dateline, $settings, $width, $script)
 {
-	extract($args);
 	global $db, $mybb;
 
 	$query = $db->simple_select('privatemessages', '*', "dateline > {$dateline} AND toid='{$mybb->user['uid']}'");

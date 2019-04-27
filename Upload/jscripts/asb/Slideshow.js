@@ -84,7 +84,7 @@ var ASB = (function(a, $) {
 		 */
 		this.showCurrent();
 		$($.proxy(this.run, this));
-		$(window).unload($.proxy(this.stop, this));
+		$(window).on("unload", $.proxy(this.stop, this));
 	}
 
 	/**
@@ -156,7 +156,7 @@ var ASB = (function(a, $) {
 		});
 		$("body").append(this.clone);
 
-		this.clone.load($.proxy(this.resize, this)).each(function() {
+		this.clone.on("load", $.proxy(this.resize, this)).each(function() {
 			if (this.complete) {
 				$(this).load();
 			}

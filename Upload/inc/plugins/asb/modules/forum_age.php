@@ -30,8 +30,8 @@ function asb_forum_age_info()
 		'title' => $lang->asb_forum_age_title,
 		'description' => $lang->asb_forum_age_description,
 		'wrap_content' => true,
-		'version' => '1.0.0',
-		'compatibility' => '2.1',
+		'version' => '2.0.0',
+		'compatibility' => '4.0',
 		'xmlhttp' => true,
 		'settings' => array(
 			'forum_age_date_format' => array(
@@ -73,29 +73,31 @@ EOF
 				'value' => '0',
 			),
 		),
-		'templates' => array(
-			array(
-				'title' => 'asb_forum_age',
-				'template' => <<<EOF
+		'installData' => array(
+			'templates' => array(
+				array(
+					'title' => 'asb_forum_age',
+					'template' => <<<EOF
 				<tr>
 					<td class="trow1">{\$forumAge}</td>
 				</tr>{\$creationDate}
 EOF
-			),
-			array(
-				'title' => 'asb_forum_age_creation_date',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_forum_age_creation_date',
+					'template' => <<<EOF
 
 				<tr>
 					<td class="tfoot">{\$creationText}</td>
 				</tr>
 EOF
-			),
-			array(
-				'title' => 'asb_forum_age_text',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_forum_age_text',
+					'template' => <<<EOF
 <span style="font-weight: bold; font-size: 1.2em; color: #444;">{\$forumAgeText}</span>
 EOF
+				),
 			),
 		),
 	);
@@ -107,16 +109,15 @@ EOF
  * @param  array
  * @return bool success/fail
  */
-function asb_forum_age_build_template($args)
+function asb_forum_age_build_template($settings, $template_var, $width, $script)
 {
-	extract($args);
 	global $$template_var, $lang;
 
 	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
-	$forum_age_status = asb_forum_age_get_forum_age($args);
+	$forum_age_status = asb_forum_age_get_forum_age($settings);
 	if (!$forum_age_status) {
 		$$template_var = "<tr><td>{$lang->asb_forum_age_no_content}</td></tr>";
 		return false;
@@ -132,9 +133,9 @@ function asb_forum_age_build_template($args)
  * @param  array
  * @return string
  */
-function asb_forum_age_xmlhttp($args)
+function asb_forum_age_xmlhttp($dateline, $settings, $width)
 {
-	$forum_age_status = asb_forum_age_get_forum_age($args);
+	$forum_age_status = asb_forum_age_get_forum_age($settings);
 	if ($forum_age_status) {
 		return $forum_age_status;
 	}
@@ -147,15 +148,13 @@ function asb_forum_age_xmlhttp($args)
  * @param  array
  * @return string
  */
-function asb_forum_age_get_forum_age($args)
+function asb_forum_age_get_forum_age($settings)
 {
 	global $mybb, $db, $lang, $templates;
 
 	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
-
-	extract($args);
 
 	// get the forum creation date
 	$query = $db->simple_select('users', 'regdate', "uid='1'");

@@ -30,8 +30,8 @@ function asb_slideshow_info()
 		'title' => $lang->asb_slideshow,
 		'description' => $lang->asb_slideshow_desc,
 		'wrap_content' => true,
-		'version' => '1.1',
-		'compatibility' => '2.1',
+		'version' => '2.0.0',
+		'compatibility' => '4.0',
 		'scripts' => array(
 			'Slideshow',
 		),
@@ -107,10 +107,11 @@ function asb_slideshow_info()
 				'value' => '1',
 			),
 		),
-		'templates' => array(
-			array(
-				'title' => 'asb_slideshow',
-				'template' => <<<EOF
+		'installData' => array(
+			'templates' => array(
+				array(
+					'title' => 'asb_slideshow',
+					'template' => <<<EOF
 				<tr>
 					<td class="trow1" style="text-align: center;">
 						<div id="{\$template_var}"></div>
@@ -132,10 +133,10 @@ function asb_slideshow_info()
 					</td>
 				</tr>{\$footer}
 EOF
-			),
-			array(
-				'title' => 'asb_slideshow_footer',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_slideshow_footer',
+					'template' => <<<EOF
 
 				<tr>
 					<td class="tfoot">
@@ -145,6 +146,7 @@ EOF
 					</td>
 				</tr>
 EOF
+				),
 			),
 		),
 	);
@@ -156,10 +158,8 @@ EOF
  * @param  array info from child box
  * @return bool success/fail
  */
-function asb_slideshow_build_template($args)
+function asb_slideshow_build_template($settings, $template_var, $width, $script)
 {
-	extract($args);
-
 	global $$template_var, $mybb, $templates;
 
 	$shuffle = $settings['shuffle'] ? 'true' : 'false';
