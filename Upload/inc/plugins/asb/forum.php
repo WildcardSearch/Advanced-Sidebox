@@ -40,16 +40,15 @@ function asb_start()
 		return;
 	}
 
-	$width = $boxes = array(
+	$boxes = array(
 		0 => '',
 		1 => '',
 	);
 
-	// make sure this script's width is within range 120-800 (120 because the templates
-	// aren't made to work any smaller and tbh 800 is kind of arbitrary :s
-	foreach (array('left' => 0, 'right' => 1) as $key => $pos) {
-		$width[$pos] = (int) max(120, min(800, $script["width_{$key}"]));
-	}
+	$width = array(
+		0 => $script["width_left"],
+		1 => $script["width_right"],
+	);
 
 	// does this column have boxes?
 	if (!is_array($script['sideboxes']) ||

@@ -37,8 +37,8 @@ $tables = array(
 			'filename' => 'VARCHAR(32) NOT NULL',
 			'action' => 'VARCHAR(32) NOT NULL',
 			'page' => 'VARCHAR(32) NOT NULL',
-			'width_left' => 'INT',
-			'width_right' => 'INT',
+			'width_left' => 'VARCHAR(32) NOT NULL',
+			'width_right' => 'VARCHAR(32) NOT NULL',
 			'template_name' => 'VARCHAR(128) NOT NULL',
 			'hook' => 'VARCHAR(128) NOT NULL',
 			'find_top' => 'TEXT',
@@ -79,8 +79,8 @@ $tables = array(
 		'filename' => 'VARCHAR(32) NOT NULL',
 		'action' => 'VARCHAR(32) NOT NULL',
 		'page' => 'VARCHAR(32) NOT NULL',
-		'width_left' => 'INT(2)',
-		'width_right' => 'INT(2)',
+		'width_left' => 'VARCHAR(32) NOT NULL',
+		'width_right' => 'VARCHAR(32) NOT NULL',
 		'template_name' => 'VARCHAR(128) NOT NULL',
 		'hook' => 'VARCHAR(128) NOT NULL',
 		'find_top' => 'TEXT',
@@ -206,7 +206,7 @@ EOF
 EOF
 			,
 			'asb_sidebox_column' => <<<EOF
-			<td style="width: {\$width}px;{\$show_column}" id="{\$column_id}" valign="top">
+			<td style="width: {\$width};{\$show_column}" id="{\$column_id}" valign="top">
 				{\$sideboxes}
 				{\$content_pad}
 			</td>

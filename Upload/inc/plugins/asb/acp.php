@@ -1159,8 +1159,8 @@ function asb_admin_manage_scripts()
 		'find_bottom' => '{$footer}',
 		'replace_all' => 0,
 		'eval' => 0,
-		'width_left' => 160,
-		'width_right' => 160,
+		'width_left' => "160px",
+		'width_right' => "160px",
 	);
 
 	if ($mybb->input['mode'] == 'edit') {
