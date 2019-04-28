@@ -9,7 +9,7 @@
  *
  */
 
-class WildcardPluginInstaller020000 implements WildcardPluginInstallerInterface010000
+class WildcardPluginInstaller020001 implements WildcardPluginInstallerInterface010000
 {
 	/**
 	 * @const version
@@ -167,7 +167,7 @@ class WildcardPluginInstaller020000 implements WildcardPluginInstallerInterface0
 			} else {
 				unset($this->tables['pgsql']);
 			}
-			$this->tableNames = array_keys($tables);
+			$this->tableNames = array_keys($this->tables);
 		}
 
 		if (!empty($columns)) {
@@ -176,7 +176,7 @@ class WildcardPluginInstaller020000 implements WildcardPluginInstallerInterface0
 			} else {
 				unset($this->columns['pgsql']);
 			}
-			$this->columnNames = array_keys($columns);
+			$this->columnNames = array_keys($this->columns);
 		}
 
 		// snag a copy of the db object

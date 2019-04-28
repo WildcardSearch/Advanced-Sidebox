@@ -7,7 +7,7 @@
  * wrapper to handle our plugin's installation
  */
 
-class AdvancedSideboxInstaller extends WildcardPluginInstaller020000
+class AdvancedSideboxInstaller extends WildcardPluginInstaller020001
 {
 	/**
 	 * returns an installer object
