@@ -213,19 +213,15 @@ EOF
 EOF
 			,
 			'asb_wrapped_sidebox' => <<<EOF
-		<table id="{\$sidebox['id']}" style="table-layout: fixed; word-wrap: break-word;" border="0" cellspacing="{\$theme['borderwidth']}" cellpadding="{\$theme['tablespace']}" class="tborder {\$sidebox['class']}">
-			<thead>
-				<tr>
-					<td class="thead">
-{\$expander}
-						<strong>{\$sidebox['title']}</strong>
-					</td>
-				</tr>
-			</thead>
-			<tbody style="{\$expdisplay}" id="{\$sidebox['expdisplay_id']}">
-		{\$sidebox['content']}
-			</tbody>
-		</table><br />
+		<div id="{\$sidebox['id']}" class="asb-wrapped-sidebox tborder {\$sidebox['class']}">
+			<div class="thead">
+				{\$expander}
+				<strong>{\$sidebox['title']}</strong>
+			</div>
+			<div style="{\$expdisplay}" id="{\$sidebox['expdisplay_id']}">
+				{\$sidebox['content']}
+			</div>
+		</div><br />
 EOF
 			,
 			"asb_toggle_icon" => <<<EOF
