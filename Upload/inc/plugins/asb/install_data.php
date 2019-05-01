@@ -194,10 +194,10 @@ $templates = array(
 		),
 		'templates' => array(
 			'asb_begin' => <<<EOF
-<table width="100%" border="0" cellspacing="5">
-	<tr>{\$left_content}
-		<!-- start: ASB middle column (page contents of {\$filename}) -->
-		<td width="auto" valign="top">
+<div class="asb-sidebox-container">
+	{\$left_content}
+	<!-- start: ASB middle column (page contents of {\$filename}) -->
+	<div class="asb-sidebox-column asb-sidebox-column-middle" style="width: {\$width_middle}">
 EOF
 			,
 			'asb_end' => <<<EOF
