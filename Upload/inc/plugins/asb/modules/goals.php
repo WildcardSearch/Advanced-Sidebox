@@ -30,7 +30,7 @@ function asb_goals_info()
 		'title' => $lang->asb_goals_title,
 		'description' => $lang->asb_goals_description,
 		'wrap_content' => true,
-		'version' => '2.0.0',
+		'version' => '2.0.2',
 		'compatibility' => '4.0',
 		'xmlhttp' => true,
 		'settings' => array(
@@ -74,26 +74,24 @@ EOF
 				array(
 					'title' => 'asb_goals',
 					'template' => <<<EOF
-				<tr>
-					<td class="trow1" style="text-align: center;">{\$progress}</td>
-				</tr>
-				<tr>
-					<td class="tfoot" style="text-align: center;"><span class="smalltext">{\$stats}</span></td>
-				</tr>
+				<div class="trow1 asb-goals-progress-container">{\$progress}</div>
+				<div class="tfoot asb-goals-progress-footer">
+					<span class="smalltext">{\$stats}</span>
+				</div>
 EOF
 				),
 				array(
 					'title' => 'asb_goals_goal_reached',
 					'template' => <<<EOF
-<span style="font-size: 1.6em; color: navy;">{\$goal_reached_message}</span>{\$successImage}
+<div class="asb-goals-goal-reached-message">{\$goal_reached_message}</div>{\$successImage}
 EOF
 				),
 				array(
 					'title' => 'asb_goals_progress',
 					'template' => <<<EOF
-<span style="font-size: 1.4em; color: green;">{\$percentage}%</span> {\$progress_message}<br />
-<div style="width: 95%; background: white; height: 20px; border: 2px outset grey;">
-	<div style="width: {\$percentage}%; background: blue; height: 20px;" title="{\$progress_bar_title}">
+<span class="asb-goals-progress-message">{\$percentage}%</span> {\$progress_message}<br />
+<div class="asb-goals-progress-indicator">
+	<div class="asb-goals-progress-indicator-completed" style="width: {\$percentage}%;" title="{\$progress_bar_title}">
 	</div>
 </div>
 EOF
@@ -102,7 +100,7 @@ EOF
 					'title' => 'asb_goals_goal_reached_image',
 					'template' => <<<EOF
 
-<img src="{\$settings[\'success_image\']}" alt="celebrate!"/>
+<img class="asb-goals-success-image" src="{\$settings[\'success_image\']}" alt="celebrate!"/>
 EOF
 				),
 			),
