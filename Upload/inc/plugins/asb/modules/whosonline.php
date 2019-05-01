@@ -29,7 +29,7 @@ function asb_whosonline_info()
 	return array(
 		'title' => $lang->asb_wol,
 		'description' => $lang->asb_wol_desc,
-		'version' => '2.0.0',
+		'version' => '2.0.8',
 		'compatibility' => '4.0',
 		'wrap_content' => true,
 		'xmlhttp' => true,
@@ -41,26 +41,26 @@ function asb_whosonline_info()
 				'optionscode' => 'yesno',
 				'value' => '1',
 			),
-			'asb_avatar_per_row' => array(
-				'name' => 'asb_avatar_per_row',
+			'avatars_per_row' => array(
+				'name' => 'avatars_per_row',
 				'title' => $lang->asb_wol_num_avatars_per_row_title,
 				'description' => $lang->asb_wol_num_avatars_per_row_desc,
 				'optionscode' => 'text',
 				'value' => '4',
 			),
-			'asb_avatar_max_rows' => array(
-				'name' => 'asb_avatar_max_rows',
+			'max_rows' => array(
+				'name' => 'max_rows',
 				'title' => $lang->asb_wol_avatar_max_rows_title,
 				'description' => $lang->asb_wol_avatar_max_rows_desc,
 				'optionscode' => 'text',
 				'value' => '3',
 			),
-			'asb_avatar_maintain_aspect' => array(
-				'name' => 'asb_avatar_maintain_aspect',
-				'title' => $lang->asb_wol_avatar_maintain_aspect_title,
-				'description' => $lang->asb_wol_avatar_maintain_aspect_desc,
-				'optionscode' => 'yesno',
-				'value' => '0',
+			'avatar_margin' => array(
+				'name' => 'avatar_margin',
+				'title' => $lang->asb_wol_asb_avatar_margin_title,
+				'description' => $lang->asb_wol_asb_avatar_margin_desc,
+				'optionscode' => 'text',
+				'value' => '7',
 			),
 			'xmlhttp_on' => array(
 				'name' => 'xmlhttp_on',
@@ -75,20 +75,13 @@ function asb_whosonline_info()
 				array(
 					'title' => 'asb_whosonline',
 					'template' => <<<EOF
-				<tr>
-					<td class="trow1">
+				<div class="asb-whosonline-container">
+					<div class="trow1 asb-whosonline-info">
 						<span class="smalltext">{\$lang->asb_wol_online_users} [<a href="online.php" title="Who\'s Online">{\$lang->asb_wol_complete_list}</a>]<br /><strong>&raquo;</strong> {\$lang->asb_wol_online_counts}</span>
-					</td>
-				</tr>
-				<tr>
-					<td class="trow2">
-						<table style="text-align: center;">
-							<tr>
-								{\$onlinemembers}
-							</tr>
-						</table>
-					</td>
-				</tr>
+					</div>
+					<div class="trow2 asb-whosonline-users{\$extraClass}">{\$onlinemembers}
+					</div>
+				</div>
 EOF
 				),
 				array(
@@ -100,13 +93,13 @@ EOF
 				array(
 					'title' => 'asb_whosonline_memberbit_avatar',
 					'template' => <<<EOF
-<td><a href="{\$mybb->settings[\'bburl\']}/{\$user[\'profilelink\']}"><img style="{\$avatar_width_style}{\$avatar_height_style}" src="{\$avatar_filename}" alt="{\$lang->asb_wol_avatar}" title="{\$user[\'username\']}\'s {\$lang->asb_wol_profile}"/></a></td>
+						<a href="{\$mybb->settings[\'bburl\']}/{\$user[\'profilelink\']}" class="asb-whosonline-avatar-link" style="background-image: url({\$avatar_filename}); margin: {\$avatar_margin};{\$avatar_width_style}{\$avatar_height_style}" title="{\$user[\'username\']}\'s {\$lang->asb_wol_profile}"></a>
 EOF
 				),
 				array(
 					'title' => 'asb_whosonline_memberbit_see_all',
 					'template' => <<<EOF
-<td><a href="{\$mybb->settings[\'bburl\']}/online.php" title="{\$lang->asb_wol_see_all_title}"><img style="{\$avatar_style}" src="{\$theme[\'imgdir\']}/asb/see_all.png" alt="{\$lang->asb_wol_see_all_alt}" title="{\$lang->asb_wol_see_all_title}" width="{\$avatar_width}px"/></a></td>
+						<a href="{\$mybb->settings[\'bburl\']}/online.php" title="{\$lang->asb_wol_see_all_title}" class="asb-whosonline-see-all-link asb-whosonline-avatar-link" style="background-image: url({\$theme[\'imgdir\']}/asb/see_all.png); margin: {\$avatar_margin};{\$avatar_width_style}{\$avatar_height_style}"></a>
 EOF
 				),
 			),
@@ -180,21 +173,26 @@ function asb_whosonline_get_online_members($settings, $width)
 	$all_users = array();
 
 	// width
-	$rowlength = (int) $settings['asb_avatar_per_row'];
+	$rowlength = (int) $settings['avatars_per_row'];
 	if ($rowlength == 0) {
 		return false;
 	}
 
-	$max_rows = (int) $settings['asb_avatar_max_rows'];
+	$max_rows = (int) $settings['max_rows'];
 	$row = 1;
 	$avatar_count = 0;
 	$enough_already = false;
 	$sep = '';
 
-	// Scale the avatars based on the width of the side boxes in Admin CP
-	$avatar_height = $avatar_width = (int) ($width * .83) / $rowlength;
-	$avatar_width = ((int) 93 / $rowlength).'%';
-	$avatar_margin = ((int) 7 / ($rowlength * 2)).'%';
+	$margin = (int) $settings['avatar_margin'];
+	if ($margin < 0) {
+		$margin = 0;
+	} elseif ($margin > 100) {
+		$margin = 100;
+	}
+
+	$avatar_height = $avatar_width = ((int) (100 - $margin) / $rowlength).'%';
+	$avatar_margin = ((int) $margin / ($rowlength * 2)).'%';
 
 	$timesearch = TIME_NOW - $mybb->settings['wolcutoff'];
 	$guestcount = 0;
@@ -243,21 +241,12 @@ function asb_whosonline_get_online_members($settings, $width)
 				$user['profilelink'] = get_profile_link($user['uid']);
 
 				if ($settings['show_avatars']) {
+					$extraClass = ' asb-whosonline-users-avatars-container';
 					$avatar_info = format_avatar($user['avatar']);
 					$avatar_filename = $avatar_info['image'];
 
-					$avatar_height_style = " max-height: {$avatar_height}px;";
+					$avatar_height_style = " padding-bottom: {$avatar_height};";
 					$avatar_width_style = " width: {$avatar_width};";
-					if ($settings['asb_avatar_maintain_aspect']) {
-						// Check the avatar's dimensions, then constrain it by its largest dimension
-						$avatar_dimensions = explode('|', $user['avatardimensions']);
-
-						if ($avatar_dimensions[0] > $avatar_dimensions[1]) {
-							$avatar_height_style = '';
-						} else {
-							$avatar_width_style = '';
-						}
-					}
 
 					// if this is the last allowable avatar (conforming to ACP settings)
 					if ($avatar_count >= (($max_rows * $rowlength) - 1) &&
@@ -276,6 +265,8 @@ function asb_whosonline_get_online_members($settings, $width)
 						++$avatar_count;
 					}
 				} else {
+					$extraClass = ' asb-whosonline-users-links-container';
+
 					$user['username'] = format_name(trim($user['username']), $user['usergroup'], $user['displaygroup']);
 					eval("\$onlinemembers .= \"{$templates->get('asb_whosonline_memberbit_name', 1, 0)}\";");
 					$sep = $lang->comma.' ';
@@ -287,8 +278,9 @@ function asb_whosonline_get_online_members($settings, $width)
 	}
 
 	if (!$settings['show_avatars']) {
-		$onlinemembers = '<td>'.$onlinemembers.'</td>';
+		$onlinemembers = "<div>{$onlinemembers}</div>";
 	}
+
 	$onlinecount = $membercount + $guestcount + $botcount;
 
 	// If we can see invisible users add them to the count
@@ -310,6 +302,7 @@ function asb_whosonline_get_online_members($settings, $width)
 		$mostonline['time'] = $time;
 		$cache->update('mostonline', $mostonline);
 	}
+
 	$recordcount = $mostonline['numusers'];
 	$recorddate = my_date($mybb->settings['dateformat'], $mostonline['time']);
 	$recordtime = my_date($mybb->settings['timeformat'], $mostonline['time']);
@@ -319,6 +312,7 @@ function asb_whosonline_get_online_members($settings, $width)
 	} else {
 	  $lang->asb_wol_online_users = $lang->sprintf($lang->asb_wol_online_users, $onlinecount);
 	}
+
 	$lang->asb_wol_online_counts = $lang->sprintf($lang->asb_wol_online_counts, $membercount, $guestcount);
 
 	if ($membercount) {
@@ -339,7 +333,7 @@ function asb_whosonline_settings_load()
 	echo <<<EOF
 
 	<script type="text/javascript">
-	new Peeker($(".setting_show_avatars"), $("#row_setting_asb_avatar_per_row, #row_setting_asb_avatar_max_rows, #row_setting_asb_avatar_maintain_aspect"), /1/, true);
+	new Peeker($(".setting_show_avatars"), $("#row_setting_avatars_per_row, #row_setting_max_rows, #row_setting_asb_avatar_maintain_aspect"), /1/, true);
 	</script>
 EOF;
 }

@@ -9,280 +9,172 @@
 
 var ASB = (function(a, $) {
 	/**
-	 * constructor for slideshow objects-- commandeers an element and cycles
-	 * through a defined set of images using configurable options
+	 * constructor
 	 *
-	 * @param String the id of the containing <div>
-	 * @param Object settings for the object
-	 * @return void
+	 * cycles through a defined set of images
+	 *
+	 * @param String id
+	 * @param Object options
+	 * @return Void
 	 */
-	function Slideshow(container, options) {
-		if (!$("#" + container).length) {
-			return;
-		}
-
+	function Slideshow(el, o)
+	{
 		this.options = {
 			rate: 10,
-			shuffle: false,
+			height: 200,
 			fadeRate: 400,
-			size: 100,
-			maxWidth: 0,
-			maxHeight: 0,
-			maintainHeight: 1,
 		};
-		$.extend(this.options, options || {});
 
-		this.startHeight = this.options.size;
-		if (this.options.maxHeight > 0 &&
-			this.options.maintainHeight) {
-			this.startHeight = this.options.maxHeight;
+		this.options = $.extend(this.options, o);
+
+		this.$container = $("#"+el);
+
+		if (this.$container.length < 1 ||
+			typeof this.options.images !== "object" ||
+			this.options.images.length < 1) {
+			return false;
 		}
 
-		// set up the container
-		this.container = $("#" + container);
-		this.container.css({
-			width: this.options.size + "px",
-			height: this.startHeight + "px",
-			marginLeft: "auto",
-			marginRight: "auto",
-			position: "relative",
+		this.running = false;
+		this.isSetUp = false;
+		this.imageIndex = 0;
+
+		this.$container.css({
+			height: this.options.height+"px",
 		});
 
-		// no images, no have slide show
-		if (typeof this.options.images === "undefined" ||
-			this.options.images.length == 0) {
+		this.$image1 = this.$container.children("div.asb-slideshow-image-one");
+		this.$image2 = this.$container.children("div.asb-slideshow-image-two").hide();
+
+		this.start();
+	}
+
+	/**
+	 * kicks everything off
+	 *
+	 * @return Void
+	 */
+	function start()
+	{
+		if (this.running) {
 			return;
 		}
 
-		this.current = 0;
-		if (this.options.shuffle) {
-			this.options.images.sort(function() {
-				return 0.5 - Math.random();
-			});
-		}
-
-		// create the main image holder, set it up and insert it into the container
-		this.mainImage = $("<img/>", {
-			src: this.getCurrentImage(),
-		}).css({
-			display: "none",
-			position: "absolute",
-			left: "0px",
-			top: "0px",
-		});
-		this.container.append(this.mainImage);
-
-		// clone the main image, store it as a buffer and insert it into the container
-		this.bufferImage = this.mainImage.clone();
-		this.container.append(this.bufferImage);
-
-		this.cloneWidth = this.cloneHeight = 0;
-
-		/**
-		 * get things going and begin cycling when the page loads
-		 * and end when the user leaves
-		 */
-		this.showCurrent();
-		$($.proxy(this.run, this));
-		$(window).on("unload", $.proxy(this.stop, this));
-	}
-
-	/**
-	 * ready the slideshow to go another round
-	 *
-	 * @return void
-	 */
-	function run() {
-		this.timeOutId = setTimeout($.proxy(this.showNext, this), this.options.rate * 1000);
-	}
-
-	/**
-	 * end the slideshow
-	 *
-	 * @return void
-	 */
-	function stop() {
-		clearTimeout(this.timeOutId);
-	}
-
-	/**
-	 * build the image file name
-	 *
-	 * @return string
-	 */
-	function getCurrentImage() {
-		return this.options.folder ?
-				this.options.folder + "/" + this.options.images[this.current] :
-				this.options.images[this.current];
-	}
-
-	/**
-	 * do the buffer swap and cycle to the next image
-	 *
-	 * @return void
-	 */
-	function nextImage() {
-		this.bufferImage.prop("title", this.mainImage.prop("title"));
-		this.bufferImage.prop("alt", this.mainImage.prop("alt"));
-		this.bufferImage.prop("src", this.mainImage.prop("src"));
-		this.resizeImage(this.bufferImage).show();
-		this.mainImage.hide();
-
-		this.current++;
-		if (this.options.images.length <= this.current) {
-			this.current = 0;
-		}
-	}
-
-	/**
-	 * load the current image and perform the transition
-	 *
-	 * @return void
-	 */
-	function showCurrent() {
-		this.mainImage.prop("title", this.options.images[this.current]);
-		this.mainImage.prop("alt", this.options.images[this.current]);
-		this.mainImage.prop("src", this.getCurrentImage());
-
-		/*
-		 * clone the main image and display it off-screen in order to
-		 * get the correct size
-		 */
-		this.clone = $("<img/>", {
-			src: this.mainImage.prop("src"),
-		}).css({
-			position: "absolute",
-			display: "block",
-		});
-		$("body").append(this.clone);
-
-		this.clone.on("load", $.proxy(this.resize, this)).each(function() {
-			if (this.complete) {
-				$(this).load();
-			}
-		});
-
-		// fade in the new image
-		$(this.mainImage).fadeIn(this.options.fadeRate);
-
-		// if we have already initialized, fade out the old image
-		if (this.running) {
-			$(this.bufferImage).fadeOut(this.options.fadeRate);
-		}
 		this.running = true;
+
+		this.showNextImage();
 	}
 
 	/**
-	 * when the clone loads, get its dimensions and use them to resize the
-	 * main image
+	 * shuts everything down
 	 *
-	 * @return - void
+	 * @return Void
 	 */
-	function resize(e) {
-		var height = this.clone.height(),
-		width = this.clone.width(),
-		ratio;
-
-		// maintain the ratio and resize if necessary
-		if (height > width) {
-			ratio = height / width;
-
-			this.cloneWidth = parseInt(this.options.size / ratio);
-			this.cloneHeight = this.options.size;
-
-			if (this.options.maxWidth > 0 &&
-				this.cloneWidth > this.options.maxWidth) {
-				this.cloneWidth = this.options.maxWidth;
-				this.cloneHeight = parseInt(this.options.maxWidth * ratio);
-			}
-
-			if (this.options.maxHeight > 0 &&
-				this.cloneHeight > this.options.maxHeight) {
-				this.cloneWidth = parseInt(this.options.maxHeight / ratio);
-				this.cloneHeight = this.options.maxHeight;
-			}
-		} else if (width > height) {
-			ratio = width / height;
-
-			this.cloneWidth = this.options.size;
-			this.cloneHeight = parseInt(this.options.size / ratio);
-
-			if (this.options.maxWidth > 0 &&
-				this.cloneWidth > this.options.maxWidth) {
-				this.cloneWidth = this.options.maxWidth;
-				this.cloneHeight = parseInt(this.options.maxWidth / ratio);
-			}
-
-			if (this.options.maxHeight > 0 &&
-				this.cloneHeight > this.options.maxHeight) {
-				this.cloneWidth = parseInt(this.options.maxHeight * ratio);
-				this.cloneHeight = this.options.maxHeight;
-			}
-		} else {
-			this.cloneHeight = this.cloneWidth = this.options.size;
-
-			if (this.options.maxWidth > 0 &&
-				this.cloneWidth > this.options.maxWidth) {
-				this.cloneHeight = this.cloneWidth = this.options.maxWidth;
-			}
-
-			if (this.options.maxHeight > 0 &&
-				this.cloneHeight > this.options.maxHeight) {
-				this.cloneWidth = this.cloneHeight = this.options.maxHeight;
-			}
+	function stop()
+	{
+		if (!this.running ||
+			!this.timer) {
+			return;
 		}
 
-		this.clone.remove();
-		this.resizeImage(this.mainImage);
+		window.clearTimeout(this.timer);
+
+		this.running = false;
 	}
 
 	/**
-	 * apply the stored dimensions to a given element
+	 * initialize the slideshow
 	 *
-	 * @param Object the DOM Element Object
-	 * @return Object the DOM Element Object
+	 * @return Void
 	 */
-	function resizeImage(el) {
-		style = {
-			height: this.cloneHeight + "px",
-			width: this.cloneWidth + "px",
-			left: parseInt((this.options.size / 2) - (this.cloneWidth / 2)) + "px",
-			top: parseInt((this.startHeight / 2) - (this.cloneHeight / 2)) + "px",
-		};
+	function setup()
+	{
+		var url = this.getNextImageUrl();
 
-		if (!this.options.maintainHeight) {
-			this.container.css("height", this.cloneHeight + "px");
-			style.top = "0px";
-		}
+		// set both image containers to the same URL
+		setImageUrl(this.$image1, url);
+		setImageUrl(this.$image2, url);
 
-		el.css(style);
+		this.isSetUp = true;
 
-		return el;
+		window.setTimeout($.proxy(this.showNextImage, this), this.options.rate*1000);
 	}
 
 	/**
-	 * called cyclically to advance to the next image and restart the timer
+	 * swap the images
 	 *
-	 * @param Object the DOM Element Object
-	 * @return Object the DOM Element Object
+	 * @return Void
 	 */
-	function showNext() {
-		if (this.container.width() > 0)  {
-			this.nextImage();
-			this.showCurrent();
+	function showNextImage()
+	{
+		if (this.isSetUp !== true) {
+			this.setup();
+			return;
 		}
-		this.run();
+
+		var url = this.getNextImageUrl();
+
+		// show the backup image (same as current image)
+		this.$image2.show();
+
+		// swap out the first image
+		setImageUrl(this.$image1, url);
+
+		// fade out the backup image (revealing the new image)
+		this.$image2.fadeOut(this.options.fadeRate, $.proxy(function() {
+			// and when that's done, set the backup image to the same image as the first image
+			setImageUrl(this.$image2, url);
+
+			// and do it again
+			this.timer = window.setTimeout($.proxy(this.showNextImage, this), this.options.rate*1000);
+		}, this));
+	}
+
+	/**
+	 * get the next image in the set
+	 *
+	 * @return Void
+	 */
+	function getNextImageUrl()
+	{
+		var url;
+
+		// get the next index or start over
+		this.imageIndex++;
+		if (this.imageIndex > this.images.length) {
+			this.imageIndex = 0;
+		}
+
+		// build the url
+		url = this.options.images[this.imageIndex];
+		if (this.options.folder) {
+			url = this.options.folder+"/"+url;
+		}
+
+		return url;
+	}
+
+	/**
+	 * local static function to change element bg image
+	 *
+	 * @param jQuery el
+	 * @param String
+	 * @return Void
+	 */
+	function setImageUrl($i, url)
+	{
+		$i.css({
+			"background-image": "url("+url+")",
+		});
 	}
 
 	Slideshow.prototype = {
-		run: run,
+		start: start,
 		stop: stop,
-		showCurrent: showCurrent,
-		getCurrentImage: getCurrentImage,
-		nextImage: nextImage,
-		showNext: showNext,
-		resize: resize,
-		resizeImage: resizeImage,
+		setup: setup,
+
+		showNextImage: showNextImage,
+		getNextImageUrl: getNextImageUrl,
 	};
 
 	a.modules = $.extend({

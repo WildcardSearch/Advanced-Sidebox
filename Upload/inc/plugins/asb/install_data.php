@@ -262,6 +262,522 @@ EOF
 
 $styleSheets = array(
 	'folder' => 'asb',
+	'forum' => array(
+		'asb' => array(
+			'attachedto' => '',
+			'stylesheet' => <<<EOF
+/*
+ * add/edit rules here to style the side boxes
+ */
+
+/** Main Wrapper **/
+div.asb-sidebox-container {
+	width: 100%;
+
+	padding: 0px;
+	margin: 0px;
+
+	font-size: 0;
+	text-align: left;
+}
+
+/** Toggle Icons Start **/
+
+#asb_left_open,
+#asb_right_close {
+	position: relative;
+	top: 13px;
+	left: 10px;
+}
+
+#asb_left_close,
+#asb_right_open {
+	position: relative;
+	top: 13px;
+	left: 3px;
+}
+
+span.asb-sidebox-toggle-column {
+	position: absolute;
+}
+
+span.asb-sidebox-toggle-column-left {
+	margin-left: -17px;
+}
+
+span.asb-sidebox-toggle-column-right {
+	
+}
+
+/** Toggle Icons End **/
+
+/** Columns Start **/
+
+	/** margin contributes to the overall width which cannot exceed 100% ({left-width} + {margin-right} + {middle-width} + {margin-left} + {right-width} === 100) **/
+
+div.asb-sidebox-column {
+	display: inline-block;
+
+	vertical-align: top;
+	text-align: left;
+}
+
+div.asb-sidebox-column-left {
+	
+}
+
+div.asb-sidebox-column-middle {
+	margin-left: .5%;
+	margin-right: .5%;
+}
+
+div.asb-sidebox-column-middle > table.tborder,
+div.asb-sidebox-column-middle > div.tborder {
+	/** Important - keeps middle content fluid **/
+	width: 100%;
+}
+
+div.asb-sidebox-column-right {
+	margin-left: -3px;
+}
+
+div.asb-sidebox-column-left,
+div.asb-sidebox-column-right {
+	
+}
+
+/** Columns End **/
+
+/** Side Boxes Start **/
+
+div.asb-wrapped-sidebox {
+	font-size: 14px;
+	word-wrap: break-word;
+}
+
+/** Side Boxes End **/
+
+/** Modules Start **/
+
+	/** Birthdays Start **/
+
+div.asb-birthdays-header {
+	
+}
+
+div.asb-birthdays-today-header {
+	
+}
+
+div.asb-birthdays-upcoming-header {
+	
+}
+
+div.asb-birthdays-no-birthdays {
+	
+}
+
+img.asb-birthdays-user-avatar {
+	width: 20%;
+	margin-bottom: -5px;
+}
+
+	/** Birthdays End **/
+
+	/** Forum Age Start **/
+
+div.asb-forum-age-header {
+	
+}
+
+div.asb-forum-age-footer {
+	
+}
+
+span.asb-forum-age-text {
+	font-weight: bold;
+	font-size: 1.2em;
+	color: #444444;
+}
+
+	/** Forum Age End **/
+
+	/** Goals Start **/
+
+div.asb-goals-progress-container {
+	text-align: center;
+}
+
+div.asb-goals-progress-footer {
+	text-align: center;
+}
+
+div.asb-goals-goal-reached-message {
+	font-size: 1.6em;
+	color: navy;
+}
+
+span.asb-goals-progress-message {
+	font-size: 1.4em;
+	color: green;
+}
+
+div.asb-goals-progress-indicator {
+	width: 95%;
+	background: white;
+	height: 20px;
+	border: 2px outset grey;
+}
+
+div.asb-goals-progress-indicator-completed {
+	background: blue;
+	height: 20px;
+}
+
+img.asb-goals-success-image {
+	
+}
+
+	/** Goals End **/
+
+	/** Latest Threads Start **/
+
+div.asb-latest-threads-thread {
+	
+}
+
+span.asb-latestest-threads-thread-title {
+	font-weight: bold;
+}
+
+div.asb-latest-threads-title-container {
+	
+}
+
+div.asb-latest-threads-details-container {
+	
+}
+
+a.asb-latest-threads-thread-gotounread {
+	
+}
+
+a.latest-threads-last-post-link {
+	
+}
+
+img.asb-latest-threads-last-poster-avatar {
+	
+}
+
+	/** Latest Threads End **/
+
+	/** Private Messages Start **/
+
+div.asb-private-messages-container {
+	
+}
+
+	/** Privates Messages End **/
+
+	/** Random Quotes Start **/
+
+div.asb-random-quote-header {
+	
+}
+
+div.asb-random-quote-user-info {
+	
+}
+
+img.asb-random-quote-user-avatar {
+	padding: 4px;
+	width: 15%;
+	vertical-align: middle;
+}
+
+a.asb-random-quote-user-link {
+	vertical-align: middle;
+}
+
+div.asb-random-quote-message {
+	
+}
+
+div.asb-random-quote-footer {
+	text-align: center;
+}
+
+a.asb-random-quote-thread_title_link {
+	
+}
+
+a.asb-random-quote-thread_title_link span {
+	font-weight: bold;
+}
+
+	/** Random Quotes End **/
+
+	/** Recent Posts Start **/
+
+div.asb-recent-posts-title {
+	text-align: center; 
+}
+
+div.asb-recent-posts-excerpt {
+	
+}
+
+div.asb-recent-posts-excerpt span {
+	position: relative;
+	float: right;
+}
+
+	/** Recent Posts End **/
+
+	/** Search Start **/
+
+div.asb-search-container {
+	
+}
+
+	/** Search End **/
+
+	/** Slideshow Start **/
+
+div.asb-slideshow-container {
+	text-align: center;
+}
+
+div.tfoot asb-slideshow-footer {
+	text-align: center;
+}
+
+div.asb-slideshow-image-container {
+	position: relative;
+}
+
+div.asb-slideshow-image {
+	position: absolute;
+
+	top: 0px;
+	left: 0px;
+
+	width: 100%;
+	height: 100%;
+
+	background-color: transparent;
+	background-position: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+
+div.asb-slideshow-image-one {
+	
+}
+
+div.asb-slideshow-image-two {
+	z-index: 99;
+}
+
+	/** Slideshow End **/
+
+	/** Staff Online Start **/
+
+div.asb-staff-online-row {
+	width: 100%;
+
+	font-size: 0;
+	padding: 0px;
+	margin: 0px;
+}
+
+div.asb-staff-online-avatar,
+div.asb-staff-online-username,
+div.asb-staff-online-badge {
+	text-align: center;
+}
+
+div.asb-staff-online-avatar,
+div.asb-staff-online-user-container {
+	font-size: 14px;
+
+	display: inline-block;
+}
+
+div.asb-staff-online-avatar {
+	width: 19%;
+}
+
+div.asb-staff-online-avatar > a > img {
+	width: 100%;
+}
+
+div.asb-staff-online-user-container {
+	width: 79%;
+
+	vertical-align: top;
+}
+
+div.asb-staff-online-username {
+	width: 100%;
+
+	margin-top: 2%;
+}
+
+div.asb-staff-online-badge {
+	width: 100%;
+}
+
+div.asb-staff-online-badge > img {
+	width: 60%;
+}
+
+	/** Staff Online End **/
+
+	/** Statistics Start **/
+
+div.asb-statistics-container {
+	
+}
+
+div.asb-statistics-container > span {
+	
+}
+
+	/** Statistics End **/
+
+	/** Top Poster Start **/
+
+div.asb-top-poster-description {
+	font-size: .8em;
+	text-align: center;
+}
+
+div.asb-top-poster-posters {
+	padding: 0px;
+}
+
+div.asb-top-poster-posters-single {
+	text-align: center;
+}
+
+div.asb-top-poster-poster-text,
+div.asb-top-poster-poster-avatar {
+	display: inline-block;
+}
+
+div.asb-top-poster-poster-avatar {
+	width: 14%;
+
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+div.asb-top-poster-poster-text {
+	width: 84%;
+	font-size: 1em;
+
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+img.asb-top-poster-avatar {
+	width:100%;
+}
+
+	/** Top Poster End **/
+
+	/** Welcome Start **/
+
+span.asb-welcome-user-avatar-container {
+	float: right;
+	text-align: right;
+	width: 100%;
+}
+
+span.asb-welcome-user-avatar-container img {
+	width: 20%;
+}
+
+	/** Welcome End **/
+
+	/** Who's Online Start **/
+
+div.asb-whosonline-container {
+	
+}
+
+div.asb-whosonline-info {
+	
+}
+
+div.asb-whosonline-users {
+	
+}
+
+div.asb-whosonline-users.asb-whosonline-users-avatars-container {
+	/** Important - will break user avatar layout if removed/changed **/
+	font-size: 0;
+}
+
+div.asb-whosonline-users.asb-whosonline-users-links-container {
+	
+}
+
+a.asb-whosonline-avatar-link {
+	display: inline-block;
+	overflow: hidden;
+
+	padding: 0px;
+
+	background-color: transparent;
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+
+	/** uncomment for round avatars
+	border-radius: 50%;
+	**/
+}
+
+a.asb-whosonline-see-all-link {
+	
+}
+
+	/** Who's Online End **/
+
+/** Modules End **/
+
+/** Responsive Adjustments **/
+
+@media screen and (max-width: 1000px) {
+
+	div.asb-sidebox-container {
+		text-align: center;
+	}
+
+	div.asb-sidebox-column {
+		display: block;
+		width: 90vw!important;
+		margin: 20px;
+	}
+
+	span.asb-sidebox-toggle-column {
+		display: none;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	
+}
+
+@media screen and (max-width: 375px) {
+	
+}
+EOF
+		),
+	),
 	'acp' => array(
 		'global' => array(
 			'stylesheet' => <<<EOF
