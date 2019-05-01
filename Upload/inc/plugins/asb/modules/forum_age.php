@@ -30,7 +30,7 @@ function asb_forum_age_info()
 		'title' => $lang->asb_forum_age_title,
 		'description' => $lang->asb_forum_age_description,
 		'wrap_content' => true,
-		'version' => '2.0.0',
+		'version' => '2.0.2',
 		'compatibility' => '4.0',
 		'xmlhttp' => true,
 		'settings' => array(
@@ -78,24 +78,20 @@ EOF
 				array(
 					'title' => 'asb_forum_age',
 					'template' => <<<EOF
-				<tr>
-					<td class="trow1">{\$forumAge}</td>
-				</tr>{\$creationDate}
+				<div class="trow1 asb-forum-age-header">{\$forumAge}</div>{\$creationDate}
 EOF
 				),
 				array(
 					'title' => 'asb_forum_age_creation_date',
 					'template' => <<<EOF
 
-				<tr>
-					<td class="tfoot">{\$creationText}</td>
-				</tr>
+				<div class="tfoot asb-forum-age-footer">{\$creationText}</div>
 EOF
 				),
 				array(
 					'title' => 'asb_forum_age_text',
 					'template' => <<<EOF
-<span style="font-weight: bold; font-size: 1.2em; color: #444;">{\$forumAgeText}</span>
+<span class="asb-forum-age-text">{\$forumAgeText}</span>
 EOF
 				),
 			),
