@@ -18,7 +18,7 @@ if (!defined('IN_MYBB') ||
  *
  * @return array module info
  */
-function asb_staff_online_box_info()
+function asb_staff_online_info()
 {
 	global $lang;
 
@@ -29,7 +29,7 @@ function asb_staff_online_box_info()
  	return array(
 		'title' => $lang->asb_staff_online,
 		'description' => $lang->asb_staff_online_desc,
-		'version' => '2.0.0',
+		'version' => '2.0.4',
 		'compatibility' => '4.0',
 		'wrap_content' => true,
 		'xmlhttp' => true,
@@ -68,25 +68,19 @@ function asb_staff_online_box_info()
 				array(
 					'title' => 'asb_staff_online_bit',
 					'template' => <<<EOF
-				<tr>
-					<td class="{\$bgcolor}">
-						<table cellspacing="0" cellpadding="{\$theme[\'tablespace\']}" width="100%">
-							<tr rowspan="2">
-								<td style="text-align: center;" rowspan="2" class="{\$bgcolor}" width="30%">
-									<a href="{\$staff_profile_link}"><img src="{\$staff_avatar_filename}" alt="{\$staff_avatar_alt}" title="{\$staff_avatar_title}" width="{\$staff_avatar_dimensions}"/></a>
-								</td>
-								<td style="text-align: center;" class="{\$bgcolor}" width="70%">
-									<a href="{\$staff_profile_link}" title="{\$staff_link_title}">{\$staff_username}</a>
-								</td>
-							</tr>
-							<tr>
-								<td style="text-align: center;" rowspan="1">
-									{\$staff_badge}
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
+				<div class="{\$bgcolor} asb-staff-online-row">
+					<div class="{\$bgcolor} asb-staff-online-avatar">
+						<a href="{\$staff_profile_link}"><img src="{\$staff_avatar_filename}" alt="{\$staff_avatar_alt}" title="{\$staff_avatar_title}" /></a>
+					</div>
+					<div class="{\$bgcolor} asb-staff-online-user-container">
+						<div class="asb-staff-online-username">
+							<a href="{\$staff_profile_link}" title="{\$staff_link_title}">{\$staff_username}</a>
+						</div>
+						<div class="asb-staff-online-badge">
+							{\$staff_badge}
+						</div>
+					</div>
+				</div>
 EOF
 				),
 			),
@@ -100,7 +94,7 @@ EOF
  * @param  array info from child box
  * @return bool success/fail
  */
-function asb_staff_online_box_build_template($settings, $template_var, $width, $script)
+function asb_staff_online_build_template($settings, $template_var, $width, $script)
 {
 	global $$template_var, $lang;
 
@@ -108,7 +102,7 @@ function asb_staff_online_box_build_template($settings, $template_var, $width, $
 		$lang->load('asb_addon');
 	}
 
-	$all_online_staff = asb_staff_online_box_get_online_staff($settings, $width);
+	$all_online_staff = asb_staff_online_get_online_staff($settings, $width);
 
 	if ($all_online_staff) {
 		$$template_var = $all_online_staff;
@@ -129,9 +123,9 @@ EOF;
  * @param  array info from child box
  * @return void
  */
-function asb_staff_online_box_xmlhttp($dateline, $settings, $width, $script)
+function asb_staff_online_xmlhttp($dateline, $settings, $width, $script)
 {
-	$all_online_staff = asb_staff_online_box_get_online_staff($settings, $width);
+	$all_online_staff = asb_staff_online_get_online_staff($settings, $width);
 
 	if ($all_online_staff) {
 		return $all_online_staff;
@@ -146,7 +140,7 @@ function asb_staff_online_box_xmlhttp($dateline, $settings, $width, $script)
  * @param  int column width
  * @return string|bool html or false
  */
-function asb_staff_online_box_get_online_staff($settings, $width)
+function asb_staff_online_get_online_staff($settings, $width)
 {
 	global $db, $mybb, $templates, $lang, $cache, $theme;
 
@@ -200,7 +194,7 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 		FROM {$db->table_prefix}sessions s
 		LEFT JOIN {$db->table_prefix}users u ON (s.uid=u.uid)
 		WHERE
-			(displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in))) AND s.time > '{$timesearch}'
+			(displaygroup IN ({$groups_in}) OR (displaygroup='0' AND usergroup IN ({$groups_in}))) AND s.time > '{$timesearch}'
 		ORDER BY
 			u.username ASC, s.time DESC
 	");
@@ -273,7 +267,7 @@ function asb_staff_online_box_get_online_staff($settings, $width)
 				$staff_badge_filename = $usergroup['image'];
 
 				$staff_badge = <<<EOF
-<img src="{$staff_badge_filename}" alt="{$staff_badge_alt}" title="{$staff_badge_title}" width="{$staff_badge_width}"/>
+<img src="{$staff_badge_filename}" alt="{$staff_badge_alt}" title="{$staff_badge_title}" />
 EOF;
 			}
 
