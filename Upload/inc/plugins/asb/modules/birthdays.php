@@ -30,51 +30,43 @@ function asb_birthdays_info()
 		'title' => $lang->asb_birthdays_title,
 		'description' => $lang->asb_birthdays_description,
 		'wrap_content' => true,
-		'version' => '2.0.0',
+		'version' => '2.0.2',
 		'compatibility' => '4.0',
 		'installData' => array(
 			'templates' => array(
 				array(
 					'title' => 'asb_birthdays',
 					'template' => <<<EOF
-				<tr>
-					<td class="tcat">
-						<span class="smalltext"><strong>{\$lang->asb_birthdays_todays_birthdays}</strong></span>
-					</td>
-				</tr>{\$todaysBirthdays}
-				<tr>
-					<td class="tcat">
-						<span class="smalltext"><strong>{\$lang->asb_birthdays_upcoming_birthdays}</strong></span>
-					</td>
-				</tr>{\$upcomingBirthdays}
+				<div class="tcat asb-birthdays-today-header">
+					<span class="smalltext"><strong>{\$lang->asb_birthdays_todays_birthdays}</strong></span>
+				</div>{\$todaysBirthdays}
+				<div class="tcat asb-birthdays-header asb-birthdays-upcoming-header">
+					<span class="smalltext"><strong>{\$lang->asb_birthdays_upcoming_birthdays}</strong></span>
+				</div>{\$upcomingBirthdays}
 EOF
 				),
 				array(
 					'title' => 'asb_birthdays_user_row',
 					'template' => <<<EOF
-				<tr>
-					<td class="{\$altbg}">
-						{\$avatar} <span class="smalltext float_right">({\$user[\'age\']})</span><a href="{\$profileLink}" title="{\$userInfo}">{\$name}</a>
-					</td>
-				</tr>
+				<div class="{\$altbg} asb-birthdays-header asb-birthdays-user-row">
+					{\$avatar} <span class="smalltext float_right">({\$user[\'age\']})</span><a href="{\$profileLink}" title="{\$userInfo}">{\$name}</a>
+				</div>
 
 EOF
 				),
 				array(
 					'title' => 'asb_birthdays_no_birthdays',
 					'template' => <<<EOF
-				<tr>
-					<td class="{\$altbg}">
-						<span>{\$noBirthdays}</span>
-					</td>
-				</tr>
+				<div class="{\$altbg} asb-birthdays-no-birthdays">
+					<span>{\$noBirthdays}</span>
+				</div>
 
 EOF
 				),
 				array(
 					'title' => 'asb_birthdays_user_avatar',
 					'template' => <<<EOF
-<img src="{\$avatarInfo[\'image\']}" alt="avatar" title="{\$user[\'username\']}\'s profile"{\$avatarInfo[\'width_height\']} style="margin-bottom: -5px;" />
+<img class="asb-birthdays-user-avatar" src="{\$avatarInfo[\'image\']}" alt="avatar" title="{\$user[\'username\']}\'s profile"{\$avatarInfo[\'width_height\']} />
 
 EOF
 				),
