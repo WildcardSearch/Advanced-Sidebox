@@ -201,10 +201,9 @@ $templates = array(
 EOF
 			,
 			'asb_end' => <<<EOF
-		</td>
-		<!-- end: ASB middle column (page contents of {\$filename}) -->{\$right_content}
-</tr>
-</table>
+	</div>
+	<!-- end: ASB middle column (page contents of {\$filename}) -->{\$right_content}
+</div>
 EOF
 			,
 			'asb_sidebox_column' => <<<EOF
