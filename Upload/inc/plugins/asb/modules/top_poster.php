@@ -30,7 +30,7 @@ function asb_top_poster_info()
 		'title' => $lang->asb_top_poster_title,
 		'description' => $lang->asb_top_poster_desc,
 		'wrap_content' => true,
-		'version' => '2.0.0',
+		'version' => '2.0.3',
 		'compatibility' => '4.0',
 		'settings' => array(
 			'time_frame' => array(
@@ -79,13 +79,6 @@ EOF
 				'optionscode' => 'text',
 				'value' => '1',
 			),
-			'avatar_size' => array(
-				'name' => 'avatar_size',
-				'title' => $lang->asb_top_poster_avatar_size_title,
-				'description' => $lang->asb_top_poster_avatar_size_desc,
-				'optionscode' => 'text',
-				'value' => '',
-			),
 			'group_show_list' => array(
 				'name' => 'group_show_list',
 				'title' => $lang->asb_group_show_list_title,
@@ -106,46 +99,34 @@ EOF
 				array(
 					'title' => 'asb_top_posters_multiple',
 					'template' => <<<EOF
-				<tr>
-					<td class="tcat" style="font-size: .8em; text-align: center;">
-						{\$top_poster_description}
-					</td>
-				</tr>
-				<tr>
-					<td style="padding: 0px;">
-						<table cellspacing="0" style="width: 100%">
-							{\$top_posters}
-						</table>
-					</td>
-				</tr>
-				</tr>
+				<div class="tcat asb-top-poster-description">
+					{\$top_poster_description}
+				</div>
+				<div class="{\$altbg} asb-top-poster-posters">{\$top_posters}
+				</div>
 EOF
 				),
 				array(
 					'title' => 'asb_top_posters_single',
 					'template' => <<<EOF
-				<tr style="text-align: center;">
-					<td class="{\$altbg}">{\$top_poster_avatar}{\$top_poster_text}</td>
-				</tr>
+				<div class="{\$altbg} asb-top-poster-posters-single">{\$top_poster_avatar}{\$top_poster_text}</div>
 EOF
 				),
 				array(
 					'title' => 'asb_top_poster',
 					'template' => <<<EOF
-				<tr>
-					<td class="{\$altbg}" style="width: {\$avatar_width}px; padding-top: 0px; padding-bottom: 0px;">
-						{\$top_poster_avatar}
-					</td>
-					<td class="{\$altbg}" style="font-size: 1em; padding-top: 0px; padding-bottom: 0px;">
-						{\$top_poster_text}
-					</td>
-				</tr>
+				<div class="asb-top-poster-poster-avatar">
+					{\$top_poster_avatar}
+				</div>
+				<div class="asb-top-poster-poster-text">
+					{\$top_poster_text}
+				</div>
 EOF
 				),
 				array(
 					'title' => 'asb_top_poster_avatar',
 					'template' => <<<EOF
-<img src="{\$top_poster_avatar_src}" style="width: {\$avatar_width}px;" alt="{\$lang->asb_top_poster_no_avatar}"/>
+<img class="asb-top-poster-avatar" src="{\$top_poster_avatar_src}" alt="{\$lang->asb_top_poster_no_avatar}" />
 EOF
 				),
 			),
@@ -333,11 +314,6 @@ EOF;
 		$avatar_info = format_avatar($user['avatar']);
 		$top_poster_avatar_src = $avatar_info['image'];
 
-		$settings['avatar_size'] = trim($settings['avatar_size']);
-		if (my_strpos($settings['avatar_size'], '%') == my_strlen($settings['avatar_size']) - 1) {
-			$settings['avatar_size'] = (int) $width * (my_substr($settings['avatar_size'], 0, my_strlen($settings['avatar_size']) - 1) / 100);
-		}
-
 		if ($db->num_rows($query) == 1) {
 			if ($time_frame == 0) {
 				if ($threadsOnly) {
@@ -368,10 +344,6 @@ EOF;
 			}
 			$top_poster_text = $top_poster.'<br />'.$top_poster_posts;
 
-			$avatar_width = (int) $width * .2;
-			if ((int) $settings['avatar_size']) {
-				$avatar_width = (int) $settings['avatar_size'];
-			}
 			eval("\$top_poster_avatar = \"{$templates->get('asb_top_poster_avatar')}\";");
 
 			eval("\$top_posters .= \"{$templates->get('asb_top_poster')}\";");
