@@ -30,7 +30,7 @@ function asb_slideshow_info()
 		'title' => $lang->asb_slideshow,
 		'description' => $lang->asb_slideshow_desc,
 		'wrap_content' => true,
-		'version' => '2.0.0',
+		'version' => '2.0.9',
 		'compatibility' => '4.0',
 		'scripts' => array(
 			'Slideshow',
@@ -85,26 +85,12 @@ function asb_slideshow_info()
 				'optionscode' => 'text',
 				'value' => '',
 			),
-			'max_width' => array(
-				'name' => 'max_width',
-				'title' => $lang->asb_slideshow_max_width_title,
-				'description' => $lang->asb_slideshow_max_width_description,
+			'height' => array(
+				'name' => 'height',
+				'title' => $lang->asb_slideshow_height_title,
+				'description' => $lang->asb_slideshow_height_description,
 				'optionscode' => 'text',
-				'value' => '',
-			),
-			'max_height' => array(
-				'name' => 'max_height',
-				'title' => $lang->asb_slideshow_max_height_title,
-				'description' => $lang->asb_slideshow_max_height_description,
-				'optionscode' => 'text',
-				'value' => '',
-			),
-			'maintain_height' => array(
-				'name' => 'maintain_height',
-				'title' => $lang->asb_slideshow_maintain_height_title,
-				'description' => $lang->asb_slideshow_maintain_height_description,
-				'optionscode' => 'yesno',
-				'value' => '1',
+				'value' => '200',
 			),
 		),
 		'installData' => array(
@@ -112,39 +98,32 @@ function asb_slideshow_info()
 				array(
 					'title' => 'asb_slideshow',
 					'template' => <<<EOF
-				<tr>
-					<td class="trow1" style="text-align: center;">
-						<div id="{\$template_var}"></div>
-						<script type="text/javascript">
-						<!--
-							new ASB.modules.Slideshow(\'{\$template_var}\', {
-								shuffle: {\$shuffle},
-								folder: \'{\$folder}\',
-								images: [{\$filenames}],
-								size: {\$width},
-								rate: {\$rate},
-								fadeRate: {\$fade_rate},
-								maxWidth: {\$max_width},
-								maxHeight: {\$max_height},
-								maintainHeight: {\$maintain_height},
-							});
-						// -->
-						</script>
-					</td>
-				</tr>{\$footer}
+					<div class="trow1 asb-slideshow-container">
+						<div id="{\$template_var}" class="asb-slideshow-image-container">
+							<div class="asb-slideshow-image asb-slideshow-image-one"></div>
+							<div class="asb-slideshow-image asb-slideshow-image-two"></div>
+						</div>
+					</div>{\$footer}
+<script type="text/javascript">
+<!--
+	new ASB.modules.Slideshow(\'{\$template_var}\', {
+		folder: \'{\$folder}\',
+		images: {\$filenames},
+		rate: {\$rate},
+		fadeRate: {\$fade_rate},
+		height: {\$height},
+	});
+// -->
+</script>
 EOF
 				),
 				array(
 					'title' => 'asb_slideshow_footer',
 					'template' => <<<EOF
 
-				<tr>
-					<td class="tfoot">
-						<div style="text-align: center;">
-							<a style="font-weight: bold;" href="{\$settings[\'footer_url\']}">{\$settings[\'footer_text\']}</a>
-						</div>
-					</td>
-				</tr>
+				<div class="tfoot asb-slideshow-footer">
+					<a style="font-weight: bold;" href="{\$settings[\'footer_url\']}">{\$settings[\'footer_text\']}</a>
+				</div>
 EOF
 				),
 			),
@@ -168,24 +147,27 @@ function asb_slideshow_build_template($settings, $template_var, $width, $script)
 	$fade_rate = (float) $settings['fade_rate'] ? (int) ($settings['fade_rate'] * 1000) : 400;
 
 	$filenames = asbGetImagesFromPath($folder, '', $settings['recursive']);
-	if (!$filenames) {
+
+	if (!is_array($filenames) ||
+		empty($filenames)) {
 		$$template_var = <<<EOF
-		<tr>
-			<td class="trow1">{$lang->asb_slideshow_no_images}</td>
-		</tr>
+		<div class="trow1">{$lang->asb_slideshow_no_images}</div>
 EOF;
 		return false;
 	}
+
+	if ($shuffle) {
+		shuffle($filenames);
+	}
+
+	$filenames = json_encode($filenames);
 
 	if ($settings['footer_text'] && $settings['footer_url']) {
 		eval ("\$footer = \"{$templates->get('asb_slideshow_footer')}\";");
 	}
 
-	$max_width = (int) $settings['max_width'];
-	$max_height = (int) $settings['max_height'];
-	$maintain_height = (int) $settings['maintain_height'];
+	$height = (int) $settings['height'];
 
-	$width = $width * .9;
 	eval("\$\$template_var = \"{$templates->get('asb_slideshow')}\";");
 
 	return true;

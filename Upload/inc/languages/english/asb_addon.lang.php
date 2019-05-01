@@ -220,11 +220,8 @@ $l['asb_slideshow_footer_text_description'] = 'text for footer link, leave blank
 $l['asb_slideshow_footer_url_title'] = 'Footer Link URL';
 $l['asb_slideshow_footer_url_description'] = 'URL for footer link, above setting must have a value before it will be effective';
 
-$l['asb_slideshow_max_width_title'] = 'Maximum Width';
-$l['asb_slideshow_max_width_description'] = 'enter 0 or nothing to fill the side box (default), or enter the maximum width in pixels';
-
-$l['asb_slideshow_max_height_title'] = 'Maximum Height';
-$l['asb_slideshow_max_height_description'] = 'enter 0 or nothing to fill the side box (default), or enter the maximum height in pixels';
+$l['asb_slideshow_height_title'] = 'Height';
+$l['asb_slideshow_height_description'] = 'enter the height in pixels';
 
 $l['asb_slideshow_maintain_height_title'] = 'Maintain Height?';
 $l['asb_slideshow_maintain_height_description'] = 'YES to keep the sidebox the same height throughout (default), or NO to resize the size box with each image';
