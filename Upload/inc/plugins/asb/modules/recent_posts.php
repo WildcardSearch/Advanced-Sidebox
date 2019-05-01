@@ -29,7 +29,7 @@ function asb_recent_posts_info()
 	return array(
 		'title' => $lang->asb_recent_posts,
 		'description' => $lang->asb_recent_posts_desc,
-		'version' => '2.0.0',
+		'version' => '2.0.1',
 		'compatibility' => '4.0',
 		'wrap_content' => true,
 		'xmlhttp' => true,
@@ -103,14 +103,12 @@ function asb_recent_posts_info()
 				array(
 					'title' => 'asb_recent_posts_post',
 					'template' => <<<EOF
-				<tr>
-					<td style="text-align: center;" class="tcat">
-						<a style="font-weight: bold;" href="{\$mybb->settings[\'bburl\']}/{\$post[\'link\']}" title="{\$post[\'subject\']}">{\$post[\'subject\']}</a>
-					</td>
-				</tr>
-				<tr>
-					<td class="{\$altbg}">{\$post_excerpt}<span style="position: relative; float: right;">{\$post_author} &mdash; {\$lastposttime}</span></td>
-				</tr>
+				<div class="tcat asb-recent-posts-title">
+					<a style="font-weight: bold;" href="{\$mybb->settings[\'bburl\']}/{\$post[\'link\']}" title="{\$post[\'subject\']}">{\$post[\'subject\']}</a>
+				</div>
+				<div class="{\$altbg} asb-recent-posts-excerpt">
+					{\$post_excerpt}<span>{\$post_author} &mdash; {\$lastposttime}</span>
+				</div>
 EOF
 				),
 			),
