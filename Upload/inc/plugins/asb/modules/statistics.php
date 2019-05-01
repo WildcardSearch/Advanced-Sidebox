@@ -30,7 +30,7 @@ function asb_statistics_info()
 		'title' => $lang->asb_stats,
 		'description' => $lang->asb_stats_desc,
 		'wrap_content' => true,
-		'version' => '2.0.0',
+		'version' => '2.0.1',
 		'compatibility' => '4.0',
 		'settings' => array(
 			'format_username' => array(
@@ -46,17 +46,19 @@ function asb_statistics_info()
 				array(
 					'title' => 'asb_statistics',
 					'template' => <<<EOF
-				<tr>
-					<td class="trow1">
-						<span class="smalltext">
-						<strong>&raquo; </strong>{\$lang->asb_stats_num_members}: {\$statistics[\'numusers\']}<br />
-						<strong>&raquo; </strong>{\$lang->asb_stats_latest_member}: {\$newestmember}<br />
-						<strong>&raquo; </strong>{\$lang->asb_stats_num_threads}: {\$statistics[\'numthreads\']}<br />
+				<div class="trow1 asb-statistics-container">
+					<span class="smalltext">
+						<strong>&raquo; </strong>{\$lang->asb_stats_num_members}: {\$statistics[\'numusers\']}
+						<br />
+						<strong>&raquo; </strong>{\$lang->asb_stats_latest_member}: {\$newestmember}
+						<br />
+						<strong>&raquo; </strong>{\$lang->asb_stats_num_threads}: {\$statistics[\'numthreads\']}
+						<br />
 						<strong>&raquo; </strong>{\$lang->asb_stats_num_posts}: {\$statistics[\'numposts\']}
-						<br /><br /><a href="{\$mybb->settings[\'bburl\']}/stats.php">{\$lang->asb_stats_full_stats}</a>
-						</span>
-					</td>
-				</tr>
+						<br /><br />
+						<a href="{\$mybb->settings[\'bburl\']}/stats.php">{\$lang->asb_stats_full_stats}</a>
+					</span>
+				</div>
 EOF
 				),
 			),
