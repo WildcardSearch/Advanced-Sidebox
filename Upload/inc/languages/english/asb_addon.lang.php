@@ -93,8 +93,8 @@ $l['asb_wol_num_avatars_per_row_desc'] = '(enter number of columns in which avat
 $l['asb_wol_avatar_max_rows_title'] = 'Maximum Number of Avatar Rows';
 $l['asb_wol_avatar_max_rows_desc'] = '(enter the maximum amount of rows that avatars may occupy, or 0 to disable avatars)';
 
-$l['asb_wol_avatar_maintain_aspect_title'] = 'Maintain Avatar Aspect Ratio?';
-$l['asb_wol_avatar_maintain_aspect_desc'] = 'YES to alter only the width of the avatar, maintaing the aspect ratio or NO (default) to force the avatars to be square';
+$l['asb_wol_asb_avatar_margin_title'] = 'Avatar Margin';
+$l['asb_wol_asb_avatar_margin_desc'] = 'percentage of the width of the container';
 
 $l['asb_wol_online_users'] = 'There are currently <b>{1}</b> online users.';
 $l['asb_wol_online_user'] = 'There is currently 1 user online';
