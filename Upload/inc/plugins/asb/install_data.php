@@ -225,11 +225,6 @@ EOF
 EOF
 			,
 			"asb_toggle_icon" => <<<EOF
-EOF
-			,
-			"asb_content_pad" => <<<EOF
-
-		<img src="{\$theme['imgdir']}/asb/transparent.png" style="width: {\$width}px;" height="1" alt=""/>
 		<span class="asb-sidebox-toggle-column{\$positionClass}">
 			<a id="{\$column_id}" href="javascript:void()"><img id="{\$closed_id}" src="{\$close_image}" title="{\$lang->asb_toggle_hide}" alt="{\$close_alt}" style="{\$close_style}"/><img id="{\$open_id}" src="{\$open_image}" title="{\$lang->asb_toggle_show}" alt="{\$open_alt}" style="{\$open_style}"/></a>
 		</span>
