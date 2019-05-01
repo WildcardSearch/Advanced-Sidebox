@@ -18,7 +18,7 @@ if (!defined('IN_MYBB') ||
  *
  * @return array module info
  */
-function asb_rand_quote_info()
+function asb_random_quote_info()
 {
 	global $lang;
 
@@ -31,8 +31,8 @@ function asb_rand_quote_info()
 		'description' => $lang->asb_random_quotes_desc,
 		'wrap_content' => true,
 		'xmlhttp' => true,
-		'version' => '1.5.1',
-		'compatibility' => '2.1',
+		'version' => '2.0.3',
+		'compatibility' => '4.0',
 		'settings' => array(
 			'forum_show_list' => array(
 				'sid' => 'NULL',
@@ -107,40 +107,37 @@ function asb_rand_quote_info()
 				'value' => '0',
 			),
 		),
-		'discarded_templates' => array(
-			'rand_quote_sidebox',
-		),
-		'templates' => array(
-			array(
-				'title' => 'asb_rand_quote_sidebox',
-				'template' => <<<EOF
-				<tr>
-					<td class="tcat">
-						{\$thread_title_link}
-					</td>
-				</tr>
-				<tr>
-					<td class="trow1">
-						<img style="padding: 4px; width: 15%; vertical-align: middle;" src="{\$avatar_filename}" alt="{\$avatar_alt}" title="{\$avatar_alt}"/>&nbsp;<a  style="vertical-align: middle;" href="{\$author_link}" title="{\$plain_text_username}"><span style="font-size: {\$username_font_size}px;">{\$username}</span></a>
-					</td>
-				</tr>
-				<tr>
-					<td class="trow2">
-						<span style="font-size: {\$message_font_size}px;">{\$new_message}</span>
-					</td>
-				</tr>{\$read_more}
+		'installData' => array(
+			'templates' => array(
+				array(
+					'title' => 'asb_random_quote_sidebox',
+					'template' => <<<EOF
+				<div class="tcat asb-random-quote-header">
+					{\$thread_title_link}
+				</div>
+				<div class="trow1 asb-random-quote-user-info">
+					<img class="asb-random-quote-user-avatar" src="{\$avatar_filename}" alt="{\$avatar_alt}" title="{\$avatar_alt}"/>&nbsp;<a class="asb-random-quote-user-link" href="{\$author_link}" title="{\$plain_text_username}"><span>{\$username}</span></a>
+				</div>
+				<div class="trow2 asb-random-quote-message">
+					<span>{\$new_message}</span>
+				</div>{\$read_more}
 EOF
-			),
-			array(
-				'title' => 'asb_rand_quote_read_more',
-				'template' => <<<EOF
+				),
+				array(
+					'title' => 'asb_random_quote_read_more',
+					'template' => <<<EOF
 
-				<tr>
-					<td class="tfoot">
-						<div style="text-align: center;"><a href="{\$post_link}" title="{\$lang->asb_random_quotes_read_more_title}"><strong>{\$lang->asb_random_quotes_read_more}</strong></a></div>
-					</td>
-				</tr>
+				<div class="tfoot asb-random-quote-footer">
+					<a href="{\$post_link}" title="{\$lang->asb_random_quotes_read_more_title}"><strong>{\$lang->asb_random_quotes_read_more}</strong></a>
+				</div>
 EOF
+				),
+				array(
+					'title' => 'asb_random_quote_thread_title_link',
+					'template' => <<<EOF
+<a class="asb-random-quote-thread_title_link" href="{\$thread_link}" title="{\$lang->asb_random_quotes_read_more_threadlink_title}"><span>{\$rand_post[\'subject\']}</span></a>
+EOF
+				),
 			),
 		),
 	);
@@ -152,28 +149,25 @@ EOF
  * @param  array information from child box
  * @return bool success/fail
  */
-function asb_rand_quote_build_template($args)
+function asb_random_quote_build_template($settings, $template_var, $width, $script)
 {
-	extract($args);
-
 	global $$template_var, $lang;
 
 	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
 	}
 
-	$this_quote = asb_rand_quote_get_quote($settings, $width);
+	$this_quote = asb_random_quote_get_quote($settings, $width);
 	if ($this_quote) {
 		$$template_var = $this_quote;
 		return true;
 	} else {
 		// show the table only if there are posts
 		$$template_var = <<<EOF
-		<tr>
-					<td class="trow1">
-						{$lang->asb_random_quotes_no_posts}
-					</td>
-				</tr>
+
+				<div class="trow1">
+					{$lang->asb_random_quotes_no_posts}
+				</div>
 EOF;
 		return false;
 	}
@@ -185,12 +179,10 @@ EOF;
  * @param  array info from child box
  * @return void
  */
-function asb_rand_quote_xmlhttp($args)
+function asb_random_quote_xmlhttp($dateline, $settings, $width, $script)
 {
-	extract($args);
-
 	// get a quote and return it
-	$this_quote = asb_rand_quote_get_quote($settings, $width);
+	$this_quote = asb_random_quote_get_quote($settings, $width);
 	if ($this_quote) {
 		return $this_quote;
 	}
@@ -204,7 +196,7 @@ function asb_rand_quote_xmlhttp($args)
  * @param  int column width
  * @return string|bool html or success/fail
  */
-function asb_rand_quote_get_quote($settings, $width)
+function asb_random_quote_get_quote($settings, $width)
 {
 	global $db, $mybb, $templates, $lang, $theme;
 
@@ -267,17 +259,6 @@ function asb_rand_quote_get_quote($settings, $width)
 	$pattern = "|[[\/\!]*?[^\[\]]*?]|si";
 	$new_message = asbStripUrls(preg_replace($pattern, '$1', $rand_post['message']));
 
-	// get some dimensions that make sense in relation to column width
-	$asb_width = (int) $width;
-	$asb_inner_size = $asb_width * .83;
-	$avatar_size = (int) ($asb_inner_size / 5);
-	$font_size = $asb_width / 4.5;
-
-	$font_size = max(10, min(16, $font_size));
-	$username_font_size = (int) ($font_size * .9);
-	$title_font_size = (int) ($font_size * .65);
-	$message_font_size = (int) $font_size;
-
 	if (strlen($new_message) < $settings['min_length']) {
 		if ($settings['default_text']) {
 			$new_message = $settings['default_text'];
@@ -308,24 +289,22 @@ function asb_rand_quote_get_quote($settings, $width)
 
 	$avatar_alt = $lang->sprintf($lang->asb_random_quote_users_profile, $plain_text_username);
 
-	eval("\$read_more = \"{$templates->get('asb_rand_quote_read_more')}\";");
+	eval("\$read_more = \"{$templates->get('asb_random_quote_read_more')}\";");
 
 	if (my_strlen($rand_post['subject']) > 40) {
-		$rand_post['subject'] = my_substr($rand_post['subject'], 0, 40).'...';
+		$rand_post['subject'] = my_substr($rand_post['subject'], 0, 37).'...';
 	}
 
-	if (substr(strtolower($rand_post['subject']), 0, 3) == 're:') {
+	if (substr(my_strtolower($rand_post['subject']), 0, 3) == 're:') {
 		$rand_post['subject'] = substr($rand_post['subject'], 3);
 	}
 
 	$rand_post['subject'] = htmlspecialchars_uni($parser->parse_badwords($rand_post['subject']));
 
-	$thread_title_link = <<<EOF
-<strong><a href="{$thread_link}" title="{$lang->asb_random_quotes_read_more_threadlink_title}"><span style="font-size: {$title_font_size}px;">{$rand_post['subject']}</span></a></strong>
-EOF;
+	eval("\$thread_title_link = \"{$templates->get('asb_random_quote_thread_title_link')}\";");
 
 	// eval() the template
-	eval("\$this_quote = \"{$templates->get('asb_rand_quote_sidebox')}\";");
+	eval("\$this_quote = \"{$templates->get('asb_random_quote_sidebox')}\";");
 	return $this_quote;
 }
 
