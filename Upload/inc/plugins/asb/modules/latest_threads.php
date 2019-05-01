@@ -28,7 +28,7 @@ function asb_latest_threads_info()
 	return array(
 		'title' => $lang->asb_latest_threads,
 		'description' => $lang->asb_latest_threads_desc,
-		'version' => '2.0.0',
+		'version' => '2.0.2',
 		'compatibility' => '4.0',
 		'wrap_content' => true,
 		'xmlhttp' => true,
@@ -116,41 +116,43 @@ function asb_latest_threads_info()
 				array(
 					'title' => 'asb_latest_threads_thread',
 					'template' => <<<EOF
-				<tr>
-					<td class="{\$altbg}">
-						{\$gotounread}<a href="{\$mybb->settings[\'bburl\']}/{\$thread[\'threadlink\']}" title="{\$fullSubject}"><strong>{\$thread[\'subject\']}</strong></a>
-						<span class="smalltext"><br />
+				<div class="{\$altbg} asb-latest-threads-thread">
+					<div class="asb-latest-threads-title-container">
+						{\$gotounread} <a href="{\$mybb->settings[\'bburl\']}/{\$thread[\'threadlink\']}" title="{\$fullSubject}"><span class="asb-latestest-threads-thread-title">{\$thread[\'subject\']}</span></a>
+					</div>
+					<div class="asb-latest-threads-details-container">
+						<span class="smalltext">
 							{\$last_poster}<br />
 							{\$lastpostdate} {\$lastposttime}<br />
 							<strong>&raquo; </strong>{\$lang->asb_latest_threads_replies} {\$thread[\'replies\']}<br />
 							<strong>&raquo; </strong>{\$lang->asb_latest_threads_views} {\$thread[\'views\']}
 						</span>
-					</td>
-				</tr>
+					</div>
+				</div>
 EOF
 				),
 				array(
 					'title' => 'asb_latest_threads_gotounread',
 					'template' => <<<EOF
-<a href="{\$thread[\'newpostlink\']}"><img src="{\$theme[\'imgdir\']}/jump.png" alt="{\$lang->asb_gotounread}" title="{\$lang->asb_gotounread}" /></a>
+<a class="asb-latest-threads-thread-gotounread" href="{\$thread[\'newpostlink\']}"><img src="{\$theme[\'imgdir\']}/jump.png" alt="{\$lang->asb_gotounread}" title="{\$lang->asb_gotounread}" /></a>
 EOF
 				),
 				array(
 					'title' => 'asb_latest_threads_last_poster_name',
 					'template' => <<<EOF
-<a href="{\$thread[\'lastpostlink\']}" title="{\$lang->asb_latest_threads_lastpost}">{\$lang->asb_latest_threads_lastpost}:</a> {\$lastposterlink}
+<a class="latest-threads-last-post-link" href="{\$thread[\'lastpostlink\']}" title="{\$lang->asb_latest_threads_lastpost}">{\$lang->asb_latest_threads_lastpost}:</a> {\$lastposterlink}
 EOF
 				),
 				array(
 					'title' => 'asb_latest_threads_last_poster_avatar',
 					'template' => <<<EOF
-{\$lastposterlink}<br /><a href="{\$thread[\'lastpostlink\']}" title="{\$lang->asb_latest_threads_lastpost}">{\$lang->asb_latest_threads_lastpost}</a>
+{\$lastposterlink}<br /><a class="latest-threads-last-post-link" href="{\$thread[\'lastpostlink\']}" title="{\$lang->asb_latest_threads_lastpost}">{\$lang->asb_latest_threads_lastpost}:</a>
 EOF
 				),
 				array(
 					'title' => 'asb_latest_threads_last_poster_avatar_avatar',
 					'template' => <<<EOF
-<img src="{\$avatarInfo[\'image\']}" alt="{\$thread[\'last_post\']}" title="{\$thread[\'lastposter\']}\'s profile" style="width: {\$avatar_width}px;"/>
+<img class="asb-latest-threads-last-poster-avatar" src="{\$avatarInfo[\'image\']}" alt="{\$thread[\'last_post\']}" title="{\$thread[\'lastposter\']}\'s profile" style="width: {\$avatar_width};"/>
 EOF
 				),
 			),
@@ -332,11 +334,12 @@ function asb_latest_threads_get_threadlist($settings, $width)
 		$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
 		$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
 
-		$settings['avatar_width'] = trim($settings['avatar_width']);
-		if (my_strpos($settings['avatar_width'], '%') == my_strlen($settings['avatar_width']) - 1) {
-			$settings['avatar_width'] = (int) $width * (my_substr($settings['avatar_width'], 0, my_strlen($settings['avatar_width']) - 1) / 100);
+		$unit = '';
+		if (my_strpos($settings['avatar_width'], '%') != my_strlen($settings['avatar_width']) - 1) {
+			$unit = 'px';
 		}
-		$avatar_width = (int) min($width / 2, max($width / 8, $settings['avatar_width']));
+
+		$avatar_width = $settings['avatar_width'];
 
 		$avatarInfo = format_avatar($thread['avatar']);
 
