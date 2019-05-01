@@ -146,6 +146,7 @@ function asbGetImagesFromPath($folder, $subfolder='', $recursive=false)
 
 	// cycle through all the files/folders and produce a list
 	$sep = '';
+	$filenames = array();
 	foreach (new DirectoryIterator(MYBB_ROOT.$folder) as $file) {
 		// skip navigation folders
 		if ($file->isDot()) {
@@ -161,7 +162,7 @@ function asbGetImagesFromPath($folder, $subfolder='', $recursive=false)
 			// get the files from this directory
 			$subFiles = asbGetImagesFromPath($folder.'/'.$file->getFilename(), $subfolder.$file->getFilename(), $recursive);
 			if ($subFiles) {
-				$filenames .= "{$sep}{$subFiles}";
+				$filenames = array_merge($filename, $subFiles);
 				$sep = ',';
 			}
 			continue;
@@ -173,9 +174,10 @@ function asbGetImagesFromPath($folder, $subfolder='', $recursive=false)
 			continue;
 		}
 
-		$filenames .= "{$sep}'{$subfolder}{$file->getFilename()}'";
+		$filenames[] = $subfolder.$file->getFilename();
 		$sep = ',';
 	}
+
 	return $filenames;
 }
 
