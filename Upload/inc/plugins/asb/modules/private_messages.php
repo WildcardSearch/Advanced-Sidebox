@@ -31,7 +31,7 @@ function asb_private_messages_info()
 		'description' => $lang->asb_private_messages_desc,
 		'wrap_content' => true,
 		'xmlhttp' => true,
-		'version' => '2.0.0',
+		'version' => '2.0.1',
 		'compatibility' => '4.0',
 		'settings' => array(
 			'xmlhttp_on' => array(
@@ -47,13 +47,11 @@ function asb_private_messages_info()
 				array(
 					'title' => 'asb_pms',
 					'template' => <<<EOF
-				<tr>
-					<td class="trow1">
-						<span class="smalltext">{\$lang->asb_pms_received_new}<br /><br />
-						<strong>&raquo; </strong> <strong>{\$mybb->user[\'pms_unread\']}</strong> {\$lang->asb_pms_unread}<br />
-						<strong>&raquo; </strong> <strong>{\$mybb->user[\'pms_total\']}</strong> {\$lang->asb_pms_total}</span>
-					</td>
-				</tr>
+				<div class="trow1 asb-private-messages-container">
+					<span class="smalltext">{\$lang->asb_pms_received_new}<br /><br />
+					<strong>&raquo; </strong> <strong>{\$mybb->user[\'pms_unread\']}</strong> {\$lang->asb_pms_unread}<br />
+					<strong>&raquo; </strong> <strong>{\$mybb->user[\'pms_total\']}</strong> {\$lang->asb_pms_total}</span>
+				</div>
 EOF
 				),
 			),
