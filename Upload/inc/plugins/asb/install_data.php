@@ -207,10 +207,9 @@ EOF
 EOF
 			,
 			'asb_sidebox_column' => <<<EOF
-			<td style="width: {\$width};{\$show_column}" id="{\$column_id}" valign="top">
-				{\$sideboxes}
-				{\$content_pad}
-			</td>
+		{\$toggle_left}<div class="asb-sidebox-column{\$extraClass}" style="width: {\$width};{\$show_column}" id="{\$column_id}">
+			{\$sideboxes}
+		</div>{\$toggle_right}
 EOF
 			,
 			'asb_wrapped_sidebox' => <<<EOF
