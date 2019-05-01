@@ -34,10 +34,13 @@ $l['asb_show_expanders'] = 'Show Expand/Collapse Icons?';
 $l['asb_allow_user_disable'] = 'Allow Users To Disable Side Boxes?';
 
 $l['asb_width_left'] = 'Left Width';
-$l['asb_width_left_desc'] = 'width of left column in pixels';
+$l['asb_width_left_desc'] = 'width of left column';
+
+$l['asb_width_middle'] = 'Middle Width';
+$l['asb_width_middle_desc'] = 'width of middle column';
 
 $l['asb_width_right'] = 'Right Width';
-$l['asb_width_right_desc'] = 'width of right column in pixels';
+$l['asb_width_right_desc'] = 'width of right column';
 
 $l['asb_minify_js_title'] = 'Minify JavaScript?';
 $l['asb_minify_js_desc'] = 'YES (default) to serve client-side scripts minified to increase performance, NO to serve beautiful, commented code ;)';

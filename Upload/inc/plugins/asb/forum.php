@@ -48,6 +48,7 @@ function asb_start()
 	$width = array(
 		0 => $script["width_left"],
 		1 => $script["width_right"],
+		2 => $script["width_middle"],
 	);
 
 	// does this column have boxes?
@@ -156,6 +157,7 @@ function asb_edit_template($boxes, $width, $script)
 	$leftInsert = $boxes[0];
 	$rightInsert = $boxes[1];
 	$width_left = $width[0];
+	$width_middle = $width[2];
 	$width_right = $width[1];
 	$toggles = $show = array();
 	$filename = THIS_SCRIPT;
@@ -201,6 +203,8 @@ EOF;
 			$closed_id = "asb_{$key}_close";
 			$open_id = "asb_{$key}_open";
 
+			$positionClass = " asb-sidebox-toggle-column-{$key}";
+
 			eval("\$toggles[\$key] = \"{$templates->get('asb_toggle_icon')}\";");
 		}
 	}
@@ -216,20 +220,20 @@ EOF;
 			$column_id = "asb_{$key}_column_id";
 			$insertName = $varName;
 			$sideboxes = $$insertName;
-
-			eval("\$content_pad = \"{$templates->get('asb_content_pad')}\";");
-			eval("\$content = \"{$templates->get('asb_sidebox_column')}\";");
+			$extraClass = " asb-sidebox-column-{$key}";
 
 			$toggle_left = $toggle_right = '';
 			$toggle_name = "toggle_{$key}";
 			$$toggle_name = $toggles[$key];
 
+			eval("\$content = \"{$templates->get('asb_sidebox_column')}\";");
+
 			// finally set $POSITION_content for ::make_edits()
 			$$propName = <<<EOF
 
-		<!-- start: ASB {$key} column -->{$toggle_left}
+		<!-- start: ASB {$key} column -->
 		{$content}
-		<!-- end: ASB {$key} column -->{$toggle_right}
+		<!-- end: ASB {$key} column -->
 EOF;
 		}
 	}
