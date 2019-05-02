@@ -32,17 +32,27 @@ class ScriptInfo extends PortableObject010102
 	/**
 	 * @var int
 	 */
-	protected $width_left = '10%';
+	protected $width_left = '15';
 
 	/**
 	 * @var int
 	 */
-	protected $width_middle = '80%';
+	protected $left_margin = '0.5';
 
 	/**
 	 * @var int
 	 */
-	protected $width_right = '10%';
+	protected $width_middle = '69';
+
+	/**
+	 * @var int
+	 */
+	protected $right_margin = '0.5';
+
+	/**
+	 * @var int
+	 */
+	protected $width_right = '15';
 
 	/**
 	 * @var string

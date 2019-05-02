@@ -1068,8 +1068,18 @@ function asb_admin_manage_scripts()
 						$changed = true;
 					}
 
+					if (isset($mybb->input['left_margin'][$id])) {
+						$script->set('left_margin', $mybb->input['left_margin'][$id]);
+						$changed = true;
+					}
+
 					if (isset($mybb->input['width_middle'][$id])) {
 						$script->set('width_middle', $mybb->input['width_middle'][$id]);
+						$changed = true;
+					}
+
+					if (isset($mybb->input['right_margin'][$id])) {
+						$script->set('right_margin', $mybb->input['right_margin'][$id]);
 						$changed = true;
 					}
 
@@ -1166,9 +1176,11 @@ function asb_admin_manage_scripts()
 		'find_bottom' => '{$footer}',
 		'replace_all' => 0,
 		'eval' => 0,
-		'width_left' => '10%',
-		'width_middle' => '80%',
-		'width_right' => '10%',
+		'width_left' => '15',
+		'left_margin' => '0.5',
+		'width_middle' => '69',
+		'right_margin' => '0.5',
+		'width_right' => '15',
 	);
 
 	if ($mybb->input['mode'] == 'edit') {
@@ -1192,6 +1204,7 @@ function asb_admin_manage_scripts()
 			$filename = $data['filename'];
 			$action = "{$lang->asb_edit} {$data['title']}";
 		}
+
 		$lang->asb_edit_script = $action;
 
 		$query = $db->simple_select('adminoptions', '*', "uid='{$mybb->user['uid']}'");
@@ -1259,7 +1272,9 @@ EOF;
 		$formContainer->output_row($lang->asb_page, $lang->sprintf($lang->asb_scriptvar_generic_desc, strtolower($lang->asb_page)), $form->generate_text_box('page', $data['page']));
 
 		$formContainer->output_row($lang->asb_width_left, $lang->asb_width_left_desc, $form->generate_text_box('width_left', $data['width_left']));
+		$formContainer->output_row($lang->asb_left_margin, $lang->asb_left_margin_desc, $form->generate_text_box('left_margin', $data['left_margin']));
 		$formContainer->output_row($lang->asb_width_middle, $lang->asb_width_middle_desc, $form->generate_text_box('width_middle', $data['width_middle']));
+		$formContainer->output_row($lang->asb_right_margin, $lang->asb_right_margin_desc, $form->generate_text_box('right_margin', $data['right_margin']));
 		$formContainer->output_row($lang->asb_width_right, $lang->asb_width_right_desc, $form->generate_text_box('width_right', $data['width_right']));
 
 		$formContainer->output_row("{$lang->asb_output_to_vars}?", $lang->sprintf($lang->asb_output_to_vars_desc, '<span style="font-family: courier; font-weight: bold; font-size: 1.2em;">$asb_left</span> and <span style="font-family: courier; font-weight: bold; font-size: 1.2em;";>$asb_right</span>'), $form->generate_yes_no_radio('eval', $data['eval'], true, array('id' => 'eval_yes', 'class' => 'eval'), array('id' => 'eval_no', 'class' => 'eval')), '', array(), array('id' => 'var_output'));
@@ -1335,15 +1350,17 @@ EOF;
 		$form = new Form($html->url(array('action' => 'manage_scripts', 'mode' => 'inline')), 'post', 'inline_form');
 
 		$table = new Table;
-		$table->construct_header($lang->asb_title, array('width' => '30%'));
+		$table->construct_header($lang->asb_title, array('width' => '20%'));
 		$table->construct_header($lang->asb_filename, array('width' => '10%'));
-		$table->construct_header($lang->asb_action, array('width' => '7%'));
-		$table->construct_header($lang->asb_page, array('width' => '7%'));
-		$table->construct_header($lang->asb_width_left, array('width' => '10%'));
-		$table->construct_header($lang->asb_width_middle, array('width' => '10%'));
-		$table->construct_header($lang->asb_width_right, array('width' => '10%'));
-		$table->construct_header($lang->asb_status, array('width' => '7%'));
-		$table->construct_header($lang->asb_controls, array('width' => '8%'));
+		$table->construct_header($lang->asb_action, array('width' => '8%'));
+		$table->construct_header($lang->asb_page, array('width' => '8%'));
+		$table->construct_header($lang->asb_width_left, array('width' => '8%'));
+		$table->construct_header($lang->asb_left_margin, array('width' => '8%'));
+		$table->construct_header($lang->asb_width_middle, array('width' => '8%'));
+		$table->construct_header($lang->asb_right_margin, array('width' => '8%'));
+		$table->construct_header($lang->asb_width_right, array('width' => '8%'));
+		$table->construct_header($lang->asb_status, array('width' => '8%'));
+		$table->construct_header($lang->asb_controls, array('width' => '10%'));
 		$table->construct_header($form->generate_check_box('', '', '', array('id' => 'asb_select_all')), array('style' => 'width: 1%'));
 
 		$query = $db->simple_select('asb_script_info', '*', '', array('order_by' => 'title', 'order_dir' => 'ASC'));
@@ -1362,9 +1379,11 @@ EOF;
 				$table->construct_cell($data['filename']);
 				$table->construct_cell($data['action'] ? $data['action'] : $none);
 				$table->construct_cell($data['page'] ? $data['page'] : $none);
-				$table->construct_cell($form->generate_text_box("width_left[{$data['id']}]", $data['width_left'], array('style' => 'width: 40px;')));
-				$table->construct_cell($form->generate_text_box("width_middle[{$data['id']}]", $data['width_middle'], array('style' => 'width: 40px;')));
-				$table->construct_cell($form->generate_text_box("width_right[{$data['id']}]", $data['width_right'], array('style' => 'width: 40px;')));
+				$table->construct_cell($form->generate_text_box("width_left[{$data['id']}]", $data['width_left'], array('style' => 'width: 40px;')).'%');
+				$table->construct_cell($form->generate_text_box("left_margin[{$data['id']}]", $data['left_margin'], array('style' => 'width: 40px;')).'%');
+				$table->construct_cell($form->generate_text_box("width_middle[{$data['id']}]", $data['width_middle'], array('style' => 'width: 40px;')).'%');
+				$table->construct_cell($form->generate_text_box("right_margin[{$data['id']}]", $data['right_margin'], array('style' => 'width: 40px;')).'%');
+				$table->construct_cell($form->generate_text_box("width_right[{$data['id']}]", $data['width_right'], array('style' => 'width: 40px;')).'%');
 				$table->construct_cell($data['active'] ? $deactivateLink : $activateLink);
 
 				// options popup

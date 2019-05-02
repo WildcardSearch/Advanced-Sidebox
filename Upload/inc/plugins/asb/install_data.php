@@ -38,7 +38,9 @@ $tables = array(
 			'action' => 'VARCHAR(32) NOT NULL',
 			'page' => 'VARCHAR(32) NOT NULL',
 			'width_left' => 'VARCHAR(32) NOT NULL',
+			'left_margin' => 'VARCHAR(32) NOT NULL',
 			'width_middle' => 'VARCHAR(32) NOT NULL',
+			'right_margin' => 'VARCHAR(32) NOT NULL',
 			'width_right' => 'VARCHAR(32) NOT NULL',
 			'template_name' => 'VARCHAR(128) NOT NULL',
 			'hook' => 'VARCHAR(128) NOT NULL',
@@ -81,7 +83,9 @@ $tables = array(
 		'action' => 'VARCHAR(32) NOT NULL',
 		'page' => 'VARCHAR(32) NOT NULL',
 		'width_left' => 'VARCHAR(32) NOT NULL',
+		'left_margin' => 'VARCHAR(32) NOT NULL',
 		'width_middle' => 'VARCHAR(32) NOT NULL',
+		'right_margin' => 'VARCHAR(32) NOT NULL',
 		'width_right' => 'VARCHAR(32) NOT NULL',
 		'template_name' => 'VARCHAR(128) NOT NULL',
 		'hook' => 'VARCHAR(128) NOT NULL',
@@ -197,7 +201,7 @@ $templates = array(
 <div class="asb-sidebox-container">
 	{\$left_content}
 	<!-- start: ASB middle column (page contents of {\$filename}) -->
-	<div class="asb-sidebox-column asb-sidebox-column-middle" style="width: {\$width_middle}">
+	<div class="asb-sidebox-column asb-sidebox-column-middle" style="width: {\$width_middle}%; margin-left: {\$left_margin}%; margin-right: {\$right_margin}%;">
 EOF
 			,
 			'asb_end' => <<<EOF
@@ -207,7 +211,7 @@ EOF
 EOF
 			,
 			'asb_sidebox_column' => <<<EOF
-		{\$toggle_left}<div class="asb-sidebox-column{\$extraClass}" style="width: {\$width};{\$show_column}" id="{\$column_id}">
+		{\$toggle_left}<div class="asb-sidebox-column{\$extraClass}" style="width: {\$width}%;{\$show_column}" id="{\$column_id}">
 			{\$sideboxes}
 		</div>{\$toggle_right}
 EOF
@@ -304,7 +308,10 @@ span.asb-sidebox-toggle-column-right {
 
 /** Columns Start **/
 
-	/** margin contributes to the overall width which cannot exceed 100% ({left-width} + {margin-right} + {middle-width} + {margin-left} + {right-width} === 100) **/
+	/**
+	Important - column width and margin is controlled in the Manage Scripts page.
+	Adjusting column width or margin can break HTML output!
+	**/
 
 div.asb-sidebox-column {
 	display: inline-block;
@@ -318,8 +325,7 @@ div.asb-sidebox-column-left {
 }
 
 div.asb-sidebox-column-middle {
-	margin-left: .5%;
-	margin-right: .5%;
+	
 }
 
 div.asb-sidebox-column-middle > table.tborder,
@@ -329,7 +335,8 @@ div.asb-sidebox-column-middle > div.tborder {
 }
 
 div.asb-sidebox-column-right {
-	margin-left: -3px;
+	/** Fix for "mystery pixels" **/
+	margin-left: -4px;
 }
 
 div.asb-sidebox-column-left,

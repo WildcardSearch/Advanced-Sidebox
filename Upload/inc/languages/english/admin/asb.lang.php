@@ -36,8 +36,14 @@ $l['asb_allow_user_disable'] = 'Allow Users To Disable Side Boxes?';
 $l['asb_width_left'] = 'Left Width';
 $l['asb_width_left_desc'] = 'width of left column';
 
+$l['asb_left_margin'] = 'Left Margin';
+$l['asb_left_margin_desc'] = 'width of margin between left column and page content';
+
 $l['asb_width_middle'] = 'Middle Width';
 $l['asb_width_middle_desc'] = 'width of middle column';
+
+$l['asb_right_margin'] = 'Right Margin';
+$l['asb_right_margin_desc'] = 'width of margin between page content and right column';
 
 $l['asb_width_right'] = 'Right Width';
 $l['asb_width_right_desc'] = 'width of right column';
