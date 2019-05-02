@@ -33,15 +33,6 @@ function asb_private_messages_info()
 		'xmlhttp' => true,
 		'version' => '2.0.1',
 		'compatibility' => '4.0',
-		'settings' => array(
-			'xmlhttp_on' => array(
-				'name' => 'xmlhttp_on',
-				'title' => $lang->asb_xmlhttp_on_title,
-				'description' => $lang->asb_xmlhttp_on_description,
-				'optionscode' => 'text',
-				'value' => '0',
-			),
-		),
 		'installData' => array(
 			'templates' => array(
 				array(

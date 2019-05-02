@@ -65,13 +65,6 @@ EOF
 				'optionscode' => 'text',
 				'value' => 'F jS, Y',
 			),
-			'xmlhttp_on' => array(
-				'name' => 'xmlhttp_on',
-				'title' => $lang->asb_xmlhttp_on_title,
-				'description' => $lang->asb_xmlhttp_on_description,
-				'optionscode' => 'text',
-				'value' => '0',
-			),
 		),
 		'installData' => array(
 			'templates' => array(

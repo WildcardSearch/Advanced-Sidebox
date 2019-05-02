@@ -55,13 +55,6 @@ function asb_staff_online_info()
 				'optionscode' => 'text',
 				'value' => '',
 			),
-			'xmlhttp_on' => array(
-				'name' => 'xmlhttp_on',
-				'title' => $lang->asb_xmlhttp_on_title,
-				'description' => $lang->asb_xmlhttp_on_description,
-				'optionscode' => 'text',
-				'value' => '0',
-			),
 		),
 		'installData' => array(
 			'templates' => array(

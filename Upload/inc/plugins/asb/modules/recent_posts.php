@@ -90,13 +90,6 @@ function asb_recent_posts_info()
 				'optionscode' => 'yesno',
 				'value' => '0',
 			),
-			'xmlhttp_on' => array(
-				'name' => 'xmlhttp_on',
-				'title' => $lang->asb_xmlhttp_on_title,
-				'description' => $lang->asb_xmlhttp_on_description,
-				'optionscode' => 'text',
-				'value' => '0',
-			),
 		),
 		'installData' => array(
 			'templates' => array(

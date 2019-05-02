@@ -459,6 +459,7 @@ EOF;
 		unset($tabs['settings']);
 		$doSettings = false;
 	}
+
 	reset($tabs);
 
 	$observeOnLoad = false;
@@ -596,6 +597,7 @@ EOF;
 
 		if ($id) {
 			$sidebox_settings = $sidebox->get('settings');
+
 			foreach ($settings as $name => $value) {
 				if (isset($sidebox_settings[$name])) {
 					$settings[$name]['value'] = $sidebox_settings[$name];

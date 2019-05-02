@@ -12,8 +12,8 @@ $l['asb_addon'] = 'Addon';
 $l['asb_recent_posts_ellipsis'] = $l['asb_recent_posts_title_ellipsis'] = $l['asb_latest_threads_ellipsis'] = '...';
 
 // default settings
-$l['asb_xmlhttp_on_title'] = 'AJAX Update?';
-$l['asb_xmlhttp_on_description'] = 'time (in seconds) between updates (0 to disable AJAX)';
+$l['asb_xmlhttp_refresh_rate_title'] = 'AJAX Update?';
+$l['asb_xmlhttp_refresh_rate_description'] = 'time (in seconds) between updates (0 to disable AJAX)';
 
 $l['asb_forum_show_list_title'] = 'Forum Show List';
 $l['asb_forum_show_list_desc'] = '(optional) add a forum id or a comma-separated list of fids to be draws threads from [can be amended by Thread Show List and Thread Hide List]';
