@@ -149,7 +149,7 @@ EOF
  * @param  array information from child box
  * @return bool success/fail
  */
-function asb_random_quote_build_template($settings, $template_var, $width, $script)
+function asb_random_quote_build_template($settings, $template_var, $script)
 {
 	global $$template_var, $lang;
 
@@ -157,7 +157,7 @@ function asb_random_quote_build_template($settings, $template_var, $width, $scri
 		$lang->load('asb_addon');
 	}
 
-	$this_quote = asb_random_quote_get_quote($settings, $width);
+	$this_quote = asb_random_quote_get_quote($settings);
 	if ($this_quote) {
 		$$template_var = $this_quote;
 		return true;
@@ -179,10 +179,10 @@ EOF;
  * @param  array info from child box
  * @return void
  */
-function asb_random_quote_xmlhttp($dateline, $settings, $width, $script)
+function asb_random_quote_xmlhttp($dateline, $settings, $script)
 {
 	// get a quote and return it
-	$this_quote = asb_random_quote_get_quote($settings, $width);
+	$this_quote = asb_random_quote_get_quote($settings);
 	if ($this_quote) {
 		return $this_quote;
 	}
@@ -196,7 +196,7 @@ function asb_random_quote_xmlhttp($dateline, $settings, $width, $script)
  * @param  int column width
  * @return string|bool html or success/fail
  */
-function asb_random_quote_get_quote($settings, $width)
+function asb_random_quote_get_quote($settings)
 {
 	global $db, $mybb, $templates, $lang, $theme;
 

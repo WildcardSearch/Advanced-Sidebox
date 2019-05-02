@@ -88,7 +88,7 @@ EOF
  * @param  array info from child box
  * @return bool true on success, false on fail/no content
  */
-function asb_welcome_build_template($settings, $template_var, $width, $script)
+function asb_welcome_build_template($settings, $template_var, $script)
 {
 	global $$template_var, $db, $mybb, $templates, $lang, $lastvisit, $theme, $user_avatar;
 

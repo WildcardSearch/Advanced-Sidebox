@@ -94,7 +94,7 @@ EOF
  * @param  array info from child box
  * @return bool success/fail
  */
-function asb_staff_online_build_template($settings, $template_var, $width, $script)
+function asb_staff_online_build_template($settings, $template_var, $script)
 {
 	global $$template_var, $lang;
 
@@ -102,7 +102,7 @@ function asb_staff_online_build_template($settings, $template_var, $width, $scri
 		$lang->load('asb_addon');
 	}
 
-	$all_online_staff = asb_staff_online_get_online_staff($settings, $width);
+	$all_online_staff = asb_staff_online_get_online_staff($settings);
 
 	if ($all_online_staff) {
 		$$template_var = $all_online_staff;
@@ -123,9 +123,9 @@ EOF;
  * @param  array info from child box
  * @return void
  */
-function asb_staff_online_xmlhttp($dateline, $settings, $width, $script)
+function asb_staff_online_xmlhttp($dateline, $settings, $script)
 {
-	$all_online_staff = asb_staff_online_get_online_staff($settings, $width);
+	$all_online_staff = asb_staff_online_get_online_staff($settings);
 
 	if ($all_online_staff) {
 		return $all_online_staff;
@@ -140,7 +140,7 @@ function asb_staff_online_xmlhttp($dateline, $settings, $width, $script)
  * @param  int column width
  * @return string|bool html or false
  */
-function asb_staff_online_get_online_staff($settings, $width)
+function asb_staff_online_get_online_staff($settings)
 {
 	global $db, $mybb, $templates, $lang, $cache, $theme;
 
