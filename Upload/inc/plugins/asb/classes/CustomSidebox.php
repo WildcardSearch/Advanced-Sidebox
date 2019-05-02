@@ -108,17 +108,15 @@ class CustomSidebox extends PortableObject010102
 		$content = $this->content;
 		$returnVal = true;
 
-		// if the user doesn't want content then at least make it validate
+		// if the user doesn't want content then so be it
 		if (strlen($content) == 0) {
 			$returnVal = false;
-			$content = '
-	<tr>
-		<td></td>
-	</tr>';
+			$content = '';
 		} else {
 			$content = str_replace("\\'", "'", addslashes($content));
 			eval("\${$template_variable} = \"{$content}\";");
 		}
+
 		return $returnVal;
 	}
 }

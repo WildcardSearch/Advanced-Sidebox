@@ -65,7 +65,7 @@ EOF
  * @param  array info from child box
  * @return bool success/fail
  */
-function asb_private_messages_build_template($settings, $template_var, $width, $script)
+function asb_private_messages_build_template($settings, $template_var, $script)
 {
 	global $$template_var, $lang; // <-- important!
 
@@ -95,7 +95,7 @@ EOF;
  * @param  array info from child box
  * @return void
  */
-function asb_private_messages_xmlhttp($dateline, $settings, $width, $script)
+function asb_private_messages_xmlhttp($dateline, $settings, $script)
 {
 	global $db, $mybb;
 

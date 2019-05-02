@@ -72,7 +72,7 @@ EOF
  * @param  array info from child box
  * @return bool success/fail
  */
-function asb_statistics_build_template($settings, $template_var, $width, $script)
+function asb_statistics_build_template($settings, $template_var, $script)
 {
 	global $$template_var, $mybb, $cache, $templates, $lang;
 

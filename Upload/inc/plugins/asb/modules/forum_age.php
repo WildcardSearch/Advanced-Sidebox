@@ -105,7 +105,7 @@ EOF
  * @param  array
  * @return bool success/fail
  */
-function asb_forum_age_build_template($settings, $template_var, $width, $script)
+function asb_forum_age_build_template($settings, $template_var, $script)
 {
 	global $$template_var, $lang;
 
@@ -129,7 +129,7 @@ function asb_forum_age_build_template($settings, $template_var, $width, $script)
  * @param  array
  * @return string
  */
-function asb_forum_age_xmlhttp($dateline, $settings, $width)
+function asb_forum_age_xmlhttp($dateline, $settings)
 {
 	$forum_age_status = asb_forum_age_get_forum_age($settings);
 	if ($forum_age_status) {

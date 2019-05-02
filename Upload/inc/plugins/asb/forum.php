@@ -120,7 +120,7 @@ function asb_start()
 			if ($module->isValid()) {
 				// build the template. pass settings, template variable
 				// name and column width
-				$result = $module->buildTemplate($sidebox->get('settings'), $template_var, $width[$pos], get_current_location());
+				$result = $module->buildTemplate($sidebox->get('settings'), $template_var, get_current_location());
 			// if it doesn't verify as an add-on, try it as a custom box
 			} elseif (isset($asb['custom'][$module_name]) &&
 				is_array($asb['custom'][$module_name])) {
@@ -475,7 +475,7 @@ function asb_xmlhttp()
 	if ($module->isValid() &&
 		$sidebox->isValid()) {
 		// then call the module's AJAX method and echo its return value
-		echo($module->doXmlhttp($mybb->input['dateline'], $sidebox->get('settings'), $mybb->input['width'], $mybb->input['script']));
+		echo($module->doXmlhttp($mybb->input['dateline'], $sidebox->get('settings'), $mybb->input['script']));
 	}
 	exit;
 }

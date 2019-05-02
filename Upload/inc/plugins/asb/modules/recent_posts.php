@@ -122,7 +122,7 @@ EOF
  * @param  array information from child box
  * @return bool sucess/fail
  */
-function asb_recent_posts_build_template($settings, $template_var, $width, $script)
+function asb_recent_posts_build_template($settings, $template_var, $script)
 {
 	global $$template_var, $lang;
 
@@ -152,7 +152,7 @@ EOF;
  * @param  array info from child box
  * @return void
  */
-function asb_recent_posts_xmlhttp($dateline, $settings, $width, $script)
+function asb_recent_posts_xmlhttp($dateline, $settings, $script)
 {
 	extract($args);
 	$all_posts = recent_posts_get_postlist($settings);

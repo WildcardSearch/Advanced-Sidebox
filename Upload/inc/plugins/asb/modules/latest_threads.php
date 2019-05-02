@@ -166,7 +166,7 @@ EOF
  * @param  array information from child box
  * @return bool success/fail
  */
-function asb_latest_threads_build_template($settings, $template_var, $width, $script)
+function asb_latest_threads_build_template($settings, $template_var, $script)
 {
 	global $$template_var, $lang;
 
@@ -175,7 +175,7 @@ function asb_latest_threads_build_template($settings, $template_var, $width, $sc
 	}
 
 	// get the threads (or at least attempt to)
-	$all_threads = asb_latest_threads_get_threadlist($settings, $width);
+	$all_threads = asb_latest_threads_get_threadlist($settings);
 
 	if ($all_threads) {
 		// if there are threads, show them
@@ -196,9 +196,9 @@ EOF;
  * @param  array information from child box
  * @return void
  */
-function asb_latest_threads_xmlhttp($dateline, $settings, $width, $script)
+function asb_latest_threads_xmlhttp($dateline, $settings, $script)
 {
-	$all_threads = asb_latest_threads_get_threadlist($settings, $width);
+	$all_threads = asb_latest_threads_get_threadlist($settings);
 
 	if ($all_threads) {
 		return $all_threads;
@@ -213,7 +213,7 @@ function asb_latest_threads_xmlhttp($dateline, $settings, $width, $script)
  * @param  int column width
  * @return string|bool html or success/fail
  */
-function asb_latest_threads_get_threadlist($settings, $width)
+function asb_latest_threads_get_threadlist($settings)
 {
 	global $db, $mybb, $templates, $lang, $cache, $gotounread, $theme;
 

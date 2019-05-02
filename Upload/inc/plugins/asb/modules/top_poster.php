@@ -140,7 +140,7 @@ EOF
  * @param  array info from child box
  * @return bool true on success, false on fail/no content
  */
-function asb_top_poster_build_template($settings, $template_var, $width, $script)
+function asb_top_poster_build_template($settings, $template_var, $script)
 {
 	global $$template_var, $db, $templates, $lang, $theme, $parser;
 

@@ -81,7 +81,7 @@ EOF
  * @param  array
  * @return bool success/fail
  */
-function asb_birthdays_build_template($settings, $template_var, $width, $script)
+function asb_birthdays_build_template($settings, $template_var, $script)
 {
 	global $$template_var, $lang;
 
@@ -89,7 +89,7 @@ function asb_birthdays_build_template($settings, $template_var, $width, $script)
 		$lang->load('asb_addon');
 	}
 
-	$birthdays_status = asb_birthdays_get_birthdays($settings, $template_var, $width, $script);
+	$birthdays_status = asb_birthdays_get_birthdays($settings, $template_var, $script);
 	if (!$birthdays_status) {
 		$$template_var = "<tr><td>{$lang->asb_birthdays_no_content}</td></tr>";
 		return false;
@@ -105,7 +105,7 @@ function asb_birthdays_build_template($settings, $template_var, $width, $script)
  * @param  array
  * @return string
  */
-function asb_birthdays_get_birthdays($settings, $template_var, $width, $script)
+function asb_birthdays_get_birthdays($settings, $template_var, $script)
 {
 	global $mybb, $db, $lang, $templates, $cache;
 

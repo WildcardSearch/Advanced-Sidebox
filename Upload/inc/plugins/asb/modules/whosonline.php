@@ -113,7 +113,7 @@ EOF
  * @param  array info from child box
  * @return bool success/fail
  */
-function asb_whosonline_build_template($settings, $template_var, $width, $script)
+function asb_whosonline_build_template($settings, $template_var, $script)
 {
 	global $$template_var, $lang;
 
@@ -122,7 +122,7 @@ function asb_whosonline_build_template($settings, $template_var, $width, $script
 	}
 
 	// get the online members
-	$all_onlinemembers = asb_whosonline_get_online_members($settings, $width);
+	$all_onlinemembers = asb_whosonline_get_online_members($settings);
 
 	// if there are members online...
 	if ($all_onlinemembers) {
@@ -144,9 +144,9 @@ EOF;
  * @param  array information from child box
  * @return void
  */
-function asb_whosonline_xmlhttp($dateline, $settings, $width, $script)
+function asb_whosonline_xmlhttp($dateline, $settings, $script)
 {
-	$all_onlinemembers = asb_whosonline_get_online_members($settings, $width);
+	$all_onlinemembers = asb_whosonline_get_online_members($settings);
 
 	if ($all_onlinemembers) {
 		return $all_onlinemembers;
@@ -161,7 +161,7 @@ function asb_whosonline_xmlhttp($dateline, $settings, $width, $script)
  * @param  int column width
  * @return string|bool html or false
  */
-function asb_whosonline_get_online_members($settings, $width)
+function asb_whosonline_get_online_members($settings)
 {
 	global $db, $mybb, $templates, $lang, $cache, $theme;
 

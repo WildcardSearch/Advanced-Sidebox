@@ -114,7 +114,7 @@ EOF
  * @param  array
  * @return bool success/fail
  */
-function asb_goals_build_template($settings, $template_var, $width, $script)
+function asb_goals_build_template($settings, $template_var, $script)
 {
 	global $$template_var, $lang;
 
@@ -122,7 +122,7 @@ function asb_goals_build_template($settings, $template_var, $width, $script)
 		$lang->load('asb_addon');
 	}
 
-	$goalStatus = asb_goals_get_progress($settings, $template_var, $width, $script);
+	$goalStatus = asb_goals_get_progress($settings, $template_var, $script);
 	if (!$goalStatus) {
 		$$template_var = "<tr><td>{$lang->asb_goals_no_content}</td></tr>";
 		return false;
@@ -138,7 +138,7 @@ function asb_goals_build_template($settings, $template_var, $width, $script)
  * @param  array
  * @return string
  */
-function asb_goals_xmlhttp($dateline, $settings, $width, $script)
+function asb_goals_xmlhttp($dateline, $settings, $script)
 {
 	$goalStatus = asb_goals_get_progress($settings);
 	if ($goalStatus) {
