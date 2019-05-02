@@ -6,19 +6,45 @@
  * this file contains handlers for the side box toggle icon scripts
  */
 
-!function($) {
+var ASB = (function($, a) {
+	var $leftColumn,
+		$middleColumn,
+		$rightColumn,
+
+		currentMiddleWidth,
+
+	options = {
+		leftWidth: 15,
+		leftMargin: 0.5,
+		middleWidth: 69,
+		rightMargin: 0.5,
+		rightWidth: 15,
+	};
+
 	/**
 	 * observe the toggle icons links
 	 *
 	 * @return void
 	 */
 	function init() {
-		if ($("#asb_hide_column_left")) {
+		$leftColumn = $("#asb_hide_column_left");
+		$middleColumn = $("#asb_middle_column");
+		$rightColumn = $("#asb_hide_column_right");
+
+		currentMiddleWidth = options.middleWidth;
+
+		if ($middleColumn.length < 1 ||
+			($leftColumn.length < 1 &&
+			$rightColumn.length < 1)) {
+			return;
+		}
+
+		if ($leftColumn.length) {
 			// left show/hide icon click
 			$("#asb_hide_column_left").click(toggle);
 		}
 
-		if ($("#asb_hide_column_right")) {
+		if ($rightColumn.length) {
 			// left show/hide icon click
 			$("#asb_hide_column_right").click(toggle);
 		}
@@ -31,37 +57,80 @@
 	 * @param  Event the click event object
 	 * @return void
 	 */
-	function toggle(event) {
-		// the link does nothing if JS is deactivated and until the page has fully loaded
-		event.preventDefault();
+	function toggle(e) {
+		var $column, $closeIcon, $openIcon,
+			cookieName, marginKey, state,
+			margin = options.leftMargin,
+			width = options.leftWidth,
+			position = "left";
 
-		var position = "left";
+		// the link does nothing if JS is deactivated and until the page has fully loaded
+		e.preventDefault();
+
 		if (this.id == "asb_hide_column_right") {
 			position = "right";
+			margin = options.rightMargin;
+			width = options.rightWidth;
 		}
 
-		var cookieName = "asb_hide_" + position,
-		column = $("#asb_" + position + "_column_id"),
-		closeIcon = $("#asb_" + position + "_close"),
-		openIcon = $("#asb_" + position + "_open");
+		cookieName = "asb_hide_"+position;
+		$column = $("#asb_"+position+"_column_id");
+		$closeIcon = $("#asb_"+position+"_close");
+		$openIcon = $("#asb_"+position+"_open");
+		marginKey = "margin-"+position;
 
 		// get the cookie
-		var hide = Cookie.get(cookieName);
+		state = Cookie.get(cookieName);
 
 		// if it isn't set or its zero then we are hiding
-		if (hide == 0 ||
-			typeof hide == "undefined") {
-			column.hide();
-			closeIcon.hide();
-			openIcon.show();
+		if (typeof state == "undefined" ||
+			state < 1) {
+			$column.hide();
+			$closeIcon.hide();
+
+			currentMiddleWidth += width;
+			css = {
+				width: currentMiddleWidth+"%",
+			};
+
+			css[marginKey] = "0px";
+
+			$middleColumn.css(css);
+
+			$openIcon.show();
+
 			Cookie.set(cookieName, 1);
 		} else {
 			// otherwise we are showing
-			column.show();
-			closeIcon.show();
-			openIcon.hide();
+			currentMiddleWidth -= width;
+			css = {
+				width: currentMiddleWidth+"%",
+			};
+
+			css[marginKey] = margin+"%";
+
+			$middleColumn.css(css);
+
+			$column.show();
+			$closeIcon.show();
+			$openIcon.hide();
 			Cookie.unset(cookieName);
 		}
 	}
+
+	function setup(o) {
+		$.each([ "leftWidth", "leftMargin", "middleWidth", "rightMargin", "rightWidth" ], function() {
+			if (typeof o[this] !== "string") {
+				return;
+			}
+
+			options[this] = parseFloat(o[this]);
+		});
+	}
+
 	$(init);
-}(jQuery);
+
+	a.setup = setup;
+
+	return a;
+})(jQuery, ASB || {});

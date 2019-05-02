@@ -201,7 +201,7 @@ $templates = array(
 <div class="asb-sidebox-container">
 	{\$left_content}
 	<!-- start: ASB middle column (page contents of {\$filename}) -->
-	<div class="asb-sidebox-column asb-sidebox-column-middle" style="width: {\$width_middle}%; margin-left: {\$left_margin}%; margin-right: {\$right_margin}%;">
+	<div id="asb_middle_column" class="asb-sidebox-column asb-sidebox-column-middle" style="width: {\$width_middle}%; margin-left: {\$left_margin}%; margin-right: {\$right_margin}%;">
 EOF
 			,
 			'asb_end' => <<<EOF
@@ -755,12 +755,19 @@ a.asb-whosonline-see-all-link {
 		text-align: center;
 	}
 
+	div.asb-sidebox-column-middle > table.tborder,
+	div.asb-sidebox-column-middle > div.tborder,
 	div.asb-sidebox-column {
 		display: block;
 		width: 90vw!important;
 		margin: 20px;
 	}
 
+	div.asb-sidebox-column-middle {
+		margin-left: 0px;
+		margin-right: 0px;
+	}
+	
 	span.asb-sidebox-toggle-column {
 		display: none;
 	}
