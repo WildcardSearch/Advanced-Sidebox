@@ -225,7 +225,7 @@ EOF
 			<div style="{\$expdisplay}" id="{\$sidebox['expdisplay_id']}">
 				{\$sidebox['content']}
 			</div>
-		</div><br />
+		</div>
 EOF
 			,
 			"asb_toggle_icon" => <<<EOF
@@ -351,6 +351,8 @@ div.asb-sidebox-column-right {
 div.asb-wrapped-sidebox {
 	font-size: 14px;
 	word-wrap: break-word;
+
+	margin-bottom: 10px;
 }
 
 /** Side Boxes End **/
