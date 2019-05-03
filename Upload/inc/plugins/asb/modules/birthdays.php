@@ -30,7 +30,7 @@ function asb_birthdays_info()
 		'title' => $lang->asb_birthdays_title,
 		'description' => $lang->asb_birthdays_description,
 		'wrap_content' => true,
-		'version' => '2.0.2',
+		'version' => '2.0.3',
 		'compatibility' => '4.0',
 		'installData' => array(
 			'templates' => array(
@@ -81,31 +81,7 @@ EOF
  * @param  array
  * @return bool success/fail
  */
-function asb_birthdays_build_template($settings, $template_var, $script)
-{
-	global $$template_var, $lang;
-
-	if (!$lang->asb_addon) {
-		$lang->load('asb_addon');
-	}
-
-	$birthdays_status = asb_birthdays_get_birthdays($settings, $template_var, $script);
-	if (!$birthdays_status) {
-		$$template_var = "<tr><td>{$lang->asb_birthdays_no_content}</td></tr>";
-		return false;
-	}
-
-	$$template_var = $birthdays_status;
-	return true;
-}
-
-/**
- * build the content based on settings
- *
- * @param  array
- * @return string
- */
-function asb_birthdays_get_birthdays($settings, $template_var, $script)
+function asb_birthdays_get_content($settings, $script)
 {
 	global $mybb, $db, $lang, $templates, $cache;
 

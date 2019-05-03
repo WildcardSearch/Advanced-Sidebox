@@ -101,7 +101,7 @@ class CustomSidebox extends PortableObject010102
 	 * @param  string
 	 * @return bool success/fail
 	 */
-	public function buildTemplate($template_variable)
+	public function buildContent($template_variable)
 	{
 		global $$template_variable, $mybb, $lang;
 
@@ -111,7 +111,7 @@ class CustomSidebox extends PortableObject010102
 		// if the user doesn't want content then so be it
 		if (strlen($content) == 0) {
 			$returnVal = false;
-			$content = '';
+			$content = '&nbsp;';
 		} else {
 			$content = str_replace("\\'", "'", addslashes($content));
 			eval("\${$template_variable} = \"{$content}\";");

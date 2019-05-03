@@ -74,10 +74,8 @@ EOF
  * @param  array info from child box
  * @return bool sucess/fail
  */
-function asb_search_build_template($settings, $template_var, $script)
+function asb_search_get_content($settings, $script)
 {
-	global $$template_var;
-
 	global $mybb, $templates, $lang, $gobutton;
 
 	// Load global and custom language phrases
@@ -85,8 +83,9 @@ function asb_search_build_template($settings, $template_var, $script)
 		$lang->load('asb_addon');
 	}
 
-	eval("\$".$template_var." = \"{$templates->get('asb_search')}\";");
-	return true;
+	eval("\$content = \"{$templates->get('asb_search')}\";");
+
+	return $content;
 }
 
 ?>

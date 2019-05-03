@@ -33,6 +33,7 @@ function asb_random_quote_info()
 		'xmlhttp' => true,
 		'version' => '2.0.3',
 		'compatibility' => '4.0',
+		'noContentTemplate' => 'asb_random_quote_no_content',
 		'settings' => array(
 			'forum_show_list' => array(
 				'sid' => 'NULL',
@@ -130,6 +131,13 @@ EOF
 <a class="asb-random-quote-thread_title_link" href="{\$thread_link}" title="{\$lang->asb_random_quotes_read_more_threadlink_title}"><span>{\$rand_post[\'subject\']}</span></a>
 EOF
 				),
+				array(
+					'title' => 'asb_random_quote_no_content',
+					'template' => <<<EOF
+<div class="asb-no-content-message">{\$lang->asb_random_quotes_no_posts}</div>
+
+EOF
+				),
 			),
 		),
 	);
@@ -141,54 +149,7 @@ EOF
  * @param  array information from child box
  * @return bool success/fail
  */
-function asb_random_quote_build_template($settings, $template_var, $script)
-{
-	global $$template_var, $lang;
-
-	if (!$lang->asb_addon) {
-		$lang->load('asb_addon');
-	}
-
-	$this_quote = asb_random_quote_get_quote($settings);
-	if ($this_quote) {
-		$$template_var = $this_quote;
-		return true;
-	} else {
-		// show the table only if there are posts
-		$$template_var = <<<EOF
-
-				<div class="trow1">
-					{$lang->asb_random_quotes_no_posts}
-				</div>
-EOF;
-		return false;
-	}
-}
-
-/**
- * handles display of children of this addon via AJAX
- *
- * @param  array info from child box
- * @return void
- */
-function asb_random_quote_xmlhttp($dateline, $settings, $script)
-{
-	// get a quote and return it
-	$this_quote = asb_random_quote_get_quote($settings);
-	if ($this_quote) {
-		return $this_quote;
-	}
-	return 'nochange';
-}
-
-/**
- * get random quotes
- *
- * @param  array settings
- * @param  int column width
- * @return string|bool html or success/fail
- */
-function asb_random_quote_get_quote($settings)
+function asb_random_quote_get_content($settings, $script)
 {
 	global $db, $mybb, $templates, $lang, $theme;
 
@@ -298,6 +259,22 @@ function asb_random_quote_get_quote($settings)
 	// eval() the template
 	eval("\$this_quote = \"{$templates->get('asb_random_quote_sidebox')}\";");
 	return $this_quote;
+}
+
+/**
+ * handles display of children of this addon via AJAX
+ *
+ * @param  array info from child box
+ * @return void
+ */
+function asb_random_quote_xmlhttp($dateline, $settings, $script)
+{
+	// get a quote and return it
+	$this_quote = asb_random_quote_get_content($settings);
+	if ($this_quote) {
+		return $this_quote;
+	}
+	return 'nochange';
 }
 
 ?>

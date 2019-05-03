@@ -32,6 +32,7 @@ function asb_slideshow_info()
 		'wrap_content' => true,
 		'version' => '2.0.9',
 		'compatibility' => '4.0',
+		'noContentTemplate' => 'asb_slideshow_no_content',
 		'scripts' => array(
 			'Slideshow',
 		),
@@ -126,6 +127,13 @@ EOF
 				</div>
 EOF
 				),
+				array(
+					'title' => 'asb_slideshow_no_content',
+					'template' => <<<EOF
+<div class="asb-no-content-message">{\$lang->asb_slideshow_no_images}</div>
+
+EOF
+				),
 			),
 		),
 	);
@@ -137,9 +145,9 @@ EOF
  * @param  array info from child box
  * @return bool success/fail
  */
-function asb_slideshow_build_template($settings, $template_var, $script)
+function asb_slideshow_get_content($settings, $script)
 {
-	global $$template_var, $mybb, $templates;
+	global $mybb, $templates;
 
 	$shuffle = $settings['shuffle'] ? 'true' : 'false';
 	$folder = $settings['folder'];
@@ -150,9 +158,6 @@ function asb_slideshow_build_template($settings, $template_var, $script)
 
 	if (!is_array($filenames) ||
 		empty($filenames)) {
-		$$template_var = <<<EOF
-		<div class="trow1">{$lang->asb_slideshow_no_images}</div>
-EOF;
 		return false;
 	}
 
@@ -163,14 +168,14 @@ EOF;
 	$filenames = json_encode($filenames);
 
 	if ($settings['footer_text'] && $settings['footer_url']) {
-		eval ("\$footer = \"{$templates->get('asb_slideshow_footer')}\";");
+		eval("\$footer = \"{$templates->get('asb_slideshow_footer')}\";");
 	}
 
 	$height = (int) $settings['height'];
 
-	eval("\$\$template_var = \"{$templates->get('asb_slideshow')}\";");
+	eval("\$content = \"{$templates->get('asb_slideshow')}\";");
 
-	return true;
+	return $content;
 }
 
 ?>

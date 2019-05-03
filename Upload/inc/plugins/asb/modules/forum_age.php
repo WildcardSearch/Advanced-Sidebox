@@ -98,46 +98,7 @@ EOF
  * @param  array
  * @return bool success/fail
  */
-function asb_forum_age_build_template($settings, $template_var, $script)
-{
-	global $$template_var, $lang;
-
-	if (!$lang->asb_addon) {
-		$lang->load('asb_addon');
-	}
-
-	$forum_age_status = asb_forum_age_get_forum_age($settings);
-	if (!$forum_age_status) {
-		$$template_var = "<tr><td>{$lang->asb_forum_age_no_content}</td></tr>";
-		return false;
-	}
-
-	$$template_var = $forum_age_status;
-	return true;
-}
-
-/**
- * AJAX
- *
- * @param  array
- * @return string
- */
-function asb_forum_age_xmlhttp($dateline, $settings)
-{
-	$forum_age_status = asb_forum_age_get_forum_age($settings);
-	if ($forum_age_status) {
-		return $forum_age_status;
-	}
-	return 'nochange';
-}
-
-/**
- * build the content based on settings
- *
- * @param  array
- * @return string
- */
-function asb_forum_age_get_forum_age($settings)
+function asb_forum_age_get_content($settings, $script)
 {
 	global $mybb, $db, $lang, $templates;
 
@@ -229,6 +190,22 @@ function asb_forum_age_get_forum_age($settings)
 
 	eval("\$returnValue = \"{$templates->get('asb_forum_age')}\";");
 	return $returnValue;
+}
+
+/**
+ * AJAX
+ *
+ * @param  array
+ * @return string
+ */
+function asb_forum_age_xmlhttp($dateline, $settings, $script)
+{
+	$forum_age_status = asb_forum_age_get_content($settings, $script);
+	if ($forum_age_status) {
+		return $forum_age_status;
+	}
+
+	return 'nochange';
 }
 
 /**

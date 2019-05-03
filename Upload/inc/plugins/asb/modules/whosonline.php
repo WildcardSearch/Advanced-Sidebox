@@ -31,6 +31,7 @@ function asb_whosonline_info()
 		'description' => $lang->asb_wol_desc,
 		'version' => '2.0.8',
 		'compatibility' => '4.0',
+		'noContentTemplate' => 'asb_whosonline_no_content',
 		'wrap_content' => true,
 		'xmlhttp' => true,
 		'settings' =>	array(
@@ -95,6 +96,13 @@ EOF
 						<a href="{\$mybb->settings[\'bburl\']}/online.php" title="{\$lang->asb_wol_see_all_title}" class="asb-whosonline-see-all-link asb-whosonline-avatar-link" style="background-image: url({\$theme[\'imgdir\']}/asb/see_all.png); margin: {\$avatar_margin};{\$avatar_width_style}{\$avatar_height_style}"></a>
 EOF
 				),
+				array(
+					'title' => 'asb_whosonline_no_content',
+					'template' => <<<EOF
+<div class="asb-no-content-message">{\$lang->asb_wol_no_one_online}</div>
+
+EOF
+				),
 			),
 		),
 	);
@@ -106,55 +114,7 @@ EOF
  * @param  array info from child box
  * @return bool success/fail
  */
-function asb_whosonline_build_template($settings, $template_var, $script)
-{
-	global $$template_var, $lang;
-
-	if (!$lang->asb_addon) {
-		$lang->load('asb_addon');
-	}
-
-	// get the online members
-	$all_onlinemembers = asb_whosonline_get_online_members($settings);
-
-	// if there are members online...
-	if ($all_onlinemembers) {
-		// set out template variable to the returned member list and return true
-		$$template_var = $all_onlinemembers;
-		return true;
-	} else {
-		// show the table only if there are threads
-		$$template_var = <<<EOF
-<tr><td class="trow1">{$lang->asb_wol_no_one_online}</td></tr>
-EOF;
-		return false;
-	}
-}
-
-/**
- * handles display of children of this addon via AJAX
- *
- * @param  array information from child box
- * @return void
- */
-function asb_whosonline_xmlhttp($dateline, $settings, $script)
-{
-	$all_onlinemembers = asb_whosonline_get_online_members($settings);
-
-	if ($all_onlinemembers) {
-		return $all_onlinemembers;
-	}
-	return 'nochange';
-}
-
-/**
- * get the members currently online
- *
- * @param  array settings
- * @param  int column width
- * @return string|bool html or false
- */
-function asb_whosonline_get_online_members($settings)
+function asb_whosonline_get_content($settings, $script)
 {
 	global $db, $mybb, $templates, $lang, $cache, $theme;
 
@@ -311,9 +271,25 @@ function asb_whosonline_get_online_members($settings)
 	if ($membercount) {
 		eval("\$onlinemembers = \"{$templates->get('asb_whosonline')}\";");
 		return $onlinemembers;
-	} else {
-		return false;
 	}
+
+	return false;
+}
+
+/**
+ * handles display of children of this addon via AJAX
+ *
+ * @param  array information from child box
+ * @return void
+ */
+function asb_whosonline_xmlhttp($dateline, $settings, $script)
+{
+	$all_onlinemembers = asb_whosonline_get_content($settings);
+
+	if ($all_onlinemembers) {
+		return $all_onlinemembers;
+	}
+	return 'nochange';
 }
 
 /**

@@ -31,6 +31,7 @@ function asb_staff_online_info()
 		'description' => $lang->asb_staff_online_desc,
 		'version' => '2.0.4',
 		'compatibility' => '4.0',
+		'noContentTemplate' => 'asb_staff_online_no_content',
 		'wrap_content' => true,
 		'xmlhttp' => true,
 		'settings' => array(
@@ -76,6 +77,13 @@ function asb_staff_online_info()
 				</div>
 EOF
 				),
+				array(
+					'title' => 'asb_staff_online_no_content',
+					'template' => <<<EOF
+<div class="asb-no-content-message">{\$lang->asb_staff_online_no_staff_online}</div>
+
+EOF
+				),
 			),
 		),
 	);
@@ -87,53 +95,7 @@ EOF
  * @param  array info from child box
  * @return bool success/fail
  */
-function asb_staff_online_build_template($settings, $template_var, $script)
-{
-	global $$template_var, $lang;
-
-	if (!$lang->asb_addon) {
-		$lang->load('asb_addon');
-	}
-
-	$all_online_staff = asb_staff_online_get_online_staff($settings);
-
-	if ($all_online_staff) {
-		$$template_var = $all_online_staff;
-		return true;
-	} else {
-		$$template_var = <<<EOF
-	<tr>
-		<td class="trow1">{$lang->asb_staff_online_no_staff_online}</td>
-	</tr>
-EOF;
-		return false;
-	}
-}
-
-/**
- * handles display of children of this addon via AJAX
- *
- * @param  array info from child box
- * @return void
- */
-function asb_staff_online_xmlhttp($dateline, $settings, $script)
-{
-	$all_online_staff = asb_staff_online_get_online_staff($settings);
-
-	if ($all_online_staff) {
-		return $all_online_staff;
-	}
-	return 'nochange';
-}
-
-/**
- * get staff members currently online
- *
- * @param  array settings
- * @param  int column width
- * @return string|bool html or false
- */
-function asb_staff_online_get_online_staff($settings)
+function asb_staff_online_get_content($settings, $script)
 {
 	global $db, $mybb, $templates, $lang, $cache, $theme;
 
@@ -283,6 +245,22 @@ EOF;
 		// otherwise apologize profusely
 		return false;
 	}
+}
+
+/**
+ * handles display of children of this addon via AJAX
+ *
+ * @param  array info from child box
+ * @return void
+ */
+function asb_staff_online_xmlhttp($dateline, $settings, $script)
+{
+	$all_online_staff = asb_staff_online_get_content($settings);
+
+	if ($all_online_staff) {
+		return $all_online_staff;
+	}
+	return 'nochange';
 }
 
 ?>

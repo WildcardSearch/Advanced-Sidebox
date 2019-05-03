@@ -88,9 +88,9 @@ EOF
  * @param  array info from child box
  * @return bool true on success, false on fail/no content
  */
-function asb_welcome_build_template($settings, $template_var, $script)
+function asb_welcome_get_content($settings, $script)
 {
-	global $$template_var, $db, $mybb, $templates, $lang, $lastvisit, $theme, $user_avatar;
+	global $db, $mybb, $templates, $lang, $lastvisit, $theme, $user_avatar;
 
 	// Load global and custom language phrases
 	if (!$lang->asb_addon) {
@@ -176,8 +176,10 @@ function asb_welcome_build_template($settings, $template_var, $script)
 	}
 
 	$lang->welcome = $lang->sprintf($lang->welcome, $mybb->user['username']);
-	eval("\$".$template_var." = \"{$templates->get('asb_welcome')}\";");
-	return true;
+
+	eval("\$content = \"{$templates->get('asb_welcome')}\";");
+
+	return $content;
 }
 
 ?>

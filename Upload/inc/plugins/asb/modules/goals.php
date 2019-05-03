@@ -107,46 +107,7 @@ EOF
  * @param  array
  * @return bool success/fail
  */
-function asb_goals_build_template($settings, $template_var, $script)
-{
-	global $$template_var, $lang;
-
-	if (!$lang->asb_addon) {
-		$lang->load('asb_addon');
-	}
-
-	$goalStatus = asb_goals_get_progress($settings, $template_var, $script);
-	if (!$goalStatus) {
-		$$template_var = "<tr><td>{$lang->asb_goals_no_content}</td></tr>";
-		return false;
-	}
-
-	$$template_var = $goalStatus;
-	return true;
-}
-
-/**
- * AJAX
- *
- * @param  array
- * @return string
- */
-function asb_goals_xmlhttp($dateline, $settings, $script)
-{
-	$goalStatus = asb_goals_get_progress($settings);
-	if ($goalStatus) {
-		return $goalStatus;
-	}
-	return 'nochange';
-}
-
-/**
- * build the content based on settings
- *
- * @param  array
- * @return string
- */
-function asb_goals_get_progress($settings)
+function asb_goals_get_content($settings, $script)
 {
 	global $lang, $templates, $db;
 
@@ -200,6 +161,21 @@ function asb_goals_get_progress($settings)
 
 	eval("\$returnValue = \"{$templates->get('asb_goals')}\";");
 	return $returnValue;
+}
+
+/**
+ * AJAX
+ *
+ * @param  array
+ * @return string
+ */
+function asb_goals_xmlhttp($dateline, $settings, $script)
+{
+	$goalStatus = asb_goals_get_content($settings, $script);
+	if ($goalStatus) {
+		return $goalStatus;
+	}
+	return 'nochange';
 }
 
 ?>

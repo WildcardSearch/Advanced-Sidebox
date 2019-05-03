@@ -72,9 +72,9 @@ EOF
  * @param  array info from child box
  * @return bool success/fail
  */
-function asb_statistics_build_template($settings, $template_var, $script)
+function asb_statistics_get_content($settings, $script)
 {
-	global $$template_var, $mybb, $cache, $templates, $lang;
+	global $mybb, $cache, $templates, $lang;
 
 	// Load global and custom language phrases
 	if (!$lang->asb_addon) {
@@ -98,8 +98,9 @@ function asb_statistics_build_template($settings, $template_var, $script)
 		$newestmember = build_profile_link($last_username, $statistics['lastuid']);
 	}
 
-	eval("\$".$template_var." = \"{$templates->get('asb_statistics')}\";");
-	return true;
+	eval("\$content = \"{$templates->get('asb_statistics')}\";");
+
+	return $content;
 }
 
 ?>

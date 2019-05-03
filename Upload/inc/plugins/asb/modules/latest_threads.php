@@ -30,6 +30,7 @@ function asb_latest_threads_info()
 		'description' => $lang->asb_latest_threads_desc,
 		'version' => '2.0.2',
 		'compatibility' => '4.0',
+		'noContentTemplate' => 'asb_latest_threads_no_content',
 		'wrap_content' => true,
 		'xmlhttp' => true,
 		'settings' => array(
@@ -148,6 +149,13 @@ EOF
 <img class="asb-latest-threads-last-poster-avatar" src="{\$avatarInfo[\'image\']}" alt="{\$thread[\'last_post\']}" title="{\$thread[\'lastposter\']}\'s profile" style="width: {\$avatar_width};"/>
 EOF
 				),
+				array(
+					'title' => 'asb_latest_threads_no_content',
+					'template' => <<<EOF
+<div class="asb-no-content-message">{\$lang->asb_latest_threads_no_threads}</div>
+
+EOF
+				),
 			),
 		),
 	);
@@ -159,54 +167,7 @@ EOF
  * @param  array information from child box
  * @return bool success/fail
  */
-function asb_latest_threads_build_template($settings, $template_var, $script)
-{
-	global $$template_var, $lang;
-
-	if (!$lang->asb_addon) {
-		$lang->load('asb_addon');
-	}
-
-	// get the threads (or at least attempt to)
-	$all_threads = asb_latest_threads_get_threadlist($settings);
-
-	if ($all_threads) {
-		// if there are threads, show them
-		$$template_var = $all_threads;
-		return true;
-	} else {
-		// if not, show nothing
-		$$template_var = <<<EOF
-<tr><td class="trow1">{$lang->asb_latest_threads_no_threads}</td></tr>
-EOF;
-		return false;
-	}
-}
-
-/**
- * handles display of children of this addon via AJAX
- *
- * @param  array information from child box
- * @return void
- */
-function asb_latest_threads_xmlhttp($dateline, $settings, $script)
-{
-	$all_threads = asb_latest_threads_get_threadlist($settings);
-
-	if ($all_threads) {
-		return $all_threads;
-	}
-	return 'nochange';
-}
-
-/**
- * get the latest forum discussions
- *
- * @param  array settings
- * @param  int column width
- * @return string|bool html or success/fail
- */
-function asb_latest_threads_get_threadlist($settings)
+function asb_latest_threads_get_content($settings, $script)
 {
 	global $db, $mybb, $templates, $lang, $cache, $gotounread, $theme;
 
@@ -417,8 +378,24 @@ function asb_latest_threads_get_threadlist($settings)
 	if ($threadlist) {
 		return $threadlist;
 	}
-	// no content
+
 	return false;
+}
+
+/**
+ * handles display of children of this addon via AJAX
+ *
+ * @param  array information from child box
+ * @return void
+ */
+function asb_latest_threads_xmlhttp($dateline, $settings, $script)
+{
+	$all_threads = asb_latest_threads_get_content($settings);
+
+	if ($all_threads) {
+		return $all_threads;
+	}
+	return 'nochange';
 }
 
 /**

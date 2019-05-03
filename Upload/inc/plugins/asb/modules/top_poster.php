@@ -32,6 +32,7 @@ function asb_top_poster_info()
 		'wrap_content' => true,
 		'version' => '2.0.3',
 		'compatibility' => '4.0',
+		'noContentTemplate' => 'asb_top_poster_no_content',
 		'settings' => array(
 			'time_frame' => array(
 				'name' => 'time_frame',
@@ -129,6 +130,13 @@ EOF
 <img class="asb-top-poster-avatar" src="{\$top_poster_avatar_src}" alt="{\$lang->asb_top_poster_no_avatar}" />
 EOF
 				),
+				array(
+					'title' => 'asb_top_poster_no_content',
+					'template' => <<<EOF
+<div class="asb-no-content-message">{\$lang->asb_top_poster_no_top_poster}</div>
+
+EOF
+				),
 			),
 		),
 	);
@@ -140,9 +148,9 @@ EOF
  * @param  array info from child box
  * @return bool true on success, false on fail/no content
  */
-function asb_top_poster_build_template($settings, $template_var, $script)
+function asb_top_poster_get_content($settings, $script)
 {
-	global $$template_var, $db, $templates, $lang, $theme, $parser;
+	global $db, $templates, $lang, $theme, $parser;
 
 	if (!$lang->asb_addon) {
 		$lang->load('asb_addon');
@@ -280,12 +288,6 @@ EOF;
 	// error
 	$altbg = alt_trow();
 	if ($db->num_rows($query) == 0) {
-		// some defaults
-		$top_poster = $lang->asb_top_poster_no_one;
-		$top_poster_posts = $lang->asb_top_poster_no_posts;
-		$top_poster_text = $lang->asb_top_poster_no_top_poster;
-		$top_poster_avatar = '';
-		eval("\$\$template_var = \"{$templates->get('asb_top_posters_single')}\";");
 		return false;
 	}
 
@@ -336,7 +338,7 @@ EOF;
 
 			eval("\$top_poster_avatar = \"{$templates->get('asb_top_poster_avatar')}\";");
 
-			eval("\$\$template_var = \"{$templates->get('asb_top_posters_single')}\";");
+			eval("\$content = \"{$templates->get('asb_top_posters_single')}\";");
 		} else {
 			$top_poster_description = $lang->sprintf($lang->asb_top_poster_description, $top_poster_timeframe_prelude).$extraCongrats;
 			if ($threadsOnly) {
@@ -352,9 +354,9 @@ EOF;
 	}
 
 	if ($db->num_rows($query) > 1) {
-		eval("\$\$template_var .= \"{$templates->get('asb_top_posters_multiple')}\";");
+		eval("\$content .= \"{$templates->get('asb_top_posters_multiple')}\";");
 	}
-	return true;
+	return $content;
 }
 
 ?>

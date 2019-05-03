@@ -11,6 +11,8 @@ $l['asb_addon'] = 'Addon';
 
 $l['asb_recent_posts_ellipsis'] = $l['asb_recent_posts_title_ellipsis'] = $l['asb_latest_threads_ellipsis'] = '...';
 
+$l['asb_sidebox_no_content'] = 'no content';
+
 // default settings
 $l['asb_xmlhttp_refresh_rate_title'] = 'AJAX Update?';
 $l['asb_xmlhttp_refresh_rate_description'] = 'time (in seconds) between updates (0 to disable AJAX)';

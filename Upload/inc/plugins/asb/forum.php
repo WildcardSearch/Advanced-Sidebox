@@ -120,7 +120,7 @@ function asb_start()
 			if ($module->isValid()) {
 				// build the template. pass settings, template variable
 				// name and column width
-				$result = $module->buildTemplate($sidebox->get('settings'), $template_var, get_current_location());
+				$result = $module->buildContent($sidebox->get('settings'), $template_var, get_current_location());
 			// if it doesn't verify as an add-on, try it as a custom box
 			} elseif (isset($asb['custom'][$module_name]) &&
 				is_array($asb['custom'][$module_name])) {
@@ -129,23 +129,13 @@ function asb_start()
 				// if it validates, then build it, otherwise there was an error
 				if ($custom->isValid()) {
 					// build the custom box template
-					$result = $custom->buildTemplate($template_var);
+					$result = $custom->buildContent($template_var);
 				}
 			} else {
 				continue;
 			}
 
-			/*
-			 * all box types return true or false based upon whether they have
-			 * content to show. in the case of custom boxes, false is returned
-			 * when the custom content is empty; in reference to add-on modules
-			 * many factors are involved, but basically, if the side box depends on
-			 * an element (threads for example) and there are none, it will return
-			 * false-- IF asb_show_empty_boxes is true then it will return a side
-			 * box with a 'no content' message, if not, it will be skipped
-			 */
-			if ($result ||
-				$mybb->settings['asb_show_empty_boxes']) {
+			if ($result) {
 				$boxes[$pos] .= asbBuildSideBoxContent($sidebox->get('data'));
 			}
 		}
@@ -421,7 +411,7 @@ function asb_initialize()
 
 	// add the extra templates (if any) to our base stack
 	global $templatelist;
-	$templatelist .= ',asb_begin,asb_end,asb_sidebox_column,asb_wrapped_sidebox,asb_toggle_icon,asb_content_pad,asb_expander'.$addedTemplates;
+	$templatelist .= ',asb_begin,asb_end,asb_sidebox_column,asb_wrapped_sidebox,asb_toggle_icon,asb_content_pad,asb_expander,asb_sidebox_no_content'.$addedTemplates;
 }
 
 /**

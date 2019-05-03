@@ -31,6 +31,7 @@ function asb_recent_posts_info()
 		'description' => $lang->asb_recent_posts_desc,
 		'version' => '2.0.1',
 		'compatibility' => '4.0',
+		'noContentTemplate' => 'asb_recent_posts_no_content',
 		'wrap_content' => true,
 		'xmlhttp' => true,
 		'settings' => array(
@@ -104,6 +105,13 @@ function asb_recent_posts_info()
 				</div>
 EOF
 				),
+				array(
+					'title' => 'asb_recent_posts_no_content',
+					'template' => <<<EOF
+<div class="asb-no-content-message">{\$lang->asb_recent_posts_no_posts}</div>
+
+EOF
+				),
 			),
 		),
 	);
@@ -115,54 +123,7 @@ EOF
  * @param  array information from child box
  * @return bool sucess/fail
  */
-function asb_recent_posts_build_template($settings, $template_var, $script)
-{
-	global $$template_var, $lang;
-
-	if (!$lang->asb_addon) {
-		$lang->load('asb_addon');
-	}
-
-	// get the posts (or at least attempt to)
-	$all_posts = recent_posts_get_postlist($settings);
-
-	if ($all_posts) {
-		// if there are posts, show them
-		$$template_var = $all_posts;
-		return true;
-	} else {
-		// if not, show nothing
-		$$template_var = <<<EOF
-<tr><td class="trow1">{$lang->asb_recent_posts_no_posts}</td></tr>
-EOF;
-		return false;
-	}
-}
-
-/**
- * handles display of children of this addon via AJAX
- *
- * @param  array info from child box
- * @return void
- */
-function asb_recent_posts_xmlhttp($dateline, $settings, $script)
-{
-	extract($args);
-	$all_posts = recent_posts_get_postlist($settings);
-
-	if (!$all_posts) {
-		return 'nochange';
-	}
-	return $all_posts;
-}
-
-/**
- * get random quotes
- *
- * @param  array settings
- * @return string|bool html or success/fail
- */
-function recent_posts_get_postlist($settings)
+function asb_recent_posts_get_content($settings, $script)
 {
 	global $db, $mybb, $templates, $lang, $cache, $postlist, $gotounread, $theme;
 
@@ -275,7 +236,35 @@ function recent_posts_get_postlist($settings)
 		eval("\$postlist .= \"{$templates->get('asb_recent_posts_post')}\";");
 		$altbg = alt_trow();
 	}
+
 	return $postlist;
+}
+
+/**
+ * handles display of children of this addon via AJAX
+ *
+ * @param  array info from child box
+ * @return void
+ */
+function asb_recent_posts_xmlhttp($dateline, $settings, $script)
+{
+	$all_posts = asb_recent_posts_get_content($settings);
+
+	if ($all_posts) {
+		return $all_posts;
+	}
+	return 'nochange';
+}
+
+/**
+ * get random quotes
+ *
+ * @param  array settings
+ * @return string|bool html or success/fail
+ */
+function recent_posts_get_postlist($settings)
+{
+	
 }
 
 ?>

@@ -56,58 +56,7 @@ EOF
  * @param  array info from child box
  * @return bool success/fail
  */
-function asb_private_messages_build_template($settings, $template_var, $script)
-{
-	global $$template_var, $lang; // <-- important!
-
-	if (!$lang->asb_addon) {
-		$lang->load('asb_addon');
-	}
-
-	$pmessages = asb_private_messages_get_messages();
-
-	if ($pmessages) {
-		$$template_var = $pmessages;
-		return true;
-	} else {
-		$pm_message = $lang->sprintf($lang->asb_pms_user_disabled_pms, "<a href=\"{$mybb->settings['bburl']}/usercp.php?action=options\">{$lang->welcome_usercp}</a>");
-		$$template_var = <<<EOF
-	<tr>
-		<td class='trow1'>{$pm_message}</td>
-	</tr>
-EOF;
-		return false;
-	}
-}
-
-/**
- * handles display of children of this addon via AJAX
- *
- * @param  array info from child box
- * @return void
- */
-function asb_private_messages_xmlhttp($dateline, $settings, $script)
-{
-	global $db, $mybb;
-
-	$query = $db->simple_select('privatemessages', '*', "dateline > {$dateline} AND toid='{$mybb->user['uid']}'");
-
-	if ($db->num_rows($query) > 0) {
-		$pmessages = asb_private_messages_get_messages();
-
-		if ($pmessages) {
-			return $pmessages;
-		}
-	}
-	return 'nochange';
-}
-
-/**
- * get the user's private messages
- *
- * @return string|bool html or success/fail
- */
-function asb_private_messages_get_messages()
+function asb_private_messages_get_content($settings, $script)
 {
 	global $db, $mybb, $templates, $lang;
 
@@ -141,7 +90,24 @@ function asb_private_messages_get_messages()
 			$pmessages = '';
 		}
 	}
+
 	return $pmessages;
+}
+
+/**
+ * handles display of children of this addon via AJAX
+ *
+ * @param  array info from child box
+ * @return void
+ */
+function asb_private_messages_xmlhttp($dateline, $settings, $script)
+{
+	$pmessages = asb_private_messages_get_content($settings);
+
+	if ($pmessages) {
+		return $pmessages;
+	}
+	return 'nochange';
 }
 
 ?>
