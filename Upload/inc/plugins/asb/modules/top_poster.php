@@ -356,6 +356,7 @@ EOF;
 	if ($db->num_rows($query) > 1) {
 		eval("\$content .= \"{$templates->get('asb_top_posters_multiple')}\";");
 	}
+
 	return $content;
 }
 

@@ -256,15 +256,4 @@ function asb_recent_posts_xmlhttp($dateline, $settings, $script)
 	return 'nochange';
 }
 
-/**
- * get random quotes
- *
- * @param  array settings
- * @return string|bool html or success/fail
- */
-function recent_posts_get_postlist($settings)
-{
-	
-}
-
 ?>
