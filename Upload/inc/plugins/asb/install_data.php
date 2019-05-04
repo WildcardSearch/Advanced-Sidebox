@@ -278,6 +278,7 @@ div.asb-sidebox-container {
 
 	font-size: 0;
 	text-align: left;
+	clear: both;
 }
 
 /** Toggle Icons Start **/
