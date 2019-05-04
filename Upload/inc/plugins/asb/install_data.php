@@ -1014,6 +1014,14 @@ td.off {
 	font-weight: bold;
 	margin-bottom: 5px;
 }
+
+/* Manage Scripts Inline Edit */
+tr.asb-script-checked > td {
+	background: #fffbd9!important;;
+	color: #333;
+	border-right-color: #f7e86a;
+	border-bottom-color: #f7e86a;
+}
 EOF
 		),
 	),

@@ -84,12 +84,18 @@ var ASB = (function(a, $) {
 		if (onOff !== true) {
 			onOff = false;
 		}
+
 		checkCount = 0;
 		$('#asb_select_all').prop("checked", onOff);
 		$('.asb_check').each(function(k, check) {
+			var $row = $(check).parent("label").parent("td").parent("tr");
+
 			$(check).prop("checked", onOff);
 			if (onOff) {
+				$row.addClass("asb-script-checked");
 				++checkCount;
+			} else {
+				$row.removeClass("asb-script-checked");
 			}
 		});
 		updateCheckCount();
@@ -102,11 +108,16 @@ var ASB = (function(a, $) {
 	 * @return void
 	 */
 	function keepCount(e) {
+		var $row = $(this).parent("label").parent("td").parent("tr");
+
 		if(this.checked) {
+			$row.addClass("asb-script-checked");
 			++checkCount;
 		} else {
+			$row.removeClass("asb-script-checked");
 			--checkCount;
 		}
+
 		updateCheckCount();
 	}
 
@@ -137,8 +148,13 @@ var ASB = (function(a, $) {
 	function initialCount() {
 		checkCount = 0;
 		$('.asb_check').each(function(k, check) {
+			var $row = $(check).parent("label").parent("td").parent("tr");
+
 			if ($(check).prop("checked")) {
+				$row.addClass("asb-script-checked");
 				++checkCount;
+			} else {
+				$row.removeClass("asb-script-checked");
 			}
 		});
 		updateCheckCount();
