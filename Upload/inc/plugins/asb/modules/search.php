@@ -74,7 +74,7 @@ EOF
  * @param  array info from child box
  * @return bool sucess/fail
  */
-function asb_search_get_content($settings, $script)
+function asb_search_get_content($settings, $script, $dateline)
 {
 	global $mybb, $templates, $lang, $gobutton;
 

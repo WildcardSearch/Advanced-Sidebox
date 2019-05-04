@@ -167,7 +167,7 @@ EOF
  * @param  array information from child box
  * @return bool success/fail
  */
-function asb_latest_threads_get_content($settings, $script)
+function asb_latest_threads_get_content($settings, $script, $dateline)
 {
 	global $db, $mybb, $templates, $lang, $cache, $gotounread, $theme;
 
@@ -219,11 +219,11 @@ function asb_latest_threads_get_content($settings, $script)
 		$inactivewhere = " AND t.fid NOT IN ({$inactive})";
 	}
 
-	// new threads only?
+	$new_threads = '';
 	if ((int) $settings['new_threads_only'] > 0) {
 		// use admin's time limit
 		$thread_time_limit = TIME_NOW - 60 * 60 * 24 * (int) $settings['new_threads_only'];
-		$new_threads = " AND t.dateline > {$thread_time_limit}";
+		$new_threads .= " AND t.dateline > {$thread_time_limit}";
 	}
 
 	if ($settings['important_threads_only']) {
@@ -238,6 +238,18 @@ function asb_latest_threads_get_content($settings, $script)
 	$where['show'] = asbBuildSqlWhere($show, ' OR ');
 	$where['hide'] = asbBuildSqlWhere($hide, ' OR ', ' NOT ');
 	$query_where = $new_threads.$important_threads.$unviewwhere.$inactivewhere.asbBuildSqlWhere($where, ' AND ', ' AND ');
+
+	if ($dateline &&
+		$dateline !== TIME_NOW) {
+		$newQuery = $db->simple_select('threads t', 'tid', "t.visible='1' AND t.closed NOT LIKE 'moved|%'{$query_where} AND t.lastpost > {$dateline}", array('limit' => 1));
+
+		if ($db->num_rows($newQuery) < 1) {
+			// no new content
+			return false;
+		}
+
+		$db->free_result($newQuery);
+	}
 
 	$altbg = alt_trow();
 	$threadlist = '';

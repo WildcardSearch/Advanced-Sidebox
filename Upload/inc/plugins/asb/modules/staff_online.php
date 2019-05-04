@@ -95,7 +95,7 @@ EOF
  * @param  array info from child box
  * @return bool success/fail
  */
-function asb_staff_online_get_content($settings, $script)
+function asb_staff_online_get_content($settings, $script, $dateline)
 {
 	global $db, $mybb, $templates, $lang, $cache, $theme;
 

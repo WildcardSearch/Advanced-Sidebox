@@ -81,7 +81,7 @@ EOF
  * @param  array
  * @return bool success/fail
  */
-function asb_birthdays_get_content($settings, $script)
+function asb_birthdays_get_content($settings, $script, $dateline)
 {
 	global $mybb, $db, $lang, $templates, $cache;
 

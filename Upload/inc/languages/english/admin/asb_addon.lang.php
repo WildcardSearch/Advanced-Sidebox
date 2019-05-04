@@ -14,8 +14,11 @@ $l['asb_recent_posts_ellipsis'] = $l['asb_recent_posts_title_ellipsis'] = $l['as
 $l['asb_sidebox_no_content'] = 'no content';
 
 // default settings
-$l['asb_xmlhttp_refresh_rate_title'] = 'AJAX Update?';
+$l['asb_xmlhttp_refresh_rate_title'] = 'AJAX Refresh Rate';
 $l['asb_xmlhttp_refresh_rate_description'] = 'time (in seconds) between updates (0 to disable AJAX)';
+
+$l['asb_xmlhttp_refresh_decay_title'] = 'AJAX Decay Rate';
+$l['asb_xmlhttp_refresh_decay_description'] = 'the factor by which the refresh rate will increase if there is no new content (1=no rate increase)';
 
 $l['asb_forum_show_list_title'] = 'Forum Show List';
 $l['asb_forum_show_list_desc'] = '(optional) add a forum id or a comma-separated list of fids to be draws threads from [can be amended by Thread Show List and Thread Hide List]';

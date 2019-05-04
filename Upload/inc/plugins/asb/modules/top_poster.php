@@ -148,7 +148,7 @@ EOF
  * @param  array info from child box
  * @return bool true on success, false on fail/no content
  */
-function asb_top_poster_get_content($settings, $script)
+function asb_top_poster_get_content($settings, $script, $dateline)
 {
 	global $db, $templates, $lang, $theme, $parser;
 

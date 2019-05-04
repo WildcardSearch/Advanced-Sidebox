@@ -107,7 +107,7 @@ EOF
  * @param  array
  * @return bool success/fail
  */
-function asb_goals_get_content($settings, $script)
+function asb_goals_get_content($settings, $script, $dateline)
 {
 	global $lang, $templates, $db;
 

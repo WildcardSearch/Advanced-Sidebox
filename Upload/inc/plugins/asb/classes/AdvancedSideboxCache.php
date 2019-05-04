@@ -138,10 +138,15 @@ class AdvancedSideboxCache extends WildcardPluginCache010300
 
 						// again, default here is off if anything goes wrong
 						if ($settings['xmlhttp_refresh_rate']) {
-							// if all is good add the script building info
+							if ($settings['xmlhttp_refresh_decay'] < 1) {
+								$settings['xmlhttp_refresh_decay'] = 1;
+							}
+
+							// add the info
 							$data['scripts'][$filename]['extra_scripts'][$id]['position'] = $pos;
 							$data['scripts'][$filename]['extra_scripts'][$id]['module'] = $module;
 							$data['scripts'][$filename]['extra_scripts'][$id]['rate'] = $settings['xmlhttp_refresh_rate'];
+							$data['scripts'][$filename]['extra_scripts'][$id]['decay'] = $settings['xmlhttp_refresh_decay'];
 						}
 					}
 

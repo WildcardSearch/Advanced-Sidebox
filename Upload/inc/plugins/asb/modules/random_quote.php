@@ -149,7 +149,7 @@ EOF
  * @param  array information from child box
  * @return bool success/fail
  */
-function asb_random_quote_get_content($settings, $script)
+function asb_random_quote_get_content($settings, $script, $dateline)
 {
 	global $db, $mybb, $templates, $lang, $theme;
 

@@ -271,7 +271,7 @@ EOF;
 		foreach ($script['extra_scripts'] as $id => $info) {
 			// build the JS objects to pass to the custom object builder
 			$extraScripts .= <<<EOF
-{$sep}{ addon: '{$info['module']}', id: {$id}, position: {$info['position']}, rate: {$info['rate']}, dateline: {$dateline} }
+{$sep}{ addon: '{$info['module']}', id: {$id}, position: {$info['position']}, rate: {$info['rate']}, decay: {$info['decay']}, dateline: {$dateline} }
 EOF;
 			$sep = ', ';
 		}
@@ -462,8 +462,9 @@ function asb_xmlhttp()
 	if ($module->isValid() &&
 		$sidebox->isValid()) {
 		// then call the module's AJAX method and echo its return value
-		echo($module->doXmlhttp($mybb->input['dateline'], $sidebox->get('settings'), $mybb->input['script']));
+		echo($module->doXmlhttp($sidebox->get('settings'), $mybb->input['script'], $mybb->input['dateline']));
 	}
+
 	exit;
 }
 

@@ -21,8 +21,8 @@ var ASB = (function(a, $) {
 		this.options = $.extend({}, options || {});
 
 		// now get this instance's overrides and options
-		this.frequency = (this.options.frequency || 30);
-		this.decay = this.options.decay = (this.options.decay || 1);
+		this.rate = this.options.rate = (this.options.rate || 30);
+		this.decay = this.options.decay = this.options.decay >= 1 ? this.options.decay : 1;
 		this.container = $("#" + container);
 		this.options.url = url;
 		this.options.complete = $.proxy(this.updateComplete, this);
@@ -40,7 +40,7 @@ var ASB = (function(a, $) {
 	 * @return void
 	 */
 	function start() {
-		this.timer = setTimeout($.proxy(this.onTimerEvent, this), (this.decay * this.frequency) * 1000);
+		this.timer = setTimeout($.proxy(this.onTimerEvent, this), (this.decay * this.rate) * 1000);
 	}
 
 	/**
@@ -62,22 +62,20 @@ var ASB = (function(a, $) {
 		// good response?
 		if (typeof response.responseText !== "undefined" &&
 			response.responseText.length > 0) {
-			// might add this option later
-			this.decay = this.options.decay;
+			this.rate = this.options.rate;
 
-			// update the side box's <tbody>
+			// update the side box's content
 			this.container.html(response.responseText);
-
 		} else {
-			// currently does nothing, but left in to add this option
-			this.decay = this.decay * this.options.decay;
+			this.rate = this.decay * this.rate;
 		}
 
+		// this.container.html(`Rate: ${this.rate},<br />Decay: ${this.decay}`);
 		// last update time
 		this.options.data.dateline = Math.floor(new Date().getTime() / 1000 + this.phpTimeDiff);
 
 		// key up to do it again
-		this.timer = setTimeout($.proxy(this.onTimerEvent, this), (this.decay * this.frequency) * 1000);
+		this.timer = setTimeout($.proxy(this.onTimerEvent, this), this.rate * 1000);
 	}
 
 	/**
@@ -90,7 +88,7 @@ var ASB = (function(a, $) {
 		if (this.container.width() <= 0 &&
 			this.container.height() <= 0) {
 			// just reset the timer and get out
-			this.timer = setTimeout($.proxy(this.onTimerEvent, this), (this.decay * this.frequency) * 1000);
+			this.timer = setTimeout($.proxy(this.onTimerEvent, this), (this.decay * this.rate) * 1000);
 			return;
 		}
 
@@ -147,7 +145,8 @@ var ASB = (function(a, $) {
 					width: width,
 					script: script,
 				},
-				frequency: updaters[i].rate
+				rate: updaters[i].rate,
+				decay: updaters[i].decay,
 			});
 		}
 	}

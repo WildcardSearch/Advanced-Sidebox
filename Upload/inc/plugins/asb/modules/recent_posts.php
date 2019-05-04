@@ -123,7 +123,7 @@ EOF
  * @param  array information from child box
  * @return bool sucess/fail
  */
-function asb_recent_posts_get_content($settings, $script)
+function asb_recent_posts_get_content($settings, $script, $dateline)
 {
 	global $db, $mybb, $templates, $lang, $cache, $postlist, $gotounread, $theme;
 
@@ -157,9 +157,17 @@ function asb_recent_posts_get_content($settings, $script)
 	$where['hide'] = asbBuildSqlWhere($hide, ' OR ', ' NOT ');
 	$query_where = $important_threads.$unviewwhere.$inactivewhere.asbBuildSqlWhere($where, ' AND ', ' AND ');
 
-	$altbg = alt_trow();
-	$maxtitlelen = 48;
-	$postlist = '';
+	if ($dateline &&
+		$dateline !== TIME_NOW) {
+		$newQuery = $db->simple_select('posts p', 'pid', "p.visible='1'{$query_where} AND p.dateline > {$dateline}", array('limit' => 1));
+
+		if ($db->num_rows($newQuery) < 1) {
+			// no new content
+			return false;
+		}
+
+		$db->free_result($newQuery);
+	}
 
 	// Query for the latest forum discussions
 	$query = $db->query("
@@ -181,6 +189,10 @@ function asb_recent_posts_get_content($settings, $script)
 		// no content
 		return false;
 	}
+
+	$altbg = alt_trow();
+	$maxtitlelen = 48;
+	$postlist = '';
 
 	// Build a post parser
 	require_once MYBB_ROOT.'inc/class_parser.php';
