@@ -52,6 +52,11 @@ abstract class InstallableModule010001 extends ConfigurableModule010101 implemen
 	protected $uninstallConstant = '';
 
 	/**
+	 * @var string
+	 */
+	protected $debugMode = false;
+
+	/**
 	 * attempt to load and validate the module
 	 *
 	 * @param  string base name of the module to load
@@ -71,9 +76,10 @@ abstract class InstallableModule010001 extends ConfigurableModule010101 implemen
 			$currentVersion === 0)) {
 			$this->install();
 		// newly updated module
-		} elseif ($currentVersion &&
+		} elseif ($this->debugMode === true ||
+			($currentVersion &&
 			version_compare($currentVersion, $this->version, '<') &&
-			(!$this->uninstallConstant || !defined($this->uninstallConstant) )) {
+			(!$this->uninstallConstant || !defined($this->uninstallConstant) ))) {
 			$this->upgrade();
 		// pre-existing module
 		} else {
