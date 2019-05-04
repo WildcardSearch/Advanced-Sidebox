@@ -261,20 +261,4 @@ function asb_random_quote_get_content($settings, $script)
 	return $this_quote;
 }
 
-/**
- * handles display of children of this addon via AJAX
- *
- * @param  array info from child box
- * @return void
- */
-function asb_random_quote_xmlhttp($dateline, $settings, $script)
-{
-	// get a quote and return it
-	$this_quote = asb_random_quote_get_content($settings);
-	if ($this_quote) {
-		return $this_quote;
-	}
-	return 'nochange';
-}
-
 ?>

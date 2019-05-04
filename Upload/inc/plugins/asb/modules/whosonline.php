@@ -277,22 +277,6 @@ function asb_whosonline_get_content($settings, $script)
 }
 
 /**
- * handles display of children of this addon via AJAX
- *
- * @param  array information from child box
- * @return void
- */
-function asb_whosonline_xmlhttp($dateline, $settings, $script)
-{
-	$all_onlinemembers = asb_whosonline_get_content($settings);
-
-	if ($all_onlinemembers) {
-		return $all_onlinemembers;
-	}
-	return 'nochange';
-}
-
-/**
  * insert peeker for creation date
  *
  * @return void

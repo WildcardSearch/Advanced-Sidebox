@@ -193,22 +193,6 @@ function asb_forum_age_get_content($settings, $script)
 }
 
 /**
- * AJAX
- *
- * @param  array
- * @return string
- */
-function asb_forum_age_xmlhttp($dateline, $settings, $script)
-{
-	$forum_age_status = asb_forum_age_get_content($settings, $script);
-	if ($forum_age_status) {
-		return $forum_age_status;
-	}
-
-	return 'nochange';
-}
-
-/**
  * insert peeker for creation date
  *
  * @return void

@@ -179,6 +179,17 @@ function asb_edit_template($boxes, $width, $script)
 		// we will need this js
 		$headerinclude .= <<<EOF
 <script type="text/javascript" src="jscripts/asb/asb{$min}.js"></script>
+<script type="text/javascript">
+<!--
+ASB.setup({
+	leftWidth: "{$width_left}",
+	leftMargin: "{$left_margin}",
+	middleWidth: "{$width_middle}",
+	rightMargin: "{$right_margin}",
+	rightWidth: "{$width_right}",
+});
+// -->
+</script>
 EOF;
 
 		$toggle_info['left'] = array(
@@ -266,33 +277,19 @@ EOF;
 		}
 
 		$location = get_current_location();
-		$xmlhttpScripts = <<<EOF
 
+		$headerinclude .= <<<EOF
+
+<script type="text/javascript" src="jscripts/asb/asb_xmlhttp{$min}.js"></script>
+<script type="text/javascript">
+<!--
 $(function() {
 	ASB.ajax.buildUpdaters([ {$extraScripts} ], { left: {$width_left}, right: {$width_right} }, '{$location}');
 });
-EOF;
-
-		$xmlhttpInclude = <<<EOF
-<script type="text/javascript" src="jscripts/asb/asb_xmlhttp{$min}.js"></script>
-
-EOF;
-	}
-
-	$headerinclude .= <<<EOF
-
-{$xmlhttpInclude}<script type="text/javascript">
-<!--
-ASB.setup({
-	leftWidth: "{$width_left}",
-	leftMargin: "{$left_margin}",
-	middleWidth: "{$width_middle}",
-	rightMargin: "{$right_margin}",
-	rightWidth: "{$width_right}",
-});{$xmlhttpScripts}
 // -->
 </script>
 EOF;
+	}
 
 	if (is_array($script['js'])) {
 		foreach ($script['js'] as $scriptName) {

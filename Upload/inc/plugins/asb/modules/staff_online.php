@@ -241,26 +241,9 @@ EOF;
 	if ($online_staff) {
 		// show them
 		return $online_staff;
-	} else {
-		// otherwise apologize profusely
-		return false;
 	}
-}
 
-/**
- * handles display of children of this addon via AJAX
- *
- * @param  array info from child box
- * @return void
- */
-function asb_staff_online_xmlhttp($dateline, $settings, $script)
-{
-	$all_online_staff = asb_staff_online_get_content($settings);
-
-	if ($all_online_staff) {
-		return $all_online_staff;
-	}
-	return 'nochange';
+	return false;
 }
 
 ?>

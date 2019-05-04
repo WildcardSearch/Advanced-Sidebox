@@ -383,22 +383,6 @@ function asb_latest_threads_get_content($settings, $script)
 }
 
 /**
- * handles display of children of this addon via AJAX
- *
- * @param  array information from child box
- * @return void
- */
-function asb_latest_threads_xmlhttp($dateline, $settings, $script)
-{
-	$all_threads = asb_latest_threads_get_content($settings);
-
-	if ($all_threads) {
-		return $all_threads;
-	}
-	return 'nochange';
-}
-
-/**
  * insert peeker for creation date
  *
  * @return void

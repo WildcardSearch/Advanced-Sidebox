@@ -94,20 +94,4 @@ function asb_private_messages_get_content($settings, $script)
 	return $pmessages;
 }
 
-/**
- * handles display of children of this addon via AJAX
- *
- * @param  array info from child box
- * @return void
- */
-function asb_private_messages_xmlhttp($dateline, $settings, $script)
-{
-	$pmessages = asb_private_messages_get_content($settings);
-
-	if ($pmessages) {
-		return $pmessages;
-	}
-	return 'nochange';
-}
-
 ?>

@@ -23,7 +23,7 @@ var ASB = (function(a, $) {
 		// now get this instance's overrides and options
 		this.frequency = (this.options.frequency || 30);
 		this.decay = this.options.decay = (this.options.decay || 1);
-		this.container = $("#" + container).children("tbody");
+		this.container = $("#" + container);
 		this.options.url = url;
 		this.options.complete = $.proxy(this.updateComplete, this);
 
@@ -60,8 +60,8 @@ var ASB = (function(a, $) {
 	 */
 	function updateComplete(response) {
 		// good response?
-		if (response.responseText &&
-			response.responseText != "nochange") {
+		if (typeof response.responseText !== "undefined" &&
+			response.responseText.length > 0) {
 			// might add this option later
 			this.decay = this.options.decay;
 
@@ -113,16 +113,18 @@ var ASB = (function(a, $) {
 	 * @return void
 	 */
 	function buildUpdaters(updaters, widths, script) {
+		var i,
+			this_id = "", width = 0;
+
 		// no objects in the array
 		if (updaters.length == 0) {
 			// get out
 			return;
 		}
 
-		var this_id = "", width = 0;
-		for (var i = 0; i < updaters.length; i++) {
+		for (i = 0; i < updaters.length; i++) {
 			// build the element ID
-			this_id = updaters[i].addon + "_main_" + updaters[i].id;
+			this_id = updaters[i].addon + "_" + updaters[i].id + "_e";
 
 			if (!$("#" + this_id)) {
 				continue;

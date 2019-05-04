@@ -163,19 +163,4 @@ function asb_goals_get_content($settings, $script)
 	return $returnValue;
 }
 
-/**
- * AJAX
- *
- * @param  array
- * @return string
- */
-function asb_goals_xmlhttp($dateline, $settings, $script)
-{
-	$goalStatus = asb_goals_get_content($settings, $script);
-	if ($goalStatus) {
-		return $goalStatus;
-	}
-	return 'nochange';
-}
-
 ?>

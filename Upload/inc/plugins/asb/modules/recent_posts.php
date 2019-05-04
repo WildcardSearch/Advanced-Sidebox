@@ -240,20 +240,4 @@ function asb_recent_posts_get_content($settings, $script)
 	return $postlist;
 }
 
-/**
- * handles display of children of this addon via AJAX
- *
- * @param  array info from child box
- * @return void
- */
-function asb_recent_posts_xmlhttp($dateline, $settings, $script)
-{
-	$all_posts = asb_recent_posts_get_content($settings);
-
-	if ($all_posts) {
-		return $all_posts;
-	}
-	return 'nochange';
-}
-
 ?>
