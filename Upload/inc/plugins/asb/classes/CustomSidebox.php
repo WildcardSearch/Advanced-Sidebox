@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
- * http://www.rantcentralforums.com
+ * https://www.rantcentralforums.com
  *
  * this file contains an object wrapper for individual custom boxes
  */
@@ -111,7 +111,7 @@ class CustomSidebox extends PortableObject010102
 		// if the user doesn't want content then so be it
 		if (strlen($content) == 0) {
 			$returnVal = false;
-			$content = '&nbsp;';
+			$$template_variable = '&nbsp;';
 		} else {
 			$content = str_replace("\\'", "'", addslashes($content));
 			eval("\${$template_variable} = \"{$content}\";");

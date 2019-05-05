@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
- * http://www.rantcentralforums.com
+ * https://www.rantcentralforums.com
  *
  * functions used by the default the modules and available to any third party add-ons as well
  */
@@ -86,6 +86,7 @@ function asbBuildIdList($ids, $field='id', $wrap=true)
 {$field} IN({$idList})
 EOF;
 	}
+
 	return $idList;
 }
 

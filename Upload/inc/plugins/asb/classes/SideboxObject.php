@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
- * http://www.rantcentralforums.com
+ * https://www.rantcentralforums.com
  *
  * this file contains an object wrapper for individual side boxes
  */
@@ -102,6 +102,7 @@ class SideboxObject extends StorableObject010001
 		}
 
 		$this->hasSettings = (is_array($this->settings) && !empty($this->settings));
+
 		return true;
 	}
 }

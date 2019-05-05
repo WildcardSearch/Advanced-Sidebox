@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
- * http://www.rantcentralforums.com
+ * https://www.rantcentralforums.com
  *
  * this file contains the ACP functionality and depends upon install.php
  * for plugin info and installation routines
@@ -13,6 +13,7 @@ if (!defined('IN_MYBB') ||
 	!defined('IN_ASB')) {
 	die('Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.');
 }
+
 define('ASB_URL', 'index.php?module=config-asb');
 require_once MYBB_ROOT.'inc/plugins/asb/functions_acp.php';
 require_once MYBB_ROOT.'inc/plugins/asb/install.php';
@@ -27,6 +28,7 @@ function asb_admin()
 {
 	// globalize as needed to save wasted work
 	global $page;
+
 	if ($page->active_action != 'asb') {
 		// not our turn
 		return false;
@@ -34,6 +36,7 @@ function asb_admin()
 
 	// now load up, this is our time
 	global $mybb, $lang, $html, $scripts, $allScripts, $min;
+
 	if (!$lang->asb) {
 		$lang->load('asb');
 	}
@@ -223,6 +226,7 @@ function asb_admin_edit_box()
 	$position = (int) $mybb->input['box_position'];
 	if ($ajax) {
 		$position = (int) $mybb->input['pos'];
+
 		if ($id) {
 			$position = (int) $sidebox->get('position');
 		}
@@ -243,10 +247,11 @@ function asb_admin_edit_box()
 		if ($parent->isValid()) {
 			$isCustom = true;
 		} else {
-			flash_message($lang->asb_edit_fail_bad_module, 'error');
 			if (!$ajax) {
+				flash_message($lang->asb_edit_fail_bad_module, 'error');
 				admin_redirect($html->url());
 			}
+
 			die('<error>asb</error>');
 		}
 	} else {
@@ -271,6 +276,7 @@ function asb_admin_edit_box()
 			 */
 			$displayOrder = (int) $mybb->input['display_order'];
 		}
+
 		$sidebox->set('display_order', $displayOrder);
 
 		// scripts
@@ -279,6 +285,7 @@ function asb_admin_edit_box()
 			(count($scriptArray) >= count($allScripts))) {
 			$scriptArray = array();
 		}
+
 		$sidebox->set('scripts', $scriptArray);
 
 		// groups
@@ -286,6 +293,7 @@ function asb_admin_edit_box()
 		if ($groupArray[0] == 'all') {
 			$groupArray = array();
 		}
+
 		$sidebox->set('groups', $groupArray);
 
 		// themes
@@ -293,6 +301,7 @@ function asb_admin_edit_box()
 		if ($themeArray[0] == 'all_themes') {
 			$themeArray = array();
 		}
+
 		$sidebox->set('themes', $themeArray);
 
 		// box type
@@ -304,7 +313,8 @@ function asb_admin_edit_box()
 			$addonSettings = $parent->get('settings');
 
 			// if the parent module has settings...
-			if (is_array($addonSettings)) {
+			if (is_array($addonSettings) &&
+				!empty($addonSettings)) {
 				// loop through them
 				$settings = array();
 				foreach ($addonSettings as $setting) {
@@ -314,17 +324,18 @@ function asb_admin_edit_box()
 						$settings[$setting['name']] = $mybb->input[$setting['name']];
 					}
 				}
+
 				$settings = $parent->doSettingsSave($settings);
 				$sidebox->set('settings', $settings);
 			}
-		} elseif($isCustom) {
+		} elseif ($isCustom) {
 			// use its wrap_content property
 			$sidebox->set('wrap_content', $parent->get('wrap_content'));
 		}
 
-		// if the text field isn't empty...
+		// title
 		if ($mybb->input['box_title']) {
-			// use it
+			// if the text input isn't empty use it
 			$sidebox->set('title', $mybb->input['box_title']);
 		} else {
 			// otherwise, check the hidden field (original title)
@@ -343,12 +354,14 @@ function asb_admin_edit_box()
 		$newId = $sidebox->save();
 		asbCacheHasChanged();
 
-		// AJAX?
+		// No AJAX?
 		if (!$ajax) {
 			// if in the standard form handle it with a redirect
 			flash_message($lang->asb_save_success, 'success');
 			admin_redirect('index.php?module=config-asb');
 		}
+
+		// AJAX
 
 		$columnKey = 'left_column';
 		if ($position) {
@@ -382,6 +395,8 @@ EOF;
 		echo($script);
 		exit;
 	}
+
+	/** Edit Page/Modal **/
 
 	if ($id == 0) {
 		$pageTitle = $lang->asb_add_a_sidebox;
@@ -420,14 +435,12 @@ EOF;
 
 	// AJAX?
 	if ($ajax) {
-		// the content is much different
 		echo <<<EOF
 <div class="modal" style="width: 540px;">
 <script src="jscripts/tabs.js" type="text/javascript"></script>
 <script src="jscripts/asb/asb_modal.js" type="text/javascript"></script>
 
 EOF;
-		$form = new Form($html->url(array('action' => 'edit_box', 'id' => $id, 'addon' => $module)), 'post', 'modal_form');
 	} else {
 		// standard form stuff
 		$page->add_breadcrumb_item($lang->asb);
@@ -441,8 +454,9 @@ EOF;
 
 EOF;
 		$page->output_header("{$lang->asb} - {$pageTitle}");
-		$form = new Form($html->url(array('action' => 'edit_box', 'id' => $id, 'addon' => $module)), 'post', 'modal_form');
 	}
+
+	$form = new Form($html->url(array('action' => 'edit_box', 'id' => $id, 'addon' => $module)), 'post', 'modal_form');
 
 	$tabs = array(
 		'general' => $lang->asb_modal_tab_general,
@@ -466,6 +480,7 @@ EOF;
 	if (!$ajax) {
 		$observeOnLoad = true;
 	}
+
 	$page->output_tab_control($tabs, $observeOnLoad);
 
 	// custom title?
@@ -509,6 +524,7 @@ EOF;
 		// title link and hidden fields
 		$formContainer->output_row($lang->asb_title_link, $lang->asb_title_link_desc, $form->generate_text_box('title_link', $sidebox->get('title_link')).$form->generate_hidden_field('current_title', $sidebox->get('title')).$form->generate_hidden_field('display_order', $sidebox->get('display_order')).$form->generate_hidden_field('pos', $position), 'title_link', array('id' => 'title_link'));
 	}
+
 	$formContainer->end();
 
 	echo "\n</div>\n<div id=\"tab_permissions\" style=\"text-align: center; width: auto;\">\n";
@@ -607,7 +623,7 @@ EOF;
 
 		foreach ((array) $settings as $setting) {
 			// allow the handler to build module settings
-			asbBuildSetting($form, $formContainer, $setting);
+			SideboxModule::buildSetting($setting, $form, $formContainer);
 		}
 
 		$formContainer->end();
@@ -722,21 +738,11 @@ function asb_admin_custom_boxes()
 
 			if (!is_array($tree['asb_custom_sideboxes']) ||
 				empty($tree['asb_custom_sideboxes'])) {
-				if (!is_array($tree['adv_sidebox']) ||
-					!is_array($tree['adv_sidebox']['custom_sidebox'])) {
-					flash_message($lang->asb_custom_import_file_empty, 'error');
-					admin_redirect($html->url(array('action' => 'custom_boxes')));
-				}
-
-				$results = asbLegacyCustomImport($tree);
-
-				if (!is_array($results)) {
-					flash_message($results, 'error');
-					admin_redirect($html->url(array('action' => 'custom_boxes')));
-				}
-				$custom = new CustomSidebox($results);
+				flash_message($lang->asb_custom_import_file_empty, 'error');
+				admin_redirect($html->url(array('action' => 'custom_boxes')));
 			} else {
 				$custom = new CustomSidebox;
+
 				if (!$custom->import($contents)) {
 					flash_message($lang->asb_custom_import_fail_generic, 'error');
 					admin_redirect($html->url(array('action' => 'custom_boxes')));
@@ -747,6 +753,7 @@ function asb_admin_custom_boxes()
 				flash_message($lang->asb_custom_box_save_failure, 'error');
 				admin_redirect($html->url(array('action' => 'custom_boxes')));
 			}
+
 			flash_message($lang->asb_custom_import_save_success, 'success');
 			admin_redirect($html->url(array('action' => 'custom_boxes', 'id' => $custom->get('id'))));
 		} else {
@@ -768,6 +775,7 @@ function asb_admin_custom_boxes()
 					flash_message($lang->asb_custom_box_save_failure_no_content, 'error');
 					admin_redirect($html->url($redirectArray));
 				}
+
 				$custom = new CustomSidebox($id);
 
 				// get the info
@@ -797,7 +805,7 @@ function asb_admin_custom_boxes()
 
 		if ($adminOptions['codepress'] != 0) {
 			$page->extra_header .= <<<EOF
-	<link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
+<link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
 <link href="./jscripts/codemirror/theme/mybb.css?ver=1804" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/xml/xml.js"></script>
@@ -826,15 +834,13 @@ EOF;
 			// new box
 			$specifyBox = '';
 			$sampleContent = <<<EOF
-<tr>
-		<td class="trow1">{$lang->asb_sample_content_line1}</td>
-	</tr>
-	<tr>
-		<td class="trow2">{$lang->asb_sample_content_line2}</td>
-	</tr>
-	<tr>
-		<td class="trow1"><strong>{$lang->asb_sample_content_line3}</strong></td>
-	</tr>
+	<div class="tcat">{$lang->asb_sample_content_tcat}</div>
+	<div class="trow1">{$lang->asb_sample_content_trow1}</div>
+	<div class="trow2">{$lang->asb_sample_content_trow2}</div>
+	<div class="trow_sep">{$lang->asb_sample_content_trow_sep}</div>
+	<div class="trow1">{$lang->asb_sample_content_trow1}</div>
+	<div class="trow2">{$lang->asb_sample_content_trow2}</div>
+	<div class="tfoot">{$lang->asb_sample_content_tfoot}</div>
 EOF;
 			$custom->set('content', $sampleContent);
 			$custom->set('wrap_content', true);
@@ -850,7 +856,7 @@ EOF;
 		asbOutputTabs('asb_add_custom');
 
 		$onClick = <<<EOF
-if (!$('#box_name').val() || !editor.getValue()) { $.jGrowl('{$lang->asb_custom_box_save_failure_no_content}', { theme: 'error' }); return false; }
+if (!$('#box_name').val() || !editor.getValue()) { $.jGrowl('{$lang->asb_custom_box_save_failure_no_content}', { theme: 'jgrowl_error' }); return false; }
 EOF;
 
 		$form = new Form($html->url(array('action' => 'custom_boxes')).$specifyBox, 'post', 'edit_box');
@@ -967,6 +973,7 @@ EOF;
 		$table->construct_cell($lang->asb_no_custom_boxes, array('colspan' => 4));
 		$table->construct_row();
 	}
+
 	$table->output($lang->asb_custom_box_types);
 
 	echo('<br /><br />');
@@ -975,8 +982,11 @@ EOF;
 	$importFormContainer = new FormContainer($lang->asb_custom_import);
 	$importFormContainer->output_row($lang->asb_custom_import_select_file, '', $importForm->generate_file_upload_box('file'));
 	$importFormContainer->end();
-	$importButtons[] = $importForm->generate_submit_button($lang->asb_custom_import, array('name' => 'import'));
-	$importForm->output_submit_wrapper($importButtons);
+
+	$importForm->output_submit_wrapper(array(
+		$importForm->generate_submit_button($lang->asb_custom_import, array('name' => 'import')),
+	));
+
 	$importForm->end();
 
 	// build link bar and ACP footer
@@ -996,15 +1006,25 @@ function asb_admin_manage_scripts()
 
 	if ($mybb->request_method == 'post') {
 		if ($mybb->input['mode'] == 'edit') {
+			$redirectUrl = $html->url(array('action' => 'manage_scripts', 'mode' => 'edit', 'id' => $mybb->input['id']));
+
 			$mybb->input['action'] = $mybb->input['script_action'];
 			$script = new ScriptInfo($mybb->input);
 
+			$totalWidth = $mybb->input["width_left"] + $mybb->input["width_right"] + $mybb->input["width_middle"] + $mybb->input["left_margin"] + $mybb->input["right_margin"];
+			if ($totalWidth > 100) {
+				flash_message($lang->asb_script_save_width_error, 'error');
+				admin_redirect($redirectUrl);
+			}
+
 			if (!$script->save()) {
 				flash_message($lang->asb_script_save_fail, 'error');
-				admin_redirect($html->url(array('action' => 'manage_scripts')));
+				admin_redirect($redirectUrl);
 			}
-			flash_message($lang->asb_script_save_success, 'success');
+
 			asbCacheHasChanged();
+
+			flash_message($lang->asb_script_save_success, 'success');
 			admin_redirect($html->url(array('action' => 'manage_scripts')));
 		} elseif ($mybb->input['mode'] == 'import') {
 			if (!$_FILES['file'] ||
@@ -1041,8 +1061,9 @@ function asb_admin_manage_scripts()
 				flash_message($lang->asb_script_import_fail, 'error');
 			}
 
-			flash_message($lang->asb_script_import_success, 'success');
 			asbCacheHasChanged();
+
+			flash_message($lang->asb_script_import_success, 'success');
 			admin_redirect($html->url(array('action' => 'manage_scripts')));
 		} elseif ($mybb->input['mode'] == 'inline') {
 			$redirect = $html->url(array('action' => 'manage_scripts'));
@@ -1065,34 +1086,25 @@ function asb_admin_manage_scripts()
 				case 'update_width':
 					$action = $lang->asb_updated;
 					$changed = false;
-					if (isset($mybb->input['width_left'][$id])) {
-						$script->set('width_left', $mybb->input['width_left'][$id]);
-						$changed = true;
+					$totalWidth = 0;
+
+					foreach (array('width_left', 'left_margin', 'width_middle', 'right_margin', 'width_right') as $key) {
+						if (isset($mybb->input[$key][$id])) {
+							$totalWidth += $mybb->input[$key][$id];
+							$script->set($key, $mybb->input[$key][$id]);
+							$changed = true;
+						}
 					}
 
-					if (isset($mybb->input['left_margin'][$id])) {
-						$script->set('left_margin', $mybb->input['left_margin'][$id]);
-						$changed = true;
-					}
-
-					if (isset($mybb->input['width_middle'][$id])) {
-						$script->set('width_middle', $mybb->input['width_middle'][$id]);
-						$changed = true;
-					}
-
-					if (isset($mybb->input['right_margin'][$id])) {
-						$script->set('right_margin', $mybb->input['right_margin'][$id]);
-						$changed = true;
-					}
-
-					if (isset($mybb->input['width_right'][$id])) {
-						$script->set('width_right', $mybb->input['width_right'][$id]);
-						$changed = true;
+					if ($totalWidth > 100) {
+						flash_message($lang->asb_script_save_width_error, 'error');
+						admin_redirect($html->url(array('action' => 'manage_scripts')));
 					}
 
 					if ($changed == false) {
 						continue 2;
 					}
+
 					$script->save();
 					break;
 				case 'delete':
@@ -1100,6 +1112,7 @@ function asb_admin_manage_scripts()
 					if (!$script->remove()) {
 						continue 2;
 					}
+
 					$deleted = true;
 					break;
 				case 'activate':
@@ -1107,6 +1120,7 @@ function asb_admin_manage_scripts()
 					if ($script->get('active')) {
 						continue 2;
 					}
+
 					$script->set('active', true);
 					$script->save();
 					break;
@@ -1115,12 +1129,14 @@ function asb_admin_manage_scripts()
 					if (!$script->get('active')) {
 						continue 2;
 					}
+
 					$script->set('active', false);
 					$script->save();
 					break;
 				default:
 					continue 2;
 				}
+
 				++$job_count;
 			}
 
@@ -1129,10 +1145,12 @@ function asb_admin_manage_scripts()
 			if ($job_count > 0) {
 				$status = 'success';
 				asbCacheHasChanged();
+
 				if ($job_count == 1) {
 					$objectTitle = $lang->asb_script_definition;
 				}
 			}
+
 			flash_message($lang->sprintf($lang->asb_inline_success, $job_count, $objectTitle, $action), $status);
 			admin_redirect($redirect);
 		}
@@ -1201,6 +1219,7 @@ function asb_admin_manage_scripts()
 				'action' => $data['action'],
 				'template' => $data['template_name'],
 			));
+
 			$detectedShow = '';
 			$buttonText = $lang->asb_update;
 			$filename = $data['filename'];
@@ -1297,7 +1316,7 @@ EOF;
 		$form->output_submit_wrapper($buttons);
 		$form->end();
 
-		// output CodePress scripts if necessary
+		// output CodeMirror scripts if necessary
 		if ($adminOptions['codepress'] != 0) {
 			echo <<<EOF
 		<script type="text/javascript">
@@ -1381,11 +1400,11 @@ EOF;
 				$table->construct_cell($data['filename']);
 				$table->construct_cell($data['action'] ? $data['action'] : $none);
 				$table->construct_cell($data['page'] ? $data['page'] : $none);
-				$table->construct_cell($form->generate_text_box("width_left[{$data['id']}]", $data['width_left'], array('style' => 'width: 40px;')).'%');
-				$table->construct_cell($form->generate_text_box("left_margin[{$data['id']}]", $data['left_margin'], array('style' => 'width: 40px;')).'%');
-				$table->construct_cell($form->generate_text_box("width_middle[{$data['id']}]", $data['width_middle'], array('style' => 'width: 40px;')).'%');
-				$table->construct_cell($form->generate_text_box("right_margin[{$data['id']}]", $data['right_margin'], array('style' => 'width: 40px;')).'%');
-				$table->construct_cell($form->generate_text_box("width_right[{$data['id']}]", $data['width_right'], array('style' => 'width: 40px;')).'%');
+				$table->construct_cell($form->generate_text_box("width_left[{$data['id']}]", $data['width_left'], array('class' => 'asb-dimension-cell')).'%');
+				$table->construct_cell($form->generate_text_box("left_margin[{$data['id']}]", $data['left_margin'], array('class' => 'asb-dimension-cell')).'%');
+				$table->construct_cell($form->generate_text_box("width_middle[{$data['id']}]", $data['width_middle'], array('class' => 'asb-dimension-cell')).'%');
+				$table->construct_cell($form->generate_text_box("right_margin[{$data['id']}]", $data['right_margin'], array('class' => 'asb-dimension-cell')).'%');
+				$table->construct_cell($form->generate_text_box("width_right[{$data['id']}]", $data['width_right'], array('class' => 'asb-dimension-cell')).'%');
 				$table->construct_cell($data['active'] ? $deactivateLink : $activateLink);
 
 				// options popup
@@ -1670,6 +1689,7 @@ function asb_admin_delete_box()
 		flash_message($lang->asb_delete_box_success, 'success');
 		asbCacheHasChanged();
 	}
+
 	admin_redirect($html->url());
 }
 
@@ -1696,6 +1716,7 @@ function asb_admin_delete_addon()
 		flash_message($lang->asb_delete_addon_success, 'success');
 		asbCacheHasChanged();
 	}
+
 	admin_redirect($html->url(array('action' => 'manage_modules')));
 }
 

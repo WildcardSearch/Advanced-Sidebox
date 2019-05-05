@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
- * http://www.rantcentralforums.com
+ * https://www.rantcentralforums.com
  *
  * functions for the forum-side
  */
@@ -18,7 +18,8 @@ function asbDoStartupChecks()
 
 	// if the EXCLUDE list isn't empty and this theme is listed...
 	$excludedArray = asbGetExcludedThemes();
-	if ($excludedArray &&
+	if (!empty($excludedArray) &&
+		is_array($excludedArray) &&
 		in_array($theme['tid'], $excludedArray)) {
 		// no side boxes for you
 		return false;
@@ -26,7 +27,7 @@ function asbDoStartupChecks()
 
 	/*
 	 * if the current user is not a guest, admin has allowed disabling side box
-	 * display and the user has chosen to do so then do not display
+	 * display, and the user has chosen to do so then do not display
 	 */
 	if ($mybb->settings['asb_allow_user_disable'] &&
 		$mybb->user['uid'] != 0 &&
@@ -70,6 +71,7 @@ function asbGetExcludedThemes($sql=false)
 			$returnVal = '';
 		}
 	}
+
 	return $returnVal;
 }
 
@@ -109,8 +111,10 @@ function asbBuildScriptFilename($script='')
 		if (!$script[$key]) {
 			continue;
 		}
+
 		$filename .= "&{$key}={$script[$key]}";
 	}
+
 	return $filename;
 }
 
@@ -185,6 +189,7 @@ function asbMergeSideBoxList($asb)
 		if ($args[1]) {
 			return $args[1];
 		}
+
 		// or an empty array if all else fails
 		return array();
 	}
@@ -207,6 +212,7 @@ function asbMergeSideBoxList($asb)
 			$returnArray[$sidebox] = $module['box_type'];
 		}
 	}
+
 	return $returnArray;
 }
 
@@ -358,6 +364,7 @@ function asbGetAllModules()
 		// attempt to load the module
 		$returnArray[$module] = new SideboxModule($module);
 	}
+
 	return $returnArray;
 }
 
@@ -379,6 +386,7 @@ function asbGetAllCustomBoxes()
 			$returnArray['asb_custom_'.$data['id']] = new CustomSidebox($data);
 		}
 	}
+
 	return $returnArray;
 }
 
@@ -412,6 +420,7 @@ function asbGetAllSideBoxes($allowedScript='')
 			$returnArray[$data['id']] = $sidebox;
 		}
 	}
+
 	return $returnArray;
 }
 
@@ -434,6 +443,7 @@ function asbGetAllScripts()
 			$returnArray[$filename] = $script;
 		}
 	}
+
 	return $returnArray;
 }
 

@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
- * http://www.rantcentralforums.com
+ * https://www.rantcentralforums.com
  *
  * this file contains language for the ACP pages
  */
@@ -185,9 +185,11 @@ $l['asb_modal_tab_themes'] = 'Themes';
 $l['asb_modal_tab_settings'] = 'Settings';
 $l['asb_modal_tab_settings_desc'] = 'Custom Module Settings';
 
-$l['asb_sample_content_line1'] = 'Place your custom content here.';
-$l['asb_sample_content_line2'] = 'For example:';
-$l['asb_sample_content_line3'] = 'my custom content';
+$l['asb_sample_content_tcat'] = '.tcat example';
+$l['asb_sample_content_trow1'] = '.trow1 example';
+$l['asb_sample_content_trow_sep'] = '.trow_sep example';
+$l['asb_sample_content_trow2'] = '.trow2 example';
+$l['asb_sample_content_tfoot'] = '.tfoot example';
 
 // groups
 $l['asb_which_groups'] = 'Which Groups?';
@@ -357,14 +359,20 @@ $l['asb_updated'] = 'updated';
 
 $l['asb_script_save_success'] = 'The script definition was saved successfully';
 $l['asb_script_save_fail'] = 'The script definition could not be saved successfully';
+$l['asb_script_save_width_error'] = 'The script definition could not be saved successfully because the total width was greater than 100%';
+
 $l['asb_script_import_success'] = 'The script definition was imported successfully';
 $l['asb_script_import_fail'] = 'The script definition could not be imported successfully';
+
 $l['asb_script_delete_success'] = 'The script definition was deleted successfully';
 $l['asb_script_delete_fail'] = 'The script definition could not be deleted successfully';
+
 $l['asb_script_export_success'] = 'The script definition was exported successfully';
 $l['asb_script_export_fail'] = 'The script definition could not be exported successfully';
+
 $l['asb_script_activate_success'] = 'The script definition was activated successfully';
 $l['asb_script_activate_fail'] = 'The script definition could not be activated successfully';
+
 $l['asb_script_deactivate_success'] = 'The script definition was deactivated successfully';
 $l['asb_script_deactivate_fail'] = 'The script definition could not be deactivated successfully';
 

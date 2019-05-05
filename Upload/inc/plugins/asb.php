@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
- * http://www.rantcentralforums.com
+ * https://www.rantcentralforums.com
  *
  * the main plugin file; splits forum and ACP scripts to decrease footprint
  */
@@ -17,7 +17,7 @@ define('IN_ASB', true);
 define('ASB_MODULES_DIR', MYBB_ROOT.'inc/plugins/asb/modules');
 define('ASB_VERSION', '3.1.18');
 define('ASB_CUSTOM_VERSION', '2.0');
-define('ASB_SCRIPT_VERSION', '2.0');
+define('ASB_SCRIPT_VERSION', '4.0');
 
 // register custom class autoloader
 spl_autoload_register('asbClassAutoload');

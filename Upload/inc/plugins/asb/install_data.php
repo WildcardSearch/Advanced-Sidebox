@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
- * http://www.rantcentralforums.com
+ * https://www.rantcentralforums.com
  *
  * this file contains data used by classes/installer.php
  */
@@ -1167,13 +1167,22 @@ td.off {
 	margin-bottom: 5px;
 }
 
-/* Manage Scripts Inline Edit */
+/* Manage Scripts **/
+
+	/** Inline Edit */
+
 tr.asb-script-checked > td {
 	background: #fffbd9!important;;
 	color: #333;
 	border-right-color: #f7e86a;
 	border-bottom-color: #f7e86a;
 }
+
+input.asb-dimension-cell {
+	width: 60%;
+	margin-right: 2.5%;
+}
+
 EOF
 		),
 	),

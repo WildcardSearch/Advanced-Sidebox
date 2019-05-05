@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
- * http://www.rantcentralforums.com
+ * https://www.rantcentralforums.com
  *
  * this file contains an object wrapper for script definitons
  */
@@ -32,7 +32,7 @@ class ScriptInfo extends PortableObject010102
 	/**
 	 * @var int
 	 */
-	protected $width_left = '15';
+	protected $width_left = '20';
 
 	/**
 	 * @var int
@@ -42,7 +42,7 @@ class ScriptInfo extends PortableObject010102
 	/**
 	 * @var int
 	 */
-	protected $width_middle = '69';
+	protected $width_middle = '59';
 
 	/**
 	 * @var int
@@ -52,7 +52,7 @@ class ScriptInfo extends PortableObject010102
 	/**
 	 * @var int
 	 */
-	protected $width_right = '15';
+	protected $width_right = '20';
 
 	/**
 	 * @var string

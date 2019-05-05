@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
- * http://www.rantcentralforums.com
+ * https://www.rantcentralforums.com
  *
  * This file contains the install functions for acp.php
  */
@@ -26,19 +26,10 @@ function asb_info()
 		$lang->load('asb');
 	}
 
+	$asbDescription = $lang->asb_description1;
 	$extraLinks = '<br />';
 	$settingsLink = asbBuildSettingsLink();
 	if ($settingsLink) {
-		if (file_exists(MYBB_ROOT.'inc/plugins/asb/cleanup.php') &&
-		   file_exists(MYBB_ROOT.'inc/plugins/adv_sidebox/acp_functions.php')) {
-			$removeLink = <<<EOF
-
-		<li>
-			<span style="color: red;">{$lang->asb_remove_old_files_desc}</span><br /><a href="{$mybb->settings['bburl']}/inc/plugins/asb/cleanup.php" title="{$lang->asb_remove_old_files}">{$lang->asb_remove_old_files}</a>
-		</li>
-EOF;
-		}
-
 		// only show Manage Sideboxes link if active
 		$pluginList = $cache->read('plugins');
 		$manageLink = '';
@@ -61,7 +52,7 @@ EOF;
 		$extraLinks = <<<EOF
 <ul>
 	{$settingsLink}
-	{$manageLink}{$removeLink}
+	{$manageLink}
 	<li style="list-style-image: url(styles/{$cp_style}/images/asb/help.png)">
 		<a href="https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help-Installation" title="{$lang->asb_help}">{$lang->asb_help}</a>
 	</li>
@@ -83,15 +74,14 @@ EOF;
 	</tbody>
 </table>
 EOF;
-	} else {
-		$asbDescription = $lang->asb_description1;
 	}
 
 	$name = <<<EOF
 <span style="font-familiy: arial; font-size: 1.5em; color: #2B387C; text-shadow: 2px 2px 2px #00006A;">{$lang->asb}</span>
 EOF;
+
 	$author = <<<EOF
-</a></small></i><a href="http://www.rantcentralforums.com" title="Rant Central"><span style="font-family: Courier New; font-weight: bold; font-size: 1.2em; color: #0e7109;">Wildcard</span></a><i><small><a>
+</a></small></i><a href="https://www.rantcentralforums.com" title="Rant Central"><span style="font-family: Courier New; font-weight: bold; font-size: 1.2em; color: #0e7109;">Wildcard</span></a><i><small><a>
 EOF;
 
 	// This array returns information about the plugin, some of which was prefabricated above based on whether the plugin has been installed or not.
@@ -100,7 +90,7 @@ EOF;
 		'description' => $asbDescription,
 		'website' => 'https://github.com/WildcardSearch/Advanced-Sidebox',
 		'author' => $author,
-		'authorsite' => 'http://www.rantcentralforums.com',
+		'authorsite' => 'https://www.rantcentralforums.com',
 		'version' => ASB_VERSION,
 		'compatibility' => '18*',
 		'codename' => 'asb',
@@ -140,12 +130,10 @@ function asb_install()
 	}
 
 	asbCreateScriptInfo();
-
-	@unlink(MYBB_ROOT.'inc/plugins/adv_sidebox.php');
 }
 
 /**
- * handle version control (a la pavemen), upgrade if necessary and
+ * handle version control, upgrade if necessary, and
  * change permissions for ASB
  *
  * @return void
@@ -283,6 +271,7 @@ function asbBuildSettingsLink()
 			return "<a href=\"{$url}\" title=\"{$lang->asb_plugin_settings}\">{$lang->asb_plugin_settings}</a>";
 		}
 	}
+
 	return false;
 }
 
@@ -413,6 +402,7 @@ EOF
 		foreach ($scripts as $key => $info) {
 			$returnArray[$key] = new ScriptInfo($info);
 		}
+
 		return $returnArray; // upgrade script will save these script defs
 	}
 }

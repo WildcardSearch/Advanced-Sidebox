@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
- * http://www.rantcentralforums.com
+ * https://www.rantcentralforums.com
  *
  * this file contains the functions used in ACP
  */
@@ -21,28 +21,19 @@ function asbBuildHelpLink($topic='')
 		$topic = 'manage_sideboxes';
 	}
 
-	switch ($topic) {
-	case 'manage_sideboxes':
-		$url = 'https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help-Managing-Sideboxes';
-		break;
-	case 'edit_box':
-		$url = 'https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help-Add-New-Side-Box';
-		break;
-	case 'edit_custom':
-		$url = 'https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help-Add-New-Custom-Box';
-		break;
-	case 'custom':
-		$url = 'https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help-Custom-Boxes';
-		break;
-	case 'edit_scripts':
-		$url = 'https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help-Add-New-Script-Definition';
-		break;
-	case 'manage_scripts':
-		$url = 'https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help-Managing-Scripts';
-		break;
-	case 'addons':
-		$url = 'https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help-Managing-Modules';
-		break;
+	$topics = array(
+		'manage_sideboxes' => 'Managing-Sideboxes',
+		'edit_box' => 'Add-New-Side-Box',
+		'edit_custom' => 'Add-New-Custom-Box',
+		'custom' => 'Custom-Boxes',
+		'edit_scripts' => 'Add-New-Script-Definition',
+		'manage_scripts' => 'Managing-Scripts',
+		'addons' => 'Managing-Modules',
+	);
+
+	$url = 'https://github.com/WildcardSearch/Advanced-Sidebox/wiki/Help';
+	if (strlen($topic) > 1) {
+		$url .= '-'.$topics[$topic];
 	}
 
 	return $html->link($url, $lang->asb_help, array('target' => '_blank', 'style' => 'font-weight: bold;', 'icon' => "styles/{$cp_style}/images/asb/help.png", 'title' => $lang->asb_help), array('alt' => '?', 'title' => $lang->asb_help, 'style' => 'margin-bottom: -3px;'));
@@ -92,11 +83,13 @@ function asbOutputTabs($current)
 			'description' => $lang->asb_add_custom_desc,
 		);
 	}
+
 	$tabs['asb_scripts'] = array(
 		'title' => $lang->asb_manage_scripts,
 		'link' => $html->url(array('action' => 'manage_scripts')),
 		'description' => $lang->asb_manage_scripts_desc,
 	);
+
 	if (in_array($current, array('asb_edit_script', 'asb_scripts'))) {
 		$tabs['asb_edit_script'] = array(
 			'title' => $lang->asb_edit_script,
@@ -104,11 +97,13 @@ function asbOutputTabs($current)
 			'description' => $lang->asb_edit_script_desc,
 		);
 	}
+
 	$tabs['asb_modules'] = array(
 		'title' => $lang->asb_manage_modules,
 		'link' => $html->url(array('action' => 'manage_modules')),
 		'description' => $lang->asb_manage_modules_desc,
 	);
+
 	$page->output_nav_tabs($tabs, $current);
 }
 
@@ -513,45 +508,8 @@ function asbDetectScriptInfo($filename, $selected=array())
 EOF;
 		}
 	}
+
 	return $returnArray;
-}
-
-/**
- * imports XML files created with ASB 1.x series
- *
- * @param  array
- * @return void
- */
-function asbLegacyCustomImport($tree)
-{
-	global $lang;
-
-	if (!is_array($tree['adv_sidebox']['custom_sidebox']) ||
-		empty($tree['adv_sidebox']['custom_sidebox'])) {
-		return $lang->asb_custom_import_file_corrupted;
-	}
-
-	foreach ($tree['adv_sidebox']['custom_sidebox'] as $property => $value) {
-		if ($property == 'tag' ||
-			$property == 'value') {
-			continue;
-		}
-		$inputArray[$property] = $value['value'];
-	}
-
-	if ($inputArray['content'] &&
-		$inputArray['checksum'] &&
-		my_strtolower(md5(base64_decode($inputArray['content']))) == my_strtolower($inputArray['checksum'])) {
-		$inputArray['content'] = trim(base64_decode($inputArray['content']));
-		$inputArray['title'] = $inputArray['name'];
-		return $inputArray;
-	}
-
-	$error = $lang->asb_custom_import_file_empty;
-	if ($inputArray['content']) {
-		$error = $lang->asb_custom_import_file_corrupted;
-	}
-	return $error;
 }
 
 /**
@@ -576,84 +534,6 @@ function asbBuildFilterSelector($filter)
 	echo($form->generate_select_box('page', $options, $filter));
 	echo($form->generate_submit_button('Filter', array('name' => 'filter')));
 	return $form->end();
-}
-
-/**
- * creates a single setting from an associative array
- *
- * @param  DefaultForm
- * @param  DefaultFormContainer
- * @param  array setting properties
- * @return void
- */
-function asbBuildSetting($this_form, $this_form_container, $setting)
-{
-	// create each element with unique id and name properties
-	$options = '';
-	$type = explode("\n", $setting['optionscode']);
-    $type = array_map('trim', $type);
-	$elementName = "{$setting['name']}";
-	$elementId = "setting_{$setting['name']}";
-	$rowId = "row_{$elementId}";
-
-	// prepare labels
-	$thisLabel = '<strong>'.htmlspecialchars_uni($setting['title']).'</strong>';
-	$thisDescription = '<i>'.$setting['description'].'</i>';
-
-	// sort by type
-	if ($type[0] == 'text' ||
-		$type[0] == '') {
-		$this_form_container->output_row($thisLabel, $thisDescription, $this_form->generate_text_box($elementName, $setting['value'], array('id' => $elementId)), $elementName, array('id' => $rowId));
-	} else if ($type[0] == 'textarea') {
-		$this_form_container->output_row($thisLabel, $thisDescription, $this_form->generate_text_area($elementName, $setting['value'], array('id' => $elementId)), $elementName, array('id' => $rowId));
-	} else if ($type[0] == 'yesno') {
-		$this_form_container->output_row($thisLabel, $thisDescription, $this_form->generate_yes_no_radio($elementName, $setting['value'], true, array('id' => $elementId.'_yes', 'class' => $elementId), array('id' => $elementId.'_no', 'class' => $elementId)), $elementName, array('id' => $rowId));
-	} else if ($type[0] == 'onoff') {
-		$this_form_container->output_row($thisLabel, $thisDescription, $this_form->generate_on_off_radio($elementName, $setting['value'], true, array('id' => $elementId.'_on', 'class' => $elementId), array('id' => $elementId.'_off', 'class' => $elementId)), $elementName, array('id' => $rowId));
-	} else if ($type[0] == 'language') {
-		$languages = $lang->get_languages();
-		$this_form_container->output_row($thisLabel, $thisDescription, $this_form->generate_select_box($elementName, $languages, $setting['value'], array('id' => $elementId)), $elementName, array('id' => $rowId));
-	} else if ($type[0] == 'adminlanguage') {
-		$languages = $lang->get_languages(1);
-		$this_form_container->output_row($thisLabel, $thisDescription, $this_form->generate_select_box($elementName, $languages, $setting['value'], array('id' => $elementId)), $elementName, array('id' => $rowId));
-	} else if ($type[0] == 'passwordbox') {
-		$this_form_container->output_row($thisLabel, $thisDescription, $this_form->generate_password_box($elementName, $setting['value'], array('id' => $elementId)), $elementName, array('id' => $rowId));
-	} else if ($type[0] == 'php') {
-		$setting['optionscode'] = substr($setting['optionscode'], 3);
-		eval("\$setting_code = \"".$setting['optionscode']."\";");
-	} else {
-		for ($i=0; $i < count($type); $i++) {
-			$optionsArray = explode('=', $type[$i]);
-			if (!$optionsArray[1]) {
-				continue;
-			}
-
-			if ($type[0] == 'select') {
-				$optionList[$optionsArray[0]] = htmlspecialchars_uni($optionsArray[1]);
-			} else if ($type[0] == 'radio') {
-				if ($setting['value'] == $optionsArray[0]) {
-					$optionList[$i] = $this_form->generate_radio_button($elementName, $optionsArray[0], htmlspecialchars_uni($optionsArray[1]), array('id' => $elementId.'_'.$i, 'checked' => 1, 'class' => $elementId));
-				} else {
-					$optionList[$i] = $this_form->generate_radio_button($elementName, $optionsArray[0], htmlspecialchars_uni($optionsArray[1]), array('id' => $elementId.'_'.$i, 'class' => $elementId));
-				}
-			} else if($type[0] == 'checkbox') {
-				if ($setting['value'] == $optionsArray[0]) {
-					$optionList[$i] = $this_form->generate_check_box($elementName, $optionsArray[0], htmlspecialchars_uni($optionsArray[1]), array('id' => $elementId.'_'.$i, 'checked' => 1, 'class' => $elementId));
-				} else {
-					$optionList[$i] = $this_form->generate_check_box($elementName, $optionsArray[0], htmlspecialchars_uni($optionsArray[1]), array('id' => $elementId.'_'.$i, 'class' => $elementId));
-				}
-			}
-		}
-		if ($type[0] == 'select') {
-			$this_form_container->output_row($thisLabel, $thisDescription, $this_form->generate_select_box($elementName, $optionList, $setting['value'], array('id' => $elementId)), $elementName, array('id' => $rowId));
-		} else {
-			$setting_code = implode('<br />', $optionList);
-		}
-	}
-
-	if ($setting_code) {
-		$this_form_container->output_row($thisLabel, $thisDescription, $setting_code, '', array(), array('id' => $rowId));
-	}
 }
 
 ?>

@@ -2,7 +2,7 @@
 /*
  * Plugin Name: MentionMe for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
- * http://www.rantcentralforums.com
+ * https://www.rantcentralforums.com
  *
  * this file defines an interface for the caching class
  */

@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
- * http://www.rantcentralforums.com
+ * https://www.rantcentralforums.com
  *
  * the forum-side routines start here
  */
@@ -65,7 +65,20 @@ function asb_start()
 	if ($totalWidth < 100) {
 		$width[2] += (100 - $totalWidth);
 	} elseif ($totalWidth > 100) {
-		$width[2] -= ($totalWidth - 100);
+		for ($p = 4; $p > 1; $p--) {
+			if ($width[$p] >= $totalWidth - 100) {
+				$width[$p] -= ($totalWidth - 100);
+				$totalWidth = 100;
+				break;
+			}
+
+			$totalWidth -= $width[$p];
+			$width[$p] = 0;
+		}
+
+		if ($totalWidth > 100) {
+			return false;
+		}
 	}
 
 	// does this column have boxes?
@@ -86,7 +99,7 @@ function asb_start()
 		}
 
 		// loop through them
-		foreach ($sideboxes as $id => $module_name) {
+		foreach ($sideboxes as $id => $moduleKey) {
 			// verify that the box ID exists
 			if (!isset($asb['sideboxes'][$id])) {
 				continue;
@@ -110,10 +123,10 @@ function asb_start()
 			$result = false;
 
 			// get the template variable
-			$template_var = "{$module_name}_{$id}";
+			$template_var = "{$moduleKey}_{$id}";
 
 			// attempt to load the box as an add-on module
-			$module = new SideboxModule($module_name);
+			$module = new SideboxModule($moduleKey);
 
 			// if it is valid, then the side box was created using an
 			// add-on module, so we can proceed
@@ -122,9 +135,9 @@ function asb_start()
 				// name and column width
 				$result = $module->buildContent($sidebox->get('settings'), $template_var, get_current_location());
 			// if it doesn't verify as an add-on, try it as a custom box
-			} elseif (isset($asb['custom'][$module_name]) &&
-				is_array($asb['custom'][$module_name])) {
-				$custom = new CustomSidebox($asb['custom'][$module_name]);
+			} elseif (isset($asb['custom'][$moduleKey]) &&
+				is_array($asb['custom'][$moduleKey])) {
+				$custom = new CustomSidebox($asb['custom'][$moduleKey]);
 
 				// if it validates, then build it, otherwise there was an error
 				if ($custom->isValid()) {
@@ -202,6 +215,7 @@ EOF;
 				'alt' => '&gt;',
 			)
 		);
+
 		$toggle_info['right']['close'] = $toggle_info['left']['open'];
 		$toggle_info['right']['open'] = $toggle_info['left']['close'];
 
@@ -305,6 +319,11 @@ EOF;
 		}
 	}
 
+	if (!$insertTop &&
+		!$insertBottom) {
+		return;
+	}
+
 	// replace everything on the page?
 	if ($script['replace_all'] == true) {
 		// if there is content
@@ -330,33 +349,28 @@ EOF;
 		eval("\$asb_right = \"".str_replace("\\'", "'", addslashes($insertBottom))."\";");
 	// otherwise we are editing the template in the cache
 	} else {
-		// if there are columns stored
-		if ($insertTop ||
-			$insertBottom) {
-			// make the edits
-			$script['find_top'] = str_replace("\r", '', $script['find_top']);
-			$script['find_bottom'] = str_replace("\r", '', $script['find_bottom']);
-			$topPosition = strpos($templates->cache[$script['template_name']], $script['find_top']);
+		// make the edits
+		$script['find_top'] = str_replace("\r", '', $script['find_top']);
+		$script['find_bottom'] = str_replace("\r", '', $script['find_bottom']);
+		$topPosition = strpos($templates->cache[$script['template_name']], $script['find_top']);
+		$bottomPosition = strpos($templates->cache[$script['template_name']], $script['find_bottom']);
 
-			if ($topPosition !== false) {
-				$bottomPosition = strpos($templates->cache[$script['template_name']], $script['find_bottom']);
-
-				if ($bottomPosition !== false) {
-					/*
-					 * split the template in 3 parts and splice our columns in after 1 and before 3
-					 * it is important that we function this way so we can work with the
-					  * FIRST instance of the search text (find_top and find_bottom) rather
-					  * than replacing multiple found instances
-					 */
-					$templates->cache[$script['template_name']] =
-						substr($templates->cache[$script['template_name']], 0, $topPosition + strlen($script['find_top'])) .
-						$insertTop .
-						substr($templates->cache[$script['template_name']], $topPosition + strlen($script['find_top']), $bottomPosition - ($topPosition + strlen($script['find_top']))) .
-						$insertBottom .
-						substr($templates->cache[$script['template_name']], $bottomPosition);
-				}
-			}
+		if ($topPosition === false || $bottomPosition === false) {
+			return false;
 		}
+
+		/*
+		 * split the template in 3 parts and splice our columns in after 1 and before 3
+		 * it is important that we function this way so we can work with the
+		  * FIRST instance of the search text (find_top and find_bottom) rather
+		  * than replacing multiple found instances
+		 */
+		$templates->cache[$script['template_name']] =
+			substr($templates->cache[$script['template_name']], 0, $topPosition + strlen($script['find_top'])) .
+			$insertTop .
+			substr($templates->cache[$script['template_name']], $topPosition + strlen($script['find_top']), $bottomPosition - ($topPosition + strlen($script['find_top']))) .
+			$insertBottom .
+			substr($templates->cache[$script['template_name']], $bottomPosition);
 	}
 }
 
@@ -430,8 +444,7 @@ function asbUserCpOptionsEnd()
 		$lang->load('asb');
 	}
 
-    // don't be silly and waste a query :p (thanks Destroy666)
-	if ($mybb->user['show_sidebox'] > 0) {
+    if ($mybb->user['show_sidebox'] > 0) {
 		$checked = 'checked="checked" ';
 	}
 

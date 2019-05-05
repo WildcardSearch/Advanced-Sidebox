@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
- * http://www.rantcentralforums.com
+ * https://www.rantcentralforums.com
  *
  * wrapper to handle our plugin's cache
  */
@@ -30,6 +30,7 @@ class AdvancedSideboxCache extends WildcardPluginCache010300
 		if (!isset($instance)) {
 			$instance = new AdvancedSideboxCache;
 		}
+
 		return $instance;
 	}
 
