@@ -30,7 +30,7 @@ function asb_welcome_info()
 		'title' => $lang->asb_welcome,
 		'description' => $lang->asb_welcome_desc,
 		'wrap_content' => true,
-		'version' => '2.0.2',
+		'version' => '2.0.0',
 		'compatibility' => '4.0',
 		'installData' => array(
 			'templates' => array(
@@ -39,42 +39,51 @@ function asb_welcome_info()
 					'template' => <<<EOF
 				<div class="trow1 asb-welcome-container">
 					{\$welcometext}
-					</td>
 				</div>
 EOF
 				),
 				array(
 					'title' => 'asb_welcome_membertext',
 					'template' => <<<EOF
-				{\$user_avatar}<span class="smalltext"><em>{\$lang->asb_welcome_member_welcome_lastvisit}:</em> {\$lastvisit}<br />
-				{\$lang->since_then}<br />
-				<strong>&raquo;</strong> {\$lang->asb_welcome_new_announcements}<br />
-				<strong>&raquo;</strong> {\$lang->asb_welcome_new_threads}<br />
-				<strong>&raquo;</strong> {\$lang->asb_welcome_new_posts}<br /><br />
-				<a href="{\$mybb->settings[\'bburl\']}/search.php?action=getnew">{\$lang->welcome_newposts}</a><br /><a href="{\$mybb->settings[\'bburl\']}/search.php?action=getdaily">{\$lang->asb_welcome_view_todays}</a>
-				</span>
+				<div class="asb-welcome-info">
+					<div class="smalltext trow_sep">
+						<span>{\$lang->asb_welcome_member_welcome_lastvisit}: {\$lastvisit}</span>
+					</div>
+					{\$user_avatar}
+					<ul class="asb-welcome-info-list">
+						<li>{\$lang->asb_welcome_new_announcements}</li>
+						<li>{\$lang->asb_welcome_new_threads}</li>
+						<li>{\$lang->asb_welcome_new_posts}</li>
+					</ul>
+					<div class="asb-welcome-links tfoot">
+						<a href="{\$mybb->settings[\'bburl\']}/search.php?action=getnew">{\$lang->welcome_newposts}</a> &mdash; <a href="{\$mybb->settings[\'bburl\']}/search.php?action=getdaily">{\$lang->asb_welcome_view_todays}</a>
+					</div>
+				</div>
 EOF
 				),
 				array(
 					'title' => 'asb_welcome_guesttext',
 					'template' => <<<EOF
-				<span class="smalltext">{\$lang->asb_welcome_guest_welcome_registration}</span><br />
-				<br />
-				<form method="post" action="{\$mybb->settings[\'bburl\']}/member.php"><input type="hidden" name="action" value="do_login"/>
-					<input name="my_post_key" type="hidden" value="{\$mybb->post_code}" />
-					<input type="hidden" name="url" value="member.php"/>
-					{\$username}<br /><input style="width: 95%;" type="text" class="textbox" name="username"/><br /><br />
-					{\$lang->password}<br /><input style="width: 95%;" type="password" class="textbox" name="password"/><br /><br />
-					<label title="{\$lang->remember_me_desc}"><input type="checkbox" class="checkbox" name="remember" value="yes"/> {\$lang->remember_me}</label><br /><br />
-					<input type="submit" class="button" name="loginsubmit" value="{\$lang->login}"/>
-				</form>
+				<div class="asb-welcome-registration-form-container trow1">
+					<form method="post" action="{\$mybb->settings[\'bburl\']}/member.php">
+						<input type="hidden" name="action" value="do_login"/>
+						<input name="my_post_key" type="hidden" value="{\$mybb->post_code}" />
+						<input type="hidden" name="url" value="member.php"/>
+						{\$username}<br /><input style="width: 95%;" type="text" class="textbox" name="username"/><br /><br />
+						{\$lang->password}<br /><input style="width: 95%;" type="password" class="textbox" name="password"/><br /><br />
+						<label title="{\$lang->remember_me_desc}"><input type="checkbox" class="checkbox" name="remember" value="yes"/> {\$lang->remember_me}</label><br /><br />
+						<input type="submit" class="button" name="loginsubmit" value="{\$lang->login}"/>
+					</form>
+				</div>
+				<div class="asb-welcome-registration-message tfoot">
+					<span class="smalltext">{\$lang->asb_welcome_guest_welcome_registration}</span>
+				</div>
 EOF
 				),
 				array(
 					'title' => 'asb_welcome_user_avatar',
 					'template' => <<<EOF
-					<span class="smalltext">{\$lang->asb_welcome_guest_welcome_registration}</span><br />
-					<span class="asb-welcome-user-avatar-container"><img src="{\$avatar_filename}" alt="{\$mybb->user[\'username\']}\'s profile"/>&nbsp;</span>
+					<div class="asb-welcome-user-avatar" style="background-image: url({\$avatar_filename});" title="{\$mybb->user[\'username\']}\'s profile"/></div>
 EOF
 				),
 			),

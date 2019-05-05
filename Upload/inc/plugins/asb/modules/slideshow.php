@@ -30,7 +30,7 @@ function asb_slideshow_info()
 		'title' => $lang->asb_slideshow,
 		'description' => $lang->asb_slideshow_desc,
 		'wrap_content' => true,
-		'version' => '2.0.9',
+		'version' => '2.0.0',
 		'compatibility' => '4.0',
 		'noContentTemplate' => 'asb_slideshow_no_content',
 		'scripts' => array(

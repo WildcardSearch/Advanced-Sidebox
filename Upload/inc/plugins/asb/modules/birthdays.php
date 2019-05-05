@@ -30,7 +30,7 @@ function asb_birthdays_info()
 		'title' => $lang->asb_birthdays_title,
 		'description' => $lang->asb_birthdays_description,
 		'wrap_content' => true,
-		'version' => '2.0.3',
+		'version' => '2.0.0',
 		'compatibility' => '4.0',
 		'installData' => array(
 			'templates' => array(
@@ -49,7 +49,7 @@ EOF
 					'title' => 'asb_birthdays_user_row',
 					'template' => <<<EOF
 				<div class="{\$altbg} asb-birthdays-header asb-birthdays-user-row">
-					{\$avatar} <span class="smalltext float_right">({\$user[\'age\']})</span><a href="{\$profileLink}" title="{\$userInfo}">{\$name}</a>
+					{\$avatar}<a href="{\$profileLink}" title="{\$userInfo}">{\$name}</a><span class="asb-birthdays-age-text smalltext"> &nbsp; ({\$user[\'age\']})</span>
 				</div>
 
 EOF
@@ -66,7 +66,7 @@ EOF
 				array(
 					'title' => 'asb_birthdays_user_avatar',
 					'template' => <<<EOF
-<img class="asb-birthdays-user-avatar" src="{\$avatarInfo[\'image\']}" alt="avatar" title="{\$user[\'username\']}\'s profile"{\$avatarInfo[\'width_height\']} />
+<div class="asb-birthdays-user-avatar" style="background-image: url({\$avatarInfo[\'image\']});" title="{\$user[\'username\']}\'s profile"></div>
 
 EOF
 				),

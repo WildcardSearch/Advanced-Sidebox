@@ -30,7 +30,7 @@ function asb_search_info()
 		'title' => $lang->asb_search,
 		'description' => $lang->asb_search_desc,
 		'wrap_content' => true,
-		'version' => '2.0.1',
+		'version' => '2.0.0',
 		'compatibility' => '4.0',
 		'installData' => array(
 			'templates' => array(
@@ -54,12 +54,12 @@ function asb_search_info()
 						<input type="radio" class="radio" name="showresults" value="threads" checked="checked"/>
 						<label for="showresults">{\$lang->asb_search_threads}</label><br /><br />
 						<label for="keywords"><strong>{\$lang->asb_search_keywords}</strong></label><br />
-						<input style="width: 95%;" type="text" class="textbox" name="keywords"/>
-						{\$gobutton}
+						<input type="text" class="asb-search-keywords textbox" name="keywords"/>
+						<input type="submit" class="asb-search-go-button button" value="Go">
 					</form><br />
-					<span class="smalltext">
-					(<a href="{\$mybb->settings[\'bburl\']}/search.php">{\$lang->asb_search_advanced_search}</a>)
-					</span>
+				</div>
+				<div class="asb-search-advanced tfoot">
+					<span class="smalltext"><a href="{\$mybb->settings[\'bburl\']}/search.php">{\$lang->asb_search_advanced_search}</a></span>
 				</div>
 EOF
 				),
@@ -76,7 +76,7 @@ EOF
  */
 function asb_search_get_content($settings, $script, $dateline)
 {
-	global $mybb, $templates, $lang, $gobutton;
+	global $mybb, $templates, $lang;
 
 	// Load global and custom language phrases
 	if (!$lang->asb_addon) {

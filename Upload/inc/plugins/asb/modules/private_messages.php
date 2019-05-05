@@ -31,18 +31,29 @@ function asb_private_messages_info()
 		'description' => $lang->asb_private_messages_desc,
 		'wrap_content' => true,
 		'xmlhttp' => true,
-		'version' => '2.0.1',
+		'version' => '2.0.0',
 		'compatibility' => '4.0',
+		'noContentTemplate' => 'asb_private_messages_no_content',
 		'installData' => array(
 			'templates' => array(
 				array(
 					'title' => 'asb_pms',
 					'template' => <<<EOF
 				<div class="trow1 asb-private-messages-container">
-					<span class="smalltext">{\$lang->asb_pms_received_new}<br /><br />
-					<strong>&raquo; </strong> <strong>{\$mybb->user[\'pms_unread\']}</strong> {\$lang->asb_pms_unread}<br />
-					<strong>&raquo; </strong> <strong>{\$mybb->user[\'pms_total\']}</strong> {\$lang->asb_pms_total}</span>
+					<div class="asb-private-messages-overview">
+						<span>{\$lang->asb_pms_received_new}</span>
+					</div>
+					<div class="asb-private-messages-links tfoot smalltext">
+						<a href="private.php">View All Messages</a> &mdash; <a href="private.php?action=send">Compose Message</a>
+					</div>
 				</div>
+EOF
+				),
+				array(
+					'title' => 'asb_private_messages_no_content',
+					'template' => <<<EOF
+<div class="asb-no-content-message">{\$lang->asb_private_messages_no_content}</div>
+
 EOF
 				),
 			),
@@ -67,29 +78,29 @@ function asb_private_messages_get_content($settings, $script, $dateline)
 
 	if ($mybb->user['uid'] == 0) {
 		// guest
-		$pmessages = $lang->sprintf("<tr><td class='trow1'>{$lang->asb_pms_no_messages}</td></tr>", "<a href=\"{$mybb->settings['bburl']}/member.php?action=login\">{$lang->asb_pms_login}</a>", "<a href=\"{$mybb->settings['bburl']}/member.php?action=register\">{$lang->asb_pms_register}</a>");
-		$ret_val = false;
-	} else {
-		// has the user disabled pms?
-		if ($mybb->user['receivepms']) {
-			// does admin allow pms?
-			if (!$mybb->usergroup['canusepms'] ||
-				!$mybb->settings['enablepms']) {
-				// if not tell them
-				$pmessages = $lang->sprintf("<tr><td class='trow1'>{$lang->asb_pms_disabled_by_admin}</td></tr>", "<a href=\"{$mybb->settings['bburl']}/usercp.php?action=options\">{$lang->welcome_usercp}</a>");
-				$ret_val = false;
-			} else {
-				// if so show the user their PM info
-				$username = build_profile_link(format_name($mybb->user['username'], $mybb->user['usergroup'], $mybb->user['displaygroup']), $mybb->user['uid']);
-				$lang->asb_pms_received_new = $lang->sprintf($lang->asb_pms_received_new, $username, $mybb->user['pms_unread']);
-
-				eval("\$pmessages = \"{$templates->get('asb_pms')}\";");
-			}
-		} else {
-			// user has disabled PMs
-			$pmessages = '';
-		}
+		$lang->asb_private_messages_no_content = $lang->sprintf($lang->asb_pms_no_messages, "<a href=\"member.php?action=login\">{$lang->asb_pms_login}</a>", "<a href=\"member.php?action=register\">{$lang->asb_pms_register}</a>");
+		return false;
 	}
+
+	// has the user disabled pms?
+	if (!$mybb->user['receivepms']) {
+		// user has disabled PMs
+		return false;
+	}
+
+	// does admin allow pms?
+	if (!$mybb->usergroup['canusepms'] ||
+		!$mybb->settings['enablepms']) {
+		// if not tell them
+		$lang->asb_private_messages_no_content = $lang->sprintf($lang->asb_pms_disabled_by_admin, "<a href=\"usercp.php?action=options\">{$lang->welcome_usercp}</a>");
+		return false;
+	}
+
+	// show the user their PM info
+	$username = build_profile_link(format_name($mybb->user['username'], $mybb->user['usergroup'], $mybb->user['displaygroup']), $mybb->user['uid']);
+	$lang->asb_pms_received_new = $lang->sprintf($lang->asb_pms_received_new, $mybb->user['pms_unread'], $mybb->user['pms_total']);
+
+	eval("\$pmessages = \"{$templates->get('asb_pms')}\";");
 
 	return $pmessages;
 }

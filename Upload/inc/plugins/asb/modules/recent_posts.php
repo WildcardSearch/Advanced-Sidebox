@@ -29,7 +29,7 @@ function asb_recent_posts_info()
 	return array(
 		'title' => $lang->asb_recent_posts,
 		'description' => $lang->asb_recent_posts_desc,
-		'version' => '2.0.1',
+		'version' => '2.0.0',
 		'compatibility' => '4.0',
 		'noContentTemplate' => 'asb_recent_posts_no_content',
 		'wrap_content' => true,
@@ -47,7 +47,7 @@ function asb_recent_posts_info()
 				'title' => $lang->asb_recent_posts_max_length_title,
 				'description' => $lang->asb_recent_posts_max_length_description,
 				'optionscode' => 'text',
-				'value' => '20',
+				'value' => '35',
 			),
 			'max_thread_title_length' => array(
 				'name' => 'max_thread_title_length',
@@ -98,10 +98,13 @@ function asb_recent_posts_info()
 					'title' => 'asb_recent_posts_post',
 					'template' => <<<EOF
 				<div class="tcat asb-recent-posts-title">
-					<a style="font-weight: bold;" href="{\$mybb->settings[\'bburl\']}/{\$post[\'link\']}" title="{\$post[\'subject\']}">{\$post[\'subject\']}</a>
+					<a style="font-weight: bold;" href="{\$post[\'link\']}" title="{\$post[\'subject\']}">{\$post[\'subject\']}</a>
 				</div>
 				<div class="{\$altbg} asb-recent-posts-excerpt">
-					{\$post_excerpt}<span>{\$post_author} &mdash; {\$lastposttime}</span>
+					{\$post_excerpt}
+				</div>
+				<div class="asb-recent-posts-author tfoot">
+					<span>{\$post_author} &mdash; {\$lastposttime}</span>
 				</div>
 EOF
 				),

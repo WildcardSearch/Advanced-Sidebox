@@ -29,7 +29,7 @@ function asb_staff_online_info()
  	return array(
 		'title' => $lang->asb_staff_online,
 		'description' => $lang->asb_staff_online_desc,
-		'version' => '2.0.4',
+		'version' => '2.0.0',
 		'compatibility' => '4.0',
 		'noContentTemplate' => 'asb_staff_online_no_content',
 		'wrap_content' => true,
@@ -62,11 +62,9 @@ function asb_staff_online_info()
 				array(
 					'title' => 'asb_staff_online_bit',
 					'template' => <<<EOF
-				<div class="{\$bgcolor} asb-staff-online-row">
-					<div class="{\$bgcolor} asb-staff-online-avatar">
-						<a href="{\$staff_profile_link}"><img src="{\$staff_avatar_filename}" alt="{\$staff_avatar_alt}" title="{\$staff_avatar_title}" /></a>
-					</div>
-					<div class="{\$bgcolor} asb-staff-online-user-container">
+				<div class="asb-staff-online-row trow1">
+					<a class="asb-staff-online-avatar" href="{\$staff_profile_link}" style="background-image: url({\$staff_avatar_filename});" title="{\$staff_avatar_title}"></a>
+					<div class="asb-staff-online-user-container">
 						<div class="asb-staff-online-username">
 							<a href="{\$staff_profile_link}" title="{\$staff_link_title}">{\$staff_username}</a>
 						</div>

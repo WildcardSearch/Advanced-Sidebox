@@ -30,7 +30,7 @@ function asb_top_poster_info()
 		'title' => $lang->asb_top_poster_title,
 		'description' => $lang->asb_top_poster_desc,
 		'wrap_content' => true,
-		'version' => '2.0.3',
+		'version' => '2.0.0',
 		'compatibility' => '4.0',
 		'noContentTemplate' => 'asb_top_poster_no_content',
 		'settings' => array(
@@ -100,34 +100,42 @@ EOF
 				array(
 					'title' => 'asb_top_posters_multiple',
 					'template' => <<<EOF
-				<div class="tcat asb-top-poster-description">
-					{\$top_poster_description}
+				<div class="asb-top-poster-posters {\$altbg}">
+					{\$top_posters}
 				</div>
-				<div class="{\$altbg} asb-top-poster-posters">{\$top_posters}
+				<div class="asb-top-poster-description trow_sep">
+					{\$top_poster_description}
 				</div>
 EOF
 				),
 				array(
 					'title' => 'asb_top_posters_single',
 					'template' => <<<EOF
-				<div class="{\$altbg} asb-top-poster-posters-single">{\$top_poster_avatar}{\$top_poster_text}</div>
+				<div class="trow1 asb-top-poster-posters-single">
+					<div class="asb-top-poster-avatar-single" style="background-image: url({\$top_poster_avatar_src});"></div>
+					<div class="asb-top-poster-poster-text">
+						{\$top_poster_text}
+					</div>
+				</div>
 EOF
 				),
 				array(
 					'title' => 'asb_top_poster',
 					'template' => <<<EOF
-				<div class="asb-top-poster-poster-avatar">
-					{\$top_poster_avatar}
-				</div>
-				<div class="asb-top-poster-poster-text">
-					{\$top_poster_text}
+				<div class="asb-top-poster {\$altbg}">
+					<div class="asb-top-poster-poster-avatar">
+						{\$top_poster_avatar}
+					</div>
+					<div class="asb-top-poster-poster-text">
+						{\$top_poster_text}
+					</div>
 				</div>
 EOF
 				),
 				array(
 					'title' => 'asb_top_poster_avatar',
 					'template' => <<<EOF
-<img class="asb-top-poster-avatar" src="{\$top_poster_avatar_src}" alt="{\$lang->asb_top_poster_no_avatar}" />
+<div class="asb-top-poster-avatar" style="background-image: url({\$top_poster_avatar_src});"></div>
 EOF
 				),
 				array(
@@ -344,7 +352,7 @@ EOF;
 			if ($threadsOnly) {
 				$top_poster_description = $lang->sprintf($lang->asb_top_poster_description_threads, $top_poster_timeframe_prelude).$extraCongrats;
 			}
-			$top_poster_text = $top_poster.'<br />'.$top_poster_posts;
+			$top_poster_text = $top_poster.'<br />'.$top_poster_posts.' '.$lang->asb_top_poster_posts;
 
 			eval("\$top_poster_avatar = \"{$templates->get('asb_top_poster_avatar')}\";");
 

@@ -382,9 +382,24 @@ div.asb-birthdays-no-birthdays {
 	
 }
 
-img.asb-birthdays-user-avatar {
+div.asb-birthdays-user-avatar {
+	display: inline-block;
+	vertical-align: middle;
+
 	width: 20%;
-	margin-bottom: -5px;
+	padding-bottom: 20%;
+
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: transparent;
+}
+
+div.asb-birthdays-user-row > span {
+	display: inline-block;
+	vertical-align: middle;
+
+	font-weight: bold;
 }
 
 	/** Birthdays End **/
@@ -429,9 +444,12 @@ span.asb-goals-progress-message {
 
 div.asb-goals-progress-indicator {
 	width: 95%;
-	background: white;
 	height: 20px;
+
+	margin: 2px auto;
 	border: 2px outset grey;
+
+	background-color: white;
 }
 
 div.asb-goals-progress-indicator-completed {
@@ -455,12 +473,31 @@ span.asb-latestest-threads-thread-title {
 	font-weight: bold;
 }
 
-div.asb-latest-threads-title-container {
-	
+div.asb-latest-threads-container {
+	font-size: 0;
 }
 
-div.asb-latest-threads-details-container {
-	
+div.asb-latest-threads-title-container {
+	display: inline-block;
+	vertical-align: top;
+
+	width: 60%;
+
+	font-size: 14px;
+
+	margin-left: 2%;
+	margin-right: 2%;
+}
+
+div.asb-latest-threads-last-post-container {
+	display: inline-block;
+
+	width: 20%;
+}
+
+div.asb-latest-threads-last-post-container a {
+	font-size: 12px;
+	font-weight: bold;
 }
 
 a.asb-latest-threads-thread-gotounread {
@@ -471,8 +508,19 @@ a.latest-threads-last-post-link {
 	
 }
 
-img.asb-latest-threads-last-poster-avatar {
-	
+a.asb-latest-threads-last-poster-avatar {
+	display: inline-block;
+
+	width: 15%;
+	padding-bottom: 15%;
+
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: transparent;
+
+	border-radius: 50%;
+	border: 1px solid lightgrey;
 }
 
 	/** Latest Threads End **/
@@ -481,6 +529,22 @@ img.asb-latest-threads-last-poster-avatar {
 
 div.asb-private-messages-container {
 	
+}
+
+div.asb-private-messages-overview {
+	text-align: center;
+
+	padding: 2.5%;
+}
+
+div.asb-private-messages-links {
+	
+}
+
+div.asb-private-messages-links a,
+div.asb-private-messages-links a:hover {
+	text-decoration: none;
+	font-weight: bold;
 }
 
 	/** Privates Messages End **/
@@ -526,16 +590,21 @@ a.asb-random-quote-thread_title_link span {
 	/** Recent Posts Start **/
 
 div.asb-recent-posts-title {
+	clear: both;
+
 	text-align: center; 
 }
 
 div.asb-recent-posts-excerpt {
-	
+	padding: 2.5%;
 }
 
-div.asb-recent-posts-excerpt span {
-	position: relative;
-	float: right;
+div.asb-recent-posts-author {
+	text-align: right;
+}
+
+div.asb-recent-posts-author span {
+	padding-right: 2.5%;
 }
 
 	/** Recent Posts End **/
@@ -544,6 +613,24 @@ div.asb-recent-posts-excerpt span {
 
 div.asb-search-container {
 	
+}
+
+input.asb-search-keywords {
+	width: 80%;
+}
+
+input.asb-search-go-button {
+	width: 13%;
+}
+
+div.asb-search-advanced {
+	text-align: center;
+	font-weight: bold;
+}
+
+div.asb-search-advanced > span > a,
+div.asb-search-advanced > span > a:hover {
+	text-decoration: none;
 }
 
 	/** Search End **/
@@ -597,25 +684,22 @@ div.asb-staff-online-row {
 	margin: 0px;
 }
 
-div.asb-staff-online-avatar,
+a.asb-staff-online-avatar,
 div.asb-staff-online-username,
 div.asb-staff-online-badge {
 	text-align: center;
 }
 
-div.asb-staff-online-avatar,
+a.asb-staff-online-avatar,
 div.asb-staff-online-user-container {
 	font-size: 14px;
 
 	display: inline-block;
 }
 
-div.asb-staff-online-avatar {
+a.asb-staff-online-avatar {
 	width: 19%;
-}
-
-div.asb-staff-online-avatar > a > img {
-	width: 100%;
+	padding-bottom: 19%;
 }
 
 div.asb-staff-online-user-container {
@@ -646,8 +730,21 @@ div.asb-statistics-container {
 	
 }
 
-div.asb-statistics-container > span {
-	
+ul.asb-statistics-list li {
+	list-style: none;
+}
+
+div.asb-statistics-full-link {
+	text-align: center;
+}
+
+div.asb-statistics-full-link a {
+	font-weight: bold;
+}
+
+div.asb-statistics-full-link a,
+div.asb-statistics-full-link a:hover {
+	text-decoration: none;
 }
 
 	/** Statistics End **/
@@ -687,22 +784,76 @@ div.asb-top-poster-poster-text {
 	padding-bottom: 0px;
 }
 
-img.asb-top-poster-avatar {
-	width:100%;
+div.asb-top-poster-avatar {
+	width: 90%;
+
+	padding-bottom: 90%;
+}
+
+div.asb-top-poster-avatar-single {
+	width: 80%;
+
+	padding-bottom: 80%;
+	margin: 2.5% auto;
+}
+
+div.asb-top-poster-avatar,
+div.asb-top-poster-avatar-single {
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: transparent;
 }
 
 	/** Top Poster End **/
 
 	/** Welcome Start **/
 
-span.asb-welcome-user-avatar-container {
-	float: right;
-	text-align: right;
-	width: 100%;
+div.asb-welcome-info {
+	
 }
 
-span.asb-welcome-user-avatar-container img {
+ul.asb-welcome-info-list li {
+	list-style: none;
+}
+
+div.asb-welcome-links {
+	text-align: center;
+
+	clear: both;
+}
+
+div.asb-welcome-links > a {
+	font-weight: bold;
+}
+
+div.asb-welcome-links > a,
+div.asb-welcome-links > a:hover {
+	text-decoration: none;
+}
+
+div.asb-welcome-user-avatar {
 	width: 20%;
+	padding-bottom: 20%;
+
+	margin-top: 5%;
+	margin-right: 5%;
+
+	display: inline-block;
+	float: right;
+
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: transparent;
+}
+
+div.asb-welcome-registration-form-container {
+	
+}
+
+div.asb-welcome-registration-message {
+	
 }
 
 	/** Welcome End **/
@@ -756,7 +907,11 @@ a.asb-whosonline-see-all-link {
 
 /** Responsive Adjustments **/
 
-@media screen and (max-width: 1000px) {
+@media print,screen and (min-width:64em){
+    
+}
+
+@media screen and (max-width:63.9375em) {
 
 	div.asb-sidebox-container {
 		text-align: center;
@@ -774,18 +929,14 @@ a.asb-whosonline-see-all-link {
 		margin-left: 0px;
 		margin-right: 0px;
 	}
-	
+
 	span.asb-sidebox-toggle-column {
 		display: none;
 	}
 }
 
-@media screen and (max-width: 768px) {
-	
-}
-
-@media screen and (max-width: 375px) {
-	
+@media screen and (max-width:39.9375em) {
+   
 }
 EOF
 		),

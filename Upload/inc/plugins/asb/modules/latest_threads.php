@@ -28,7 +28,7 @@ function asb_latest_threads_info()
 	return array(
 		'title' => $lang->asb_latest_threads,
 		'description' => $lang->asb_latest_threads_desc,
-		'version' => '2.0.2',
+		'version' => '2.0.0',
 		'compatibility' => '4.0',
 		'noContentTemplate' => 'asb_latest_threads_no_content',
 		'wrap_content' => true,
@@ -88,7 +88,7 @@ function asb_latest_threads_info()
 				'title' => $lang->asb_avatar_width_title,
 				'description' => $lang->asb_avatar_width_desc,
 				'optionscode' => 'text',
-				'value' => '30',
+				'value' => '20%',
 			),
 			'new_threads_only' => array(
 				'name' => 'new_threads_only',
@@ -111,16 +111,15 @@ function asb_latest_threads_info()
 					'title' => 'asb_latest_threads_thread',
 					'template' => <<<EOF
 				<div class="{\$altbg} asb-latest-threads-thread">
-					<div class="asb-latest-threads-title-container">
-						{\$gotounread} <a href="{\$mybb->settings[\'bburl\']}/{\$thread[\'threadlink\']}" title="{\$fullSubject}"><span class="asb-latestest-threads-thread-title">{\$thread[\'subject\']}</span></a>
-					</div>
-					<div class="asb-latest-threads-details-container">
-						<span class="smalltext">
-							{\$last_poster}<br />
-							{\$lastpostdate} {\$lastposttime}<br />
-							<strong>&raquo; </strong>{\$lang->asb_latest_threads_replies} {\$thread[\'replies\']}<br />
-							<strong>&raquo; </strong>{\$lang->asb_latest_threads_views} {\$thread[\'views\']}
-						</span>
+					<div class="asb-latest-threads-container">
+						{\$last_poster}
+						<div class="asb-latest-threads-title-container">
+							{\$gotounread} <a href="{\$mybb->settings[\'bburl\']}/{\$thread[\'threadlink\']}" title="{\$fullSubject}"><span class="asb-latestest-threads-thread-title">{\$thread[\'subject\']}</span></a><br />
+							<span class="smalltext">(Replies: {\$formattedReplies}; Views: {\$formattedViews})</span>
+						</div>
+						<div class="asb-latest-threads-last-post-container">
+							{\$lastPostLink}
+						</div>
 					</div>
 				</div>
 EOF
@@ -134,19 +133,25 @@ EOF
 				array(
 					'title' => 'asb_latest_threads_last_poster_name',
 					'template' => <<<EOF
-<a class="latest-threads-last-post-link" href="{\$thread[\'lastpostlink\']}" title="{\$lang->asb_latest_threads_lastpost}">{\$lang->asb_latest_threads_lastpost}:</a> {\$lastposterlink}
+{\$lastPostLink} by {\$lastposterlink}
 EOF
 				),
 				array(
 					'title' => 'asb_latest_threads_last_poster_avatar',
 					'template' => <<<EOF
-{\$lastposterlink}<br /><a class="latest-threads-last-post-link" href="{\$thread[\'lastpostlink\']}" title="{\$lang->asb_latest_threads_lastpost}">{\$lang->asb_latest_threads_lastpost}:</a>
+{\$avatar}
 EOF
 				),
 				array(
 					'title' => 'asb_latest_threads_last_poster_avatar_avatar',
 					'template' => <<<EOF
-<img class="asb-latest-threads-last-poster-avatar" src="{\$avatarInfo[\'image\']}" alt="{\$thread[\'last_post\']}" title="{\$thread[\'lastposter\']}\'s profile" style="width: {\$avatar_width};"/>
+<a href="{\$lastposter_profile_link}" class="asb-latest-threads-last-poster-avatar" style="background-image: url({\$avatarInfo[\'image\']});" title="{\$thread[\'lastposter\']}\'s profile"></a>
+EOF
+				),
+				array(
+					'title' => 'asb_latest_threads_last_post_link',
+					'template' => <<<EOF
+<a class="latest-threads-last-post-link" href="{\$thread[\'lastpostlink\']}" title="{\$lang->asb_latest_threads_lastpost}">{\$lang->asb_latest_threads_lastpost}</a>
 EOF
 				),
 				array(
@@ -297,6 +302,9 @@ function asb_latest_threads_get_content($settings, $script, $dateline)
 			continue;
 		}
 
+		$formattedViews = my_number_format($thread['views']);
+		$formattedReplies = my_number_format($thread['replies']);
+
 		$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
 		$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
 
@@ -342,6 +350,7 @@ function asb_latest_threads_get_content($settings, $script, $dateline)
 		$thread['threadlink'] = get_thread_link($thread['tid']);
 		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, 'lastpost');
 
+		eval("\$lastPostLink = \"{$templates->get('asb_latest_threads_last_post_link')}\";");
 		eval("\$last_poster = \"{$templates->get($lp_template)}\";");
 
 		$gotounread = '';

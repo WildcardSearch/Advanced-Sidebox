@@ -29,7 +29,7 @@ function asb_whosonline_info()
 	return array(
 		'title' => $lang->asb_wol,
 		'description' => $lang->asb_wol_desc,
-		'version' => '2.0.8',
+		'version' => '2.0.0',
 		'compatibility' => '4.0',
 		'noContentTemplate' => 'asb_whosonline_no_content',
 		'wrap_content' => true,

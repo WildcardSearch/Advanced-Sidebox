@@ -31,7 +31,7 @@ function asb_random_quote_info()
 		'description' => $lang->asb_random_quotes_desc,
 		'wrap_content' => true,
 		'xmlhttp' => true,
-		'version' => '2.0.3',
+		'version' => '2.0.0',
 		'compatibility' => '4.0',
 		'noContentTemplate' => 'asb_random_quote_no_content',
 		'settings' => array(

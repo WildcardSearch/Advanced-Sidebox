@@ -152,7 +152,7 @@ $l['asb_recent_posts_no_posts'] = 'There are no posts to display.';
 $l['asb_private_messages'] = 'Private Messages';
 $l['asb_private_messages_desc'] = "Lists the user's PM info";
 
-$l['asb_pms_received_new'] = '{1}, you have <b>{2}</b> unread message(s).';
+$l['asb_pms_received_new'] = '{1} of {2} messages unread';
 
 $l['asb_pms_no_messages'] = 'Please {1} or {2} to use this functionality.';
 $l['asb_pms_login'] = 'login';
@@ -161,6 +161,8 @@ $l['asb_pms_user_disabled_pms'] = 'You have disabled this functionality in {1}.'
 $l['asb_pms_disabled_by_admin'] = "You don't have privileges to access this functionality, or it has been disabled by administrator. You may contact administrator for assistance.";
 $l['asb_pms_unread'] = 'Unread Messages';
 $l['asb_pms_total'] = 'Total Messages';
+
+$l['asb_private_messages_no_content'] = 'Either you do not have permission to access private messages, or you have disabled them in User CP';
 
 // random quotes
 $l['asb_random_quotes'] = 'Random Quotes';

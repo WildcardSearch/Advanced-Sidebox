@@ -30,7 +30,7 @@ function asb_forum_age_info()
 		'title' => $lang->asb_forum_age_title,
 		'description' => $lang->asb_forum_age_description,
 		'wrap_content' => true,
-		'version' => '2.0.2',
+		'version' => '2.0.0',
 		'compatibility' => '4.0',
 		'xmlhttp' => true,
 		'settings' => array(
