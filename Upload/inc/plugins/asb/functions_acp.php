@@ -176,8 +176,10 @@ function asbBuildPermissionsTable($sidebox)
 	$themeList = asbBuildThemeVisibilityList($sidebox, $group_count + 1, $global);
 
 	return <<<EOF
-<table width="100%" class="box_info">{$visibility_rows}{$themeList}
-</table>
+
+								<table width="100%" class="box_info">{$visibility_rows}{$themeList}
+								</table>
+							
 EOF;
 }
 
@@ -220,22 +222,31 @@ function asbBuildVisibilityRows($sidebox, &$group_count, &$global)
 	if (empty($scripts)) {
 		if (empty($groups)) {
 			$global = true;
-			return "<tr><td>{$lang->asb_globally_visible}</td></tr>";
+			return <<<EOF
+
+									<tr><td>{$lang->asb_globally_visible}</td></tr>
+EOF;
 		} elseif (isset($groups[0]) && strlen($groups[0]) == 0) {
-			return "<tr><td>{$lang->asb_all_scripts_deactivated}</td></tr>";
+			return <<<EOF
+
+									<tr><td>{$lang->asb_all_scripts_deactivated}</td></tr>
+EOF;
 		} else {
 			$scripts = $allScripts;
 		}
 	} elseif (isset($scripts[0]) &&
 		strlen($scripts[0]) == 0) {
-		return "<tr><td>{$lang->asb_all_scripts_deactivated}</td></tr>";
+		return <<<EOF
+
+									<tr><td>{$lang->asb_all_scripts_deactivated}</td></tr>
+EOF;
 	}
 
 	$group_headers = '';
 	foreach ($options as $gid => $title) {
 		$group_headers .= <<<EOF
 
-		<td title="{$title}" class="group_header">{$gid}</td>
+										<td title="{$title}" class="group_header">{$gid}</td>
 EOF;
 	}
 
@@ -249,8 +260,8 @@ EOF;
 
 		$script_rows .= <<<EOF
 
-	<tr>
-		<td class="script_header" title="{$script_title_full}">{$script_title}</td>
+									<tr>
+										<td class="script_header" title="{$script_title_full}">{$script_title}</td>
 EOF;
 
 		if (empty($scripts) ||
@@ -261,7 +272,7 @@ EOF;
 				while ($x <= $all_group_count) {
 					$script_rows .= <<<EOF
 
-		<td class="info_cell on"></td>
+										<td class="info_cell on"></td>
 EOF;
 					++$x;
 				}
@@ -273,7 +284,7 @@ EOF;
 					}
 					$script_rows .= <<<EOF
 
-		<td class="info_cell {$vis_class}"></td>
+										<td class="info_cell {$vis_class}"></td>
 EOF;
 				}
 			}
@@ -282,7 +293,7 @@ EOF;
 			while ($x <= $all_group_count) {
 				$script_rows .= <<<EOF
 
-		<td class="info_cell off"></td>
+										<td class="info_cell off"></td>
 EOF;
 				++$x;
 			}
@@ -290,15 +301,15 @@ EOF;
 
 		$script_rows .= <<<EOF
 
-	</tr>
+									</tr>
 EOF;
 	}
 
 	return <<<EOF
 
-	<tr>
-		<td class="group_header"><strong>{$lang->asb_visibility}</strong></td>{$group_headers}
-	</tr>{$script_rows}
+									<tr>
+										<td class="group_header"><strong>{$lang->asb_visibility}</strong></td>{$group_headers}
+									</tr>{$script_rows}
 EOF;
 }
 
@@ -346,9 +357,9 @@ EOF;
 
 	return <<<EOF
 
-	<tr>
-		<td colspan="{$colspan}">{$themeList}</td>
-	</tr>
+									<tr>
+										<td colspan="{$colspan}">{$themeList}</td>
+									</tr>
 EOF;
 }
 
@@ -392,14 +403,16 @@ EOF;
 
 	// the content
 	$box = <<<EOF
-<span class="tooltip"><img class="info_icon" src="styles/{$cp_style}/images/asb/visibility.png" alt="Information" height="18" width="18"/>{$visibility}</span>{$editIcon}{$deleteIcon}{$title}
+
+							<span class="tooltip"><img class="info_icon" src="styles/{$cp_style}/images/asb/visibility.png" alt="Information" height="18" width="18"/>{$visibility}</span>{$editIcon}{$deleteIcon}<span class="asb-sidebox-title">{$title}</span>
 EOF;
 
 	// the <div> (if applicable)
 	if ($wrap) {
 		$box = <<<EOF
-<div id="sidebox_{$id}" class="sidebox sortable">{$box}</div>
 
+						<div id="sidebox_{$id}" class="sidebox sortable">{$box}
+						</div>
 EOF;
 	}
 

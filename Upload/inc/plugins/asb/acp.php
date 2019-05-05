@@ -97,10 +97,11 @@ function asb_admin_manage_sideboxes()
 
 			// add the HTML
 			$modules .= <<<EOF
-			<div id="asb-{$id}" class="draggable box_type">
-				{$titleLink}
-			</div>
 
+						<div id="asb-{$id}" class="draggable box_type">
+							{$titleLink}
+						</div>
+					
 EOF;
 		}
 	}
@@ -118,10 +119,11 @@ EOF;
 
 			// add the HTML
 			$customBoxes .= <<<EOF
-			<div id="{$id}" class="draggable custom_type">
-				{$titleLink}
-			</div>
 
+						<div id="{$id}" class="draggable custom_type">
+							{$titleLink}
+						</div>
+					
 EOF;
 		}
 	}
@@ -182,18 +184,10 @@ EOF;
 			</thead>
 			<tbody>
 				<tr>
-					<td id="addon_menu" valign="top" rowspan="2">
-						{$modules}
-					</td>
-					<td id="custom_menu" valign="top" rowspan="2">
-						{$customBoxes}
-					</td>
-					<td id="left_column" valign="top" class="column forum_column sortable droppable">
-						{$leftBoxes}
-					</td>
-					<td id="right_column" valign="top" class="column forum_column sortable droppable">
-						{$rightBoxes}
-					</td>
+					<td id="addon_menu" valign="top" rowspan="2">{$modules}</td>
+					<td id="custom_menu" valign="top" rowspan="2">{$customBoxes}</td>
+					<td id="left_column" valign="top" class="column forum_column sortable droppable">{$leftBoxes}</td>
+					<td id="right_column" valign="top" class="column forum_column sortable droppable">{$rightBoxes}</td>
 				</tr>
 				<tr id="bottomRight" height="45px;">
 					<td id="trash_column" class="column trashcan sortable" colspan="2" style="background: #f4f4f4 url(styles/{$cp_style}/images/asb/trashcan_bg.png) no-repeat center;"></td>
@@ -201,6 +195,7 @@ EOF;
 			</tbody>
 		</table>
 	</div>
+
 EOF;
 	// and display it
 	echo($markup);

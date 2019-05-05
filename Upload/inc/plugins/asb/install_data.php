@@ -198,8 +198,7 @@ $templates = array(
 		),
 		'templates' => array(
 			'asb_begin' => <<<EOF
-<div class="asb-sidebox-container">
-	{\$left_content}
+<div class="asb-sidebox-container">{\$left_content}
 	<!-- start: ASB middle column (page contents of {\$filename}) -->
 	<div id="asb_middle_column" class="asb-sidebox-column asb-sidebox-column-middle" style="width: {\$width_middle}%; margin-left: {\$left_margin}%; margin-right: {\$right_margin}%;">
 EOF
@@ -211,9 +210,9 @@ EOF
 EOF
 			,
 			'asb_sidebox_column' => <<<EOF
-		{\$toggle_left}<div class="asb-sidebox-column{\$extraClass}" style="width: {\$width}%;{\$show_column}" id="{\$column_id}">
-			{\$sideboxes}
-		</div>{\$toggle_right}
+	{\$toggle_left}
+	<div class="asb-sidebox-column{\$extraClass}" style="width: {\$width}%;{\$show_column}" id="{\$column_id}">{\$sideboxes}
+	</div>{\$toggle_right}
 EOF
 			,
 			'asb_wrapped_sidebox' => <<<EOF
@@ -233,15 +232,15 @@ EOF
 EOF
 			,
 			"asb_toggle_icon" => <<<EOF
-		<span class="asb-sidebox-toggle-column{\$positionClass}">
-			<a id="{\$column_id}" href="javascript:void()"><img id="{\$closed_id}" src="{\$close_image}" title="{\$lang->asb_toggle_hide}" alt="{\$close_alt}" style="{\$close_style}"/><img id="{\$open_id}" src="{\$open_image}" title="{\$lang->asb_toggle_show}" alt="{\$open_alt}" style="{\$open_style}"/></a>
-		</span>
+	<span class="asb-sidebox-toggle-column{\$positionClass}">
+		<a id="{\$column_id}" href="javascript:void()"><img id="{\$closed_id}" src="{\$close_image}" title="{\$lang->asb_toggle_hide}" alt="{\$close_alt}" style="{\$close_style}"/><img id="{\$open_id}" src="{\$open_image}" title="{\$lang->asb_toggle_show}" alt="{\$open_alt}" style="{\$open_style}"/></a>
+	</span>
 EOF
 			,
 			"asb_expander" => <<<EOF
-						<div class="expcolimage">
-							<img src="{\$theme['imgdir']}/{\$expcolimage}" id="{\$sidebox['expcolimage_id']}" class="expander" alt="{\$expaltext}" title="{\$expaltext}"/>
-						</div>
+				<div class="expcolimage">
+					<img src="{\$theme['imgdir']}/{\$expcolimage}" id="{\$sidebox['expcolimage_id']}" class="expander" alt="{\$expaltext}" title="{\$expaltext}"/>
+				</div>
 EOF
 			,
 			'asb_ucp_show_sidebox_option' => <<<EOF
