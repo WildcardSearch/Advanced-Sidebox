@@ -19,6 +19,11 @@ var ASB = (function(a, $) {
 	 */
 	function Slideshow(el, o)
 	{
+		if (typeof el !== "string" ||
+			el.length === 0) {
+			return;
+		}
+
 		this.options = {
 			rate: 10,
 			height: 200,
@@ -141,7 +146,7 @@ var ASB = (function(a, $) {
 
 		// get the next index or start over
 		this.imageIndex++;
-		if (this.imageIndex > this.images.length) {
+		if (this.imageIndex > this.options.images.length) {
 			this.imageIndex = 0;
 		}
 
