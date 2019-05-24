@@ -475,7 +475,7 @@ function asb_xmlhttp()
 	if ($module->isValid() &&
 		$sidebox->isValid()) {
 		// then call the module's AJAX method and echo its return value
-		echo($module->doXmlhttp($sidebox->get('settings'), $mybb->input['script'], $mybb->input['dateline']));
+		echo($module->doXmlhttp($sidebox->get('settings'), $mybb->input['script'], $mybb->input['dateline'], "{$mybb->input['addon']}_{$mybb->input['id']}"));
 	}
 
 	exit;

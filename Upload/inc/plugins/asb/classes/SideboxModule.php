@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Advanced Sidebox for MyBB 1.8.x
  * Copyright 2014 WildcardSearch
- * http://www.rantcentralforums.com
+ * https://www.rantcentralforums.com
  *
  * this file contains an object wrapper for external PHP modules
  */
@@ -53,11 +53,6 @@ class SideboxModule extends InstallableModule010001
 	protected $compatibility = '0';
 
 	/**
-	 * @var array
-	 */
-	protected $discarded_templates = array();
-
-	/**
 	 * @var bool
 	 */
 	protected $wrap_content = false;
@@ -88,6 +83,11 @@ class SideboxModule extends InstallableModule010001
 	protected $cacheSubKey = 'addons';
 
 	/**
+	 * @var string
+	 */
+	protected $noContentTemplate = 'asb_sidebox_no_content';
+
+	/**
 	 * attempts to load a module by name.
 	 *
 	 * @param  string base name
@@ -107,7 +107,45 @@ class SideboxModule extends InstallableModule010001
 
 		$this->hasScripts = !empty($this->scripts);
 
+		if ($this->xmlhttp) {
+			$this->buildXmlhttpSettings();
+		}
+
 		return true;
+	}
+
+	/**
+	 * remove any templates used by the module and clean up any boxes created
+	 * using this add-on module
+	 *
+	 * @param  bool remove children
+	 * @return void
+	 */
+	protected function buildXmlhttpSettings()
+	{
+		global $lang;
+
+		if (!$lang->asb_addon) {
+			$lang->load('asb_addon');
+		}
+
+		$this->settings['xmlhttp_refresh_rate'] = array(
+			'name' => 'xmlhttp_refresh_rate',
+			'title' => $lang->asb_xmlhttp_refresh_rate_title,
+			'description' => $lang->asb_xmlhttp_refresh_rate_description,
+			'optionscode' => 'text',
+			'value' => '0',
+		);
+
+		$this->settings['xmlhttp_refresh_decay'] = array(
+			'name' => 'xmlhttp_refresh_decay',
+			'title' => $lang->asb_xmlhttp_refresh_decay_title,
+			'description' => $lang->asb_xmlhttp_refresh_decay_description,
+			'optionscode' => 'text',
+			'value' => '1',
+		);
+
+		$this->hasSettings = true;
 	}
 
 	/**
@@ -124,37 +162,6 @@ class SideboxModule extends InstallableModule010001
 		if ($cleanup) {
 			$this->removeChildren();
 		}
-	}
-
-	/**
-	 * called upon add-on version change to verify module's templates/settings
-	 *
-	 * @return void
-	 */
-	protected function upgrade()
-	{
-		global $db;
-
-		// don't waste time if everything is in order
-		if ($this->isUpgraded) {
-			return;
-		}
-
-		// if any templates were dropped in this version
-		if (is_array($this->discarded_templates)) {
-			// delete them
-			$deleteList = $sep = '';
-			foreach ($this->discarded_templates as $template) {
-				$deleteList .= "{$sep}'{$template}'";
-				$sep = ',';
-			}
-
-			if ($deleteList) {
-				$db->delete_query('templates', "title IN({$deleteList})");
-			}
-		}
-
-		parent::upgrade();
 	}
 
 	/**
@@ -228,9 +235,21 @@ class SideboxModule extends InstallableModule010001
 	 *
 	 * @return mixed|bool return value of function or false
 	 */
-	public function buildTemplate($settings, $template_var, $width, $script)
+	public function buildContent($settings, $template_var, $script)
 	{
-		return $this->run('build_template', $settings, $template_var, $width, $script);
+		global $mybb, $templates, $theme, $lang, $$template_var;
+
+		$content = $this->run('get_content', $settings, $script, TIME_NOW);
+
+		if (!empty($content)) {
+			$$template_var = $content;
+			return true;
+		} elseif ($mybb->settings['asb_show_empty_boxes']) {
+			eval("\${$template_var} = \"".$templates->get($this->noContentTemplate)."\";");
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -241,9 +260,9 @@ class SideboxModule extends InstallableModule010001
 	 * @param  int column width
 	 * @return mixed|bool return value of function or false
 	 */
-	public function doXmlhttp($dateline, $settings, $width, $script)
+	public function doXmlhttp($settings, $script, $dateline)
 	{
-		return $this->run('xmlhttp', $dateline, $settings, $width, $script);
+		return $this->run('get_content', $settings, $script, (int) $dateline);
 	}
 
 	/**
@@ -265,9 +284,11 @@ class SideboxModule extends InstallableModule010001
 	public function doSettingsSave($settings)
 	{
 		$returnVal = $this->run('settings_save', $settings);
+
 		if ($returnVal) {
 			return $returnVal;
 		}
+
 		return $settings;
 	}
 }

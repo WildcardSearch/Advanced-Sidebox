@@ -32,6 +32,7 @@ function asb_slideshow_info()
 		'wrap_content' => true,
 		'version' => '2.0.0',
 		'compatibility' => '4.0',
+		'debugMode' => true,
 		'noContentTemplate' => 'asb_slideshow_no_content',
 		'scripts' => array(
 			'Slideshow',
@@ -145,7 +146,7 @@ EOF
  * @param  array info from child box
  * @return bool success/fail
  */
-function asb_slideshow_get_content($settings, $script, $dateline)
+function asb_slideshow_get_content($settings, $script, $dateline, $template_var)
 {
 	global $mybb, $templates;
 
