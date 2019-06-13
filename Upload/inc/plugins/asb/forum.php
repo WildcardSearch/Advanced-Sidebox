@@ -46,19 +46,19 @@ function asb_start()
 	);
 
 	if (empty($script['sideboxes'][0])) {
-		$script["width_left"] = $script["left_margin"] = '0';
+		$script['width_left'] = $script['left_margin'] = '0';
 	}
 
 	if (empty($script['sideboxes'][1])) {
-		$script["width_right"] = $script["right_margin"] = '0';
+		$script['width_right'] = $script['right_margin'] = '0';
 	}
 
 	$width = array(
-		0 => $script["width_left"],
-		1 => $script["width_right"],
-		2 => $script["width_middle"],
-		3 => $script["left_margin"],
-		4 => $script["right_margin"],
+		0 => $script['width_left'],
+		1 => $script['width_right'],
+		2 => $script['width_middle'],
+		3 => $script['left_margin'],
+		4 => $script['right_margin'],
 	);
 
 	$totalWidth = $width[0] + $width[1] + $width[2] + $width[3] + $width[4];
