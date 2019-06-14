@@ -33,6 +33,7 @@ $tables = array(
 		),
 		'asb_script_info' => array(
 			'id' => 'SERIAL',
+			'tid' => 'INT NOT NULL DEFAULT 0',
 			'title' => 'VARCHAR(32) NOT NULL',
 			'filename' => 'VARCHAR(32) NOT NULL',
 			'action' => 'VARCHAR(32) NOT NULL',
@@ -78,6 +79,7 @@ $tables = array(
 	),
 	'asb_script_info' => array(
 		'id' => 'INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+		'tid' => 'INT(10) NOT NULL DEFAULT 0',
 		'title' => 'VARCHAR(32) NOT NULL',
 		'filename' => 'VARCHAR(32) NOT NULL',
 		'action' => 'VARCHAR(32) NOT NULL',

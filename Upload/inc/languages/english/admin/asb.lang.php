@@ -345,10 +345,17 @@ $l['asb_custom_import_select_file'] = 'Select a local file:';
 
  // page
 $l['asb_manage_scripts'] = 'Manage Scripts';
-$l['asb_manage_scripts_desc'] = 'change how side boxes appear for each page';
+$l['asb_manage_scripts_desc'] = 'change how side boxes appear for each theme';
+
+$l['asb_view_scripts'] = 'View Scripts';
+$l['asb_view_scripts_desc'] = 'change how side boxes appear for each page';
 
 $l['asb_edit_script'] = 'Add New Script';
 $l['asb_edit_script_desc'] = 'add new script definitions or edit existing info';
+
+$l['asb_overwrite_confirmation'] = 'Overwrite Confirmation';
+$l['asb_overwrite_confirmation_desc'] = 'confirm that you want to overwrite an existing script definition';
+$l['asb_import_overwrite_warning'] = 'Importing this script definition will overwrite the existing definition. Would you like to proceed?';
 
 $l['asb_add_new_script'] = 'Add a new script definition';
 $l['asb_no_scripts'] = 'no script info to show';
@@ -357,6 +364,10 @@ $l['asb_script_definition'] = 'script definition';
 $l['asb_script_definitions'] = 'script definitions';
 $l['asb_updated'] = 'updated';
 
+$l['asb_revert'] = 'Revert';
+$l['asb_confirm'] = 'Confirm';
+
+// messages
 $l['asb_script_save_success'] = 'The script definition was saved successfully';
 $l['asb_script_save_fail'] = 'The script definition could not be saved successfully';
 $l['asb_script_save_width_error'] = 'The script definition could not be saved successfully because the total width was greater than 100%';
@@ -366,6 +377,9 @@ $l['asb_script_import_fail'] = 'The script definition could not be imported succ
 
 $l['asb_script_delete_success'] = 'The script definition was deleted successfully';
 $l['asb_script_delete_fail'] = 'The script definition could not be deleted successfully';
+
+$l['asb_script_revert_success'] = 'The script definition was reverted successfully';
+$l['asb_script_revert_fail'] = 'The script definition could not be reverted successfully';
 
 $l['asb_script_export_success'] = 'The script definition was exported successfully';
 $l['asb_script_export_fail'] = 'The script definition could not be exported successfully';

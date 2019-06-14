@@ -12,6 +12,11 @@ class ScriptInfo extends PortableObject010102
 	/**
 	 * @var string
 	 */
+	protected $tid = 0;
+
+	/**
+	 * @var string
+	 */
 	protected $title = '';
 
 	/**

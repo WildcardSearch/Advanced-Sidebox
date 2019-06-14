@@ -48,7 +48,7 @@ function asb_admin()
 	// URL, link and image markup generator
 	$html = new HTMLGenerator010000(ASB_URL, array('addon', 'pos', 'topic', 'ajax'));
 
-	$scripts = asbGetAllScripts();
+	$scripts = asbGetAllScripts(true);
 	if (is_array($scripts) &&
 		!empty($scripts)) {
 		foreach ($scripts as $filename => $script) {
@@ -67,7 +67,7 @@ function asb_admin()
 		// default to the main page
 		asb_admin_manage_sideboxes();
 	}
-	// get out
+
 	exit();
 }
 
@@ -101,7 +101,7 @@ function asb_admin_manage_sideboxes()
 						<div id="asb-{$id}" class="draggable box_type">
 							{$titleLink}
 						</div>
-					
+
 EOF;
 		}
 	}
@@ -123,7 +123,7 @@ EOF;
 						<div id="{$id}" class="draggable custom_type">
 							{$titleLink}
 						</div>
-					
+
 EOF;
 		}
 	}
@@ -989,7 +989,7 @@ EOF;
 }
 
 /**
- * add/edit/delete script info
+ * navigate to the script definition you wish to modify
  *
  * @return void
  */
@@ -999,9 +999,68 @@ function asb_admin_manage_scripts()
 
 	$page->add_breadcrumb_item($lang->asb, $html->url());
 
+	$page->extra_header .= <<<EOF
+<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
+
+EOF;
+
+	$page->add_breadcrumb_item($lang->asb_manage_scripts);
+	$page->output_header("{$lang->asb} - {$lang->asb_manage_scripts}");
+	asbOutputTabs('asb_scripts');
+
+	$table = new Table;
+	$table->construct_header($lang->asb_title, array('width' => '100%'));
+
+	$allThemes = array(0 => 'Master');
+	$query = $db->simple_select('themes', 'name, tid', "pid > 0");
+	while ($theme = $db->fetch_array($query)) {
+		$allThemes[$theme['tid']] = $theme['name'];
+	}
+
+	foreach ($allThemes as $tid => $name) {
+		$viewUrl = $html->url(array('action' => 'view_scripts', 'tid' => $tid));
+		$table->construct_cell($html->link($viewUrl, $name, array('style' => 'font-weight: bold;')));
+		$table->construct_row();
+	}
+
+	$table->output('Select a theme');
+
+	// output the link menu and MyBB footer
+	asbOutputFooter('manage_scripts');
+}
+
+/**
+ * add/edit/delete script info
+ *
+ * @return void
+ */
+function asb_admin_view_scripts()
+{
+	global $mybb, $db, $page, $lang, $html, $min, $cp_style;
+
+	$page->add_breadcrumb_item($lang->asb, $html->url());
+
+	$tid = isset($mybb->input['tid']) ? (int) $mybb->input['tid'] : 0;
+
+	$viewingMaster = false;
+	$theme = get_theme($tid);
+	if (!$theme) {
+		if ($tid) {
+			flash_message('The specified theme does not exist.', 'error');
+			admin_redirect($html->url(array('action' => 'manage_scripts')));
+		}
+
+		// master
+		$viewingMaster = true;
+		$theme = array(
+			'name' => 'Master Copy',
+		);
+	}
+
 	if ($mybb->request_method == 'post') {
 		if ($mybb->input['mode'] == 'edit') {
-			$redirectUrl = $html->url(array('action' => 'manage_scripts', 'mode' => 'edit', 'id' => $mybb->input['id']));
+			$id = (int) $mybb->input['id'];
+			$redirectUrl = $html->url(array('action' => 'view_scripts', 'mode' => 'edit', 'tid' => $tid, 'id' => $id));
 
 			$mybb->input['action'] = $mybb->input['script_action'];
 			$script = new ScriptInfo($mybb->input);
@@ -1020,36 +1079,54 @@ function asb_admin_manage_scripts()
 			asbCacheHasChanged();
 
 			flash_message($lang->asb_script_save_success, 'success');
-			admin_redirect($html->url(array('action' => 'manage_scripts')));
+			admin_redirect($html->url(array('action' => 'view_scripts', 'tid' => $tid)));
 		} elseif ($mybb->input['mode'] == 'import') {
-			if (!$_FILES['file'] ||
-				$_FILES['file']['error'] == 4) {
-				flash_message($lang->asb_custom_import_no_file, 'error');
-				admin_redirect($html->url(array('action' => 'manage_scripts')));
-			}
+			$overWrite = isset($mybb->input['overwrite']) && $mybb->input['overwrite'];
 
-			if ($_FILES['file']['error']) {
-				flash_message($lang->sprintf($lang->asb_custom_import_file_error, $_FILES['file']['error']), 'error');
-				admin_redirect($html->url(array('action' => 'manage_scripts')));
-			}
+			if ($overWrite) {
+				$contents = $mybb->input['contents'];
+			} else {
+				if (!$_FILES['file'] ||
+					$_FILES['file']['error'] == 4) {
+					flash_message($lang->asb_custom_import_no_file, 'error');
+					admin_redirect($html->url(array('action' => 'view_scripts')));
+				}
 
-			if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
-				flash_message($lang->asb_custom_import_file_upload_error, 'error');
-				admin_redirect($html->url(array('action' => 'manage_scripts')));
-			}
+				if ($_FILES['file']['error']) {
+					flash_message($lang->sprintf($lang->asb_custom_import_file_error, $_FILES['file']['error']), 'error');
+					admin_redirect($html->url(array('action' => 'view_scripts')));
+				}
 
-			$contents = @file_get_contents($_FILES['file']['tmp_name']);
-			@unlink($_FILES['file']['tmp_name']);
+				if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+					flash_message($lang->asb_custom_import_file_upload_error, 'error');
+					admin_redirect($html->url(array('action' => 'view_scripts')));
+				}
+
+				$contents = @file_get_contents($_FILES['file']['tmp_name']);
+				@unlink($_FILES['file']['tmp_name']);
+			}
 
 			if (strlen(trim($contents)) == 0) {
 				flash_message($lang->asb_custom_import_file_empty, 'error');
-				admin_redirect($html->url(array('action' => 'manage_scripts')));
+				admin_redirect($html->url(array('action' => 'view_scripts')));
 			}
 
 			$script = new ScriptInfo;
 			if (!$script->import($contents)) {
 				flash_message($lang->asb_script_import_fail, 'error');
-				admin_redirect($html->url(array('action' => 'manage_scripts')));
+				admin_redirect($html->url(array('action' => 'view_scripts')));
+			}
+
+			$script->set('tid', $tid);
+
+			if (!$overWrite) {
+				$keys = $script->get(array('filename', 'action', 'page'));
+				if (asbFindDuplicateScriptByFilename($keys, $tid)) {
+					asbConfirmScriptImportOverwrite($contents, $tid);
+				} elseif (!$viewingMaster &&
+					asbFindDuplicateScriptByFilename($keys) === false) {
+					$script->set('tid', 0);
+				}
 			}
 
 			if (!$script->save()) {
@@ -1059,9 +1136,9 @@ function asb_admin_manage_scripts()
 			asbCacheHasChanged();
 
 			flash_message($lang->asb_script_import_success, 'success');
-			admin_redirect($html->url(array('action' => 'manage_scripts')));
+			admin_redirect($html->url(array('action' => 'view_scripts', 'tid' => $tid)));
 		} elseif ($mybb->input['mode'] == 'inline') {
-			$redirect = $html->url(array('action' => 'manage_scripts'));
+			$redirect = $html->url(array('action' => 'view_scripts', 'tid' => $tid));
 
 			if (!is_array($mybb->input['asb_inline_ids']) ||
 				empty($mybb->input['asb_inline_ids'])) {
@@ -1093,11 +1170,17 @@ function asb_admin_manage_scripts()
 
 					if ($totalWidth > 100) {
 						flash_message($lang->asb_script_save_width_error, 'error');
-						admin_redirect($html->url(array('action' => 'manage_scripts')));
+						admin_redirect($html->url(array('action' => 'view_scripts')));
 					}
 
 					if ($changed == false) {
 						continue 2;
+					}
+
+					$scriptTid = (int) $script->get('tid');
+					if (!$viewingMaster &&
+						$scriptTid === 0) {
+						$script->set(array('id' => 0, 'tid' => $tid));
 					}
 
 					$script->save();
@@ -1151,13 +1234,21 @@ function asb_admin_manage_scripts()
 		}
 	}
 
-	if ($mybb->input['mode'] == 'delete' &&
+	if (in_array($mybb->input['mode'], array('delete', 'revert')) &&
 		$mybb->input['id']) {
 		$script = new ScriptInfo((int) $mybb->input['id']);
+
+		$failMessage = $lang->asb_script_delete_fail;
+		$successMessage = $lang->asb_script_delete_success;
+		if ($mybb->input['mode'] == 'revert') {
+			$failMessage = $lang->asb_script_revert_fail;
+			$successMessage = $lang->asb_script_revert_success;
+		}
+
 		if (!$script->remove()) {
-			flash_message($lang->asb_script_delete_fail, 'error');
+			flash_message($failMessage, 'error');
 		} else {
-			flash_message($lang->asb_script_delete_success, 'success');
+			flash_message($successMessage, 'success');
 			asbCacheHasChanged();
 		}
 	} elseif ($mybb->input['mode'] == 'export' && $mybb->input['id']) {
@@ -1165,7 +1256,7 @@ function asb_admin_manage_scripts()
 
 		if (!$script->export(array('version' => ASB_SCRIPT_VERSION))) {
 			flash_message($lang->asb_script_export_fail, 'error');
-			admin_redirect($html->url(array('action' => 'manage_scripts')));
+			admin_redirect($html->url(array('action' => 'view_scripts')));
 		}
 		exit;
 	} elseif (($mybb->input['mode'] == 'activate' ||
@@ -1182,21 +1273,8 @@ function asb_admin_manage_scripts()
 			flash_message($action, 'success');
 			asbCacheHasChanged();
 		}
-		admin_redirect($html->url(array('action' => 'manage_scripts')));
+		admin_redirect($html->url(array('action' => 'view_scripts')));
 	}
-
-	$data = array(
-		'active' => 'false',
-		'find_top' => '{$header}',
-		'find_bottom' => '{$footer}',
-		'replace_all' => 0,
-		'eval' => 0,
-		'width_left' => '15',
-		'left_margin' => '0.5',
-		'width_middle' => '69',
-		'right_margin' => '0.5',
-		'width_right' => '15',
-	);
 
 	if ($mybb->input['mode'] == 'edit') {
 		$script = new ScriptInfo((int) $mybb->input['id']);
@@ -1204,6 +1282,19 @@ function asb_admin_manage_scripts()
 		$detectedShow = ' style="display: none;"';
 		$buttonText = $lang->asb_add;
 		$filename = '';
+
+		$data = array(
+			'active' => 'false',
+			'find_top' => '{$header}',
+			'find_bottom' => '{$footer}',
+			'replace_all' => 0,
+			'eval' => 0,
+			'width_left' => '15',
+			'left_margin' => '0.5',
+			'width_middle' => '69',
+			'right_margin' => '0.5',
+			'width_right' => '15',
+		);
 
 		$action = $lang->asb_edit_script;
 		if ($script->isValid()) {
@@ -1266,10 +1357,20 @@ EOF;
 
 EOF;
 
-		$page->add_breadcrumb_item($lang->asb_manage_scripts, $html->url(array('action' => 'manage_scripts')));
+		$page->add_breadcrumb_item($lang->asb_view_scripts, $html->url(array('action' => 'view_scripts')));
 		$page->add_breadcrumb_item($lang->asb_edit_script);
-		$page->output_header("{$lang->asb} - {$lang->asb_manage_scripts} - {$lang->asb_edit_script}");
+		$page->output_header("{$lang->asb} - {$lang->asb_view_scripts} - {$lang->asb_edit_script}");
 		asbOutputTabs('asb_edit_script');
+
+		// editing master definition
+		if ($viewingMaster) {
+			$page->output_alert('You are editing the master definition. Any changes made to this copy will be reflected in all unmodified copies of this definition in every theme.');
+		} elseif ((int) $data['tid'] !== $tid) {
+			// creating new definition
+			$page->output_alert('You are creating a custom copy of the master definition for use with this theme. Changes made to the master copy will no longer affect this definition until you revert.');
+
+			$data['id'] = 0;
+		}
 
 		$spinner = <<<EOF
 <div class="ajax_spinners" style="display: none;">
@@ -1277,7 +1378,7 @@ EOF;
 </div>
 EOF;
 
-		$form = new Form($html->url(array('action' => 'manage_scripts', 'mode' => 'edit')), 'post', 'edit_script');
+		$form = new Form($html->url(array('action' => 'view_scripts', 'mode' => 'edit')), 'post', 'edit_script');
 		$formContainer = new FormContainer($lang->asb_edit_script);
 
 		$formContainer->output_row("{$lang->asb_title}:", $lang->asb_title_desc, $form->generate_text_box('title', $data['title']));
@@ -1299,7 +1400,7 @@ EOF;
 		$formContainer->output_row("{$lang->asb_hook}:", $lang->asb_hook_desc, "{$spinner}<div id=\"hook_list\"{$detectedShow}>{$detectedInfo['hooks']}</div>".$form->generate_text_box('hook', $data['hook'], array('id' => 'hook')), '', array(), array('id' => 'hook_row'));
 
 		$formContainer->output_row($lang->asb_header_search_text, $lang->asb_header_search_text_desc, $form->generate_text_area('find_top', $data['find_top'], array('id' => 'find_top', 'class' => '', 'style' => 'width: 100%;', 'rows' => '3')), '', array(), array('id' => 'header_search'));
-		$formContainer->output_row($lang->asb_footer_search_text, $lang->asb_footer_search_text_desc, $form->generate_text_area('find_bottom', $data['find_bottom'], array('id' => 'find_bottom', 'class' => '', 'style' => 'width: 100%; height: 100px;')).$form->generate_hidden_field('id', $data['id']).$form->generate_hidden_field('active', $data['active']).$form->generate_hidden_field('action', 'manage_scripts').$form->generate_hidden_field('mode', 'edit'), '', array(), array('id' => 'footer_search'));
+		$formContainer->output_row($lang->asb_footer_search_text, $lang->asb_footer_search_text_desc, $form->generate_text_area('find_bottom', $data['find_bottom'], array('id' => 'find_bottom', 'class' => '', 'style' => 'width: 100%; height: 100px;')).$form->generate_hidden_field('tid', $tid).$form->generate_hidden_field('id', $data['id']).$form->generate_hidden_field('active', $data['active']).$form->generate_hidden_field('action', 'view_scripts').$form->generate_hidden_field('mode', 'edit'), '', array(), array('id' => 'footer_search'));
 
 		$formContainer->output_row($lang->asb_replace_template, $lang->asb_replace_template_desc, $form->generate_yes_no_radio('replace_all', $data['replace_all'], true, array('id' => 'replace_all_yes', 'class' => 'replace_all'), array('id' => 'replace_all_no', 'class' => 'replace_all')), '', array(), array('id' => 'replace_all'));
 
@@ -1340,125 +1441,170 @@ EOF;
 
 		// output the link menu and MyBB footer
 		asbOutputFooter('edit_scripts');
-	} else {
-		$page->extra_header .= <<<EOF
-	<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
-	<script type="text/javascript" src="jscripts/asb/asb_inline{$min}.js"></script>
-	<script type="text/javascript">
-	<!--
-	ASB.inline.setup({
-		go: '{$lang->go}',
-		noSelection: '{$lang->asb_inline_selection_error}',
-	});
-	// -->
-	</script>
+
+		exit;
+	}
+
+	$page->extra_header .= <<<EOF
+<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
+<script type="text/javascript" src="jscripts/asb/asb_inline{$min}.js"></script>
+<script type="text/javascript">
+<!--
+ASB.inline.setup({
+	go: '{$lang->go}',
+	noSelection: '{$lang->asb_inline_selection_error}',
+});
+// -->
+</script>
 
 EOF;
 
-		$page->add_breadcrumb_item($lang->asb_manage_scripts);
-		$page->output_header("{$lang->asb} - {$lang->asb_manage_scripts}");
-		asbOutputTabs('asb_scripts');
+	$page->add_breadcrumb_item($lang->asb_manage_scripts, $html->url(array('action' => 'manage_scripts')));
+	$page->add_breadcrumb_item("{$lang->asb_view_scripts} ({$theme['name']})");
+	$page->output_header("{$lang->asb} - {$lang->asb_view_scripts} - {$theme['name']}");
+	asbOutputTabs('asb_view_scripts');
 
-		$newScriptUrl = $html->url(array('action' => 'manage_scripts', 'mode' => 'edit'));
-		$newScriptLink = $html->link($newScriptUrl, $lang->asb_add_new_script, array('style' => 'font-weight: bold;', 'title' => $lang->asb_add_new_script, 'icon' => "styles/{$cp_style}/images/asb/add.png"), array('alt' => '+', 'title' => $lang->asb_add_new_script, 'style' => 'margin-bottom: -3px;'));
-		echo($newScriptLink.'<br /><br />');
+	$newScriptUrl = $html->url(array('action' => 'view_scripts', 'mode' => 'edit', 'tid' => $tid));
+	$newScriptLink = $html->link($newScriptUrl, $lang->asb_add_new_script, array('style' => 'font-weight: bold;', 'title' => $lang->asb_add_new_script, 'icon' => "styles/{$cp_style}/images/asb/add.png"), array('alt' => '+', 'title' => $lang->asb_add_new_script, 'style' => 'margin-bottom: -3px;'));
+	echo($newScriptLink.'<br /><br />');
 
-		$form = new Form($html->url(array('action' => 'manage_scripts', 'mode' => 'inline')), 'post', 'inline_form');
+	$form = new Form($html->url(array('action' => 'view_scripts', 'mode' => 'inline')), 'post', 'inline_form');
 
-		$table = new Table;
-		$table->construct_header($lang->asb_title, array('width' => '20%'));
-		$table->construct_header($lang->asb_filename, array('width' => '10%'));
-		$table->construct_header($lang->asb_action, array('width' => '8%'));
-		$table->construct_header($lang->asb_page, array('width' => '8%'));
-		$table->construct_header($lang->asb_width_left, array('width' => '8%'));
-		$table->construct_header($lang->asb_left_margin, array('width' => '8%'));
-		$table->construct_header($lang->asb_width_middle, array('width' => '8%'));
-		$table->construct_header($lang->asb_right_margin, array('width' => '8%'));
-		$table->construct_header($lang->asb_width_right, array('width' => '8%'));
-		$table->construct_header($lang->asb_status, array('width' => '8%'));
-		$table->construct_header($lang->asb_controls, array('width' => '10%'));
-		$table->construct_header($form->generate_check_box('', '', '', array('id' => 'asb_select_all')), array('style' => 'width: 1%'));
+	$table = new Table;
+	$table->construct_header($lang->asb_title, array('width' => '20%'));
+	$table->construct_header($lang->asb_filename, array('width' => '10%'));
+	$table->construct_header($lang->asb_action, array('width' => '8%'));
+	$table->construct_header($lang->asb_page, array('width' => '8%'));
+	$table->construct_header($lang->asb_width_left, array('width' => '8%'));
+	$table->construct_header($lang->asb_left_margin, array('width' => '8%'));
+	$table->construct_header($lang->asb_width_middle, array('width' => '8%'));
+	$table->construct_header($lang->asb_right_margin, array('width' => '8%'));
+	$table->construct_header($lang->asb_width_right, array('width' => '8%'));
+	$table->construct_header($lang->asb_status, array('width' => '8%'));
+	$table->construct_header($lang->asb_controls, array('width' => '10%'));
+	$table->construct_header($form->generate_check_box('', '', '', array('id' => 'asb_select_all')), array('style' => 'width: 1%'));
 
-		$query = $db->simple_select('asb_script_info', '*', '', array('order_by' => 'title', 'order_dir' => 'ASC'));
-		if ($db->num_rows($query) > 0) {
-			while ($data = $db->fetch_array($query)) {
-				$editUrl = $html->url(array('action' => 'manage_scripts', 'mode' => 'edit', 'id' => $data['id']));
-				$activateUrl = $html->url(array('action' => 'manage_scripts', 'mode' => 'activate', 'id' => $data['id']));
-				$deactivateUrl = $html->url(array('action' => 'manage_scripts', 'mode' => 'deactivate', 'id' => $data['id']));
-				$activateLink = $html->link($activateUrl, $lang->asb_inactive, array('style' => 'font-weight: bold; color: red;', 'title' => $lang->asb_inactive_desc));
-				$deactivateLink = $html->link($deactivateUrl, $lang->asb_active, array('style' => 'font-weight: bold; color: green', 'title' => $lang->asb_active_desc));
-				$none = <<<EOF
+	$where = "tid IN(0,{$tid})";
+	$deleteScriptText = $lang->asb_revert;
+	$deleteScriptKey = 'revert';
+	if ($viewingMaster) {
+		$deleteScriptText = $lang->asb_delete;
+		$deleteScriptKey = 'delete';
+		$where = 'tid=0';
+	}
+
+	$query = $db->simple_select('asb_script_info', '*', $where, array('order_by' => 'title', 'order_dir' => 'ASC'));
+
+	$allScripts = array();
+	while ($data = $db->fetch_array($query)) {
+		$isMaster = (int) $data['tid'] === 0;
+		$key = asbBuildScriptFilename($data);
+
+		if (!$viewingMaster &&
+			$isMaster &&
+			isset($allScripts[$key]['tid']) &&
+			$allScripts[$key]['tid'] > 0) {
+			continue;
+		}
+
+		$allScripts[$key] = $data;
+	}
+
+	if (count($allScripts) > 0) {
+		foreach ($allScripts as $data) {
+			$inherited = (int) $data['tid'] === 0;
+			$statusMessage = 'custom';
+			$statusColor = '#32cd32';
+			if ($inherited) {
+				$statusMessage = 'inherited';
+				$statusColor = 'grey';
+			}
+
+			$editUrl = $html->url(array('action' => 'view_scripts', 'mode' => 'edit', 'tid' => $tid, 'id' => $data['id']));
+			$activateUrl = $html->url(array('action' => 'view_scripts', 'mode' => 'activate', 'tid' => $tid, 'id' => $data['id']));
+			$deactivateUrl = $html->url(array('action' => 'view_scripts', 'mode' => 'deactivate', 'tid' => $tid, 'id' => $data['id']));
+			$activateLink = $html->link($activateUrl, $lang->asb_inactive, array('style' => 'font-weight: bold; color: red;', 'title' => $lang->asb_inactive_desc));
+			$deactivateLink = $html->link($deactivateUrl, $lang->asb_active, array('style' => 'font-weight: bold; color: green', 'title' => $lang->asb_active_desc));
+			$none = <<<EOF
 <span style="color: gray;"><em>{$lang->asb_none}</em></span>
 EOF;
 
-				$table->construct_cell($html->link($editUrl, $data['title'], array('style' => 'font-weight: bold;')));
-				$table->construct_cell($data['filename']);
-				$table->construct_cell($data['action'] ? $data['action'] : $none);
-				$table->construct_cell($data['page'] ? $data['page'] : $none);
-				$table->construct_cell($form->generate_text_box("width_left[{$data['id']}]", $data['width_left'], array('class' => 'asb-dimension-cell')).'%');
-				$table->construct_cell($form->generate_text_box("left_margin[{$data['id']}]", $data['left_margin'], array('class' => 'asb-dimension-cell')).'%');
-				$table->construct_cell($form->generate_text_box("width_middle[{$data['id']}]", $data['width_middle'], array('class' => 'asb-dimension-cell')).'%');
-				$table->construct_cell($form->generate_text_box("right_margin[{$data['id']}]", $data['right_margin'], array('class' => 'asb-dimension-cell')).'%');
-				$table->construct_cell($form->generate_text_box("width_right[{$data['id']}]", $data['width_right'], array('class' => 'asb-dimension-cell')).'%');
-				$table->construct_cell($data['active'] ? $deactivateLink : $activateLink);
-
-				// options popup
-				$popup = new PopupMenu("script_{$data['id']}", $lang->asb_options);
-
-				// edit
-				$popup->add_item($lang->asb_edit, $editUrl);
-
-				// export
-				$popup->add_item($lang->asb_custom_export, $html->url(array('action' => 'manage_scripts', 'mode' => 'export', 'id' => $data['id'])));
-
-				// delete
-				$popup->add_item($lang->asb_delete, $html->url(array('action' => 'manage_scripts', 'mode' => 'delete', 'id' => $data['id'])), "return confirm('{$lang->asb_script_del_warning}');");
-
-				// popup cell
-				$table->construct_cell($popup->fetch());
-				$table->construct_cell($form->generate_check_box("asb_inline_ids[{$data['id']}]", '', '', array('class' => 'asb_check')));
-				$table->construct_row();
-				$table->construct_row();
+			$inheritedText = ' <span class="smalltext float_right" style="color: '.$statusColor.';">(master)</span>';
+			if (!$viewingMaster) {
+				$inheritedText = ' <span class="smalltext float_right" style="color: '.$statusColor.';">('.$statusMessage.')</span>';
 			}
-		} else {
-			$table->construct_cell("<span style=\"color: gray;\"><em>{$lang->asb_no_scripts}</em></span>", array('colspan' => 9));
+
+			$table->construct_cell($html->link($editUrl, $data['title'], array('style' => 'font-weight: bold;')).$inheritedText);
+			$table->construct_cell($data['filename']);
+			$table->construct_cell($data['action'] ? $data['action'] : $none);
+			$table->construct_cell($data['page'] ? $data['page'] : $none);
+			$table->construct_cell($form->generate_text_box("width_left[{$data['id']}]", $data['width_left'], array('class' => 'asb-dimension-cell')).'%');
+			$table->construct_cell($form->generate_text_box("left_margin[{$data['id']}]", $data['left_margin'], array('class' => 'asb-dimension-cell')).'%');
+			$table->construct_cell($form->generate_text_box("width_middle[{$data['id']}]", $data['width_middle'], array('class' => 'asb-dimension-cell')).'%');
+			$table->construct_cell($form->generate_text_box("right_margin[{$data['id']}]", $data['right_margin'], array('class' => 'asb-dimension-cell')).'%');
+			$table->construct_cell($form->generate_text_box("width_right[{$data['id']}]", $data['width_right'], array('class' => 'asb-dimension-cell')).'%');
+			$table->construct_cell($data['active'] ? $deactivateLink : $activateLink);
+
+			// options popup
+			$popup = new PopupMenu("script_{$data['id']}", $lang->asb_options);
+
+			// edit
+			$popup->add_item($lang->asb_edit, $editUrl);
+
+			// export
+			$popup->add_item($lang->asb_custom_export, $html->url(array('action' => 'view_scripts', 'mode' => 'export', 'tid' => $tid, 'id' => $data['id'])));
+
+			// delete
+			if ($viewingMaster ||
+				$data['tid'] > 0) {
+				$popup->add_item($deleteScriptText, $html->url(array('action' => 'view_scripts', 'mode' => $deleteScriptKey, 'tid' => $tid, 'id' => $data['id'])), "return confirm('{$lang->asb_script_del_warning}');");
+			}
+
+			// popup cell
+			$table->construct_cell($popup->fetch());
+			$table->construct_cell($form->generate_check_box("asb_inline_ids[{$data['id']}]", '', '', array('class' => 'asb_check')));
+			$table->construct_row();
 			$table->construct_row();
 		}
+	} else {
+		$table->construct_cell("<span style=\"color: gray;\"><em>{$lang->asb_no_scripts}</em></span>", array('colspan' => 9));
+		$table->construct_row();
+	}
 
-		$inline = <<<EOF
+	$inline = <<<EOF
 <div>
 	<span>
 		<strong>{$lang->asb_inline_title}:</strong>&nbsp;
 		<select name="inline_action">
+			<option value="update_width">{$lang->asb_update_width}</option>
 			<option value="activate">{$lang->asb_activate}</option>
 			<option value="deactivate">{$lang->asb_deactivate}</option>
-			<option value="update_width">{$lang->asb_update_width}</option>
 			<option value="delete">{$lang->asb_delete}</option>
 		</select>
 		<input id="asb_inline_submit" type="submit" class="button" name="asb_inline_submit" value="{$lang->go} (0)"/>
 		<input id="asb_inline_clear" type="button" class="button" name="asb_inline_clear" value="{$lang->clear}"/>
+		<input type="hidden" name="tid" value="{$tid}" />
 	</span>
 </div>
 EOF;
 
-		$table->construct_cell('', array('colspan' => 4, 'style' =>'border-right: none;'));
-		$table->construct_cell($inline, array('colspan' => 5, 'style' =>'border-left: none;'));
-		$table->construct_row();
+	$table->construct_cell('', array('colspan' => 4, 'style' =>'border-right: none;'));
+	$table->construct_cell($inline, array('colspan' => 5, 'style' =>'border-left: none;'));
+	$table->construct_row();
 
-		$table->output($lang->asb_script_info);
-		$form->end();
+	$table->output($lang->asb_script_info);
+	$form->end();
 
-		$form = new Form($html->url(array('action' => 'manage_scripts', 'mode' => 'import')), 'post', '', 1);
-		$formContainer = new FormContainer($lang->asb_custom_import);
-		$formContainer->output_row($lang->asb_custom_import_select_file, '', $form->generate_file_upload_box('file'));
-		$formContainer->end();
-		$importButtons[] = $form->generate_submit_button($lang->asb_custom_import, array('name' => 'import'));
-		$form->output_submit_wrapper($importButtons);
-		$form->end();
+	$form = new Form($html->url(array('action' => 'view_scripts', 'mode' => 'import')), 'post', '', 1);
+	$formContainer = new FormContainer($lang->asb_custom_import);
+	$formContainer->output_row($lang->asb_custom_import_select_file, '', $form->generate_file_upload_box('file').$form->generate_hidden_field('tid', $tid));
+	$formContainer->end();
+	$importButtons[] = $form->generate_submit_button($lang->asb_custom_import, array('name' => 'import'));
+	$form->output_submit_wrapper($importButtons);
+	$form->end();
 
-		// output the link menu and MyBB footer
-		asbOutputFooter('manage_scripts');
-	}
+	// output the link menu and MyBB footer
+	asbOutputFooter('view_scripts');
 }
 
 /**
@@ -1713,6 +1859,48 @@ function asb_admin_delete_addon()
 	}
 
 	admin_redirect($html->url(array('action' => 'manage_modules')));
+}
+
+/**
+ * confirm overwriting a script definition on import
+ *
+ * @param  string
+ * @param  int
+ * @return void
+ */
+function asbConfirmScriptImportOverwrite($contents, $tid)
+{
+	global $html, $mybb, $db, $page, $lang, $html, $min, $cp_style;;
+
+	if (empty($contents)) {
+		flash_message('Invalid script.', 'error');
+		admin_redirect($html->url(array('action' => 'view_scripts', 'tid' => (int) $tid)));
+	}
+
+	$page->extra_header .= <<<EOF
+<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
+
+EOF;
+
+	$page->add_breadcrumb_item($lang->asb, $html->url());
+	$page->add_breadcrumb_item($lang->asb_overwrite_confirmation);
+	$page->output_header("{$lang->asb} - {$lang->asb_overwrite_confirmation}");
+	asbOutputTabs('asb_overwrite_confirmation');
+
+	$form = new Form($html->url(array('action' => 'view_scripts', 'mode' => 'import')), 'post', '', 1);
+
+	$formContainer = new FormContainer($lang->asb_overwrite_confirmation);
+	$formContainer->output_row($lang->asb_overwrite_confirmation, '', $lang->asb_import_overwrite_warning.$form->generate_hidden_field('overwrite', true).$form->generate_hidden_field('contents', $contents).$form->generate_hidden_field('tid', $tid));
+	$formContainer->end();
+
+	$confirmationButtons[] = $form->generate_submit_button($lang->asb_confirm, array('name' => 'confirm'));
+	$confirmationButtons[] = $form->generate_submit_button($lang->asb_cancel, array('name' => 'cancel'));
+	$form->output_submit_wrapper($confirmationButtons);
+	$form->end();
+
+	// output the link menu and MyBB footer
+	asbOutputFooter('manage_scripts');
+	exit;
 }
 
 /**

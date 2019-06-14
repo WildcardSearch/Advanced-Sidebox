@@ -119,6 +119,43 @@ function asbBuildScriptFilename($script='')
 }
 
 /**
+ * checks if a script definition is already represented, relative to the filename and query parameters
+ *
+ * @param  array
+ * @param  int theme id
+ * @return string filename marked up for asb
+ */
+function asbFindDuplicateScriptByFilename($keys, $tid=0)
+{
+	global $db;
+
+	if (!is_array($keys) ||
+		empty($keys) ||
+		!isset($keys['filename']) ||
+		empty($keys['filename'])) {
+		return false;
+	}
+
+	$tid = (int) $tid;
+
+	$where = "tid='{$tid}'";
+	foreach ($keys as $key => $val) {
+		$val = $db->escape_string($val);
+
+		if ($key && $val) {
+			$where .= " AND {$key}='{$val}'";
+		}
+	}
+
+	$query = $db->simple_select('asb_script_info', 'id', $where);
+	if ($db->num_rows($query) == 0) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
  * get the correct cached script info using the script parameters
  *
  * @param  array asb cache data
@@ -128,11 +165,14 @@ function asbBuildScriptFilename($script='')
  */
 function asbGetCurrentScript($asb, $getAll=false)
 {
-	global $mybb;
+	global $mybb, $theme;
 
-	if (is_array($asb['scripts'][THIS_SCRIPT]) &&
-		!empty($asb['scripts'][THIS_SCRIPT])) {
-		$returnArray = $asb['scripts'][THIS_SCRIPT];
+	$tid = $theme['tid'];
+	$thisKey = THIS_SCRIPT;
+
+	if (is_array($asb['scripts'][0][$thisKey]) &&
+		!empty($asb['scripts'][0][$thisKey])) {
+		$returnArray = $asb['scripts'][0][$thisKey];
 	}
 
 	foreach (array('action', 'page') as $key) {
@@ -142,10 +182,12 @@ function asbGetCurrentScript($asb, $getAll=false)
 		}
 
 		$filename = THIS_SCRIPT."&{$key}={$mybb->input[$key]}";
-		if (!is_array($asb['scripts'][$filename]) ||
-			empty($asb['scripts'][$filename])) {
+		if (!is_array($asb['scripts'][0][$filename]) ||
+			empty($asb['scripts'][0][$filename])) {
 			continue;
 		}
+
+		$thisKey = $filename;
 		$returnArray = $asb['scripts'][$filename];
 	}
 
@@ -154,20 +196,45 @@ function asbGetCurrentScript($asb, $getAll=false)
 		return;
 	}
 
+	if ($tid > 0 &&
+		is_array($asb['scripts'][$tid][$thisKey]) &&
+		!empty($asb['scripts'][$tid][$thisKey])) {
+		$returnArray = $asb['scripts'][$tid][$thisKey];
+	}
+
+	$returnArray = asbMergeScripts($asb, $returnArray, (array) $asb['scripts'][0]['global'], $getAll);
+
+	return $returnArray;
+}
+
+/**
+ * merge sidebox and other data into the current script definition
+ *
+ * @param  array asb cache data
+ * @param  array
+ * @param  array
+ * @param  bool
+ * @return array
+ */
+function asbMergeScripts($asb, $default, $custom, $full=false)
+{
+	$returnArray = $default;
+
 	// merge any globally visible (script-wise) side boxes with this script
-	$returnArray['template_vars'] = array_merge((array) $asb['scripts']['global']['template_vars'], (array) $returnArray['template_vars']);
-	$returnArray['extra_scripts'] = (array) $asb['scripts']['global']['extra_scripts'] + (array) $returnArray['extra_scripts'];
-	$returnArray['js'] = (array) $asb['scripts']['global']['js'] + (array) $returnArray['js'];
+	$returnArray['template_vars'] = array_merge((array) $default['template_vars'], (array) $custom['template_vars']);
+	$returnArray['extra_scripts'] = (array) $default['extra_scripts'] + (array) $custom['extra_scripts'];
+	$returnArray['js'] = (array) $default['js'] + (array) $custom['js'];
 
 	// the template handler does not need side boxes and templates
-	if (!$getAll) {
+	if ($full !== true) {
 		return $returnArray;
 	}
 
 	// asb_start() and asb_initialize() do
-	$returnArray['sideboxes'][0] = asbMergeSideBoxList($asb, (array) $asb['scripts']['global']['sideboxes'][0], (array) $returnArray['sideboxes'][0]);
-	$returnArray['sideboxes'][1] = asbMergeSideBoxList($asb, (array) $asb['scripts']['global']['sideboxes'][1], (array) $returnArray['sideboxes'][1]);
-	$returnArray['templates'] = array_merge((array) $asb['scripts']['global']['templates'], (array) $returnArray['templates']);
+	$returnArray['sideboxes'][0] = asbMergeSideBoxList($asb, (array) $default['sideboxes'][0], (array) $custom['sideboxes'][0]);
+	$returnArray['sideboxes'][1] = asbMergeSideBoxList($asb, (array) $default['sideboxes'][1], (array) $custom['sideboxes'][1]);
+	$returnArray['templates'] = array_merge((array) $default['templates'], (array) $custom['templates']);
+
 	return $returnArray;
 }
 
@@ -429,18 +496,23 @@ function asbGetAllSideBoxes($allowedScript='')
  *
  * @return array script data
  */
-function asbGetAllScripts()
+function asbGetAllScripts($masters=false)
 {
 	global $db;
 
 	// get all the active scripts' info
 	$returnArray = array();
 
-	$query = $db->simple_select('asb_script_info', '*', "active='1'");
+	$where = "active='1'";
+	if ($masters === true) {
+		$where .= ' AND tid=0';
+	}
+
+	$query = $db->simple_select('asb_script_info', '*', $where);
 	if ($db->num_rows($query) > 0) {
 		while ($script = $db->fetch_array($query)) {
 			$filename = asbBuildScriptFilename($script);
-			$returnArray[$filename] = $script;
+			$returnArray[$script['tid']][$filename] = $script;
 		}
 	}
 

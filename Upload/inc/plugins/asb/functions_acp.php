@@ -90,6 +90,14 @@ function asbOutputTabs($current)
 		'description' => $lang->asb_manage_scripts_desc,
 	);
 
+	if ($current == 'asb_view_scripts') {
+		$tabs['asb_view_scripts'] = array(
+			'title' => $lang->asb_view_scripts,
+			'link' => $html->url(array('action' => 'view_scripts')),
+			'description' => $lang->asb_view_scripts_desc,
+		);
+	}
+
 	if (in_array($current, array('asb_edit_script', 'asb_scripts'))) {
 		$tabs['asb_edit_script'] = array(
 			'title' => $lang->asb_edit_script,

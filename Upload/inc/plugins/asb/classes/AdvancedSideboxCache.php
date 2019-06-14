@@ -82,9 +82,12 @@ class AdvancedSideboxCache extends WildcardPluginCache010300
 		}
 
 		// store the script definitions and a master list
-		foreach ($allScripts as $filename => $script) {
-			$data['scripts'][$filename] = $script;
+		foreach ($allScripts as $tid => $scripts) {
+			foreach ($scripts as $filename => $script) {
+				$data['scripts'][$tid][$filename] = $script;
+			}
 		}
+
 		$data['all_scripts'] = array_keys($allScripts);
 
 		// load all detected modules
@@ -121,15 +124,15 @@ class AdvancedSideboxCache extends WildcardPluginCache010300
 				if (isset($addons[$module]) &&
 					$addons[$module] instanceof SideboxModule) {
 					// store the module name and all the template vars used
-					$data['scripts'][$filename]['sideboxes'][$pos][$id] = $module;
-					$data['scripts'][$filename]['template_vars'][$id] = "{$module}_{$id}";
+					$data['scripts'][0][$filename]['sideboxes'][$pos][$id] = $module;
+					$data['scripts'][0][$filename]['template_vars'][$id] = "{$module}_{$id}";
 
 					// if there are any templates get their names so we can cache them
 					$templates = $addons[$module]->get('templates');
 					if (is_array($templates) &&
 						!empty($templates)) {
 						foreach ($templates as $template) {
-							$data['scripts'][$filename]['templates'][] = $template['title'];
+							$data['scripts'][0][$filename]['templates'][] = $template['title'];
 						}
 					}
 
@@ -144,10 +147,10 @@ class AdvancedSideboxCache extends WildcardPluginCache010300
 							}
 
 							// add the info
-							$data['scripts'][$filename]['extra_scripts'][$id]['position'] = $pos;
-							$data['scripts'][$filename]['extra_scripts'][$id]['module'] = $module;
-							$data['scripts'][$filename]['extra_scripts'][$id]['rate'] = $settings['xmlhttp_refresh_rate'];
-							$data['scripts'][$filename]['extra_scripts'][$id]['decay'] = $settings['xmlhttp_refresh_decay'];
+							$data['scripts'][$filename][0]['extra_scripts'][$id]['position'] = $pos;
+							$data['scripts'][$filename][0]['extra_scripts'][$id]['module'] = $module;
+							$data['scripts'][$filename][0]['extra_scripts'][$id]['rate'] = $settings['xmlhttp_refresh_rate'];
+							$data['scripts'][$filename][0]['extra_scripts'][$id]['decay'] = $settings['xmlhttp_refresh_decay'];
 						}
 					}
 
@@ -160,8 +163,8 @@ class AdvancedSideboxCache extends WildcardPluginCache010300
 				} else if(isset($custom[$module]) &&
 					$custom[$module] instanceof CustomSidebox) {
 					// store the pointer
-					$data['scripts'][$filename]['sideboxes'][$pos][$id] = $module;
-					$data['scripts'][$filename]['template_vars'][$id] = "{$module}_{$id}";
+					$data['scripts'][0][$filename]['sideboxes'][$pos][$id] = $module;
+					$data['scripts'][0][$filename]['template_vars'][$id] = "{$module}_{$id}";
 
 					// and cache the contents
 					$data['custom'][$module] = $custom[$module]->get('data');
