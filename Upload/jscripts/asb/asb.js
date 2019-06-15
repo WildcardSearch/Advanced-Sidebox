@@ -7,6 +7,8 @@
  */
 
 var ASB = (function($, a) {
+	"use strict";
+
 	var $leftColumn,
 		$middleColumn,
 		$rightColumn,
@@ -14,11 +16,11 @@ var ASB = (function($, a) {
 		currentMiddleWidth,
 
 	options = {
-		leftWidth: 15,
+		leftWidth: 20,
 		leftMargin: 0.5,
-		middleWidth: 69,
+		middleWidth: 59,
 		rightMargin: 0.5,
-		rightWidth: 15,
+		rightWidth: 20,
 	};
 
 	/**
@@ -41,12 +43,12 @@ var ASB = (function($, a) {
 
 		if ($leftColumn.length) {
 			// left show/hide icon click
-			$("#asb_hide_column_left").click(toggle);
+			$("#asb_hide_column_left").on("click", toggle);
 		}
 
 		if ($rightColumn.length) {
 			// left show/hide icon click
-			$("#asb_hide_column_right").click(toggle);
+			$("#asb_hide_column_right").on("click", toggle);
 		}
 	}
 

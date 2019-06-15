@@ -6,7 +6,9 @@
  * this file contains JavaScript for the ACP side box functions
  */
 
-var ASB = (function(a, $) {
+var ASB = (function($, a) {
+	"use strict";
+
 	/**
 	 * build the columns, observe the edit links on all side box divs,
 	 * remove the delete icons from side box divs and replace
@@ -95,14 +97,14 @@ var ASB = (function(a, $) {
 	 * @param  Event the click event object
 	 * @return void
 	 */
-	function edit(event) {
+	function edit(e) {
 		/**
 		 * stop the link from redirecting the user--
 		 * set up this way so that if JS is disabled
 		 * the user goes to a standard form rather than
 		 * a modal edit form
 		 */
-		event.preventDefault();
+		e.preventDefault();
 
 		loadModal($(this).prop("href") + "&ajax=1");
 	}
@@ -129,28 +131,27 @@ var ASB = (function(a, $) {
 	 * @return void
 	 */
 	function loadModal(url) {
-		$.get(url,
-			function (html) {
-				if (!html ||
-					html.length == 0) {
-					return;
-				}
+		$.get(url, function (html) {
+			if (!html ||
+				html.length == 0) {
+				return;
+			}
 
-				// if the admin session has expired
-				if (typeof html == "string" &&
-					html.search("errors") != -1 &&
-					html.search("login") != -1) {
-					// redirect to the login page
-					location.reload(true);
-					return;
-				}
+			// if the admin session has expired
+			if (typeof html == "string" &&
+				html.search("errors") != -1 &&
+				html.search("login") != -1) {
+				// redirect to the login page
+				location.reload(true);
+				return;
+			}
 
-				// show the modal
-				$(html).appendTo("body").modal({
-					fadeDuration: 250,
-					zIndex: (typeof modal_zindex !== "undefined" ? modal_zindex : 9999),
-				});
+			// show the modal
+			$(html).appendTo("body").modal({
+				fadeDuration: 250,
+				zIndex: (typeof modal_zindex !== "undefined" ? modal_zindex : 9999),
 			});
+		});
 	}
 
 	/* side box divs */
@@ -199,7 +200,7 @@ var ASB = (function(a, $) {
 	 * delete one or more side box div elements by id
 	 *
 	 * @param  Array ids
-	 * @return void
+	 * @return Void
 	 */
 	function removeDivs(ids) {
 		if (ids.length == 0) {
@@ -233,4 +234,4 @@ var ASB = (function(a, $) {
 	};
 
 	return a;
-})(ASB || {}, jQuery);
+})(jQuery, ASB || {});

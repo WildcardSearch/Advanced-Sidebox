@@ -6,7 +6,9 @@
  * this file contains JavaScript for the ACP script edit functions
  */
 
-var ASB = (function(a, $) {
+var ASB = (function($, a) {
+	"use strict";
+
 	var current = "",
 		lang = {
 			nothing_found: "nothing found",
@@ -64,7 +66,7 @@ var ASB = (function(a, $) {
 		 * attempt to detect hooks, template and URL attributes
 		 * (page, action)and display them as selectable lists
 		 */
-		$("#filename").blur(update);
+		$("#filename").on("blur", update);
 	}
 
 	/**
@@ -180,31 +182,34 @@ var ASB = (function(a, $) {
 	 */
 	function observeInputs() {
 		if ($("#hook_selector")) {
-			$("#hook_selector").change(function(event) {
+			$("#hook_selector").on("change", function(e) {
 				var val = this.value;
 				if (val == 0) {
 					val = "";
 				}
+
 				$("#hook").val(val);
 			});
 		}
 
 		if ($("#template_selector")) {
-			$("#template_selector").change(function(event) {
+			$("#template_selector").on("change", function(e) {
 				var val = this.value;
 				if (val == 0) {
 					val = "";
 				}
+
 				$("#template_name").val(val);
 			});
 		}
 
 		if ($("#action_selector")) {
-			$("#action_selector").change(function(event) {
+			$("#action_selector").on("change", function(e) {
 				var val = this.value;
 				if (val == 0) {
 					val = "";
 				}
+
 				$("#action").val(val);
 			});
 		}
@@ -217,9 +222,9 @@ var ASB = (function(a, $) {
 	 * @param  String the current file name
 	 * @return void
 	 */
-	function setup(value, language) {
-		current = value || "";
-		$.extend(lang, language || {});
+	function setup(v, l) {
+		current = v || "";
+		$.extend(lang, l || {});
 	}
 
 	$(init);
@@ -229,4 +234,4 @@ var ASB = (function(a, $) {
 	};
 
 	return a;
-})(ASB || {}, jQuery);
+})(jQuery, ASB || {});

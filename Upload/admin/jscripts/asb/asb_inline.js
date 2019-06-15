@@ -9,7 +9,9 @@
 /**
  * @var object the inline controls module
  */
-var ASB = (function(a, $) {
+var ASB = (function($, a) {
+	"use strict";
+
 	/**
 	 * @var int the currently checked
 	 */
@@ -30,10 +32,10 @@ var ASB = (function(a, $) {
 	 */
 	function init() {
 		initialCount();
-		$('#asb_select_all').click(selectAll);
-		$('.asb_check').click(keepCount);
-		$('#asb_inline_clear').click(clearAll);
-		$('#asb_inline_submit').click(submitCheck);
+		$('#asb_select_all').on("click", selectAll);
+		$('.asb_check').on("click", keepCount);
+		$('#asb_inline_clear').on("click", clearAll);
+		$('#asb_inline_submit').on("click", submitCheck);
 	}
 
 	/**
@@ -42,8 +44,8 @@ var ASB = (function(a, $) {
 	 * @param  object the custom language
 	 * @return void
 	 */
-	function setup(language) {
-		$.extend(lang, language || {});
+	function setup(l) {
+		$.extend(lang, l || {});
 	}
 
 	/**
@@ -53,10 +55,13 @@ var ASB = (function(a, $) {
 	 * @return void
 	 */
 	function submitCheck(e) {
-		if (!checkCount) {
-			e.preventDefault();
-			$.jGrowl(lang.noSelection);
+		if (checkCount) {
+			return;
 		}
+
+		e.preventDefault();
+		$.jGrowl(lang.noSelection);
+
 	}
 
 	/**
@@ -68,7 +73,7 @@ var ASB = (function(a, $) {
 	function selectAll(e) {
 		var onOff = false;
 
-		if($(this).prop("checked")) {
+		if ($(this).prop("checked")) {
 			onOff = true;
 		}
 		setAllChecks(onOff);
@@ -98,6 +103,7 @@ var ASB = (function(a, $) {
 				$row.removeClass("asb-script-checked");
 			}
 		});
+
 		updateCheckCount();
 	}
 
@@ -110,7 +116,7 @@ var ASB = (function(a, $) {
 	function keepCount(e) {
 		var $row = $(this).parent("label").parent("td").parent("tr");
 
-		if(this.checked) {
+		if (this.checked) {
 			$row.addClass("asb-script-checked");
 			++checkCount;
 		} else {
@@ -157,6 +163,7 @@ var ASB = (function(a, $) {
 				$row.removeClass("asb-script-checked");
 			}
 		});
+
 		updateCheckCount();
 	}
 
@@ -168,4 +175,4 @@ var ASB = (function(a, $) {
 	};
 
 	return a;
-})(ASB || {}, jQuery);
+})(jQuery, ASB || {});

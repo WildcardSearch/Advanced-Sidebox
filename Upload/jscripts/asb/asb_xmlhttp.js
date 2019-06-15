@@ -8,7 +8,9 @@
  * represented on the forum
  */
 
-var ASB = (function(a, $) {
+var ASB = (function($, a) {
+	"use strict";
+
 	/**
 	 * constructor: sets up the object and starts the timer
 	 *
@@ -156,4 +158,4 @@ var ASB = (function(a, $) {
 	};
 
 	return a;
-})(ASB || {}, jQuery);
+})(jQuery, ASB || {});

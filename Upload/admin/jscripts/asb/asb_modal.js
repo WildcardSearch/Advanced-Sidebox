@@ -8,10 +8,23 @@
  */
 
 !function($) {
+	"use strict";
+
+	/**
+	 * attach event listener
+	 *
+	 * return Void
+	 */
 	function init() {
-		$("#modalSubmit").click(submitForm);
+		$("#modalSubmit").on("click", submitForm);
 	}
 
+	/**
+	 * serialize form data on submit
+	 *
+	 * param  Object event
+	 * return Void
+	 */
 	function submitForm (e) {
 		e.preventDefault();
 
@@ -23,6 +36,7 @@
 				$(data).filter("script").each(function(e) {
 					eval($(this).text());
 				});
+
 				$.modal.close();
 			},
 			error: function(jqXHR, textStatus, errorThrown) {

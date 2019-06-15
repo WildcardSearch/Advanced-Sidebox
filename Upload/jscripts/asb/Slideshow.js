@@ -7,7 +7,9 @@
  * some helpers (Timers/Effects)
  */
 
-var ASB = (function(a, $) {
+var ASB = (function($, a) {
+	"use strict";
+
 	/**
 	 * constructor
 	 *
@@ -187,4 +189,4 @@ var ASB = (function(a, $) {
 	}, a.modules || {});
 
 	return a;
-})(ASB || {}, jQuery);
+})(jQuery, ASB || {});
