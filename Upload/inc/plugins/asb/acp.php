@@ -1060,7 +1060,7 @@ function asb_admin_view_scripts()
 	if ($mybb->request_method == 'post') {
 		if ($mybb->input['mode'] == 'edit') {
 			$id = (int) $mybb->input['id'];
-			$redirectUrl = $html->url(array('action' => 'view_scripts', 'mode' => 'edit', 'tid' => $tid, 'id' => $id));
+			$redirectUrl = $html->url(array('action' => 'view_scripts', 'mode' => 'edit', 'tid' => $tid));
 
 			$mybb->input['action'] = $mybb->input['script_action'];
 			$script = new ScriptInfo($mybb->input);
@@ -1070,6 +1070,34 @@ function asb_admin_view_scripts()
 				flash_message($lang->asb_script_save_width_error, 'error');
 				admin_redirect($redirectUrl);
 			}
+
+			$keys = $script->get(array('filename', 'action', 'page'));
+			$dupeId = asbFindDuplicateScriptByFilename($keys, $tid);
+			if ($dupeId) {
+				asbConfirmScriptOverwrite($dupeId, $tid);
+			}
+
+			if (!$script->save()) {
+				flash_message($lang->asb_script_save_fail, 'error');
+				admin_redirect($redirectUrl);
+			}
+
+			asbCacheHasChanged();
+
+			flash_message($lang->asb_script_save_success, 'success');
+			admin_redirect($html->url(array('action' => 'view_scripts', 'tid' => $tid)));
+		} elseif ($mybb->input['mode'] == 'overwrite') {
+			$id = (int) $mybb->input['id'];
+			$redirectUrl = $html->url(array('action' => 'view_scripts', 'mode' => 'edit', 'tid' => $tid, 'id' => $id));
+
+			$script = new ScriptInfo($id);
+
+			if (!$script->isValid()) {
+				flash_message($lang->asb_script_save_fail, 'error');
+				admin_redirect($redirectUrl);
+			}
+
+			$script->set($mybb->input['data']);
 
 			if (!$script->save()) {
 				flash_message($lang->asb_script_save_fail, 'error');
@@ -1289,11 +1317,11 @@ function asb_admin_view_scripts()
 			'find_bottom' => '{$footer}',
 			'replace_all' => 0,
 			'eval' => 0,
-			'width_left' => '15',
+			'width_left' => '20',
 			'left_margin' => '0.5',
-			'width_middle' => '69',
+			'width_middle' => '59',
 			'right_margin' => '0.5',
-			'width_right' => '15',
+			'width_right' => '20',
 		);
 
 		$action = $lang->asb_edit_script;
@@ -1859,6 +1887,48 @@ function asb_admin_delete_addon()
 	}
 
 	admin_redirect($html->url(array('action' => 'manage_modules')));
+}
+
+/**
+ * confirm overwriting a script definition on save
+ *
+ * @param  string
+ * @param  int
+ * @return void
+ */
+function asbConfirmScriptOverwrite($id, $tid)
+{
+	global $html, $mybb, $db, $page, $lang, $html, $min, $cp_style;;
+
+	$page->extra_header .= <<<EOF
+<link rel="stylesheet" type="text/css" href="styles/{$cp_style}/asb/global.css" media="screen" />
+
+EOF;
+
+	$page->add_breadcrumb_item($lang->asb, $html->url());
+	$page->add_breadcrumb_item($lang->asb_overwrite_confirmation);
+	$page->output_header("{$lang->asb} - {$lang->asb_overwrite_confirmation}");
+	asbOutputTabs('asb_overwrite_confirmation');
+
+	$form = new Form($html->url(array('action' => 'view_scripts', 'mode' => 'overwrite')), 'post', '', 1);
+
+	$dataElements = '';
+	foreach ($mybb->input as $key => $val) {
+		$dataElements .= $form->generate_hidden_field("data[{$key}]", $val);
+	}
+
+	$formContainer = new FormContainer($lang->asb_overwrite_confirmation);
+	$formContainer->output_row($lang->asb_overwrite_confirmation, '', $lang->asb_save_overwrite_warning.$form->generate_hidden_field('overwrite', true).$dataElements.$form->generate_hidden_field('id', $id).$form->generate_hidden_field('tid', $tid));
+	$formContainer->end();
+
+	$confirmationButtons[] = $form->generate_submit_button($lang->asb_confirm, array('name' => 'confirm'));
+	$confirmationButtons[] = $form->generate_submit_button($lang->asb_cancel, array('name' => 'cancel'));
+	$form->output_submit_wrapper($confirmationButtons);
+	$form->end();
+
+	// output the link menu and MyBB footer
+	asbOutputFooter('manage_scripts');
+	exit;
 }
 
 /**

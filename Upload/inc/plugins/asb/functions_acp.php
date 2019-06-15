@@ -557,4 +557,41 @@ function asbBuildFilterSelector($filter)
 	return $form->end();
 }
 
+/**
+ * checks if a script definition is already represented, relative to the filename and query parameters
+ *
+ * @param  array
+ * @param  int theme id
+ * @return string filename marked up for asb
+ */
+function asbFindDuplicateScriptByFilename($keys, $tid=0)
+{
+	global $db;
+
+	if (!is_array($keys) ||
+		empty($keys) ||
+		!isset($keys['filename']) ||
+		empty($keys['filename'])) {
+		return false;
+	}
+
+	$tid = (int) $tid;
+
+	$where = "tid='{$tid}'";
+	foreach ($keys as $key => $val) {
+		$val = $db->escape_string($val);
+
+		if ($key && $val) {
+			$where .= " AND {$key}='{$val}'";
+		}
+	}
+
+	$query = $db->simple_select('asb_script_info', 'id', $where);
+	if ($db->num_rows($query) == 0) {
+		return false;
+	}
+
+	return (int) $db->fetch_field($query, 'id');
+}
+
 ?>

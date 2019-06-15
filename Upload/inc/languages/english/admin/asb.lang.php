@@ -356,6 +356,7 @@ $l['asb_edit_script_desc'] = 'add new script definitions or edit existing info';
 $l['asb_overwrite_confirmation'] = 'Overwrite Confirmation';
 $l['asb_overwrite_confirmation_desc'] = 'confirm that you want to overwrite an existing script definition';
 $l['asb_import_overwrite_warning'] = 'Importing this script definition will overwrite the existing definition. Would you like to proceed?';
+$l['asb_save_overwrite_warning'] = 'A script definition with these paramaters already exists. Saving it will overwrite the existing definition. Would you like to proceed?';
 
 $l['asb_add_new_script'] = 'Add a new script definition';
 $l['asb_no_scripts'] = 'no script info to show';
