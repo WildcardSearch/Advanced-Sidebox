@@ -120,7 +120,7 @@ abstract class InstallableModule010001 extends ConfigurableModule010101 implemen
 	 *
 	 * @return bool
 	 */
-	public function install($cleanup = true)
+	public function install($cleanup=true)
 	{
 		if ($this->isInstalled &&
 			$cleanup === true) {
@@ -161,7 +161,7 @@ abstract class InstallableModule010001 extends ConfigurableModule010101 implemen
 	}
 
 	/**
-	 *
+	 * remove/update templates/settings on version bump or debug mode
 	 *
 	 * @return string the return of the module routine
 	 */
@@ -201,7 +201,7 @@ abstract class InstallableModule010001 extends ConfigurableModule010101 implemen
 	}
 
 	/**
-	 *
+	 * install/update module templates
 	 *
 	 * @return string the return of the module routine
 	 */
@@ -236,7 +236,7 @@ abstract class InstallableModule010001 extends ConfigurableModule010101 implemen
 	}
 
 	/**
-	 *
+	 * install/update module settings
 	 *
 	 * @return string the return of the module routine
 	 */
@@ -283,6 +283,7 @@ abstract class InstallableModule010001 extends ConfigurableModule010101 implemen
 	}
 
 	/**
+	 * remove module templates
 	 *
 	 * @return void
 	 */
@@ -303,6 +304,7 @@ abstract class InstallableModule010001 extends ConfigurableModule010101 implemen
 	}
 
 	/**
+	 * remove module settings
 	 *
 	 * @return void
 	 */
@@ -323,7 +325,7 @@ abstract class InstallableModule010001 extends ConfigurableModule010101 implemen
 	}
 
 	/**
-	 * version control
+	 * retrieve cache version
 	 *
 	 * @return string|int version or 0
 	 */
@@ -333,7 +335,7 @@ abstract class InstallableModule010001 extends ConfigurableModule010101 implemen
 	}
 
 	/**
-	 * version control
+	 * update cache version
 	 *
 	 * @return void
 	 */
@@ -352,7 +354,7 @@ abstract class InstallableModule010001 extends ConfigurableModule010101 implemen
 	}
 
 	/**
-	 * version control
+	 * clear cache version
 	 *
 	 * @return void
 	 */

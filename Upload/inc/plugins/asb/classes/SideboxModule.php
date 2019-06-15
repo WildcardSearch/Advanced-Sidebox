@@ -115,10 +115,8 @@ class SideboxModule extends InstallableModule010001
 	}
 
 	/**
-	 * remove any templates used by the module and clean up any boxes created
-	 * using this add-on module
+	 * build default settings added for modules with XMLHTTP capabilities
 	 *
-	 * @param  bool remove children
 	 * @return void
 	 */
 	protected function buildXmlhttpSettings()
