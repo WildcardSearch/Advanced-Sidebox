@@ -52,6 +52,7 @@ $tables = array(
 			'replacement_template' => 'VARCHAR(128) NOT NULL',
 			'eval' => 'INT',
 			'active' => 'INT',
+			'mobile_disabled' => 'INT',
 			'dateline' => 'INT NOT NULL, PRIMARY KEY(id)',
 		),
 	),
@@ -98,6 +99,7 @@ $tables = array(
 		'replacement_template' => 'VARCHAR(128) NOT NULL',
 		'eval' => 'INT(1)',
 		'active' => 'INT(1)',
+		'mobile_disabled' => 'INT(1)',
 		'dateline' => 'INT(10)',
 	),
 );

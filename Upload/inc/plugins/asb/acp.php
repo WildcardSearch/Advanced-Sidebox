@@ -1416,6 +1416,8 @@ EOF;
 		$formContainer->output_row("{$lang->asb_action}:", $lang->sprintf($lang->asb_scriptvar_generic_desc, strtolower($lang->asb_action)), "{$spinner}<div id=\"action_list\"{$detectedShow}>{$detectedInfo['actions']}</div>".$form->generate_text_box('script_action', $data['action'], array('id' => 'action')));
 		$formContainer->output_row($lang->asb_page, $lang->sprintf($lang->asb_scriptvar_generic_desc, strtolower($lang->asb_page)), $form->generate_text_box('page', $data['page']));
 
+		$formContainer->output_row($lang->asb_disable_for_mobile_title, $lang->asb_disable_for_mobile_description, $form->generate_yes_no_radio('mobile_disabled', $data['mobile_disabled'], true, array('id' => 'mobile_disabled_yes', 'class' => 'mobile_disabled'), array('id' => 'mobile_disabled_no', 'class' => 'mobile_disabled')), '', array(), array('id' => 'mobile_disabled'));
+
 		$formContainer->output_row($lang->asb_width_left, $lang->asb_width_left_desc, $form->generate_text_box('width_left', $data['width_left']));
 		$formContainer->output_row($lang->asb_left_margin, $lang->asb_left_margin_desc, $form->generate_text_box('left_margin', $data['left_margin']));
 		$formContainer->output_row($lang->asb_width_middle, $lang->asb_width_middle_desc, $form->generate_text_box('width_middle', $data['width_middle']));

@@ -42,7 +42,7 @@ function asbDoStartupChecks()
 	 * credit: http://stackoverflow.com/users/1304523/justin-docanto
 	 */
 	if ($mybb->settings['asb_disable_for_mobile'] &&
-		preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER['HTTP_USER_AGENT'])) {
+		asbOnMobile()) {
 		return false;
 	}
 
@@ -73,6 +73,16 @@ function asbGetExcludedThemes($sql=false)
 	}
 
 	return $returnVal;
+}
+
+/**
+ * detect mobile browsers
+ *
+ * @return bool
+ */
+function asbOnMobile()
+{
+	return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER['HTTP_USER_AGENT']) === 1;
 }
 
 /**
@@ -163,6 +173,11 @@ function asbGetCurrentScript($asb, $getAll=false)
 		is_array($asb['scripts'][$tid][$thisKey]) &&
 		!empty($asb['scripts'][$tid][$thisKey])) {
 		$returnArray = $asb['scripts'][$tid][$thisKey];
+	}
+
+	if (asbOnMobile() &&
+		$returnArray['mobile_disabled']) {
+		return;
 	}
 
 	$returnArray = asbMergeScripts($asb, $returnArray, (array) $asb['scripts'][0]['global'], $getAll);
