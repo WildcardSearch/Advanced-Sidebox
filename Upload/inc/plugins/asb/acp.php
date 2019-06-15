@@ -1065,7 +1065,7 @@ function asb_admin_view_scripts()
 			$mybb->input['action'] = $mybb->input['script_action'];
 			$script = new ScriptInfo($mybb->input);
 
-			$totalWidth = $mybb->input["width_left"] + $mybb->input["width_right"] + $mybb->input["width_middle"] + $mybb->input["left_margin"] + $mybb->input["right_margin"];
+			$totalWidth = $mybb->input['width_left'] + $mybb->input['width_right'] + $mybb->input['width_middle'] + $mybb->input['left_margin'] + $mybb->input['right_margin'];
 			if ($totalWidth > 100) {
 				flash_message($lang->asb_script_save_width_error, 'error');
 				admin_redirect($redirectUrl);
