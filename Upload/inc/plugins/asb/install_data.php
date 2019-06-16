@@ -336,10 +336,18 @@ div.asb-sidebox-column-middle {
 	
 }
 
+div.asb-sidebox-column-middle > * {
+	/** Important - restores font size, adjust if necessary **/
+	font-size: 14px;
+}
+
 div.asb-sidebox-column-middle > table.tborder,
 div.asb-sidebox-column-middle > div.tborder {
 	/** Important - keeps middle content fluid **/
 	width: 100%;
+
+	/** Important - removes any space above middle content **/
+	margin-top: 0px!important;
 }
 
 div.asb-sidebox-column-right {
@@ -566,6 +574,7 @@ img.asb-random-quote-user-avatar {
 	padding: 4px;
 	width: 15%;
 	vertical-align: middle;
+	max-height: 30px;
 }
 
 a.asb-random-quote-user-link {

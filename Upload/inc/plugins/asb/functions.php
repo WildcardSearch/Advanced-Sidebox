@@ -161,7 +161,7 @@ function asbGetCurrentScript($asb, $getAll=false)
 		}
 
 		$thisKey = $filename;
-		$returnArray = $asb['scripts'][$filename];
+		$returnArray = $asb['scripts'][0][$filename];
 	}
 
 	if (empty($returnArray) ||
