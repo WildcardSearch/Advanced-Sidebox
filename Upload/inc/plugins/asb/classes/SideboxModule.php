@@ -101,7 +101,7 @@ class SideboxModule extends InstallableModule010001
 		}
 
 		if (!$this->compatibility ||
-			version_compare('4.0', $this->compatibility, '>')) {
+			version_compare(ASB_MIN_MODULE_VERSION, $this->compatibility, '>')) {
 			return false;
 		}
 
@@ -237,7 +237,7 @@ class SideboxModule extends InstallableModule010001
 	{
 		global $mybb, $templates, $theme, $lang, $$template_var;
 
-		$content = $this->run('get_content', $settings, $script, TIME_NOW);
+		$content = $this->run('get_content', $settings, $script, TIME_NOW, $template_var);
 
 		if (!empty($content)) {
 			$$template_var = $content;
