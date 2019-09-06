@@ -305,7 +305,8 @@ $(function() {
 EOF;
 	}
 
-	if (is_array($script['js'])) {
+	if (is_array($script['js']) &&
+		!empty($script['js'])) {
 		foreach ($script['js'] as $scriptName) {
 			$scriptName .= $min;
 			if (!file_exists(MYBB_ROOT."jscripts/asb/{$scriptName}.js")) {
@@ -383,7 +384,11 @@ function asb_initialize()
 {
 	global $mybb, $plugins;
 
-	if (!defined('THIS_SCRIPT')) {
+	if (!defined('THIS_SCRIPT') ||
+		in_array(THIS_SCRIPT,
+		array(
+			'task.php',
+		))) {
 		return;
 	}
 

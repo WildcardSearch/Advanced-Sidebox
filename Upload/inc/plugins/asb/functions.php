@@ -164,15 +164,15 @@ function asbGetCurrentScript($asb, $getAll=false)
 		$returnArray = $asb['scripts'][0][$filename];
 	}
 
-	if (empty($returnArray) ||
-		!is_array($returnArray)) {
-		return;
-	}
-
 	if ($tid > 0 &&
 		is_array($asb['scripts'][$tid][$thisKey]) &&
 		!empty($asb['scripts'][$tid][$thisKey])) {
 		$returnArray = $asb['scripts'][$tid][$thisKey];
+	}
+
+	if (empty($returnArray) ||
+		!is_array($returnArray)) {
+		return;
 	}
 
 	if (asbOnMobile() &&

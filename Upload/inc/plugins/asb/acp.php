@@ -554,11 +554,11 @@ EOF;
 	$formContainer = new FormContainer($lang->asb_which_scripts);
 
 	// prepare for which scripts
-	$choices = array();
-	$choices['all_scripts'] = $lang->asb_all;
+	$choices = array('all_scripts' => $lang->asb_all);
 
 	// are there active scripts?
-	if (is_array($allScripts)) {
+	if (is_array($allScripts) &&
+		!empty($allScripts)) {
 		// loop through them
 		foreach ($allScripts as $filename => $title) {
 			// store the script as a choice
