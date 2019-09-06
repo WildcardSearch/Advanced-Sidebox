@@ -14,8 +14,11 @@ if (!defined('IN_MYBB')) {
 
 // for modules
 define('IN_ASB', true);
-define('ASB_MODULES_DIR', MYBB_ROOT.'inc/plugins/asb/modules');
 define('ASB_VERSION', '3.1.18');
+
+define('ASB_MODULES_DIR', MYBB_ROOT.'inc/plugins/asb/modules');
+define('ASB_MIN_MODULE_VERSION', '4.0');
+
 define('ASB_CUSTOM_VERSION', '2.0');
 define('ASB_SCRIPT_VERSION', '4.0');
 
