@@ -49,13 +49,13 @@ function asb_admin()
 	$html = new HTMLGenerator010000(ASB_URL, array('addon', 'pos', 'topic', 'ajax'));
 
 	$scripts = asbGetAllScripts(true);
-	if (is_array($scripts) &&
-		!empty($scripts)) {
-		foreach ($scripts as $filename => $script) {
+	if (is_array($scripts[0]) &&
+		!empty($scripts[0])) {
+		foreach ($scripts[0] as $filename => $script) {
 			$allScripts[$filename] = $script['title'];
 		}
 	} else {
-		$scripts = $allScripts = array();
+		$scripts[0] = $allScripts = array();
 	}
 
 	// if there is an existing function for the action

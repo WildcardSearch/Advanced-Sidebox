@@ -88,6 +88,7 @@ class AdvancedSideboxCache extends WildcardPluginCache010300
 			}
 		}
 
+		$data['all_themes'] = array_keys($data['scripts']);
 		$data['all_scripts'] = array_keys($allScripts);
 
 		// load all detected modules
@@ -120,54 +121,65 @@ class AdvancedSideboxCache extends WildcardPluginCache010300
 
 			// for each script in which the side box is used, add a pointer and if it is a custom box, cache its contents
 			foreach ($scripts as $filename) {
-				// side box from a module?
-				if (isset($addons[$module]) &&
-					$addons[$module] instanceof SideboxModule) {
-					// store the module name and all the template vars used
-					$data['scripts'][0][$filename]['sideboxes'][$pos][$id] = $module;
-					$data['scripts'][0][$filename]['template_vars'][$id] = "{$module}_{$id}";
-
-					// if there are any templates get their names so we can cache them
-					$templates = $addons[$module]->get('templates');
-					if (is_array($templates) &&
-						!empty($templates)) {
-						foreach ($templates as $template) {
-							$data['scripts'][0][$filename]['templates'][] = $template['title'];
-						}
+				foreach ($data['all_themes'] as $tid) {
+					if ($tid > 0 &&
+						(!isset($data['scripts'][$tid][$filename]) ||
+						empty($data['scripts'][$tid][$filename])) &&
+						(isset($data['scripts'][0][$filename]) &&
+						!empty($data['scripts'][0][$filename]))) {
+						$data['scripts'][$tid][$filename] = $data['scripts'][0][$filename];
+						continue;
 					}
 
-					// AJAX?
-					if ($addons[$module]->xmlhttp) {
-						$settings = $sidebox->get('settings');
+					// side box from a module?
+					if (isset($addons[$module]) &&
+						$addons[$module] instanceof SideboxModule) {
+						// store the module name and all the template vars used
+						$data['scripts'][$tid][$filename]['sideboxes'][$pos][$id] = $module;
+						$data['scripts'][$tid][$filename]['template_vars'][$id] = "{$module}_{$id}";
 
-						// again, default here is off if anything goes wrong
-						if ($settings['xmlhttp_refresh_rate']) {
-							if ($settings['xmlhttp_refresh_decay'] < 1) {
-								$settings['xmlhttp_refresh_decay'] = 1;
+						// if there are any templates get their names so we can cache them
+						$installData = $addons[$module]->get('installData');
+						if (is_array($installData['templates']) &&
+							!empty($installData['templates'])) {
+							foreach ($installData['templates'] as $template) {
+								$data['scripts'][$tid][$filename]['templates'][] = $template['title'];
 							}
-
-							// add the info
-							$data['scripts'][$filename][0]['extra_scripts'][$id]['position'] = $pos;
-							$data['scripts'][$filename][0]['extra_scripts'][$id]['module'] = $module;
-							$data['scripts'][$filename][0]['extra_scripts'][$id]['rate'] = $settings['xmlhttp_refresh_rate'];
-							$data['scripts'][$filename][0]['extra_scripts'][$id]['decay'] = $settings['xmlhttp_refresh_decay'];
 						}
-					}
 
-					if ($addons[$module]->hasScripts) {
-						foreach ($addons[$module]->get('scripts') as $script) {
-							$data['scripts'][$filename]['js'][$script] = $script;
+						// AJAX?
+						if ($addons[$module]->xmlhttp) {
+							$settings = $sidebox->get('settings');
+
+							// again, default here is off if anything goes wrong
+							if ($settings['xmlhttp_refresh_rate']) {
+								if ($settings['xmlhttp_refresh_decay'] < 1) {
+									$settings['xmlhttp_refresh_decay'] = 1;
+								}
+
+								// add the info
+								$data['scripts'][$tid][$filename]['extra_scripts'][$id]['position'] = $pos;
+								$data['scripts'][$tid][$filename]['extra_scripts'][$id]['module'] = $module;
+								$data['scripts'][$tid][$filename]['extra_scripts'][$id]['rate'] = $settings['xmlhttp_refresh_rate'];
+								$data['scripts'][$tid][$filename]['extra_scripts'][$id]['decay'] = $settings['xmlhttp_refresh_decay'];
+							}
 						}
-					}
-				// side box from a custom box?
-				} else if(isset($custom[$module]) &&
-					$custom[$module] instanceof CustomSidebox) {
-					// store the pointer
-					$data['scripts'][0][$filename]['sideboxes'][$pos][$id] = $module;
-					$data['scripts'][0][$filename]['template_vars'][$id] = "{$module}_{$id}";
 
-					// and cache the contents
-					$data['custom'][$module] = $custom[$module]->get('data');
+						if ($addons[$module]->hasScripts) {
+							foreach ($addons[$module]->get('scripts') as $script) {
+								$data['scripts'][$tid][$filename]['js'][$script] = $script;
+							}
+						}
+					// side box from a custom box?
+					} else if(isset($custom[$module]) &&
+						$custom[$module] instanceof CustomSidebox) {
+						// store the pointer
+						$data['scripts'][$tid][$filename]['sideboxes'][$pos][$id] = $module;
+						$data['scripts'][$tid][$filename]['template_vars'][$id] = "{$module}_{$id}";
+
+						// and cache the contents
+						$data['custom'][$module] = $custom[$module]->get('data');
+					}
 				}
 			}
 		}
