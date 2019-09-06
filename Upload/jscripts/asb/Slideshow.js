@@ -30,6 +30,7 @@ var ASB = (function($, a) {
 			rate: 10,
 			height: 200,
 			fadeRate: 400,
+			fullInfo: false,
 		};
 
 		this.options = $.extend(this.options, o);
@@ -99,8 +100,8 @@ var ASB = (function($, a) {
 		var url = this.getNextImageUrl();
 
 		// set both image containers to the same URL
-		setImageUrl(this.$image1, url);
-		setImageUrl(this.$image2, url);
+		this.setImageUrl(this.$image1, url);
+		this.setImageUrl(this.$image2, url);
 
 		this.isSetUp = true;
 
@@ -125,12 +126,12 @@ var ASB = (function($, a) {
 		this.$image2.show();
 
 		// swap out the first image
-		setImageUrl(this.$image1, url);
+		this.setImageUrl(this.$image1, url);
 
 		// fade out the backup image (revealing the new image)
 		this.$image2.fadeOut(this.options.fadeRate, $.proxy(function() {
 			// and when that's done, set the backup image to the same image as the first image
-			setImageUrl(this.$image2, url);
+			this.setImageUrl(this.$image2, url);
 
 			// and do it again
 			this.timer = window.setTimeout($.proxy(this.showNextImage, this), this.options.rate*1000);
@@ -148,12 +149,18 @@ var ASB = (function($, a) {
 
 		// get the next index or start over
 		this.imageIndex++;
-		if (this.imageIndex > this.options.images.length) {
+		if (this.imageIndex >= this.options.images.length) {
 			this.imageIndex = 0;
 		}
 
 		// build the url
 		url = this.options.images[this.imageIndex];
+		if (this.options.fullInfo === true) {
+			this.currentImage = this.options.images[this.imageIndex];
+
+			url = this.currentImage.url;
+		}
+
 		if (this.options.folder) {
 			url = this.options.folder+"/"+url;
 		}
@@ -170,9 +177,15 @@ var ASB = (function($, a) {
 	 */
 	function setImageUrl($i, url)
 	{
-		$i.css({
-			"background-image": "url("+url+")",
-		});
+		var css = {
+			"background-image": "url('"+encodeURI(url)+"')",
+		};
+
+		if (this.options.fullInfo === true) {
+			css.backgroundColor = this.currentImage.bgcolor;
+		}
+
+		$i.css(css);
 	}
 
 	Slideshow.prototype = {
@@ -182,6 +195,7 @@ var ASB = (function($, a) {
 
 		showNextImage: showNextImage,
 		getNextImageUrl: getNextImageUrl,
+		setImageUrl: setImageUrl,
 	};
 
 	a.modules = $.extend({

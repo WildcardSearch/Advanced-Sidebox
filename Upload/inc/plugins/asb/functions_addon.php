@@ -163,7 +163,7 @@ function asbGetImagesFromPath($folder, $subfolder='', $recursive=false)
 			// get the files from this directory
 			$subFiles = asbGetImagesFromPath($folder.'/'.$file->getFilename(), $subfolder.$file->getFilename(), $recursive);
 			if ($subFiles) {
-				$filenames = array_merge($filename, $subFiles);
+				$filenames = array_merge($filenames, $subFiles);
 				$sep = ',';
 			}
 			continue;
