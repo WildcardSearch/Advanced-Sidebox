@@ -1198,7 +1198,7 @@ function asb_admin_view_scripts()
 
 					if ($totalWidth > 100) {
 						flash_message($lang->asb_script_save_width_error, 'error');
-						admin_redirect($html->url(array('action' => 'view_scripts')));
+						admin_redirect($redirect);
 					}
 
 					if ($changed == false) {
