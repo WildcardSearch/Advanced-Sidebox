@@ -482,7 +482,7 @@ EOF;
 	if ($customTitle == 1) {
 		// alter the descrption
 		$currentTitle = <<<EOF
-<em>{$lang->asb_current_title}</em><br /><br /><strong>{$sidebox->get('title')}</strong><br />{$lang->asb_current_title_info}
+<br /><em>{$lang->asb_current_title}</em>&nbsp;<strong>{$sidebox->get('title')}</strong><br /><br />{$lang->asb_current_title_info}<br />
 EOF;
 	} else {
 		// default description
