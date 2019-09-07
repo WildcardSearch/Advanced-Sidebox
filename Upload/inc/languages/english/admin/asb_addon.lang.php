@@ -46,7 +46,7 @@ $l['asb_max_thread_title_length_desc'] = 'enter nothing or 0 to show the full ti
 
 // welcome
 $l['asb_welcome'] = 'Welcome';
-$l['asb_welcome_desc'] = 'Login for guest, info for member';
+$l['asb_welcome_desc'] = 'Displays a login form for guests or user information for members.';
 
 $l['asb_welcome_member_welcome_lastvisit'] = 'Last visit';
 $l['asb_welcome_new_announcement'] = '1 new announcement';
@@ -60,7 +60,7 @@ $l['asb_welcome_guest_welcome_registration'] = 'You have to <a href="{1}">regist
 
 // search
 $l['asb_search'] = 'Search';
-$l['asb_search_desc'] = 'Simple options, a keyword text box and a go button';
+$l['asb_search_desc'] = 'Displays simple search options, a keyword text box, and a submit button.';
 
 $l['asb_search_in'] = 'Search In';
 $l['asb_search_messages'] = 'Messages';
@@ -72,7 +72,7 @@ $l['asb_search_advanced_search'] = 'Advanced Search';
 
 // statistics
 $l['asb_stats'] = 'Statistics';
-$l['asb_stats_desc'] = 'Forum statistics and figures';
+$l['asb_stats_desc'] = 'Displays various forum statistics and figures.';
 
 $l['asb_stats_box'] = 'Board Statistics';
 $l['asb_stats_format_usernames_title'] = 'Format user names?';
@@ -87,7 +87,7 @@ $l['asb_stats_no_one'] = 'no-one';
 
 // wol
 $l['asb_wol'] = "Who's Online";
-$l['asb_wol_desc'] = "Currently online members' avatars";
+$l['asb_wol_desc'] = "Lists members who are currently online as names or avatars.";
 
 $l['asb_show_avatars_title'] = 'Show Avatars';
 $l['asb_show_avatars_desc'] = 'YES to show an avatar list, NO to show a list of formatted user names';
@@ -115,7 +115,7 @@ $l['asb_wol_see_all_title'] = 'Click to see all online members.';
 
 // latest threads
 $l['asb_latest_threads'] = 'Latest Threads';
-$l['asb_latest_threads_desc'] = 'Lists the latest forum threads';
+$l['asb_latest_threads_desc'] = 'Lists the latest forum threads.';
 
 $l['asb_latest_threads_lastpost'] = 'Last Post';
 $l['asb_latest_threads_replies'] = 'Replies:';
@@ -138,7 +138,7 @@ $l['asb_new_threads_only_desc'] = 'enter nothing or 0 to show all threads with n
 
 //  recent posts
 $l['asb_recent_posts'] = 'Recent Posts';
-$l['asb_recent_posts_desc'] = 'Lists the latest posts';
+$l['asb_recent_posts_desc'] = 'Lists the latest posts.';
 
 $l['asb_recent_posts_max_title'] = 'Post Limit';
 $l['asb_recent_posts_max_description'] = 'maximal number of posts to display';
@@ -150,7 +150,7 @@ $l['asb_recent_posts_no_posts'] = 'There are no posts to display.';
 
 // pms
 $l['asb_private_messages'] = 'Private Messages';
-$l['asb_private_messages_desc'] = "Lists the user's PM info";
+$l['asb_private_messages_desc'] = "Lists the user's private message info.";
 
 $l['asb_pms_received_new'] = '{1} of {2} messages unread';
 
@@ -166,7 +166,7 @@ $l['asb_private_messages_no_content'] = 'Either you do not have permission to ac
 
 // random quotes
 $l['asb_random_quotes'] = 'Random Quotes';
-$l['asb_random_quotes_desc'] = 'Displays random quotes with a link and avatar';
+$l['asb_random_quotes_desc'] = 'Displays random quotes with a link and an avatar.';
 $l['asb_random_quotes_no_posts'] = 'There are no posts to display.';
 
 $l['asb_random_quotes_read_more'] = 'Read More';
@@ -195,7 +195,7 @@ $l['asb_random_quote_users_profile'] = "{1}'s profile";
 
 // staff online
 $l['asb_staff_online'] = 'Online Staff';
-$l['asb_staff_online_desc'] = 'Display online staff members list';
+$l['asb_staff_online_desc'] = 'Lists online staff members with badges and info.';
 
 $l['asb_staff_online_max_staff_title'] = 'Staff Limit';
 $l['asb_staff_online_max_staff_desc'] = 'maximal number of staff members to display';
@@ -204,7 +204,7 @@ $l['asb_staff_online_no_staff_online'] = 'There are no staff members currently o
 
 // slideshow
 $l['asb_slideshow'] = 'Slideshow';
-$l['asb_slideshow_desc'] = 'Display images in series with configurable options';
+$l['asb_slideshow_desc'] = 'Displays images in series with configurable options.';
 
 $l['asb_slideshow_folder_title'] = 'Image Path';
 $l['asb_slideshow_folder_description'] = 'this is the folder that contains the images to display from the forum root. (Example: images OR images/english NOT http://myforum.com/images)';
@@ -237,7 +237,7 @@ $l['asb_slideshow_no_images'] = 'No images to show';
 
 // top poster
 $l['asb_top_poster_title'] = 'Top Poster';
-$l['asb_top_poster_desc'] = 'Highlight the user of your forum with the most posts within a given time period';
+$l['asb_top_poster_desc'] = 'Highlight the user of your forum that has made the most posts within a given time period, or for a particular forum or thread.';
 
 $l['asb_top_poster_no_one'] = 'no one';
 $l['asb_top_poster_no_posts'] = 'no posts';
@@ -303,7 +303,7 @@ $l['asb_top_poster_one_year_desc'] = 'The Last Year';
 
 // goals
 $l['asb_goals_title'] = 'Forum Goals';
-$l['asb_goals_description'] = 'displays a countdown';
+$l['asb_goals_description'] = 'Displays a progress meter for thread/post/user count goals, with a success message when the goal is met.';
 
 	// setting
 $l['asb_goals_goal_type_title'] = 'Goal Type';
@@ -385,7 +385,7 @@ $l['asb_forum_age_no_content'] = 'nothing to show';
 
 // birthdays
 $l['asb_birthdays_title'] = 'Birthdays';
-$l['asb_birthdays_description'] = 'Displays birthdays for the month, or today';
+$l['asb_birthdays_description'] = 'Displays today\'s birthdays and/or birthdays for the month.';
 
 $l['asb_birthdays_time_frame_title'] = 'Timeframe';
 $l['asb_birthdays_time_frame_description'] = 'Choose to show birthdays for the month, today';
