@@ -93,12 +93,12 @@ function asb_admin_manage_sideboxes()
 			$id = $type = $module->get('baseName');
 			$title = $module->get('title');
 			$titleUrl = $html->url(array('action' => 'edit_box', 'addon' => $type));
-			$titleLink = $html->link($titleUrl, $title, array('class' => 'add_box_link', 'title' => $lang->asb_add_new_sidebox));
+			$titleLink = $html->link($titleUrl, $title, array('class' => 'add_box_link'));
 
 			// add the HTML
 			$modules .= <<<EOF
 
-						<div id="asb-{$id}" class="draggable box_type">
+						<div id="asb-{$id}" class="draggable box_type" title="{$module->get('description')}">
 							{$titleLink}
 						</div>
 
@@ -120,7 +120,7 @@ EOF;
 			// add the HTML
 			$customBoxes .= <<<EOF
 
-						<div id="{$id}" class="draggable custom_type">
+						<div id="{$id}" class="draggable custom_type" title="{$module->get('description')}">
 							{$titleLink}
 						</div>
 
