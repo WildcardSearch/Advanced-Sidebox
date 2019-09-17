@@ -28,11 +28,62 @@ function asb_start()
 	$asb = AdvancedSideboxCache::getInstance()->getCache();
 	$script = asbGetCurrentScript($asb, true);
 
+	$filteredBoxes = array(
+		0 => array(),
+		1 => array(),
+	);
+
+	foreach ($script['sideboxes'] as $pos => $sideboxes) {
+		// does this column have boxes?
+		if (!is_array($sideboxes) ||
+			empty($sideboxes)) {
+			continue;
+		}
+
+		// loop through them
+		foreach ($sideboxes as $id => $moduleKey) {
+			// verify that the box ID exists
+			if (!isset($asb['sideboxes'][$id])) {
+				continue;
+			}
+
+			// then load the object
+			$sidebox = new SideboxObject($asb['sideboxes'][$id]);
+
+			// can the user view this side box?
+			if (!asbCheckUserPermissions($sidebox->get('groups'))) {
+				continue;
+			}
+
+			// is this theme available for this side box?
+			$good_themes = $sidebox->get('themes');
+			if ($good_themes &&
+				!in_array($theme['tid'], $good_themes)) {
+				continue;
+			}
+
+			$result = false;
+
+			// get the template variable
+			$template_var = "{$moduleKey}_{$id}";
+
+			$module = new SideboxModule($moduleKey);
+			$custom = new CustomSidebox($asb['custom'][$moduleKey]);
+			
+			if (!$module->isValid() &&
+				!$custom->isValid()) {
+				continue;
+			}
+
+			$filteredBoxes[$pos][$id] = $moduleKey;
+		}
+	}
+
 	// no boxes, get out
-	if (!is_array($script['sideboxes']) ||
-	   empty($script['sideboxes']) ||
-	   (empty($script['sideboxes'][0]) &&
-	   empty($script['sideboxes'][1])) ||
+	if (!is_array($filteredBoxes) ||
+	   empty($filteredBoxes) ||
+	   (empty($filteredBoxes[0]) &&
+	   empty($filteredBoxes[1])) ||
 	   ((strlen($script['find_top']) == 0 ||
 	   strlen($script['find_bottom']) == 0) &&
 	   (!$script['replace_all'] &&
@@ -45,11 +96,11 @@ function asb_start()
 		1 => '',
 	);
 
-	if (empty($script['sideboxes'][0])) {
+	if (empty($filteredBoxes[0])) {
 		$script['width_left'] = $script['left_margin'] = '0';
 	}
 
-	if (empty($script['sideboxes'][1])) {
+	if (empty($filteredBoxes[1])) {
 		$script['width_right'] = $script['right_margin'] = '0';
 	}
 
@@ -82,8 +133,8 @@ function asb_start()
 	}
 
 	// does this column have boxes?
-	if (!is_array($script['sideboxes']) ||
-		empty($script['sideboxes'])) {
+	if (!is_array($filteredBoxes) ||
+		empty($filteredBoxes)) {
 		return;
 	}
 
@@ -91,7 +142,7 @@ function asb_start()
 	require_once MYBB_ROOT.'inc/plugins/asb/functions_addon.php';
 
 	// loop through all the boxes for the script
-	foreach ($script['sideboxes'] as $pos => $sideboxes) {
+	foreach ($filteredBoxes as $pos => $sideboxes) {
 		// does this column have boxes?
 		if (!is_array($sideboxes) ||
 			empty($sideboxes)) {
@@ -152,6 +203,11 @@ function asb_start()
 				$boxes[$pos] .= asbBuildSideBoxContent($sidebox->get('data'));
 			}
 		}
+	}
+
+	if (empty($boxes[0]) &&
+		empty($boxes[1])) {
+		return;
 	}
 
 	// make the edits
