@@ -49,7 +49,20 @@ function asbBuildSettingsMenuLink()
 	global $mybb, $lang, $html, $cp_style;
 
 	$settingsUrl = asbBuildSettingsUrl(asbGetSettingsGroup());
-	$settingsLink = $html->link($settingsUrl, $lang->asb_plugin_settings, array('icon' => "styles/{$cp_style}/images/asb/settings.png", 'style' => 'font-weight: bold;', 'title' => $lang->asb_plugin_settings), array('alt' => 'S', 'style' => 'margin-bottom: -3px;'));
+	$settingsLink = $html->link(
+		$settingsUrl,
+		$lang->asb_plugin_settings,
+		array(
+			'icon' => "styles/{$cp_style}/images/asb/settings.png",
+			'style' => 'font-weight: bold;',
+			'title' => $lang->asb_plugin_settings,
+		),
+		array(
+			'alt' => 'S',
+			'style' => 'margin-bottom: -3px;',
+		)
+	);
+
 	return $settingsLink;
 }
 
@@ -187,7 +200,7 @@ function asbBuildPermissionsTable($sidebox)
 
 								<table width="100%" class="box_info">{$visibility_rows}{$themeList}
 								</table>
-							
+
 EOF;
 }
 

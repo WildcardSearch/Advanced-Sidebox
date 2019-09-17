@@ -75,9 +75,10 @@ class CustomSidebox extends PortableObject010102
 	public function remove($noCleanup=false)
 	{
 		// unless specifically requested otherwise clean up
-		if (!$noCleanup) {
+		if ($noCleanup !== true) {
 			$this->removeChildren();
 		}
+
 		return parent::remove();
 	}
 

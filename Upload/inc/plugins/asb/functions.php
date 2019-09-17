@@ -38,8 +38,6 @@ function asbDoStartupChecks()
 	/*
 	 * if this is a mobile device, and admin has
 	 * disabled side boxes for mobile...
-	 *
-	 * credit: http://stackoverflow.com/users/1304523/justin-docanto
 	 */
 	if ($mybb->settings['asb_disable_for_mobile'] &&
 		asbOnMobile()) {
@@ -77,6 +75,8 @@ function asbGetExcludedThemes($sql=false)
 
 /**
  * detect mobile browsers
+ *
+ * credit: http://stackoverflow.com/users/1304523/justin-docanto
  *
  * @return bool
  */
