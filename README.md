@@ -1,4 +1,4 @@
-## Advanced-Sidebox 3.1.18
+## Advanced-Sidebox 4.0
 
 <p align="center">
   <img title="Advanced Sidebox Logo" alt="Advanced Sidebox Logo" src="http://i.imgur.com/4QWLq5V.png" />
@@ -8,7 +8,7 @@
 A plugin for MyBB forums that displays custom boxes on various forum pages.
 </p>
 
-ASB is ***the*** side box plugin for MyBB forums. It is versatile, powerful, and built using the advice of its users.
+ASB is ***the*** side box plugin for MyBB forums. It is versatile, powerful, and since 4.0, it is built using responsive design principles.
 
 ## Features:
 
