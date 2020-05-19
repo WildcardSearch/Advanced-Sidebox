@@ -285,20 +285,23 @@ function asb_latest_threads_get_content($settings, $script, $dateline, $template
 
 		$threadfield_cache = xthreads_gettfcache();
 
-		$fids = array_flip(array_map('intval', explode(',', $settings['forum_show_list'])));
-		$all_fids = ($settings['forum_show_list'] == '');
-		$xt_fields = '';
-		foreach($threadfield_cache as $k => &$v) {
-			$available = (!$v['forums']) || $all_fids;
-			if(!$available)
-				foreach(explode(',', $v['forums']) as $fid) {
-					if(isset($fids[$fid])) {
-						$available = true;
-						break;
+		if(!empty($threadfield_cache))
+		{
+			$fids = array_flip(array_map('intval', explode(',', $settings['forum_show_list'])));
+			$all_fids = ($settings['forum_show_list'] == '');
+			$xt_fields = '';
+			foreach($threadfield_cache as $k => &$v) {
+				$available = (!$v['forums']) || $all_fids;
+				if(!$available)
+					foreach(explode(',', $v['forums']) as $fid) {
+						if(isset($fids[$fid])) {
+							$available = true;
+							break;
+						}
 					}
-				}
-			if($available)
-				$xt_fields .= ', tfd.`'.$v['field'].'` AS `xthreads_'.$v['field'].'`';
+				if($available)
+					$xt_fields .= ', tfd.`'.$v['field'].'` AS `xthreads_'.$v['field'].'`';
+			}
 		}
 	}
 
