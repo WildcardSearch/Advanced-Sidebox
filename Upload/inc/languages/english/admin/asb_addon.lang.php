@@ -41,6 +41,12 @@ $l['asb_group_hide_list_desc'] = '(optional) add a usergroup id or a comma-separ
 $l['asb_important_threads_only_title'] = 'Important Threads Only?';
 $l['asb_important_threads_only_desc'] = "YES to only use 'stickied' threads, NO (default) to use any threads/posts";
 
+$l['asb_load_xthreads_data_title'] = 'Load xThreads Data?';
+$l['asb_load_xthreads_data_desc'] = "YES to load xThread data available for the fetched threads, NO (default) to save unnecessary DB calls.";
+
+$l['asb_showinportal_threads_only_title'] = 'Show In Portal Threads Only?';
+$l['asb_showinportal_threads_only_desc'] = "YES to only use 'show in portal' threads marked by the OUGC Show In Portal plugin, NO (default) to use any threads/posts.";
+
 $l['asb_max_thread_title_length_title'] = 'Thread Title Length Limit';
 $l['asb_max_thread_title_length_desc'] = 'enter nothing or 0 to show the full title, or enter the maximal number of characters to display (default 40)';
 
