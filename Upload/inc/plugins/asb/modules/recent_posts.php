@@ -162,7 +162,12 @@ function asb_recent_posts_get_content($settings, $script, $dateline)
 
 	if ($dateline &&
 		$dateline !== TIME_NOW) {
-		$newQuery = $db->simple_select('posts p', 'pid', "p.visible='1'{$query_where} AND p.dateline > {$dateline}", array('limit' => 1));
+		$newQuery = $db->simple_select(
+			"posts p LEFT JOIN {$db->table_prefix}threads ON (p.tid=t.tid)",
+			'pid',
+			"p.visible='1' AND t.visible='1'{$query_where} AND p.dateline > {$dateline}",
+			array('limit' => 1)
+		);
 
 		if ($db->num_rows($newQuery) < 1) {
 			// no new content
@@ -181,7 +186,7 @@ function asb_recent_posts_get_content($settings, $script, $dateline)
 		LEFT JOIN {$db->table_prefix}users u ON (u.uid=p.uid)
 		LEFT JOIN {$db->table_prefix}threads t ON (t.tid=p.tid)
 		WHERE
-			p.visible='1'{$query_where}
+			p.visible='1' AND t.visible='1'{$query_where}
 		ORDER BY
 			p.dateline DESC
 		LIMIT
