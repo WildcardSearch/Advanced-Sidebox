@@ -68,7 +68,10 @@ function asb_start()
 			$template_var = "{$moduleKey}_{$id}";
 
 			$module = new SideboxModule($moduleKey);
-			$custom = new CustomSidebox($asb['custom'][$moduleKey]);
+			if(isset($asb['custom'][$moduleKey]))
+			{
+				$custom = new CustomSidebox($asb['custom'][$moduleKey]);
+			}
 			
 			if (!$module->isValid() &&
 				!$custom->isValid()) {

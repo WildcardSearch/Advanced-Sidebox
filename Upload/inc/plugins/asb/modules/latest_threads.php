@@ -247,6 +247,8 @@ function asb_latest_threads_get_content($settings, $script, $dateline, $template
 		$new_threads .= " AND t.dateline > {$thread_time_limit}";
 	}
 
+	$important_threads ='';
+
 	if ($settings['important_threads_only']) {
 		$important_threads = ' AND NOT t.sticky=0';
 	}
@@ -369,11 +371,11 @@ function asb_latest_threads_get_content($settings, $script, $dateline, $template
 
 		$avatarInfo = format_avatar($thread['avatar']);
 
-		eval("\$avatar = \"{$templates->get('asb_latest_threads_last_poster_avatar_avatar')}\";");
+		$lastposter_profile_link = get_profile_link($thread['lastposteruid']);
+
+		$avatar = eval($templates->render('asb_latest_threads_last_poster_avatar_avatar'));
 
 		$formatted_name = format_name($thread['lastposter'], $thread['usergroup'], $thread['displaygroup']);
-
-		$lastposter_profile_link = get_profile_link($thread['lastposteruid']);
 
 		$formatted_name_profile_link = build_profile_link($formatted_name, $thread['lastposteruid']);
 
@@ -418,7 +420,7 @@ function asb_latest_threads_get_content($settings, $script, $dateline, $template
 				$forum_read = $read_cutoff;
 			}
 		} else {
-			$forum_read = $forumsread[$thread['fid']];
+			$forum_read = $forumsread[$thread['fid']] ?? 0;
 		}
 
 		if ($mybb->settings['threadreadcut'] > 0 &&
@@ -444,11 +446,11 @@ function asb_latest_threads_get_content($settings, $script, $dateline, $template
 			$unreadpost = 1;
 		}
 
+		$threadfields = array();
+
 		if($xthreads && !empty($threadfield_cache)) {
 			xthreads_set_threadforum_urlvars('thread', $thread['tid']);
 			xthreads_set_threadforum_urlvars('forum', $thread['fid']);
-
-			$threadfields = array();
 			
 			foreach($threadfield_cache as $k => &$v) {
 				if($v['forums'] && strpos(','.$v['forums'].',', ','.$thread['fid'].',') === false)
@@ -461,6 +463,7 @@ function asb_latest_threads_get_content($settings, $script, $dateline, $template
 			}
 		}
 
+		//{\$thread[\'threadlink\']}" title="{\$fullSubject}"><span class="asb-latestest-threads-thread-title">{\$thread[\'subject\']
 		eval("\$threadlist .= \"{$templates->get('asb_latest_threads_thread')}\";");
 		$altbg = alt_trow();
 	}
