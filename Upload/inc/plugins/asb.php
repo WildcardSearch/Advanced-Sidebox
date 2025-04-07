@@ -47,5 +47,3 @@ function asbClassAutoload($className)
 		require_once $path;
 	}
 }
-
-?>

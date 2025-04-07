@@ -375,5 +375,3 @@ abstract class InstallableModule010001 extends ConfigurableModule010101 implemen
 		$this->cache->update($this->cacheKey, $data);
 	}
 }
-
-?>

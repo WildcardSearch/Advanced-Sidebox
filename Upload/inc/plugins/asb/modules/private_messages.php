@@ -104,5 +104,3 @@ function asb_private_messages_get_content($settings, $script, $dateline)
 
 	return $pmessages;
 }
-
-?>

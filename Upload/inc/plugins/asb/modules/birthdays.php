@@ -177,5 +177,3 @@ function asb_birthdays_get_content($settings, $script, $dateline)
 	eval("\$returnValue = \"{$templates->get('asb_birthdays')}\";");
 	return $returnValue;
 }
-
-?>

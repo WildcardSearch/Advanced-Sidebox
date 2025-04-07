@@ -260,5 +260,3 @@ function asb_random_quote_get_content($settings, $script, $dateline)
 	eval("\$this_quote = \"{$templates->get('asb_random_quote_sidebox')}\";");
 	return $this_quote;
 }
-
-?>

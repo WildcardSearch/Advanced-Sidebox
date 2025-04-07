@@ -606,5 +606,3 @@ function asbFindDuplicateScriptByFilename($keys, $tid=0)
 
 	return (int) $db->fetch_field($query, 'id');
 }
-
-?>

@@ -201,5 +201,3 @@ EOF;
 		return $property_list;
 	}
 }
-
-?>

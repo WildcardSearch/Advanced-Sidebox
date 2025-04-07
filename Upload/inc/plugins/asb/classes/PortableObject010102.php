@@ -218,5 +218,3 @@ EOF;
 		return preg_replace($find, $replace, strtolower(trim($name)));
 	}
 }
-
-?>

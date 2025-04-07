@@ -9,5 +9,3 @@ interface InstallableModuleInterface010000
 	public function install($cleanup = true);
 	public function uninstall($cleanup = true);
 }
-
-?>

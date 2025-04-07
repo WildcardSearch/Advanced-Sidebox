@@ -87,5 +87,3 @@ function asb_search_get_content($settings, $script, $dateline)
 
 	return $content;
 }
-
-?>

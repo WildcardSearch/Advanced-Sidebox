@@ -9,5 +9,3 @@ interface WildcardPluginInstallerInterface010000
 	public function install();
 	public function uninstall();
 }
-
-?>

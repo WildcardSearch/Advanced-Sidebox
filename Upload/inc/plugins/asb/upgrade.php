@@ -43,5 +43,3 @@ if (!empty($removedAdminFolders)) {
 		@rmdir(MYBB_ADMIN_DIR.$folder);
 	}
 }
-
-?>

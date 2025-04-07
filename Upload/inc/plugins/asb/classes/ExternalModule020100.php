@@ -128,5 +128,3 @@ abstract class ExternalModule020100 extends MalleableObject010000 implements Ext
 		return !file_exists($filename);
 	}
 }
-
-?>

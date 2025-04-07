@@ -937,5 +937,3 @@ EOF
 		return false;
 	}
 }
-
-?>

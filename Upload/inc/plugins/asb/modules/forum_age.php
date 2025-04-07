@@ -206,5 +206,3 @@ function asb_forum_age_settings_load()
 	</script>
 EOF;
 }
-
-?>

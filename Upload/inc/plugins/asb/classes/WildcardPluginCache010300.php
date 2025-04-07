@@ -63,7 +63,7 @@ abstract class WildcardPluginCache010300 implements WildcardPluginCacheInterface
 	 * 	entire cache in the db
 	 * @return void
 	 */
-	public function update($key = null, $val, $hard = false)
+	public function update($key = null, $val = [], $hard = false)
 	{
 		if ($key === null) {
 			if ($this->subKey) {
@@ -155,5 +155,3 @@ abstract class WildcardPluginCache010300 implements WildcardPluginCacheInterface
 		$this->update('version', trim($version));
 	}
 }
-
-?>

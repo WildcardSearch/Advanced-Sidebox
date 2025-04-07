@@ -21,7 +21,7 @@ function asb_latest_threads_info()
 {
 	global $lang;
 
-	if (!$lang->asb_addon) {
+	if (empty($lang->asb_addon)) {
 		$lang->load('asb_addon');
 	}
 
@@ -104,6 +104,20 @@ function asb_latest_threads_info()
 				'optionscode' => 'yesno',
 				'value' => '0',
 			),
+			'xthreads' => array(
+				'name' => 'xthreads',
+				'title' => $lang->asb_load_xthreads_data_title,
+				'description' => $lang->asb_load_xthreads_data_desc,
+				'optionscode' => 'yesno',
+				'value' => '0',
+			),
+			'showinportal' => array(
+				'name' => 'showinportal',
+				'title' => $lang->asb_showinportal_threads_only_title,
+				'description' => $lang->asb_showinportal_threads_only_desc,
+				'optionscode' => 'yesno',
+				'value' => '0',
+			),
 		),
 		'installData' => array(
 			'templates' => array(
@@ -172,7 +186,7 @@ EOF
  * @param  array information from child box
  * @return bool success/fail
  */
-function asb_latest_threads_get_content($settings, $script, $dateline)
+function asb_latest_threads_get_content($settings, $script, $dateline, $template_var)
 {
 	global $db, $mybb, $templates, $lang, $cache, $gotounread, $theme;
 
@@ -212,6 +226,8 @@ function asb_latest_threads_get_content($settings, $script, $dateline)
 	require_once MYBB_ROOT.'inc/class_parser.php';
 	$parser = new postParser;
 
+	$unviewwhere = $inactivewhere = '';
+
 	// get forums user cannot view
 	$unviewable = get_unviewable_forums(true);
 	if ($unviewable) {
@@ -230,6 +246,8 @@ function asb_latest_threads_get_content($settings, $script, $dateline)
 		$thread_time_limit = TIME_NOW - 60 * 60 * 24 * (int) $settings['new_threads_only'];
 		$new_threads .= " AND t.dateline > {$thread_time_limit}";
 	}
+
+	$important_threads ='';
 
 	if ($settings['important_threads_only']) {
 		$important_threads = ' AND NOT t.sticky=0';
@@ -259,11 +277,44 @@ function asb_latest_threads_get_content($settings, $script, $dateline)
 	$altbg = alt_trow();
 	$threadlist = '';
 
+	$xthreads = function_exists('xthreads_gettfcache') && $settings['xthreads'];
+
+	$xt_fields = $xt_join_code = '';
+
+	!(function_exists('ougc_showinportal_info') && $settings['showinportal']) || $query_where .= "AND t.showinportal='1'";
+
+	if($xthreads)
+	{
+		$xt_join_code = "LEFT JOIN {$db->table_prefix}threadfields_data tfd ON (tfd.tid=t.tid)";
+
+		$threadfield_cache = xthreads_gettfcache();
+
+		if(!empty($threadfield_cache))
+		{
+			$fids = array_flip(array_map('intval', explode(',', $settings['forum_show_list'])));
+			$all_fids = ($settings['forum_show_list'] == '');
+			$xt_fields = '';
+			foreach($threadfield_cache as $k => &$v) {
+				$available = (!$v['forums']) || $all_fids;
+				if(!$available)
+					foreach(explode(',', $v['forums']) as $fid) {
+						if(isset($fids[$fid])) {
+							$available = true;
+							break;
+						}
+					}
+				if($available)
+					$xt_fields .= ', tfd.`'.$v['field'].'` AS `xthreads_'.$v['field'].'`';
+			}
+		}
+	}
+
 	// query for the latest forum discussions
 	$query = $db->query("
-		SELECT t.*, u.username, u.avatar, u.usergroup, u.displaygroup
+		SELECT t.*, u.username, u.avatar, u.usergroup, u.displaygroup{$xt_fields}
 		FROM {$db->table_prefix}threads t
 		LEFT JOIN {$db->table_prefix}users u ON (u.uid=t.lastposteruid)
+		{$xt_join_code}
 		WHERE t.visible='1' AND t.closed NOT LIKE 'moved|%'{$query_where}
 		ORDER BY t.lastpost DESC
 		LIMIT 0, ".(int) $settings['max_threads']
@@ -291,6 +342,9 @@ function asb_latest_threads_get_content($settings, $script, $dateline)
 		}
 	}
 
+	$xt_tids = '';
+	!$xthreads || $xt_tids = '0,'.implode(',', array_keys($threadCache));
+
 	foreach ($threadCache as $thread) {
 		$forumpermissions[$thread['fid']] = forum_permissions($thread['fid']);
 
@@ -317,11 +371,11 @@ function asb_latest_threads_get_content($settings, $script, $dateline)
 
 		$avatarInfo = format_avatar($thread['avatar']);
 
-		eval("\$avatar = \"{$templates->get('asb_latest_threads_last_poster_avatar_avatar')}\";");
+		$lastposter_profile_link = get_profile_link($thread['lastposteruid']);
+
+		$avatar = eval($templates->render('asb_latest_threads_last_poster_avatar_avatar'));
 
 		$formatted_name = format_name($thread['lastposter'], $thread['usergroup'], $thread['displaygroup']);
-
-		$lastposter_profile_link = get_profile_link($thread['lastposteruid']);
 
 		$formatted_name_profile_link = build_profile_link($formatted_name, $thread['lastposteruid']);
 
@@ -366,7 +420,7 @@ function asb_latest_threads_get_content($settings, $script, $dateline)
 				$forum_read = $read_cutoff;
 			}
 		} else {
-			$forum_read = $forumsread[$thread['fid']];
+			$forum_read = $forumsread[$thread['fid']] ?? 0;
 		}
 
 		if ($mybb->settings['threadreadcut'] > 0 &&
@@ -392,6 +446,24 @@ function asb_latest_threads_get_content($settings, $script, $dateline)
 			$unreadpost = 1;
 		}
 
+		$threadfields = array();
+
+		if($xthreads && !empty($threadfield_cache)) {
+			xthreads_set_threadforum_urlvars('thread', $thread['tid']);
+			xthreads_set_threadforum_urlvars('forum', $thread['fid']);
+			
+			foreach($threadfield_cache as $k => &$v) {
+				if($v['forums'] && strpos(','.$v['forums'].',', ','.$thread['fid'].',') === false)
+					continue;
+
+				xthreads_get_xta_cache($v, $xt_tids);
+				
+				$threadfields[$k] =& $thread['xthreads_'.$k];
+				xthreads_sanitize_disp($threadfields[$k], $v, ($thread['username'] !== '' ? $thread['username'] : $thread['threadusername']));
+			}
+		}
+
+		//{\$thread[\'threadlink\']}" title="{\$fullSubject}"><span class="asb-latestest-threads-thread-title">{\$thread[\'subject\']
 		eval("\$threadlist .= \"{$templates->get('asb_latest_threads_thread')}\";");
 		$altbg = alt_trow();
 	}
@@ -417,5 +489,3 @@ function asb_latest_threads_settings_load()
 	</script>
 EOF;
 }
-
-?>

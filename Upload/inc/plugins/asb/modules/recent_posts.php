@@ -137,15 +137,23 @@ function asb_recent_posts_get_content($settings, $script, $dateline)
 
 	// get forums user cannot view
 	$unviewable = get_unviewable_forums(true);
+
+	$unviewwhere = '';
+
 	if ($unviewable) {
 		$unviewwhere = " AND p.fid NOT IN ({$unviewable})";
 	}
 
 	// get inactive forums
 	$inactive = get_inactive_forums();
+
+	$inactivewhere = '';
+
 	if ($inactive) {
 		$inactivewhere = " AND p.fid NOT IN ({$inactive})";
 	}
+
+	$important_threads = '';
 
 	if ($settings['important_threads_only']) {
 		$important_threads = ' AND NOT t.sticky=0';
@@ -254,5 +262,3 @@ function asb_recent_posts_get_content($settings, $script, $dateline)
 
 	return $postlist;
 }
-
-?>

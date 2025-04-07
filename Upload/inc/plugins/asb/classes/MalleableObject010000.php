@@ -70,5 +70,3 @@ abstract class MalleableObject010000 implements MalleableObjectInterface010000
 		return $this->valid;
 	}
 }
-
-?>

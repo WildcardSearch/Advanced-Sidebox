@@ -275,5 +275,3 @@ abstract class ConfigurableModule010101 extends ExternalModule020100 implements 
 		ConfigurableModule010101::outputModuleSettings($this, $formContainer);
 	}
 }
-
-?>

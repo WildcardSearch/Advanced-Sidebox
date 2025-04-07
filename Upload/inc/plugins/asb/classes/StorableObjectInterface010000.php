@@ -13,5 +13,3 @@ interface StorableObjectInterface010000
 	public function save();
 	public function remove($noCleanup = false);
 }
-
-?>

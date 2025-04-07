@@ -10,11 +10,9 @@
 interface WildcardPluginCacheInterface010200
 {
 	public function read($key = null);
-	public function update($key = null, $val, $hard = false);
+	public function update($key = null, $val = null, $hard = false);
 	public function save();
 	public function clear($hard = false);
 	public function getVersion();
 	public function setVersion($version);
 }
-
-?>

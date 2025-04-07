@@ -140,23 +140,21 @@ function asbGetCurrentScript($asb, $getAll=false)
 {
 	global $mybb, $theme;
 
-	$tid = $theme['tid'];
+	$tid = !empty($theme['tid']) ? (int) $theme['tid'] : 0;
 	$thisKey = THIS_SCRIPT;
 
-	if (is_array($asb['scripts'][0][$thisKey]) &&
-		!empty($asb['scripts'][0][$thisKey])) {
+	if (!empty($asb) && !empty($asb['scripts']) && !empty($asb['scripts'][0]) && !empty($asb['scripts'][0][$thisKey]) && is_array($asb['scripts'][0][$thisKey])) {
 		$returnArray = $asb['scripts'][0][$thisKey];
 	}
 
 	foreach (array('action', 'page') as $key) {
-		$mybb->input[$key] = trim($mybb->input[$key]);
+		$mybb->input[$key] = trim($mybb->get_input($key));
 		if (!$mybb->input[$key]) {
 			continue;
 		}
 
-		$filename = THIS_SCRIPT."&{$key}={$mybb->input[$key]}";
-		if (!is_array($asb['scripts'][0][$filename]) ||
-			empty($asb['scripts'][0][$filename])) {
+		$filename = THIS_SCRIPT."&{$key}={$mybb->get_input($key)}";
+		if (empty($asb['scripts'][0][$filename]) || !is_array($asb['scripts'][0][$filename])) {
 			continue;
 		}
 
@@ -164,9 +162,7 @@ function asbGetCurrentScript($asb, $getAll=false)
 		$returnArray = $asb['scripts'][0][$filename];
 	}
 
-	if ($tid > 0 &&
-		is_array($asb['scripts'][$tid][$thisKey]) &&
-		!empty($asb['scripts'][$tid][$thisKey])) {
+	if ($tid > 0 && !empty($asb['scripts'][$tid][$thisKey]) && is_array($asb['scripts'][$tid][$thisKey])) {
 		$returnArray = $asb['scripts'][$tid][$thisKey];
 	}
 
@@ -180,7 +176,7 @@ function asbGetCurrentScript($asb, $getAll=false)
 		return;
 	}
 
-	$returnArray = asbMergeScripts($asb, $returnArray, (array) $asb['scripts'][0]['global'], $getAll);
+	$returnArray = asbMergeScripts($asb, $returnArray, $asb['scripts'][0]['global'] ?? [], $getAll);
 
 	return $returnArray;
 }
@@ -199,9 +195,9 @@ function asbMergeScripts($asb, $default, $custom, $full=false)
 	$returnArray = $default;
 
 	// merge any globally visible (script-wise) side boxes with this script
-	$returnArray['template_vars'] = array_merge((array) $default['template_vars'], (array) $custom['template_vars']);
-	$returnArray['extra_scripts'] = (array) $default['extra_scripts'] + (array) $custom['extra_scripts'];
-	$returnArray['js'] = (array) $default['js'] + (array) $custom['js'];
+	$returnArray['template_vars'] = array_merge(($default['template_vars'] ?? []) , ($custom['template_vars'] ?? []));
+	$returnArray['extra_scripts'] = ($default['extra_scripts'] ?? [])  + ($custom['extra_scripts'] ?? []); ;
+	$returnArray['js'] = ($default['js'] ?? []) + ($custom['js'] ?? []);
 
 	// the template handler does not need side boxes and templates
 	if ($full !== true) {
@@ -209,9 +205,9 @@ function asbMergeScripts($asb, $default, $custom, $full=false)
 	}
 
 	// asb_start() and asb_initialize() do
-	$returnArray['sideboxes'][0] = asbMergeSideBoxList($asb, (array) $default['sideboxes'][0], (array) $custom['sideboxes'][0]);
-	$returnArray['sideboxes'][1] = asbMergeSideBoxList($asb, (array) $default['sideboxes'][1], (array) $custom['sideboxes'][1]);
-	$returnArray['templates'] = array_merge((array) $default['templates'], (array) $custom['templates']);
+	$returnArray['sideboxes'][0] = asbMergeSideBoxList($asb, $default['sideboxes'][0] ?? [], $custom['sideboxes'][0] ?? []);
+	$returnArray['sideboxes'][1] = asbMergeSideBoxList($asb, $default['sideboxes'][1] ?? [], $custom['sideboxes'][1] ?? []);
+	$returnArray['templates'] = array_merge($default['templates'] ?? [], $custom['templates'] ?? []);
 
 	return $returnArray;
 }
@@ -524,5 +520,3 @@ function asbGetAllThemes($full=false)
 
 	return $themeList;
 }
-
-?>

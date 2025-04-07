@@ -400,5 +400,3 @@ $l['asb_ajax_templates'] = 'templates';
 $l['asb_ajax_file_name_empty'] = 'no file name';
 $l['asb_ajax_file_does_not_exist'] = 'file does not exist';
 $l['asb_ajax_file_empty'] = 'file empty or corrupted';
-
-?>

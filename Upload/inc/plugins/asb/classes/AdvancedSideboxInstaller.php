@@ -35,5 +35,3 @@ class AdvancedSideboxInstaller extends WildcardPluginInstaller020001
 		parent::__construct(MYBB_ROOT.'inc/plugins/asb/install_data.php');
 	}
 }
-
-?>

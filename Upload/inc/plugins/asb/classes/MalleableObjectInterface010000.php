@@ -13,5 +13,3 @@ interface MalleableObjectInterface010000
 	public function set($properties, $value = '');
 	public function isValid();
 }
-
-?>

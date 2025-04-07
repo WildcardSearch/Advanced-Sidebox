@@ -121,5 +121,3 @@ class CustomSidebox extends PortableObject010102
 		return $returnVal;
 	}
 }
-
-?>

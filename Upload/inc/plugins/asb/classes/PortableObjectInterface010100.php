@@ -13,5 +13,3 @@ interface PortableObjectInterface010100
 	public function import($xml);
 	public function buildRow();
 }
-
-?>

@@ -162,5 +162,3 @@ function asb_goals_get_content($settings, $script, $dateline)
 	eval("\$returnValue = \"{$templates->get('asb_goals')}\";");
 	return $returnValue;
 }
-
-?>

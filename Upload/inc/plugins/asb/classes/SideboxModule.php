@@ -290,5 +290,3 @@ class SideboxModule extends InstallableModule010001
 		return $settings;
 	}
 }
-
-?>

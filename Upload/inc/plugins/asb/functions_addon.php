@@ -101,6 +101,8 @@ EOF;
  */
 function asbBuildSqlWhere($conditions, $op='AND', $prefix='', $wrap=true)
 {
+	$where = '';
+
 	if (is_array($conditions)) {
 		$sep = '';
 		foreach ($conditions as $condition) {
@@ -181,5 +183,3 @@ function asbGetImagesFromPath($folder, $subfolder='', $recursive=false)
 
 	return $filenames;
 }
-
-?>

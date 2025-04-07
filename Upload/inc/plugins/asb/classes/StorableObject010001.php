@@ -96,31 +96,33 @@ abstract class StorableObject010001 extends MalleableObject010000 implements Sto
 
 		$this->data = array();
 		foreach ($this as $property => $value) {
-			if (in_array($property, $this->noStore)) {
+			if (in_array($property, $this->noStore) || !isset($this->$property)) {
 				continue;
 			}
 
 			switch (gettype($this->$property)) {
-			case 'boolean':
-				$this->data[$property] = (bool) $value;
-				break;
-			case 'integer':
-				$this->data[$property] = (int) $value;
-				break;
-			case 'NULL':
-				$this->data[$property] = null;
-				break;
-			case 'double':
-				$this->data[$property] = (float) $value;
-				break;
-			case 'string':
-				$this->data[$property] = $db->escape_string($value);
-				break;
-			case 'array':
-			case 'object':
-			case 'resource':
-				$this->data[$property] = $db->escape_string(json_encode($value));
-				break;
+                case 'boolean':
+                    $this->data[$property] = (bool) $value;
+                    break;
+                case 'integer':
+                    $this->data[$property] = (int) $value;
+                    break;
+                case 'NULL':
+                    $this->data[$property] = null;
+                    break;
+                case 'double':
+                    $this->data[$property] = (float) $value;
+                    break;
+                case 'string':
+                    $this->data[$property] = $db->escape_string($value);
+                    break;
+                case 'array':
+                case 'object':
+                case 'resource':
+                    $this->data[$property] = $db->escape_string(json_encode($value));
+                    break;
+                default:
+                    break;
 			}
 		}
 		$this->data['dateline'] = TIME_NOW;
@@ -152,5 +154,3 @@ abstract class StorableObject010001 extends MalleableObject010000 implements Sto
 		return $db->delete_query($this->tableName, "id='{$this->id}'");
 	}
 }
-
-?>

@@ -8,5 +8,3 @@ interface ConfigurableModuleInterface010000
 {
 	public function outputSettings($formContainer);
 }
-
-?>

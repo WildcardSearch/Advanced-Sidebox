@@ -178,5 +178,3 @@ function asb_slideshow_get_content($settings, $script, $dateline, $template_var)
 
 	return $content;
 }
-
-?>

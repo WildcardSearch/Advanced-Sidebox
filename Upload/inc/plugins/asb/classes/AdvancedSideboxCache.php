@@ -185,5 +185,3 @@ class AdvancedSideboxCache extends WildcardPluginCache010300
 		}
 	}
 }
-
-?>

@@ -106,5 +106,3 @@ class SideboxObject extends StorableObject010001
 		return true;
 	}
 }
-
-?>

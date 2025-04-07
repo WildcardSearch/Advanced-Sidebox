@@ -16,5 +16,3 @@ interface ExternalModuleInterface020100
 	public function run($function_name);
 	public function remove();
 }
-
-?>
